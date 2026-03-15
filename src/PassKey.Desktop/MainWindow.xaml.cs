@@ -1,9 +1,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using PassKey.Desktop.Services;
 using PassKey.Desktop.ViewModels;
 using PassKey.Desktop.Views;
+using Windows.UI;
 
 namespace PassKey.Desktop;
 
@@ -18,7 +20,9 @@ public sealed partial class MainWindow : Window
         Title = "PassKey";
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "PassKey.ico"));
 
-        // WinUI 3 uses HighVisibility focus visuals by default — no manual setup needed
+        // Update title bar colors whenever the system theme changes (user has "System" selected)
+        if (Content is FrameworkElement root)
+            root.ActualThemeChanged += (s, _) => UpdateTitleBarColors(((FrameworkElement)s).ActualTheme == ElementTheme.Dark);
 
         _mainViewModel = App.Services.GetRequiredService<MainViewModel>();
         _mainViewModel.PropertyChanged += OnViewModelPropertyChanged;
@@ -65,7 +69,45 @@ public sealed partial class MainWindow : Window
     public void ApplyTheme(ElementTheme theme)
     {
         if (Content is FrameworkElement root)
+        {
             root.RequestedTheme = theme;
+            UpdateTitleBarColors(root.ActualTheme == ElementTheme.Dark);
+        }
+    }
+
+    private void UpdateTitleBarColors(bool isDark)
+    {
+        var tb = AppWindow.TitleBar;
+        if (isDark)
+        {
+            var bg        = Color.FromArgb(255, 32, 32, 32);
+            var bgHover   = Color.FromArgb(255, 55, 55, 55);
+            var bgPressed = Color.FromArgb(255, 75, 75, 75);
+            var fgDim     = Color.FromArgb(255, 150, 150, 150);
+
+            tb.ForegroundColor               = Colors.White;
+            tb.BackgroundColor               = bg;
+            tb.ButtonForegroundColor         = Colors.White;
+            tb.ButtonBackgroundColor         = bg;
+            tb.ButtonHoverForegroundColor    = Colors.White;
+            tb.ButtonHoverBackgroundColor    = bgHover;
+            tb.ButtonPressedForegroundColor  = Colors.White;
+            tb.ButtonPressedBackgroundColor  = bgPressed;
+            tb.InactiveForegroundColor       = fgDim;
+            tb.InactiveBackgroundColor       = bg;
+            tb.ButtonInactiveForegroundColor = fgDim;
+            tb.ButtonInactiveBackgroundColor = bg;
+        }
+        else
+        {
+            // null restores system default colors (light theme)
+            tb.ForegroundColor = tb.BackgroundColor =
+            tb.ButtonForegroundColor = tb.ButtonBackgroundColor =
+            tb.ButtonHoverForegroundColor = tb.ButtonHoverBackgroundColor =
+            tb.ButtonPressedForegroundColor = tb.ButtonPressedBackgroundColor =
+            tb.InactiveForegroundColor = tb.InactiveBackgroundColor =
+            tb.ButtonInactiveForegroundColor = tb.ButtonInactiveBackgroundColor = null;
+        }
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
