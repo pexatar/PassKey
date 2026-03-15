@@ -16,9 +16,6 @@ jobs:
         with:
           dotnet-version: '10.x'
 
-      - name: Install Windows App SDK workload
-        run: dotnet workload install windowsdesktop
-
       - name: Restore
         run: dotnet restore PassKey.sln
 
