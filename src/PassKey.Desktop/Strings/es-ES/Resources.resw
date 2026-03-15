@@ -1107,6 +1107,9 @@
   <data name="NotesPinButton.Text" xml:space="preserve">
     <value>Fijar</value>
   </data>
+  <data name="NotesPinButtonLabel" xml:space="preserve">
+    <value>Fijar</value>
+  </data>
   <data name="NotesPinnedButton" xml:space="preserve">
     <value>Fijado</value>
   </data>

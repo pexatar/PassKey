@@ -199,7 +199,7 @@ public sealed partial class SecureNoteDetailView : UserControl
         var pinned = _viewModel?.IsPinned ?? false;
         PinToggle.IsChecked = pinned;
         var loader = new ResourceLoader();
-        PinToggleText.Text = pinned ? loader.GetString("NotesPinnedButton") : loader.GetString("NotesPinButton.Text");
+        PinToggleText.Text = pinned ? loader.GetString("NotesPinnedButton") : loader.GetString("NotesPinButtonLabel");
 
         // Accessibility: nome dinamico descrive l'azione futura (toggle pattern)
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(
