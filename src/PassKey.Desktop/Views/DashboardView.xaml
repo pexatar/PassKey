@@ -1,0 +1,383 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.DashboardView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:PassKey.Desktop.Controls">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Padding="24" Spacing="24">
+
+            <!-- Header: Greeting + Search -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                    x:Name="GreetingText"
+                    Grid.Column="0"
+                    Style="{StaticResource TitleTextBlockStyle}"
+                    AutomationProperties.LiveSetting="Polite" />
+
+                <AutoSuggestBox
+                    x:Name="DashSearchBox"
+                    Grid.Column="1"
+                    x:Uid="DashSearch"
+                    PlaceholderText="Cerca qui..."
+                    QueryIcon="Find"
+                    Width="280"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    TextChanged="DashSearchBox_TextChanged"
+                    SuggestionChosen="DashSearchBox_SuggestionChosen"
+                    QuerySubmitted="DashSearchBox_QuerySubmitted"
+                    AutomationProperties.Name="Cerca nel vault">
+                    <AutoSuggestBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="4,6" ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Grid.Column="0" Glyph="{Binding IconGlyph}" FontSize="16"
+                                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                          VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding Subtitle}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                               TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </AutoSuggestBox.ItemTemplate>
+                </AutoSuggestBox>
+            </Grid>
+
+            <!-- Loading indicator -->
+            <ProgressRing
+                x:Name="LoadingProgress"
+                IsActive="True"
+                Visibility="Visible"
+                HorizontalAlignment="Center" />
+
+            <!-- Section title: vault overview -->
+            <TextBlock
+                x:Name="VaultOverviewTitle"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+            <!-- 4 Stat Cards (clickable) -->
+            <Grid x:Name="StatCardsGrid" ColumnSpacing="16" RowSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Passwords card -->
+                <Grid Grid.Column="0" Padding="16" CornerRadius="8" Tag="0"
+                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                      BorderThickness="1"
+                      PointerPressed="StatCard_PointerPressed"
+                      PointerEntered="StatCard_PointerEntered"
+                      PointerExited="StatCard_PointerExited">
+                    <StackPanel Spacing="4">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Grid Width="32" Height="32" CornerRadius="16"
+                                  Background="{ThemeResource PasswordsIconBrush}">
+                                <FontIcon Glyph="&#xE8D7;" FontSize="14"
+                                          Foreground="White"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+                            <TextBlock x:Uid="DashStatPasswords" Text="Password"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock x:Name="PasswordsCount" Text="0"
+                                   FontSize="48" FontWeight="SemiBold"
+                                   AutomationProperties.Name="Total passwords"
+                                   AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock x:Name="PasswordsSubtitle"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <!-- Per-card compact activity: +N -N ~N -->
+                        <StackPanel x:Name="PwActivityRow" Orientation="Horizontal" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE710;" FontSize="10" Foreground="{ThemeResource StatAddedBrush}" />
+                                <TextBlock x:Name="PwAdded" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatAddedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE738;" FontSize="10" Foreground="{ThemeResource StatRemovedBrush}" />
+                                <TextBlock x:Name="PwRemoved" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatRemovedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE70F;" FontSize="10" Foreground="{ThemeResource StatModifiedBrush}" />
+                                <TextBlock x:Name="PwModified" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatModifiedBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock x:Name="PwNoChanges" Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" Visibility="Collapsed" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Cards card -->
+                <Grid Grid.Column="1" Padding="16" CornerRadius="8" Tag="1"
+                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                      BorderThickness="1"
+                      PointerPressed="StatCard_PointerPressed"
+                      PointerEntered="StatCard_PointerEntered"
+                      PointerExited="StatCard_PointerExited">
+                    <StackPanel Spacing="4">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Grid Width="32" Height="32" CornerRadius="16"
+                                  Background="{ThemeResource CardsIconBrush}">
+                                <FontIcon Glyph="&#xE8C7;" FontSize="14"
+                                          Foreground="White"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+                            <TextBlock x:Uid="DashStatCards" Text="Carte"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock x:Name="CardsCount" Text="0"
+                                   FontSize="48" FontWeight="SemiBold"
+                                   AutomationProperties.Name="Total cards"
+                                   AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock x:Name="CardsSubtitle"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <StackPanel x:Name="CcActivityRow" Orientation="Horizontal" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE710;" FontSize="10" Foreground="{ThemeResource StatAddedBrush}" />
+                                <TextBlock x:Name="CcAdded" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatAddedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE738;" FontSize="10" Foreground="{ThemeResource StatRemovedBrush}" />
+                                <TextBlock x:Name="CcRemoved" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatRemovedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE70F;" FontSize="10" Foreground="{ThemeResource StatModifiedBrush}" />
+                                <TextBlock x:Name="CcModified" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatModifiedBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock x:Name="CcNoChanges" Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" Visibility="Collapsed" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Identities card -->
+                <Grid Grid.Column="2" Padding="16" CornerRadius="8" Tag="2"
+                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                      BorderThickness="1"
+                      PointerPressed="StatCard_PointerPressed"
+                      PointerEntered="StatCard_PointerEntered"
+                      PointerExited="StatCard_PointerExited">
+                    <StackPanel Spacing="4">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Grid Width="32" Height="32" CornerRadius="16"
+                                  Background="{ThemeResource IdentitiesIconBrush}">
+                                <FontIcon Glyph="&#xE77B;" FontSize="14"
+                                          Foreground="White"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+                            <TextBlock x:Uid="DashStatIdentities" Text="Identità"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock x:Name="IdentitiesCount" Text="0"
+                                   FontSize="48" FontWeight="SemiBold"
+                                   AutomationProperties.Name="Total identities"
+                                   AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock x:Name="IdentitiesSubtitle"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <StackPanel x:Name="IdActivityRow" Orientation="Horizontal" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE710;" FontSize="10" Foreground="{ThemeResource StatAddedBrush}" />
+                                <TextBlock x:Name="IdAdded" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatAddedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE738;" FontSize="10" Foreground="{ThemeResource StatRemovedBrush}" />
+                                <TextBlock x:Name="IdRemoved" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatRemovedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE70F;" FontSize="10" Foreground="{ThemeResource StatModifiedBrush}" />
+                                <TextBlock x:Name="IdModified" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatModifiedBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock x:Name="IdNoChanges" Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" Visibility="Collapsed" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Notes card -->
+                <Grid Grid.Column="3" Padding="16" CornerRadius="8" Tag="3"
+                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                      BorderThickness="1"
+                      PointerPressed="StatCard_PointerPressed"
+                      PointerEntered="StatCard_PointerEntered"
+                      PointerExited="StatCard_PointerExited">
+                    <StackPanel Spacing="4">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Grid Width="32" Height="32" CornerRadius="16"
+                                  Background="{ThemeResource NotesIconBrush}">
+                                <FontIcon Glyph="&#xE70B;" FontSize="14"
+                                          Foreground="White"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+                            <TextBlock x:Uid="DashStatNotes" Text="Note"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock x:Name="NotesCount" Text="0"
+                                   FontSize="48" FontWeight="SemiBold"
+                                   AutomationProperties.Name="Total notes"
+                                   AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock x:Name="NotesSubtitle"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <StackPanel x:Name="SnActivityRow" Orientation="Horizontal" Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE710;" FontSize="10" Foreground="{ThemeResource StatAddedBrush}" />
+                                <TextBlock x:Name="SnAdded" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatAddedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE738;" FontSize="10" Foreground="{ThemeResource StatRemovedBrush}" />
+                                <TextBlock x:Name="SnRemoved" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatRemovedBrush}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                <FontIcon Glyph="&#xE70F;" FontSize="10" Foreground="{ThemeResource StatModifiedBrush}" />
+                                <TextBlock x:Name="SnModified" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource StatModifiedBrush}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock x:Name="SnNoChanges" Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" Visibility="Collapsed" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!-- Password Health Badge -->
+            <Grid x:Name="HealthBadge" Padding="16" CornerRadius="8"
+                  Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1"
+                  Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" Width="56" Height="56">
+                    <ProgressRing x:Name="HealthRing" IsIndeterminate="False"
+                                  Value="0" Maximum="100"
+                                  Width="56" Height="56" />
+                    <TextBlock x:Name="HealthScoreText" Text="0%"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               FontSize="14" FontWeight="SemiBold" />
+                </Grid>
+                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock x:Name="HealthTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Name="HealthSubtitle" Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Expiring Cards Alert -->
+            <InfoBar x:Name="ExpiringCardsAlert" IsOpen="False" Severity="Warning"
+                     IsClosable="False" Visibility="Collapsed" />
+
+            <!-- Recent items section -->
+            <TextBlock x:Uid="DashRecentTitle" Text="Elementi recenti"
+                       Style="{StaticResource SubtitleTextBlockStyle}" />
+
+            <ListView x:Name="RecentList"
+                      SelectionMode="None"
+                      IsItemClickEnabled="True"
+                      ItemClick="RecentList_ItemClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="4,8" ColumnSpacing="12"
+                              PointerEntered="RecentRow_PointerEntered"
+                              PointerExited="RecentRow_PointerExited">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <FontIcon Grid.Column="0"
+                                      Glyph="{Binding IconGlyph}"
+                                      FontSize="16"
+                                      Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                      VerticalAlignment="Center" />
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Title}"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Subtitle}"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding ActionLabel}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       VerticalAlignment="Center" />
+
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding FormattedTime}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                       VerticalAlignment="Center" />
+
+                            <!-- Hover action buttons -->
+                            <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="4"
+                                        Opacity="0" VerticalAlignment="Center">
+                                <Button Tag="{Binding}" Click="CopyAction_Click"
+                                        Padding="6" Background="Transparent" BorderThickness="0"
+                                        ToolTipService.ToolTip="Copia">
+                                    <FontIcon Glyph="&#xE8C8;" FontSize="14" />
+                                </Button>
+                                <Button Tag="{Binding}" Click="OpenUrlAction_Click"
+                                        Padding="6" Background="Transparent" BorderThickness="0"
+                                        ToolTipService.ToolTip="Apri URL">
+                                    <FontIcon Glyph="&#xE774;" FontSize="14" />
+                                </Button>
+                                <Button Tag="{Binding}" Click="EditAction_Click"
+                                        Padding="6" Background="Transparent" BorderThickness="0"
+                                        ToolTipService.ToolTip="Modifica">
+                                    <FontIcon Glyph="&#xE70F;" FontSize="14" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!-- Empty state (shown when vault has no entries) -->
+            <controls:EmptyStateControl
+                x:Name="EmptyState"
+                Visibility="Collapsed"
+                Icon="&#xE80F;" />
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

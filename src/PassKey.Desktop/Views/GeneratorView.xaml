@@ -1,0 +1,266 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.GeneratorView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="24">
+        <StackPanel Spacing="8" MaxWidth="700" HorizontalAlignment="Left">
+
+            <!-- Page title -->
+            <TextBlock x:Uid="PageGenerator" Text="Generatore password"
+                       Style="{StaticResource TitleTextBlockStyle}"
+                       Margin="0,0,0,16"
+                       AutomationProperties.HeadingLevel="Level1" />
+
+            <!-- ═══ HERO CARD: password + strength ═══ -->
+            <Grid Padding="20"
+                  CornerRadius="12"
+                  Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1">
+                <StackPanel Spacing="12">
+
+                    <!-- Password display + action buttons -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <RichTextBlock x:Name="PasswordDisplay"
+                                       Grid.Column="0"
+                                       FontFamily="Cascadia Mono"
+                                       FontSize="22"
+                                       CharacterSpacing="60"
+                                       IsTextSelectionEnabled="True"
+                                       TextWrapping="Wrap"
+                                       VerticalAlignment="Center"
+                                       AutomationProperties.Name="Password generata">
+                            <Paragraph x:Name="PasswordParagraph" />
+                        </RichTextBlock>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4"
+                                    VerticalAlignment="Center" Margin="12,0,0,0">
+                            <Button x:Name="CopyButton"
+                                    Click="CopyButton_Click"
+                                    ToolTipService.ToolTip="Copia negli appunti (Ctrl+C)"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    Padding="8" TabIndex="70"
+                                    AutomationProperties.Name="Copia password negli appunti">
+                                <FontIcon x:Name="CopyIcon" Glyph="&#xE8C8;" FontSize="16" />
+                            </Button>
+                            <Button x:Name="RegenerateButton"
+                                    Click="RegenerateButton_Click"
+                                    ToolTipService.ToolTip="Genera nuova password"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    Padding="8" TabIndex="80"
+                                    AutomationProperties.Name="Genera nuova password">
+                                <FontIcon Glyph="&#xE72C;" FontSize="16" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Strength: score + bar + label -->
+                    <Grid ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Score number -->
+                        <TextBlock x:Name="ScoreText" Grid.Column="0"
+                                   Text="0"
+                                   FontSize="28" FontWeight="Bold"
+                                   VerticalAlignment="Center" />
+
+                        <!-- 5-segment bar -->
+                        <Grid x:Name="StrengthBarGrid" Grid.Column="1"
+                              ColumnSpacing="4" Height="8" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border x:Name="StrengthSeg0" Grid.Column="0" CornerRadius="4"
+                                    Background="{ThemeResource ControlStrongFillColorDisabledBrush}" />
+                            <Border x:Name="StrengthSeg1" Grid.Column="1" CornerRadius="4"
+                                    Background="{ThemeResource ControlStrongFillColorDisabledBrush}" />
+                            <Border x:Name="StrengthSeg2" Grid.Column="2" CornerRadius="4"
+                                    Background="{ThemeResource ControlStrongFillColorDisabledBrush}" />
+                            <Border x:Name="StrengthSeg3" Grid.Column="3" CornerRadius="4"
+                                    Background="{ThemeResource ControlStrongFillColorDisabledBrush}" />
+                            <Border x:Name="StrengthSeg4" Grid.Column="4" CornerRadius="4"
+                                    Background="{ThemeResource ControlStrongFillColorDisabledBrush}" />
+                        </Grid>
+
+                        <!-- Strength label + crack time -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8"
+                                    VerticalAlignment="Center">
+                            <TextBlock x:Name="StrengthLabel" Text="—"
+                                       Style="{StaticResource BodyStrongTextBlockStyle}"
+                                       AutomationProperties.LiveSetting="Polite" />
+                            <TextBlock x:Name="CrackTimeText" Text="—"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       VerticalAlignment="Center"
+                                       AutomationProperties.LiveSetting="Polite" />
+                        </StackPanel>
+                    </Grid>
+
+                </StackPanel>
+            </Grid>
+
+            <!-- ═══ OPZIONI ═══ -->
+            <MenuFlyoutSeparator Margin="0,12" />
+
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE713;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="GeneratorOptionsHeader" Text="Opzioni"
+                           Style="{StaticResource SubtitleTextBlockStyle}" />
+            </StackPanel>
+
+            <!-- Lunghezza -->
+            <StackPanel Spacing="8">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock x:Name="LengthHeaderText"
+                               x:Uid="GeneratorLength"
+                               Text="Lunghezza"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Name="LengthLabel" Grid.Column="1"
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </Grid>
+                <Slider x:Name="LengthSlider"
+                        Minimum="8" Maximum="128"
+                        StepFrequency="1" SnapsTo="StepValues"
+                        ValueChanged="LengthSlider_ValueChanged"
+                        AutomationProperties.Name="Lunghezza password"
+                        TabIndex="10" />
+            </StackPanel>
+
+            <!-- Maiuscole -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Uid="GeneratorUppercase"
+                               Text="Maiuscole (A-Z)"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="GenUpperDesc"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ToggleSwitch x:Name="UppercaseToggle" Grid.Column="1"
+                              OnContent="" OffContent=""
+                              VerticalAlignment="Center"
+                              Toggled="CharsetToggle_Toggled"
+                              AutomationProperties.Name="Includi lettere maiuscole"
+                              TabIndex="20" />
+            </Grid>
+
+            <!-- Minuscole -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Uid="GeneratorLowercase"
+                               Text="Minuscole (a-z)"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="GenLowerDesc"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ToggleSwitch x:Name="LowercaseToggle" Grid.Column="1"
+                              OnContent="" OffContent=""
+                              VerticalAlignment="Center"
+                              Toggled="CharsetToggle_Toggled"
+                              AutomationProperties.Name="Includi lettere minuscole"
+                              TabIndex="30" />
+            </Grid>
+
+            <!-- Numeri -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Uid="GeneratorDigits"
+                               Text="Numeri (0-9)"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="GenDigitsDesc"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ToggleSwitch x:Name="DigitsToggle" Grid.Column="1"
+                              OnContent="" OffContent=""
+                              VerticalAlignment="Center"
+                              Toggled="CharsetToggle_Toggled"
+                              AutomationProperties.Name="Includi numeri"
+                              TabIndex="40" />
+            </Grid>
+
+            <!-- Simboli -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Uid="GeneratorSymbols"
+                               Text="Simboli (#$&amp;)"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="GenSpecialDesc"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ToggleSwitch x:Name="SymbolsToggle" Grid.Column="1"
+                              OnContent="" OffContent=""
+                              VerticalAlignment="Center"
+                              Toggled="CharsetToggle_Toggled"
+                              AutomationProperties.Name="Includi simboli speciali"
+                              TabIndex="50" />
+            </Grid>
+
+            <MenuFlyoutSeparator Margin="0,12" />
+
+            <!-- Escludi caratteri ambigui -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Escludi caratteri ambigui"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="GenExcludeAmbiguousDesc"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ToggleSwitch x:Name="ExcludeAmbiguousToggle" Grid.Column="1"
+                              OnContent="" OffContent=""
+                              VerticalAlignment="Center"
+                              Toggled="CharsetToggle_Toggled"
+                              AutomationProperties.Name="Escludi caratteri ambigui come zero/O e uno/l/I"
+                              TabIndex="55" />
+            </Grid>
+
+            <!-- ═══ PASSWORD RECENTI ═══ -->
+            <MenuFlyoutSeparator Margin="0,12" />
+
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE81C;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="GeneratorRecentPasswords" Text="Password recenti"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <StackPanel x:Name="HistoryList" Spacing="4" />
+
+            <TextBlock x:Name="HistoryEmptyText"
+                       x:Uid="GeneratorNoPasswords"
+                       Text="Nessuna password generata"
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       Margin="0,0,0,24" />
+
+            <!-- Hidden announcer for screen reader -->
+            <TextBlock x:Name="A11yAnnouncer"
+                       AutomationProperties.LiveSetting="Assertive"
+                       AutomationProperties.AccessibilityView="Content"
+                       Width="1" Height="1" Opacity="0"
+                       IsHitTestVisible="False" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,204 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.CreditCardsListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:PassKey.Desktop.Controls"
+    KeyDown="OnViewKeyDown">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition x:Name="DetailColumn" Width="0" />
+        </Grid.ColumnDefinitions>
+
+        <!-- List area -->
+        <Grid Grid.Column="0" Padding="24" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Header: Title + Search + Toggle View + Add button -->
+            <Grid Grid.Row="0" ColumnSpacing="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" x:Uid="PageCards" Text="Carte"
+                           Style="{StaticResource TitleTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           AutomationProperties.HeadingLevel="Level1" />
+
+                <AutoSuggestBox Grid.Column="1"
+                                x:Name="SearchBox"
+                                x:Uid="SearchCards"
+                                PlaceholderText="Cerca carte..."
+                                QueryIcon="Find"
+                                MaxWidth="300"
+                                HorizontalAlignment="Right"
+                                TextChanged="SearchBox_TextChanged"
+                                AutomationProperties.Name="Cerca carte" />
+
+                <!-- Toggle card/list view -->
+                <Button Grid.Column="2"
+                        x:Name="ViewToggle"
+                        Click="ViewToggle_Click"
+                        ToolTipService.ToolTip="Cambia vista"
+                        AutomationProperties.Name="Cambia vista carte/lista"
+                        Padding="8">
+                    <FontIcon x:Name="ViewToggleIcon" Glyph="&#xE8FD;" FontSize="16" />
+                </Button>
+
+                <Button Grid.Column="3"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Click="AddButton_Click"
+                        AutomationProperties.Name="Nuova carta"
+                        ToolTipService.ToolTip="Nuova carta (Ctrl+N)">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon Glyph="&#xE710;" FontSize="14" />
+                        <TextBlock x:Uid="AddCardLabel" Text="Nuova carta" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Sort bar (visible only in list view) -->
+            <StackPanel x:Name="SortBar" Grid.Row="1" Orientation="Horizontal" Spacing="4"
+                        Visibility="Collapsed">
+                <Button x:Uid="SortLabel" Content="Etichetta" Click="SortLabel_Click" Style="{StaticResource SubtleButtonStyle}" />
+                <Button x:Uid="SortLast4" Content="Ultime 4" Click="SortLast4_Click" Style="{StaticResource SubtleButtonStyle}" />
+                <Button x:Uid="SortCardholder" Content="Intestatario" Click="SortCardholder_Click" Style="{StaticResource SubtleButtonStyle}" />
+                <Button x:Uid="SortDateCards" Content="Data" Click="SortDate_Click" Style="{StaticResource SubtleButtonStyle}" />
+            </StackPanel>
+
+            <!-- Card view (default): ItemsRepeater with UniformGridLayout -->
+            <ScrollViewer x:Name="CardViewScroller" Grid.Row="2"
+                          VerticalScrollBarVisibility="Auto">
+                <ItemsRepeater x:Name="CardRepeater"
+                               ElementPrepared="CardRepeater_ElementPrepared">
+                    <ItemsRepeater.Layout>
+                        <UniformGridLayout MinItemWidth="300"
+                                           MinItemHeight="190"
+                                           MinColumnSpacing="16"
+                                           MinRowSpacing="16" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate>
+                            <controls:CreditCardControl />
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>
+            </ScrollViewer>
+
+            <!-- List view: ListView with columnar DataTemplate -->
+            <ListView x:Name="ListViewControl" Grid.Row="2"
+                      SelectionMode="Single"
+                      IsItemClickEnabled="True"
+                      ItemClick="ListViewControl_ItemClick"
+                      Visibility="Collapsed">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8,12" ColumnSpacing="12"
+                              PointerEntered="Row_PointerEntered"
+                              PointerExited="Row_PointerExited">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Card type icon circle -->
+                            <Grid Grid.Column="0" Width="36" Height="36" CornerRadius="18"
+                                  Background="{ThemeResource CardsIconBrush}">
+                                <FontIcon Glyph="&#xE8C7;" FontSize="16"
+                                          Foreground="White"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+
+                            <!-- Label + Masked PAN -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{Binding Label}"
+                                           TextTrimming="CharacterEllipsis"
+                                           Style="{StaticResource BodyStrongTextBlockStyle}" />
+                                <TextBlock Text="{Binding CardNumber}"
+                                           TextTrimming="CharacterEllipsis"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+
+                            <!-- Cardholder name -->
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding CardholderName}"
+                                       TextTrimming="CharacterEllipsis"
+                                       VerticalAlignment="Center"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+                            <!-- Expiry -->
+                            <TextBlock Grid.Column="3"
+                                       Text="{Binding ExpiryFormatted}"
+                                       VerticalAlignment="Center"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+                            <!-- Copy card number -->
+                            <Button Grid.Column="4"
+                                    ToolTipService.ToolTip="Copia numero carta"
+                                    Click="CopyCardNumber_Click"
+                                    Tag="{Binding}"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    Opacity="0"
+                                    Padding="6">
+                                <FontIcon Glyph="&#xE8C8;" FontSize="14" />
+                            </Button>
+
+                            <!-- Edit -->
+                            <Button Grid.Column="5"
+                                    ToolTipService.ToolTip="Modifica"
+                                    Click="EditEntry_Click"
+                                    Tag="{Binding}"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    Opacity="0"
+                                    Padding="6">
+                                <FontIcon Glyph="&#xE70F;" FontSize="14" />
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!-- Empty state -->
+            <controls:EmptyStateControl
+                x:Name="EmptyState"
+                Grid.Row="2"
+                Visibility="Collapsed"
+                Icon="&#xE8C7;"
+                Title="Nessuna carta salvata"
+                Subtitle="Aggiungi la tua prima carta di credito per averla sempre al sicuro."
+                PrimaryActionText="Nuova carta" />
+        </Grid>
+
+        <!-- Detail panel (right side, 400px) -->
+        <Grid x:Name="DetailPanel"
+              Grid.Column="1"
+              Visibility="Collapsed"
+              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+              BorderThickness="1,0,0,0">
+            <ContentPresenter x:Name="DetailContent" />
+        </Grid>
+
+        <!-- Save confirmation toast -->
+        <TeachingTip x:Name="SavedTip"
+                     x:Uid="CardSavedTip"
+                     IsLightDismissEnabled="True"
+                     PreferredPlacement="Bottom"
+                     Title="Salvato!" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,126 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.SetupView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:PassKey.Desktop.Controls">
+
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="420">
+        <StackPanel Spacing="20">
+
+            <!-- Logo + Title -->
+            <Image
+                Source="ms-appx:///Assets/LogoFull.png"
+                Width="220"
+                HorizontalAlignment="Center" />
+
+            <TextBlock
+                x:Uid="SetupTitle"
+                Text="Crea la tua Master Password"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                HorizontalAlignment="Center"
+                TextAlignment="Center" />
+
+            <TextBlock
+                x:Uid="SetupSubtitle"
+                Text="Questa password protegge tutti i tuoi dati. Sceglila con cura."
+                Style="{StaticResource BodyTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                HorizontalAlignment="Center"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+
+            <!-- Password field -->
+            <StackPanel Spacing="6">
+                <TextBlock x:Uid="SetupPasswordLabel" Text="Password *" Style="{StaticResource CaptionTextBlockStyle}" />
+                <controls:SecureInputBox
+                    x:Name="PasswordInput"
+                    PlaceholderText="Inserisci la master password"
+                    MaxLength="128"
+                    TabIndex="10" />
+            </StackPanel>
+
+            <!-- Confirm password field -->
+            <StackPanel Spacing="6">
+                <TextBlock x:Uid="SetupConfirmLabel" Text="Conferma password *" Style="{StaticResource CaptionTextBlockStyle}" />
+                <controls:SecureInputBox
+                    x:Name="ConfirmInput"
+                    PlaceholderText="Ripeti la master password"
+                    ShowRevealButton="Collapsed"
+                    MaxLength="128"
+                    TabIndex="20" />
+            </StackPanel>
+
+            <!-- Strength bar -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressBar
+                    x:Name="StrengthBar"
+                    Grid.Column="0"
+                    Minimum="0" Maximum="100" Value="0"
+                    Height="6"
+                    CornerRadius="3" />
+                <TextBlock
+                    x:Name="StrengthLabel"
+                    Grid.Column="1"
+                    Margin="12,0,0,0"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    VerticalAlignment="Center" />
+            </Grid>
+
+            <!-- Requirements checklist -->
+            <StackPanel x:Name="ChecklistPanel" Spacing="4" AutomationProperties.LiveSetting="Polite">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon x:Name="CheckLength" Glyph="&#xE711;" FontSize="12" />
+                    <TextBlock x:Uid="SetupCheckLength" Text="Almeno 12 caratteri" Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon x:Name="CheckUpper" Glyph="&#xE711;" FontSize="12" />
+                    <TextBlock x:Uid="SetupCheckUpper" Text="Una lettera maiuscola" Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon x:Name="CheckDigit" Glyph="&#xE711;" FontSize="12" />
+                    <TextBlock x:Uid="SetupCheckDigit" Text="Un numero" Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon x:Name="CheckSymbol" Glyph="&#xE711;" FontSize="12" />
+                    <TextBlock x:Uid="SetupCheckSymbol" Text="Un simbolo speciale" Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon x:Name="CheckMatch" Glyph="&#xE711;" FontSize="12" />
+                    <TextBlock x:Uid="SetupCheckMatch" Text="Le password corrispondono" Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Create vault button -->
+            <Button
+                x:Name="CreateButton"
+                Style="{StaticResource AccentButtonStyle}"
+                HorizontalAlignment="Stretch"
+                Height="40"
+                IsEnabled="False"
+                Click="CreateButton_Click"
+                AutomationProperties.Name="Crea Vault"
+                TabIndex="30">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ProgressRing
+                        x:Name="CreateProgress"
+                        IsActive="False"
+                        Visibility="Collapsed"
+                        Width="16" Height="16" />
+                    <TextBlock x:Name="CreateButtonText" x:Uid="SetupCreateVault" Text="Crea Vault" />
+                </StackPanel>
+            </Button>
+
+            <!-- Mandatory field legend -->
+            <TextBlock
+                x:Uid="RequiredFieldLegend"
+                Text="* Campo obbligatorio"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,315 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.HelpView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="8" MaxWidth="700" MinWidth="700" HorizontalAlignment="Left">
+
+            <!-- Header -->
+            <TextBlock x:Uid="PageHelp" Text="Guida"
+                       Style="{StaticResource TitleTextBlockStyle}"
+                       Margin="0,0,0,16"
+                       AutomationProperties.HeadingLevel="Level1" />
+
+            <!-- ═══ SCORCIATOIE DA TASTIERA ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE765;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="HelpShortcutsTitle" Text="Scorciatoie da tastiera"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <Grid Padding="16" CornerRadius="8"
+                  Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1">
+                <StackPanel Spacing="0">
+
+                    <!-- Navigation shortcuts -->
+                    <TextBlock x:Uid="HelpShortcutsNavTitle" Text="Navigazione"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Margin="0,0,0,8" />
+
+                    <Grid ColumnDefinitions="160,*" Margin="0,4">
+                        <TextBlock Grid.Column="0" Text="Ctrl+1 … Ctrl+7"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   FontFamily="Cascadia Code, Consolas, Courier New" />
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutNav17"
+                                   Text="Naviga tra le sezioni (Dashboard, Password, Carte…)"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                    <Grid ColumnDefinitions="160,*" Margin="0,4">
+                        <TextBlock Grid.Column="0" Text="Ctrl+F"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   FontFamily="Cascadia Code, Consolas, Courier New" />
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutSearch"
+                                   Text="Cerca (nella Dashboard)"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="160,*" Margin="0,4">
+                        <TextBlock Grid.Column="0" Text="Ctrl+L"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   FontFamily="Cascadia Code, Consolas, Courier New" />
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutLock"
+                                   Text="Blocca vault"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                    </Grid>
+
+                    <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+                    <!-- Action shortcuts -->
+                    <TextBlock x:Uid="HelpShortcutsActionsTitle" Text="Azioni"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Margin="0,0,0,8" />
+
+                    <Grid ColumnDefinitions="160,*" Margin="0,4">
+                        <TextBlock Grid.Column="0" Text="Ctrl+N"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   FontFamily="Cascadia Code, Consolas, Courier New" />
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutNew"
+                                   Text="Nuovo elemento"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="160,*" Margin="0,4">
+                        <TextBlock Grid.Column="0" Text="F2"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   FontFamily="Cascadia Code, Consolas, Courier New" />
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutEdit"
+                                   Text="Modifica elemento selezionato"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="160,*" Margin="0,4">
+                        <TextBlock Grid.Column="0" x:Uid="HelpShortcutDelKey" Text="Canc"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   FontFamily="Cascadia Code, Consolas, Courier New" />
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutDelete"
+                                   Text="Elimina elemento selezionato"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="160,*" Margin="0,4">
+                        <TextBlock Grid.Column="0" Text="Esc"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   FontFamily="Cascadia Code, Consolas, Courier New" />
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutEsc"
+                                   Text="Annulla / Torna indietro"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                    </Grid>
+
+                </StackPanel>
+            </Grid>
+
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+            <!-- ═══ GUIDA ALL'USO ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE736;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="HelpGuideSectionTitle" Text="Guida all'uso"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuideDashboardHeader" Text="Dashboard"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuideDashboardBody"
+                               Text="La Dashboard è la schermata principale di PassKey. Mostra un riepilogo degli elementi salvati suddivisi per tipo (password, carte, identità, note), le statistiche del vault e gli elementi modificati di recente. Usa la barra di ricerca (Ctrl+F) per trovare rapidamente qualsiasi elemento tra tutte le categorie."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuidePasswordsHeader" Text="Password"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuidePasswordsBody"
+                               Text="Visualizza e gestisce tutte le password salvate nel vault. Fai clic su una voce per aprire il pannello di dettaglio: da lì puoi copiare il nome utente o la password con un clic, visualizzare l'URL associato, modificare i campi con il pulsante Modifica o eliminare la voce con conferma."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuideCardsHeader" Text="Carte di credito"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuideCardsBody"
+                               Text="Gestisce le carte di credito salvate nel vault. Numero di carta, titolare, data di scadenza e CVV sono conservati in modo completamente cifrato. Nel pannello di dettaglio puoi copiare il numero di carta con un clic e tener premuto il pulsante CVV per rivelarlo. Il colore della carta è personalizzabile."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuideIdentitiesHeader" Text="Identità"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuideIdentitiesBody"
+                               Text="Archivia documenti e informazioni di identità personale: nome e cognome, indirizzo, tipo e numero di documento, codice fiscale, data di nascita, numero di telefono e indirizzo e-mail. Utile per copiare rapidamente i singoli campi quando si compilano moduli senza dover cercare i documenti fisici."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuideNotesHeader" Text="Note sicure"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuideNotesBody"
+                               Text="Conserva informazioni sensibili sotto forma di note testuali libere, cifrate come tutti gli altri elementi del vault. Ogni nota ha un titolo, un colore identificativo personalizzabile e un campo testo a lunghezza libera. Ideale per PIN, codici di accesso, domande di sicurezza o qualsiasi dato che non rientra nelle altre categorie."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuideGeneratorHeader" Text="Generatore"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuideGeneratorBody"
+                               Text="Genera password casuali e crittograficamente sicure. Configura la lunghezza e i set di caratteri da includere (lettere maiuscole, minuscole, cifre e simboli). La forza della password è indicata in tempo reale. Copia il risultato negli appunti con un clic."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuideVerifierHeader" Text="Verifica password"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuideVerifierBody"
+                               Text="Analizza la sicurezza di una password senza salvarla nel vault. Mostra un punteggio da 0 a 4 stelle, una stima del tempo necessario per violarla con un attacco brute-force e un'indicazione se risulta compromessa in database pubblici di violazioni. Utile per verificare le password già in uso."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuideSettingsHeader" Text="Impostazioni"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuideSettingsBody"
+                               Text="Centralizza tutte le opzioni di configurazione: lingua dell'interfaccia, master password, timeout di blocco automatico, backup e ripristino del vault, e importazione da altri gestori di password (CSV, Bitwarden, 1Password, KeePass)."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
+            </StackPanel>
+
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+            <!-- ═══ DOMANDE FREQUENTI ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE9CE;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="HelpFaqTitle" Text="Domande frequenti"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpFaq1Question"
+                                   Text="Come modifico la master password?"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpFaq1Answer"
+                               Text="Vai in Impostazioni e scorri alla sezione Sicurezza. Fai clic su 'Cambia master password': ti verrà chiesta la password attuale (per confermare la tua identità) e poi la nuova password due volte. La nuova master password viene applicata immediatamente."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap"
+                               Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpFaq2Question"
+                                   Text="Come creo un backup del vault?"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpFaq2Answer"
+                               Text="Vai in Impostazioni e scorri alla sezione Backup e importazione. Fai clic su 'Crea backup': viene generato un file cifrato con la tua master password. Conservalo in un luogo sicuro. Per ripristinare, usa 'Ripristina backup' nella stessa sezione e inserisci la master password con cui il backup è stato creato."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap"
+                               Margin="0,8,0,4" />
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpFaq3Question"
+                                   Text="Dove sono salvati i dati?"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <StackPanel Spacing="6" Margin="0,8,0,4">
+                        <TextBlock x:Uid="HelpFaq3Answer"
+                                   Text="Tutti i dati di PassKey sono salvati esclusivamente sul tuo dispositivo, in un database SQLite cifrato con AES-GCM 256 bit. Nessuna informazione viene trasmessa su Internet o a server esterni. Il percorso del file è indicato qui sotto — puoi selezionarlo e aprire la cartella direttamente da Esplora file."
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap" />
+                        <TextBlock x:Name="DataPathText"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   IsTextSelectionEnabled="True"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Expander>
+
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpFaq4Question"
+                                   Text="Come importo password da un altro gestore?"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpFaq4Answer"
+                               Text="Vai in Impostazioni e scorri alla sezione Backup e importazione. Fai clic su 'Importa dati' e seleziona il formato sorgente: CSV generico (compatibile con la maggior parte dei gestori), Bitwarden JSON, 1Password (.1pux) e KeePass (.kdbx). PassKey mostra un riepilogo degli elementi rilevati prima della conferma definitiva."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap"
+                               Margin="0,8,0,4" />
+                </Expander>
+
+            </StackPanel>
+
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+            <!-- ═══ INFORMAZIONI ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE946;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="HelpAboutTitle" Text="Informazioni"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <StackPanel Spacing="4" Margin="0,4,0,24">
+                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}">
+                    <Run Text="PassKey" />
+                    <Run Text=" v" />
+                    <Run x:Name="VersionText" Text="1.0.0" />
+                </TextBlock>
+                <TextBlock x:Uid="HelpAboutDesc"
+                           Text="Password manager sicuro per Windows"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                    <Run Text=".NET 10 · WinUI 3 · Windows App SDK 1.8" />
+                </TextBlock>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

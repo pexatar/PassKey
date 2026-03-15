@@ -1,0 +1,221 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.SecureNotesListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:PassKey.Desktop.Controls"
+    KeyDown="OnViewKeyDown">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Master panel (note list, 320px) -->
+            <ColumnDefinition Width="320" />
+            <!-- Detail panel (editor, remaining space) -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Master: Note list -->
+        <Grid Grid.Column="0" RowSpacing="0"
+              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+              BorderThickness="0,0,1,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />  <!-- Header: titolo + ComboBox + pulsante -->
+                <RowDefinition Height="Auto" />  <!-- Search -->
+                <RowDefinition Height="*" />     <!-- Lista / EmptyState -->
+            </Grid.RowDefinitions>
+
+            <!-- Header: Titolo + Filter icon + Pulsante aggiungi -->
+            <Grid Grid.Row="0" Padding="16,16,16,8" ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />     <!-- Titolo -->
+                    <ColumnDefinition Width="Auto" />  <!-- Filter button -->
+                    <ColumnDefinition Width="Auto" />  <!-- Pulsante + -->
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           x:Uid="PageNotes" Text="Note sicure"
+                           Style="{StaticResource TitleTextBlockStyle}"
+                           VerticalAlignment="Center"
+                           AutomationProperties.HeadingLevel="Level1" />
+
+                <!-- Filter icon button con MenuFlyout + RadioMenuFlyoutItem -->
+                <Button x:Name="FilterButton" Grid.Column="1"
+                        ToolTipService.ToolTip="Filtra per categoria"
+                        AutomationProperties.Name="Filtra per categoria"
+                        TabIndex="1"
+                        Padding="8">
+                    <Grid>
+                        <FontIcon x:Name="FilterIcon" Glyph="&#xE71C;" FontSize="16" />
+                        <!-- Badge dot: visibile quando un filtro categoria e attivo -->
+                        <Ellipse x:Name="FilterBadge" Width="8" Height="8"
+                                 Fill="{ThemeResource AccentFillColorDefaultBrush}"
+                                 HorizontalAlignment="Right" VerticalAlignment="Top"
+                                 Margin="6,-4,-4,0" Visibility="Collapsed" />
+                    </Grid>
+                    <Button.Flyout>
+                        <MenuFlyout x:Name="CategoryFilterFlyout" Placement="BottomEdgeAlignedRight" />
+                    </Button.Flyout>
+                </Button>
+
+                <Button Grid.Column="2"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Click="AddButton_Click"
+                        AutomationProperties.Name="Aggiungi nota (Ctrl+N)"
+                        ToolTipService.ToolTip="Nuova nota (Ctrl+N)"
+                        TabIndex="2"
+                        Padding="10,6">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon Glyph="&#xE710;" FontSize="14" />
+                        <TextBlock x:Uid="ButtonAddNote" Text="Aggiungi" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Search -->
+            <AutoSuggestBox x:Uid="SearchNotes" Grid.Row="1"
+                            x:Name="SearchBox"
+                            PlaceholderText="Cerca note..."
+                            QueryIcon="Find"
+                            Margin="16,0,16,8"
+                            TextChanged="SearchBox_TextChanged"
+                            AutomationProperties.Name="Cerca note"
+                            AutomationProperties.HelpText="Filtra note per titolo, contenuto o categoria"
+                            TabIndex="3" />
+
+            <!-- Note mini-cards list -->
+            <ListView Grid.Row="2"
+                      x:Name="NotesList"
+                      SelectionMode="Single"
+                      IsItemClickEnabled="True"
+                      ItemClick="NotesList_ItemClick"
+                      ContainerContentChanging="NotesList_ContainerContentChanging"
+                      TabIndex="4">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <!-- Section header: "Fissate" o "Note" (visibile solo sul primo elemento di ogni sezione) -->
+                            <TextBlock Text=""
+                                       Visibility="Collapsed"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       FontWeight="SemiBold"
+                                       Margin="4,4,0,6"
+                                       AutomationProperties.HeadingLevel="Level2" />
+
+                            <!-- Note card -->
+                            <Grid ColumnSpacing="10" Margin="0,2"
+                                  AutomationProperties.Name="{Binding Title}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Bordo colorato categoria (4px) -->
+                                <Border Grid.Column="0"
+                                        Width="4" CornerRadius="2"
+                                        VerticalAlignment="Stretch"
+                                        Background="{ThemeResource TextFillColorTertiaryBrush}" />
+
+                                <!-- Contenuto card: 3 righe -->
+                                <Grid Grid.Column="1" Padding="0,8" RowSpacing="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Riga 1: Pin + Titolo + Data relativa -->
+                                    <Grid Grid.Row="0" ColumnSpacing="4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <FontIcon Grid.Column="0" Glyph="&#xE718;"
+                                                  FontSize="12" Visibility="Collapsed"
+                                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+                                        <TextBlock Grid.Column="1" Text="{Binding Title}"
+                                                   TextTrimming="CharacterEllipsis" MaxLines="1"
+                                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                                        <TextBlock Grid.Column="2" Text=""
+                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                    </Grid>
+
+                                    <!-- Riga 2: Preview contenuto -->
+                                    <TextBlock Grid.Row="1" Text=""
+                                               TextTrimming="CharacterEllipsis" MaxLines="1"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+
+                                    <!-- Riga 3: Categoria -->
+                                    <TextBlock Grid.Row="2" Text=""
+                                               TextTrimming="CharacterEllipsis" MaxLines="1"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                </Grid>
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!-- Empty state: nessuna nota nel vault -->
+            <controls:EmptyStateControl
+                x:Uid="EmptyNotes"
+                x:Name="EmptyState"
+                Grid.Row="2"
+                Visibility="Collapsed"
+                Icon="&#xE70B;"
+                Title="Nessuna nota"
+                Subtitle="Crea la tua prima nota sicura per salvare informazioni riservate."
+                PrimaryActionText="Nuova nota"
+                AutomationProperties.Name="Nessuna nota. Crea la tua prima nota sicura." />
+
+            <!-- Empty state: filtro attivo ma 0 risultati -->
+            <controls:EmptyStateControl
+                x:Name="FilteredEmptyState"
+                Grid.Row="2"
+                Visibility="Collapsed"
+                Icon="&#xF78B;"
+                Title="Nessun risultato"
+                Subtitle="Prova a modificare i filtri o la ricerca."
+                AutomationProperties.Name="Nessun risultato. Prova a modificare i filtri o la ricerca." />
+        </Grid>
+
+        <!-- Detail: Editor panel -->
+        <Grid x:Name="EditorPanel" Grid.Column="1" Visibility="Collapsed">
+            <ContentPresenter x:Name="EditorContent" />
+        </Grid>
+
+        <!-- Empty editor placeholder -->
+        <StackPanel x:Name="EmptyEditor" Grid.Column="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Spacing="12">
+            <FontIcon Glyph="&#xE70B;" FontSize="48"
+                      Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                      HorizontalAlignment="Center" />
+            <TextBlock x:Uid="EmptyEditorHint" Text="Seleziona una nota o creane una nuova"
+                       Style="{StaticResource BodyTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       HorizontalAlignment="Center" />
+        </StackPanel>
+
+        <!-- Toast conferma salvataggio -->
+        <TeachingTip x:Name="SavedTip"
+                     IsLightDismissEnabled="True"
+                     PreferredPlacement="Bottom"
+                     Title="Nota salvata!"
+                     AutomationProperties.LiveSetting="Polite" />
+
+        <!-- Hidden announcer for screen reader live regions -->
+        <TextBlock x:Name="A11yAnnouncer"
+                   AutomationProperties.LiveSetting="Polite"
+                   AutomationProperties.AccessibilityView="Content"
+                   Width="1" Height="1" Opacity="0"
+                   IsHitTestVisible="False" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,191 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.SecureNoteDetailView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctMarkdown="using:CommunityToolkit.WinUI.UI.Controls">
+
+    <Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Editor content -->
+        <Grid Grid.Row="0" Padding="24" RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />  <!-- Header: Titolo + Categoria sulla stessa riga -->
+                <RowDefinition Height="Auto" />  <!-- Toggle bar: Modifica / Anteprima + counters -->
+                <RowDefinition Height="*" />     <!-- Area testo principale -->
+            </Grid.RowDefinitions>
+
+            <!-- Row 0: Titolo e Categoria sulla stessa riga -->
+            <Grid Grid.Row="0" ColumnSpacing="16" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />    <!-- Titolo -->
+                    <ColumnDefinition Width="Auto" /> <!-- Categoria + dot colorato -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Titolo con indicatore "non salvato" -->
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock x:Name="TitleLabel" x:Uid="FieldTitle" Text="Titolo *"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   AutomationProperties.HeadingLevel="Level2" />
+                        <Ellipse x:Name="UnsavedDot" Width="8" Height="8"
+                                 Fill="{ThemeResource NotesIconBrush}"
+                                 Visibility="Collapsed"
+                                 VerticalAlignment="Center"
+                                 ToolTipService.ToolTip="Modifiche non salvate"
+                                 AutomationProperties.Name="Modifiche non salvate" />
+                    </StackPanel>
+                    <TextBox x:Name="TitleBox"
+                             x:Uid="NotesTitleBox"
+                             TextChanged="TitleBox_TextChanged"
+                             AutomationProperties.Name="Titolo nota"
+                             TabIndex="10" />
+                </StackPanel>
+
+                <!-- Categoria + dot colorato a destra -->
+                <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock x:Name="CategoryLabel" x:Uid="FieldCategory" Text="Categoria"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               AutomationProperties.HeadingLevel="Level2" />
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <ComboBox x:Name="CategoryCombo"
+                                  MinWidth="140"
+                                  SelectionChanged="CategoryCombo_SelectionChanged"
+                                  AutomationProperties.Name="Categoria nota"
+                                  TabIndex="20" />
+                        <Ellipse x:Name="CategoryDot"
+                                 Width="16" Height="16"
+                                 VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <!-- Row 1: Toggle bar Modifica / Anteprima + contatore caratteri e parole -->
+            <Grid Grid.Row="1" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="2">
+                    <Button x:Name="EditModeBtn"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Padding="10,4"
+                            Click="EditModeBtn_Click"
+                            AutomationProperties.Name="Modalità modifica">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE70F;" FontSize="12" />
+                            <TextBlock x:Uid="NotesEditButton" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="PreviewModeBtn"
+                            Style="{StaticResource SubtleButtonStyle}"
+                            Padding="10,4"
+                            Click="PreviewModeBtn_Click"
+                            AutomationProperties.Name="Anteprima Markdown">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <FontIcon Glyph="&#xE890;" FontSize="12" />
+                            <TextBlock x:Uid="NotesPreviewButton" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <TextBlock Grid.Column="2" x:Name="CharCountText"
+                           Text="0 car · 0 parole"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                           VerticalAlignment="Center"
+                           AutomationProperties.LiveSetting="Polite" />
+            </Grid>
+
+            <!-- Row 2: Area testo — TextBox (edit) o MarkdownTextBlock (preview) -->
+            <Grid Grid.Row="2">
+                <TextBox x:Name="ContentBox"
+                         x:Uid="NotesContentBox"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         TextChanged="ContentBox_TextChanged"
+                         AutomationProperties.Name="Contenuto nota"
+                         AutomationProperties.HelpText="Supporta sintassi Markdown"
+                         VerticalAlignment="Stretch"
+                         TabIndex="30" />
+
+                <ScrollViewer x:Name="PreviewScroll"
+                              Visibility="Collapsed"
+                              VerticalScrollBarVisibility="Auto">
+                    <ctMarkdown:MarkdownTextBlock x:Name="MarkdownPreview"
+                                                  Text=""
+                                                  Padding="4"
+                                                  AutomationProperties.Name="Anteprima nota in Markdown" />
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- Sticky footer con pulsanti azione -->
+        <Grid Grid.Row="1" Padding="24,12"
+              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+              BorderThickness="0,1,0,0"
+              ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />  <!-- Elimina -->
+                <ColumnDefinition Width="Auto" />  <!-- Pin -->
+                <ColumnDefinition Width="*" />     <!-- Spacer -->
+                <ColumnDefinition Width="Auto" />  <!-- Salva -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Elimina (solo per note esistenti) -->
+            <Button x:Name="DeleteButton"
+                    Grid.Column="0"
+                    Visibility="Collapsed"
+                    Click="DeleteButton_Click"
+                    AutomationProperties.Name="Elimina nota"
+                    TabIndex="40">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource StatRemovedBrush}" />
+                    <TextBlock x:Uid="ButtonDelete" Text="Elimina" Foreground="{ThemeResource StatRemovedBrush}" />
+                </StackPanel>
+            </Button>
+
+            <!-- Pin toggle -->
+            <ToggleButton x:Name="PinToggle"
+                          Grid.Column="1"
+                          Click="PinToggle_Click"
+                          AutomationProperties.Name="Fissa nota"
+                          ToolTipService.ToolTip="Fissa nota in cima alla lista"
+                          TabIndex="45">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE718;" FontSize="14" />
+                    <TextBlock x:Name="PinToggleText" x:Uid="NotesPinButton" />
+                </StackPanel>
+            </ToggleButton>
+
+            <!-- Salva -->
+            <Button x:Name="SaveButton"
+                    Grid.Column="3"
+                    Style="{StaticResource AccentButtonStyle}"
+                    IsEnabled="False"
+                    Click="SaveButton_Click"
+                    AutomationProperties.Name="Salva nota"
+                    TabIndex="50">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ProgressRing x:Name="SaveProgress"
+                                  IsActive="False" Visibility="Collapsed"
+                                  Width="14" Height="14" />
+                    <TextBlock x:Uid="ButtonSave" x:Name="SaveButtonText" Text="Salva" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Hidden announcer for screen reader live regions -->
+        <TextBlock x:Name="A11yAnnouncer"
+                   AutomationProperties.LiveSetting="Assertive"
+                   AutomationProperties.AccessibilityView="Content"
+                   Width="1" Height="1" Opacity="0"
+                   IsHitTestVisible="False" />
+    </Grid>
+</UserControl>

@@ -1,0 +1,92 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.WelcomeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="500">
+        <StackPanel Spacing="20">
+
+            <!-- Success icon -->
+            <FontIcon
+                Glyph="&#xE73E;"
+                FontSize="64"
+                HorizontalAlignment="Center"
+                Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
+
+            <TextBlock
+                x:Uid="WelcomeTitle"
+                Text="Il tuo vault è pronto!"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                HorizontalAlignment="Center"
+                TextAlignment="Center" />
+
+            <TextBlock
+                x:Uid="WelcomeSubtitle"
+                Text="Inizia subito a proteggere i tuoi dati."
+                Style="{StaticResource BodyTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                HorizontalAlignment="Center"
+                TextAlignment="Center" />
+
+            <!-- Quick actions -->
+            <StackPanel Spacing="8">
+                <Button
+                    x:Name="AddPasswordButton"
+                    HorizontalAlignment="Stretch"
+                    Height="40"
+                    Click="AddPasswordButton_Click"
+                    AutomationProperties.Name="Aggiungi la prima password">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE8D7;" FontSize="16" />
+                        <TextBlock x:Uid="WelcomeAddPassword" Text="Aggiungi la prima password" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    x:Name="ImportButton"
+                    HorizontalAlignment="Stretch"
+                    Height="40"
+                    Click="ImportButton_Click"
+                    AutomationProperties.Name="Importa da un altro gestore">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE8B5;" FontSize="16" />
+                        <TextBlock x:Uid="WelcomeImport" Text="Importa da un altro gestore" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    x:Name="SettingsButton"
+                    HorizontalAlignment="Stretch"
+                    Height="40"
+                    Click="SettingsButton_Click"
+                    AutomationProperties.Name="Esplora le impostazioni">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE713;" FontSize="16" />
+                        <TextBlock x:Uid="WelcomeSettings" Text="Esplora le impostazioni" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <!-- Zero-knowledge notice -->
+            <InfoBar
+                x:Uid="WelcomeZeroKnowledgeBar"
+                IsOpen="True"
+                IsClosable="False"
+                Severity="Informational"
+                Title="Sicurezza zero-knowledge"
+                Message="PassKey non memorizza la master password. Se la dimentichi, i tuoi dati non saranno recuperabili." />
+
+            <!-- Continue button -->
+            <Button
+                x:Name="ContinueButton"
+                Style="{StaticResource AccentButtonStyle}"
+                HorizontalAlignment="Stretch"
+                Height="40"
+                Click="ContinueButton_Click"
+                AutomationProperties.Name="Continua">
+                <TextBlock x:Uid="ButtonContinue" Text="Continua" />
+            </Button>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

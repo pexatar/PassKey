@@ -1,0 +1,103 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.ShellView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <NavigationView
+        x:Name="NavView"
+        IsBackButtonVisible="Collapsed"
+        IsSettingsVisible="True"
+        PaneDisplayMode="Left"
+        OpenPaneLength="220"
+        SelectionChanged="NavView_SelectionChanged"
+        ItemInvoked="NavView_ItemInvoked">
+
+        <NavigationView.MenuItems>
+            <NavigationViewItem x:Uid="NavDashboard" Content="Dashboard" Tag="0"
+                                AutomationProperties.Name="Dashboard">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE80F;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem x:Uid="NavPasswords" Content="Password" Tag="1"
+                                AutomationProperties.Name="Password">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE8D7;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem x:Uid="NavCards" Content="Carte" Tag="2"
+                                AutomationProperties.Name="Carte di credito">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE8C7;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem x:Uid="NavIdentities" Content="Identità" Tag="3"
+                                AutomationProperties.Name="Identità">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE77B;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem x:Uid="NavNotes" Content="Note" Tag="4"
+                                AutomationProperties.Name="Note sicure">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE70B;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItemSeparator />
+
+            <NavigationViewItem x:Uid="NavGenerator" Content="Generatore" Tag="5"
+                                AutomationProperties.Name="Generatore password">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE8B1;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem x:Uid="NavVerifier" Content="Verifica" Tag="6"
+                                AutomationProperties.Name="Verifica password">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE9D5;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+        </NavigationView.MenuItems>
+
+        <NavigationView.FooterMenuItems>
+            <NavigationViewItem x:Uid="NavLockVault" Content="Blocca Vault" Tag="lock"
+                                AutomationProperties.Name="Blocca vault">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE72E;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItemSeparator />
+            <NavigationViewItem x:Name="NavItemHelp"
+                                x:Uid="NavHelp" Content="Guida" Tag="help"
+                                AutomationProperties.Name="Guida">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE897;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+        </NavigationView.FooterMenuItems>
+
+        <!-- Keyboard shortcuts -->
+        <NavigationView.KeyboardAccelerators>
+            <KeyboardAccelerator Modifiers="Control" Key="L" Invoked="LockVault_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="F" Invoked="FocusSearch_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="N" Invoked="NewItem_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="Number1" Invoked="NavShortcut_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="Number2" Invoked="NavShortcut_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="Number3" Invoked="NavShortcut_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="Number4" Invoked="NavShortcut_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="Number5" Invoked="NavShortcut_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="Number6" Invoked="NavShortcut_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="Number7" Invoked="NavShortcut_Invoked" />
+        </NavigationView.KeyboardAccelerators>
+
+        <!-- Page content area -->
+        <ContentPresenter x:Name="ShellContent" />
+
+    </NavigationView>
+</UserControl>

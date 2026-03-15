@@ -1,0 +1,305 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.IdentityDetailView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Scrollable form content -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Padding="24" Spacing="16">
+
+                <!-- Panel title + subtitle -->
+                <StackPanel Spacing="2">
+                    <TextBlock x:Name="PanelTitleText"
+                               Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock x:Name="PanelSubtitle"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+
+                <!-- Label -->
+                <StackPanel Spacing="6">
+                    <TextBlock x:Uid="FieldLabel" Text="Etichetta" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBox x:Name="LabelBox"
+                             PlaceholderText="Es. Casa, Lavoro..."
+                             TextChanged="LabelBox_TextChanged"
+                             AutomationProperties.Name="Etichetta identità"
+                             TabIndex="10" />
+                </StackPanel>
+
+                <!-- Section 1: Personal Data (expanded by default) -->
+                <Expander x:Name="PersonalExpander" IsExpanded="True"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE77B;" FontSize="16" />
+                            <TextBlock x:Uid="SectionPersonalData" Text="Dati personali" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Spacing="12" Padding="0,8">
+                        <!-- First Name -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldFirstName" Text="Nome *" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="FirstNameBox"
+                                     PlaceholderText="Mario"
+                                     TextChanged="FirstNameBox_TextChanged"
+                                     AutomationProperties.Name="Nome"
+                                     TabIndex="20" />
+                        </StackPanel>
+
+                        <!-- Last Name -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldLastName" Text="Cognome *" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="LastNameBox"
+                                     PlaceholderText="Rossi"
+                                     TextChanged="LastNameBox_TextChanged"
+                                     AutomationProperties.Name="Cognome"
+                                     TabIndex="30" />
+                        </StackPanel>
+
+                        <!-- Birth Date (string field — SC-02 safe) -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldBirthDate" Text="Data di nascita" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="BirthDateBox"
+                                     PlaceholderText="GG/MM/AAAA"
+                                     TextChanged="BirthDateBox_TextChanged"
+                                     AutomationProperties.Name="Data di nascita"
+                                     TabIndex="40" />
+                        </StackPanel>
+
+                        <!-- Email -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldEmail" Text="Email" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="EmailBox"
+                                     PlaceholderText="mario@esempio.it"
+                                     InputScope="EmailSmtpAddress"
+                                     TextChanged="EmailBox_TextChanged"
+                                     AutomationProperties.Name="Email"
+                                     TabIndex="50" />
+                        </StackPanel>
+
+                        <!-- Phone -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldPhone" Text="Telefono" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="PhoneBox"
+                                     PlaceholderText="+39 123 45 67 890"
+                                     InputScope="TelephoneNumber"
+                                     TextChanged="PhoneBox_TextChanged"
+                                     AutomationProperties.Name="Telefono"
+                                     TabIndex="60" />
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Section 2: Address (collapsed by default) -->
+                <Expander x:Name="AddressExpander" IsExpanded="False"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE80F;" FontSize="16" />
+                            <TextBlock x:Uid="SectionAddress" Text="Indirizzo" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Spacing="12" Padding="0,8">
+                        <!-- Street -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldStreet" Text="Via" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="StreetBox"
+                                     PlaceholderText="Via Roma, 1"
+                                     TextChanged="StreetBox_TextChanged"
+                                     AutomationProperties.Name="Via"
+                                     TabIndex="70" />
+                        </StackPanel>
+
+                        <!-- City + PostalCode -->
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="120" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Spacing="6">
+                                <TextBlock x:Uid="FieldCity" Text="Città" Style="{StaticResource CaptionTextBlockStyle}" />
+                                <TextBox x:Name="CityBox"
+                                         PlaceholderText="Roma"
+                                         TextChanged="CityBox_TextChanged"
+                                         AutomationProperties.Name="Città"
+                                         TabIndex="80" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Spacing="6">
+                                <TextBlock x:Uid="FieldPostalCode" Text="CAP" Style="{StaticResource CaptionTextBlockStyle}" />
+                                <TextBox x:Name="PostalCodeBox"
+                                         PlaceholderText="00100"
+                                         TextChanged="PostalCodeBox_TextChanged"
+                                         AutomationProperties.Name="CAP"
+                                         TabIndex="90" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Province + Region -->
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Spacing="6">
+                                <TextBlock x:Uid="FieldProvince" Text="Provincia" Style="{StaticResource CaptionTextBlockStyle}" />
+                                <TextBox x:Name="ProvinceBox"
+                                         PlaceholderText="RM"
+                                         TextChanged="ProvinceBox_TextChanged"
+                                         AutomationProperties.Name="Provincia"
+                                         TabIndex="100" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Spacing="6">
+                                <TextBlock x:Uid="FieldRegion" Text="Regione" Style="{StaticResource CaptionTextBlockStyle}" />
+                                <TextBox x:Name="RegionBox"
+                                         PlaceholderText="Lazio"
+                                         TextChanged="RegionBox_TextChanged"
+                                         AutomationProperties.Name="Regione"
+                                         TabIndex="110" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Country -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldCountry" Text="Nazione" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="CountryBox"
+                                     PlaceholderText="Italia"
+                                     TextChanged="CountryBox_TextChanged"
+                                     AutomationProperties.Name="Nazione"
+                                     TabIndex="120" />
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Section 3: Documents (collapsed by default) -->
+                <Expander x:Name="DocumentsExpander" IsExpanded="False"
+                          HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE8A5;" FontSize="16" />
+                            <TextBlock x:Uid="SectionDocuments" Text="Documenti" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <StackPanel Spacing="12" Padding="0,8">
+                        <!-- ID Card -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldIdCard" Text="Carta d'identità" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="IdCardBox"
+                                     PlaceholderText="Numero documento"
+                                     TextChanged="IdCardBox_TextChanged"
+                                     AutomationProperties.Name="Carta d'identità"
+                                     TabIndex="130" />
+                        </StackPanel>
+
+                        <!-- Health Card -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldHealthCard" Text="Tessera sanitaria" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="HealthCardBox"
+                                     PlaceholderText="Numero tessera"
+                                     TextChanged="HealthCardBox_TextChanged"
+                                     AutomationProperties.Name="Tessera sanitaria"
+                                     TabIndex="140" />
+                        </StackPanel>
+
+                        <!-- Driving License -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldDrivingLicense" Text="Patente" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="DrivingLicenseBox"
+                                     PlaceholderText="Numero patente"
+                                     TextChanged="DrivingLicenseBox_TextChanged"
+                                     AutomationProperties.Name="Patente"
+                                     TabIndex="150" />
+                        </StackPanel>
+
+                        <!-- Passport -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldPassport" Text="Passaporto" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="PassportBox"
+                                     PlaceholderText="Numero passaporto"
+                                     TextChanged="PassportBox_TextChanged"
+                                     AutomationProperties.Name="Passaporto"
+                                     TabIndex="160" />
+                        </StackPanel>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Notes -->
+                <StackPanel Spacing="6">
+                    <TextBlock x:Uid="FieldNotes" Text="Note" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBox x:Name="NotesBox"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             MinHeight="144"
+                             MaxHeight="280"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             PlaceholderText="Note aggiuntive..."
+                             TextChanged="NotesBox_TextChanged"
+                             AutomationProperties.Name="Note"
+                             TabIndex="170" />
+                </StackPanel>
+
+                <!-- Required field legend -->
+                <TextBlock x:Uid="RequiredFieldLegend" Text="* Campo obbligatorio (Nome o Cognome)"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Sticky footer with action buttons -->
+        <Grid Grid.Row="1" Padding="24,12"
+              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+              BorderThickness="0,1,0,0"
+              ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Delete button (only visible in edit mode) -->
+            <Button x:Name="DeleteButton"
+                    Grid.Column="0"
+                    Visibility="Collapsed"
+                    Click="DeleteButton_Click"
+                    AutomationProperties.Name="Elimina identità"
+                    TabIndex="180">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource StatRemovedBrush}" />
+                    <TextBlock x:Uid="ButtonDelete" Text="Elimina" Foreground="{ThemeResource StatRemovedBrush}" />
+                </StackPanel>
+            </Button>
+
+            <!-- Cancel -->
+            <Button x:Uid="ButtonCancel" Grid.Column="2"
+                    Content="Annulla"
+                    Click="CancelButton_Click"
+                    AutomationProperties.Name="Annulla"
+                    TabIndex="190" />
+
+            <!-- Save -->
+            <Button x:Name="SaveButton"
+                    Grid.Column="3"
+                    Style="{StaticResource AccentButtonStyle}"
+                    IsEnabled="False"
+                    Click="SaveButton_Click"
+                    AutomationProperties.Name="Salva"
+                    TabIndex="200">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ProgressRing x:Name="SaveProgress"
+                                  IsActive="False" Visibility="Collapsed"
+                                  Width="14" Height="14" />
+                    <TextBlock x:Uid="ButtonSave" x:Name="SaveButtonText" Text="Salva" />
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

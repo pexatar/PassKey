@@ -1,0 +1,259 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.SettingsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Padding="24">
+        <StackPanel Spacing="8" MaxWidth="700" HorizontalAlignment="Left">
+
+            <!-- Header -->
+            <TextBlock x:Uid="PageSettings" Text="Impostazioni"
+                       Style="{StaticResource TitleTextBlockStyle}"
+                       Margin="0,0,0,16"
+                       AutomationProperties.HeadingLevel="Level1" />
+
+            <!-- ═══ GENERALI ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE713;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="SettingsGeneral" Text="Generali"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <!-- Lingua -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsLanguage" Text="Lingua" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsLanguageRestart" Text="La nuova lingua si applica al riavvio"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ComboBox x:Name="LanguageCombo" Grid.Column="1" Width="200"
+                          VerticalAlignment="Center"
+                          SelectionChanged="LanguageCombo_SelectionChanged"
+                          TabIndex="10">
+                    <ComboBoxItem x:Uid="LangSystem" Content="Sistema (Auto)" Tag="auto" />
+                    <ComboBoxItem Content="Italiano" Tag="it-IT" />
+                    <ComboBoxItem Content="English" Tag="en-GB" />
+                    <ComboBoxItem Content="Français" Tag="fr-FR" />
+                    <ComboBoxItem Content="Español" Tag="es-ES" />
+                    <ComboBoxItem Content="Português" Tag="pt-PT" />
+                    <ComboBoxItem Content="Deutsch" Tag="de-DE" />
+                </ComboBox>
+            </Grid>
+            <InfoBar x:Name="LanguageRestartInfoBar"
+                     x:Uid="LanguageRestartInfoBar"
+                     IsOpen="False"
+                     IsClosable="True"
+                     Severity="Informational"
+                     Title="Riavvio necessario"
+                     Message="Riavvia PassKey per applicare la nuova lingua."
+                     Margin="0,0,0,4">
+                <InfoBar.ActionButton>
+                    <Button x:Name="RestartNowButton"
+                            x:Uid="LanguageRestartNowButton"
+                            Content="Riavvia ora"
+                            Click="RestartNowButton_Click" />
+                </InfoBar.ActionButton>
+            </InfoBar>
+
+            <!-- Avvio all'accensione -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsStartWithWindows" Text="Avvio all'accensione" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsStartWithWindowsDesc" Text="Avvia PassKey automaticamente all'accensione del computer"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ToggleSwitch x:Name="StartWithWindowsToggle" Grid.Column="1"
+                              VerticalAlignment="Center"
+                              Toggled="StartWithWindowsToggle_Toggled"
+                              TabIndex="20" />
+            </Grid>
+
+            <!-- Avvia minimizzato -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsStartMinimized" Text="Avvia minimizzato"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsStartMinimizedDesc"
+                               Text="Mostra PassKey nella barra delle applicazioni all'avvio"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <CheckBox x:Name="StartMinimizedCheck" Grid.Column="1"
+                          VerticalAlignment="Center"
+                          IsEnabled="False"
+                          Checked="StartMinimizedCheck_Changed"
+                          Unchecked="StartMinimizedCheck_Changed"
+                          TabIndex="30" />
+            </Grid>
+
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+            <!-- ═══ INTERFACCIA UTENTE ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE771;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="SettingsUI" Text="Interfaccia utente"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <!-- Tema -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsTheme" Text="Tema"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsThemeDesc"
+                               Text="Personalizza l'aspetto visivo dell'applicazione"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ComboBox x:Name="ThemeCombo" Grid.Column="1" Width="200"
+                          VerticalAlignment="Center"
+                          SelectionChanged="ThemeCombo_SelectionChanged"
+                          TabIndex="40">
+                    <ComboBoxItem x:Uid="ThemeSystem" Content="Sistema" Tag="0" />
+                    <ComboBoxItem x:Uid="ThemeLight" Content="Chiaro" Tag="1" />
+                    <ComboBoxItem x:Uid="ThemeDark" Content="Scuro" Tag="2" />
+                </ComboBox>
+            </Grid>
+
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+            <!-- ═══ SICUREZZA ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE72E;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="SettingsSecurity" Text="Sicurezza"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <!-- Blocco automatico -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsAutoLockTitle" Text="Blocco automatico" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsAutoLockDesc" Text="Blocca il vault dopo un periodo di inattività"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ComboBox x:Name="AutoLockCombo" Grid.Column="1" Width="140"
+                          VerticalAlignment="Center"
+                          SelectionChanged="AutoLockCombo_SelectionChanged"
+                          TabIndex="50">
+                    <ComboBoxItem x:Uid="AutoLock30sItem" Content="30 secondi" />
+                    <ComboBoxItem x:Uid="AutoLock1mItem" Content="1 minuto" />
+                    <ComboBoxItem x:Uid="AutoLock5mItem" Content="5 minuti" />
+                    <ComboBoxItem x:Uid="AutoLock10mItem" Content="10 minuti" />
+                    <ComboBoxItem x:Uid="AutoLockNeverItem" Content="Mai" />
+                </ComboBox>
+            </Grid>
+
+            <!-- Cambia master password -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsChangeMasterPwTitle" Text="Cambia master password" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsChangeMasterPwDesc" Text="Modifica la password principale del vault"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button x:Name="ChangePwButton" Grid.Column="1"
+                        x:Uid="SettingsChangePwBtn"
+                        Content="Cambia password"
+                        VerticalAlignment="Center"
+                        Click="ChangePwButton_Click"
+                        TabIndex="60" />
+            </Grid>
+
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+            <!-- ═══ BACKUP E IMPORTAZIONE ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE8AC;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="SettingsBackupSection" Text="Backup e importazione"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsBackupCreateTitle" Text="Crea backup" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsBackupCreateDesc" Text="Esporta una copia cifrata del vault"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button x:Name="BackupButton" Grid.Column="1" x:Uid="SettingsBackupCreateBtn"
+                        Content="Backup" VerticalAlignment="Center"
+                        Click="BackupButton_Click"
+                        TabIndex="70" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsRestoreTitle" Text="Ripristina backup" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsRestoreDesc" Text="Importa un vault da un file di backup"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button x:Name="RestoreButton" Grid.Column="1" x:Uid="SettingsRestoreBtn"
+                        Content="Ripristina" VerticalAlignment="Center"
+                        Click="RestoreButton_Click"
+                        TabIndex="80" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsImportTitle" Text="Importa dati" Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsImportDesc" Text="Importa password da un altro gestore"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button x:Name="ImportButton" Grid.Column="1" x:Uid="SettingsImportBtn"
+                        Content="Importa" VerticalAlignment="Center"
+                        Click="ImportButton_Click"
+                        TabIndex="90" />
+            </Grid>
+
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
+            <!-- ═══ INFORMAZIONI ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE946;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="SettingsInfoSection" Text="Informazioni"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <StackPanel Spacing="4" Margin="0,4,0,8">
+                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}">
+                    <Run Text="PassKey" />
+                    <Run Text=" v" />
+                    <Run x:Name="VersionText" Text="1.0.0" />
+                </TextBlock>
+                <TextBlock x:Uid="SettingsAppDesc" Text="Password manager sicuro per Windows"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <Button x:Name="HelpButton"
+                    Click="HelpButton_Click"
+                    Margin="0,0,0,24">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon Glyph="&#xE897;" FontSize="14" />
+                    <TextBlock x:Uid="SettingsHelpBtn" Text="Guida e scorciatoie" />
+                </StackPanel>
+            </Button>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

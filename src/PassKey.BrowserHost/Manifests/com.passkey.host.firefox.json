@@ -1,0 +1,9 @@
+{
+  "name": "com.passkey.host",
+  "description": "PassKey Password Manager - Native Messaging Host",
+  "path": "A:\\Progetti\\00 PassKey\\PK4\\src\\PassKey.BrowserHost\\bin\\Debug\\net10.0\\win-x64\\PassKey.BrowserHost.exe",
+  "type": "stdio",
+  "allowed_extensions": [
+    "passkey@passkey.local"
+  ]
+}

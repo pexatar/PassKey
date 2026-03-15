@@ -1,0 +1,236 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.CreditCardDetailView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:PassKey.Desktop.Controls">
+
+    <Grid RowSpacing="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Scrollable form content -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Padding="24" Spacing="16">
+
+                <!-- Panel title + subtitle -->
+                <StackPanel Spacing="2">
+                    <TextBlock x:Name="PanelTitleText"
+                               Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock x:Name="PanelSubtitle"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+
+                <!-- Label (optional) -->
+                <StackPanel Spacing="6">
+                    <TextBlock x:Uid="FieldLabel" Text="Etichetta" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBox x:Name="LabelBox"
+                             x:Uid="LabelBox"
+                             PlaceholderText="E.g. Main card, Shopping..."
+                             TextChanged="LabelBox_TextChanged"
+                             AutomationProperties.Name="Card label"
+                             TabIndex="10" />
+                </StackPanel>
+
+                <!-- Category + Accent Color (same row) -->
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="6">
+                        <TextBlock x:Uid="FieldCategory" Text="Categoria"
+                                   Style="{StaticResource CaptionTextBlockStyle}" />
+                        <ComboBox x:Name="CategoryCombo"
+                                  x:Uid="CategoryCombo"
+                                  HorizontalAlignment="Stretch"
+                                  SelectionChanged="CategoryCombo_SelectionChanged"
+                                  AutomationProperties.Name="Card category"
+                                  TabIndex="20">
+                            <ComboBoxItem x:Uid="CatPersonal" Content="Personal" Tag="Personal" />
+                            <ComboBoxItem x:Uid="CatWork" Content="Work" Tag="Work" />
+                            <ComboBoxItem x:Uid="CatTravel" Content="Travel" Tag="Travel" />
+                            <ComboBoxItem x:Uid="CatOnline" Content="Online" Tag="Online" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="6">
+                        <TextBlock x:Uid="FieldColor" Text="Colore"
+                                   Style="{StaticResource CaptionTextBlockStyle}" />
+                        <ComboBox x:Name="ColorCombo"
+                                  SelectionChanged="ColorCombo_SelectionChanged"
+                                  AutomationProperties.Name="Card accent color"
+                                  TabIndex="25" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Visual separator -->
+                <Border Height="1"
+                        Background="{ThemeResource DividerStrokeColorDefaultBrush}"
+                        Margin="0,8" />
+
+                <!-- Card Number (required) + auto-detect indicator -->
+                <StackPanel Spacing="6">
+                    <TextBlock x:Uid="FieldCardNumber" Text="Numero carta *" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBox x:Name="CardNumberBox"
+                             x:Uid="CardNumberBox"
+                             PlaceholderText="1234 5678 9012 3456"
+                             InputScope="NumericPin"
+                             MaxLength="23"
+                             TextChanged="CardNumberBox_TextChanged"
+                             AutomationProperties.Name="Card number"
+                             TabIndex="30" />
+                    <!-- Card type + Luhn validation indicator -->
+                    <StackPanel x:Name="CardTypePanel" Orientation="Horizontal" Spacing="8">
+                        <FontIcon x:Name="CardTypeIcon" Glyph="&#xE8C7;" FontSize="14"
+                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <TextBlock x:Name="CardTypeLabel"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <FontIcon x:Name="LuhnIcon" Glyph="&#xE73E;" FontSize="12"
+                                  Visibility="Collapsed" />
+                        <TextBlock x:Name="LuhnLabel"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Visibility="Collapsed" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Cardholder Name (required) -->
+                <StackPanel Spacing="6">
+                    <TextBlock x:Uid="FieldCardholder" Text="Intestatario *" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBox x:Name="CardholderBox"
+                             x:Uid="CardholderBox"
+                             PlaceholderText="FULL NAME"
+                             CharacterCasing="Upper"
+                             TextChanged="CardholderBox_TextChanged"
+                             AutomationProperties.Name="Cardholder"
+                             TabIndex="40" />
+                </StackPanel>
+
+                <!-- Expiry (required): 2 ComboBox — NO DatePicker (SC-02) -->
+                <StackPanel Spacing="6">
+                    <TextBlock x:Uid="FieldExpiry" Text="Scadenza *" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ComboBox x:Name="MonthCombo"
+                                  Grid.Column="0"
+                                  x:Uid="MonthCombo"
+                                  PlaceholderText="Month"
+                                  HorizontalAlignment="Stretch"
+                                  SelectionChanged="MonthCombo_SelectionChanged"
+                                  AutomationProperties.Name="Expiry month"
+                                  TabIndex="50" />
+                        <ComboBox x:Name="YearCombo"
+                                  Grid.Column="1"
+                                  x:Uid="YearCombo"
+                                  PlaceholderText="Year"
+                                  HorizontalAlignment="Stretch"
+                                  SelectionChanged="YearCombo_SelectionChanged"
+                                  AutomationProperties.Name="Expiry year"
+                                  TabIndex="55" />
+                    </Grid>
+                </StackPanel>
+
+                <!-- CVV/CVV2 + PIN (same row) -->
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Spacing="6">
+                        <TextBlock x:Uid="FieldCvv" Text="CVV/CVV2 *" Style="{StaticResource CaptionTextBlockStyle}" />
+                        <controls:SecureInputBox
+                            x:Name="CvvInput"
+                            PlaceholderText="123"
+                            MaxLength="4"
+                            TabIndex="60" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="6">
+                        <TextBlock x:Uid="FieldPin" Text="PIN" Style="{StaticResource CaptionTextBlockStyle}" />
+                        <controls:SecureInputBox
+                            x:Name="PinInput"
+                            PlaceholderText="PIN"
+                            MaxLength="8"
+                            TabIndex="70" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Notes -->
+                <StackPanel Spacing="6">
+                    <TextBlock x:Uid="FieldNotes" Text="Note" Style="{StaticResource CaptionTextBlockStyle}" />
+                    <TextBox x:Name="NotesBox"
+                             x:Uid="CardNotesBox"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             MinHeight="144"
+                             MaxHeight="280"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             PlaceholderText="Additional notes..."
+                             TextChanged="NotesBox_TextChanged"
+                             AutomationProperties.Name="Notes"
+                             TabIndex="80" />
+                </StackPanel>
+
+                <!-- Required field legend -->
+                <TextBlock x:Uid="RequiredFieldLegend" Text="* Campo obbligatorio"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Sticky footer with action buttons -->
+        <Grid Grid.Row="1" Padding="24,12"
+              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
+              BorderThickness="0,1,0,0"
+              ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Delete button (only visible in edit mode) -->
+            <Button x:Name="DeleteButton"
+                    Grid.Column="0"
+                    Visibility="Collapsed"
+                    Click="DeleteButton_Click"
+                    x:Uid="CardDeleteButton"
+                    AutomationProperties.Name="Delete card"
+                    TabIndex="100">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource StatRemovedBrush}" />
+                    <TextBlock x:Uid="ButtonDeleteLabel" Text="Elimina" Foreground="{ThemeResource StatRemovedBrush}" />
+                </StackPanel>
+            </Button>
+
+            <!-- Cancel -->
+            <Button Grid.Column="2"
+                    x:Uid="ButtonCancel"
+                    Content="Cancel"
+                    Click="CancelButton_Click"
+                    AutomationProperties.Name="Cancel"
+                    TabIndex="110" />
+
+            <!-- Save -->
+            <Button x:Name="SaveButton"
+                    Grid.Column="3"
+                    Style="{StaticResource AccentButtonStyle}"
+                    IsEnabled="False"
+                    Click="SaveButton_Click"
+                    AutomationProperties.Name="Save"
+                    TabIndex="120">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ProgressRing x:Name="SaveProgress"
+                                  IsActive="False" Visibility="Collapsed"
+                                  Width="14" Height="14" />
+                    <TextBlock x:Name="SaveButtonText" x:Uid="ButtonSaveLabel" Text="Salva" />
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

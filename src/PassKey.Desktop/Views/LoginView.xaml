@@ -1,0 +1,103 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.LoginView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:PassKey.Desktop.Controls">
+
+    <Grid VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="420"
+          KeyDown="LoginForm_KeyDown">
+        <StackPanel Spacing="20">
+
+            <!-- Logo -->
+            <Image
+                x:Name="LogoIcon"
+                Source="ms-appx:///Assets/Logo.png"
+                Width="96" Height="96"
+                HorizontalAlignment="Center" />
+
+            <!-- Welcome Title -->
+            <TextBlock
+                x:Name="TitleText"
+                x:Uid="LoginWelcomeTitle"
+                Text="Bentornato!"
+                Style="{StaticResource TitleTextBlockStyle}"
+                HorizontalAlignment="Center" />
+
+            <!-- Subtitle -->
+            <TextBlock
+                x:Name="SubtitleText"
+                x:Uid="LoginWelcomeSubtitle"
+                Text="Inserisci la tua password principale per sbloccare."
+                Style="{StaticResource BodyTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                HorizontalAlignment="Center"
+                TextAlignment="Center"
+                TextWrapping="Wrap"
+                Margin="0,-8,0,0" />
+
+            <!-- SecureInputBox for master password -->
+            <controls:SecureInputBox
+                x:Name="PasswordInput"
+                x:Uid="LoginPasswordInput"
+                PlaceholderText="Master Password"
+                ShowRevealButton="Visible"
+                MaxLength="128"
+                TabIndex="10" />
+
+            <!-- Error message (hidden by default) -->
+            <StackPanel
+                x:Name="ErrorPanel"
+                Orientation="Horizontal"
+                Spacing="8"
+                Visibility="Collapsed">
+                <FontIcon
+                    Glyph="&#xE7BA;"
+                    FontSize="14"
+                    Foreground="{ThemeResource SystemFillColorCriticalBrush}" />
+                <TextBlock
+                    x:Name="ErrorText"
+                    Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    TextWrapping="Wrap"
+                    AutomationProperties.LiveSetting="Assertive" />
+            </StackPanel>
+
+            <!-- Login button -->
+            <Button
+                x:Name="LoginButton"
+                Style="{StaticResource AccentButtonStyle}"
+                HorizontalAlignment="Stretch"
+                Height="40"
+                Click="LoginButton_Click"
+                AutomationProperties.Name="Accedi"
+                TabIndex="20">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ProgressRing
+                        x:Name="LoginProgress"
+                        IsActive="False"
+                        Visibility="Collapsed"
+                        Width="16" Height="16" />
+                    <TextBlock x:Name="LoginButtonText" x:Uid="LoginButton" Text="Accedi" />
+                </StackPanel>
+            </Button>
+
+            <!-- Forgot password link -->
+            <HyperlinkButton
+                x:Name="ForgotPasswordLink"
+                x:Uid="LoginForgotPassword"
+                Content="Non ricordi la password?"
+                HorizontalAlignment="Center"
+                Click="ForgotPasswordLink_Click"
+                TabIndex="30" />
+
+            <!-- Version -->
+            <TextBlock
+                x:Name="VersionText"
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                HorizontalAlignment="Center"
+                Margin="0,8,0,0" />
+
+        </StackPanel>
+    </Grid>
+</UserControl>
