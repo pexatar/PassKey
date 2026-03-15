@@ -1,0 +1,475 @@
+/* ─── PassKey Extension — popup.css ─────────────────────────────────────────
+   Fluent Design tokens mapped from ThemeColors.xaml + WinUI 3 Fluent system.
+   Supports light and dark mode via prefers-color-scheme.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { background: none; border: none; cursor: pointer; font: inherit; }
+input  { font: inherit; }
+ul     { list-style: none; }
+/* Preserve HTML hidden attribute — prevents display:flex on .pk-state from winning */
+[hidden] { display: none !important; }
+
+/* ── Tokens: Light ───────────────────────────────────────────────────────── */
+:root {
+  --pk-bg:           #ffffff;
+  --pk-surface:      #f3f3f3;
+  --pk-surface-card: #ffffff;
+  --pk-border:       rgba(0,0,0,0.0578);
+  --pk-divider:      rgba(0,0,0,0.0803);
+  --pk-text-1:       rgba(0,0,0,0.8956);
+  --pk-text-2:       rgba(0,0,0,0.6063);
+  --pk-text-3:       rgba(0,0,0,0.4458);
+  --pk-accent:       #005fb8;
+  --pk-accent-hover: #0067c0;
+  --pk-accent-text:  #ffffff;
+  --pk-avatar:       #0078d4;
+  --pk-success:      #388e3c;
+  --pk-warning:      #f57c00;
+  --pk-error:        #c62828;
+  --pk-fill-hover:   rgba(0,0,0,0.0373);
+  --pk-fill-active:  rgba(0,0,0,0.0578);
+  --pk-tab-active-bg: rgba(0,0,0,0.0578);
+}
+
+/* ── Tokens: Dark ────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pk-bg:           #202020;
+    --pk-surface:      #2c2c2c;
+    --pk-surface-card: #2c2c2c;
+    --pk-border:       rgba(255,255,255,0.0837);
+    --pk-divider:      rgba(255,255,255,0.0837);
+    --pk-text-1:       rgba(255,255,255,0.8956);
+    --pk-text-2:       rgba(255,255,255,0.6063);
+    --pk-text-3:       rgba(255,255,255,0.4458);
+    --pk-accent:       #60cdff;
+    --pk-accent-hover: #4cc8f0;
+    --pk-accent-text:  #003d6b;
+    --pk-avatar:       #0078d4;
+    --pk-success:      #81c784;
+    --pk-warning:      #ff9800;
+    --pk-error:        #e57373;
+    --pk-fill-hover:   rgba(255,255,255,0.0605);
+    --pk-fill-active:  rgba(255,255,255,0.0837);
+    --pk-tab-active-bg: rgba(255,255,255,0.0837);
+  }
+}
+
+/* ── Base ────────────────────────────────────────────────────────────────── */
+body {
+  width: 360px;
+  min-height: 80px;
+  max-height: 520px;
+  overflow: hidden;
+  background: var(--pk-bg);
+  color: var(--pk-text-1);
+  font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Accessibility ───────────────────────────────────────────────────────── */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.pk-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--pk-surface);
+}
+
+.pk-logo { width: 24px; height: 24px; flex-shrink: 0; }
+
+.pk-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pk-text-1);
+  flex: 1;
+}
+
+/* Status dot */
+.pk-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pk-text-3);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.pk-status.connected    { background: var(--pk-success); }
+.pk-status.locked       { background: var(--pk-warning); }
+.pk-status.disconnected { background: var(--pk-error); }
+
+/* Domain badge */
+.pk-domain {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 16px;
+  background: var(--pk-surface);
+  color: var(--pk-text-2);
+  font-size: 12px;
+}
+
+.pk-divider {
+  height: 1px;
+  background: var(--pk-divider);
+}
+
+/* ── States (centered content) ───────────────────────────────────────────── */
+.pk-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px 24px;
+  gap: 8px;
+  flex: 1;
+  text-align: center;
+}
+
+.pk-state-icon { flex-shrink: 0; }
+
+.pk-state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--pk-text-1);
+}
+.pk-state-title--sm { font-size: 14px; }
+
+.pk-state-caption,
+.pk-state-sub {
+  font-size: 12px;
+  color: var(--pk-text-2);
+  max-width: 260px;
+}
+
+/* Loading spinner */
+.pk-spinner {
+  color: var(--pk-accent);
+  margin-bottom: 4px;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.pk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 120px;
+  margin-top: 6px;
+  transition: background 0.12s;
+}
+.pk-btn:focus-visible { outline: 2px solid var(--pk-accent); outline-offset: 2px; }
+
+.pk-btn-accent {
+  background: var(--pk-accent);
+  color: var(--pk-accent-text);
+}
+.pk-btn-accent:hover  { background: var(--pk-accent-hover); }
+.pk-btn-accent:active { opacity: 0.85; }
+
+.pk-btn-subtle {
+  background: var(--pk-fill-hover);
+  color: var(--pk-text-1);
+}
+.pk-btn-subtle:hover  { background: var(--pk-fill-active); }
+
+/* ── Unlock form ─────────────────────────────────────────────────────────── */
+.pk-unlock-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 280px;
+  margin-top: 4px;
+}
+
+.pk-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--pk-border);
+  border-radius: 4px;
+  background: var(--pk-surface-card);
+  color: var(--pk-text-1);
+  font-size: 14px;
+  outline: none;
+}
+.pk-input:focus { border-color: var(--pk-accent); box-shadow: 0 0 0 1px var(--pk-accent); }
+
+.pk-error {
+  font-size: 12px;
+  color: var(--pk-error);
+  margin-top: 2px;
+}
+
+/* ── List view ───────────────────────────────────────────────────────────── */
+.pk-list-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Tab pills */
+.pk-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 16px 0;
+}
+
+.pk-tab {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--pk-text-2);
+  background: transparent;
+  transition: background 0.12s, color 0.12s;
+}
+.pk-tab:hover { background: var(--pk-fill-hover); color: var(--pk-text-1); }
+.pk-tab--active {
+  background: var(--pk-tab-active-bg);
+  color: var(--pk-text-1);
+  font-weight: 600;
+}
+.pk-tab:focus-visible { outline: 2px solid var(--pk-accent); outline-offset: 2px; }
+
+/* Search bar */
+.pk-search-bar {
+  padding: 8px 16px 4px;
+}
+
+.pk-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--pk-surface);
+  border: 1px solid var(--pk-border);
+  border-radius: 20px;
+  padding: 6px 10px;
+}
+.pk-search-wrap:focus-within { border-color: var(--pk-accent); }
+
+.pk-search-icon { color: var(--pk-text-3); flex-shrink: 0; }
+
+.pk-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--pk-text-1);
+  font-size: 13px;
+  outline: none;
+  min-width: 0;
+}
+.pk-search-input::placeholder { color: var(--pk-text-3); }
+.pk-search-input::-webkit-search-cancel-button { display: none; }
+
+.pk-clear-btn {
+  color: var(--pk-text-3);
+  padding: 2px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pk-clear-btn:hover { color: var(--pk-text-1); background: var(--pk-fill-hover); }
+
+/* Results count */
+.pk-count {
+  padding: 2px 16px 4px;
+  font-size: 11px;
+  color: var(--pk-text-3);
+}
+
+/* Credentials list */
+.pk-cred-list {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 8px 8px;
+  max-height: 320px;
+}
+
+/* Credential item */
+.pk-cred-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px;
+  border-radius: 6px;
+  cursor: default;
+  outline: none;
+}
+.pk-cred-item:hover,
+.pk-cred-item:focus-visible { background: var(--pk-fill-hover); }
+.pk-cred-item:focus-visible  { outline: 2px solid var(--pk-accent); outline-offset: -2px; }
+
+/* Avatar circle */
+.pk-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--pk-avatar);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* Credential body */
+.pk-cred-body {
+  flex: 1;
+  min-width: 0;
+}
+.pk-cred-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pk-text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pk-cred-sub {
+  font-size: 11px;
+  color: var(--pk-text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Password presence indicator (visible at rest, hidden on hover) */
+.pk-pw-indicator {
+  color: var(--pk-text-3);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: opacity 0.12s;
+  margin-right: 2px;
+}
+.pk-cred-item:hover .pk-pw-indicator,
+.pk-cred-item:focus-within .pk-pw-indicator { opacity: 0; pointer-events: none; }
+
+/* Action buttons — hidden at rest, revealed on hover/focus */
+.pk-cred-actions {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.pk-cred-item:hover .pk-cred-actions,
+.pk-cred-item:focus-within .pk-cred-actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Labeled action buttons (icon + text) */
+.pk-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--pk-text-2);
+  white-space: nowrap;
+  transition: background 0.1s, color 0.1s;
+}
+.pk-action-btn:hover  { background: var(--pk-fill-hover); color: var(--pk-text-1); }
+.pk-action-btn:active { background: var(--pk-fill-active); }
+.pk-action-btn:focus-visible { outline: 2px solid var(--pk-accent); outline-offset: 2px; }
+.pk-action-btn.success { color: var(--pk-success); }
+.pk-action-btn.error   { color: var(--pk-error); }
+
+/* Fill button: accent color — primary action hierarchy */
+.pk-action-btn[data-action="fill"] {
+  background: var(--pk-accent);
+  color: var(--pk-accent-text);
+  font-weight: 600;
+}
+.pk-action-btn[data-action="fill"]:hover  { background: var(--pk-accent-hover); }
+.pk-action-btn[data-action="fill"]:active { opacity: 0.85; }
+
+.pk-action-icon { display: flex; align-items: center; flex-shrink: 0; }
+.pk-action-label { line-height: 1; }
+
+/* Copy buttons: icon-only (text hidden visually, accessible via aria-label) */
+.pk-action-btn:not([data-action="fill"]) {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  justify-content: center;
+}
+.pk-action-btn:not([data-action="fill"]) .pk-action-label { display: none; }
+
+/* Legacy icon-only buttons (kept for other potential uses) */
+.pk-icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pk-text-2);
+  transition: background 0.1s, color 0.1s;
+}
+.pk-icon-btn:hover  { background: var(--pk-fill-hover); color: var(--pk-text-1); }
+.pk-icon-btn:active { background: var(--pk-fill-active); }
+.pk-icon-btn:focus-visible { outline: 2px solid var(--pk-accent); outline-offset: 2px; }
+.pk-icon-btn.success { color: var(--pk-success); }
+.pk-icon-btn.error   { color: var(--pk-error); }
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.pk-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-top: 1px solid var(--pk-divider);
+  background: var(--pk-surface);
+  flex-shrink: 0;
+}
+
+.pk-footer-link {
+  font-size: 12px;
+  color: var(--pk-text-2);
+  padding: 2px 0;
+  border-radius: 2px;
+}
+.pk-footer-link:hover { color: var(--pk-text-1); text-decoration: underline; }
+.pk-footer-link:focus-visible { outline: 2px solid var(--pk-accent); outline-offset: 2px; }
+
+.pk-footer-version {
+  font-size: 11px;
+  color: var(--pk-text-3);
+}
+
+/* ── Spinner inline (for icon buttons) ──────────────────────────────────── */
+@keyframes pk-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.pk-spin { animation: pk-spin 0.7s linear infinite; display: block; }

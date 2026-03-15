@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=360">
+  <title>PassKey</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="pk-header">
+    <img src="../icons/icon-32.png" alt="" class="pk-logo" aria-hidden="true">
+    <span class="pk-title">PassKey</span>
+    <div id="status-dot" class="pk-status" role="status" aria-live="polite" aria-label=""></div>
+  </header>
+
+  <!-- Domain badge (shown when valid HTTP URL) -->
+  <div id="domain-badge" class="pk-domain" hidden>
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+      <path d="M2 10L10 2M10 2H5M10 2V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span id="domain-text"></span>
+  </div>
+
+  <div class="pk-divider"></div>
+
+  <!-- ARIA live region for copy feedback (screen readers) -->
+  <div id="copy-feedback" role="status" aria-live="polite" class="sr-only"></div>
+
+  <!-- ── STATE: loading ─────────────────────────────────────────── -->
+  <div id="state-loading" class="pk-state" role="alert" aria-live="assertive">
+    <div class="pk-spinner" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2.5"
+                stroke-dasharray="40 20" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate"
+                            from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+    <p id="loading-text" class="pk-state-caption"></p>
+  </div>
+
+  <!-- ── STATE: disconnected ────────────────────────────────────── -->
+  <div id="state-disconnected" class="pk-state" hidden>
+    <svg class="pk-state-icon" width="40" height="40" viewBox="0 0 40 40" fill="none"
+         aria-hidden="true" style="color:var(--pk-warning)">
+      <path d="M20 6L37 34H3L20 6Z" fill="currentColor" opacity="0.15"/>
+      <path d="M20 6L37 34H3L20 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <rect x="19" y="16" width="2" height="10" rx="1" fill="currentColor"/>
+      <rect x="19" y="29" width="2" height="2" rx="1" fill="currentColor"/>
+    </svg>
+    <h2 id="disconnected-title" class="pk-state-title"></h2>
+    <p id="disconnected-sub" class="pk-state-sub"></p>
+    <button id="btn-retry" class="pk-btn pk-btn-subtle" type="button"></button>
+  </div>
+
+  <!-- ── STATE: unlock (vault locked) ──────────────────────────── -->
+  <div id="state-unlock" class="pk-state" hidden>
+    <svg class="pk-state-icon" width="40" height="40" viewBox="0 0 40 40" fill="none"
+         aria-hidden="true" style="color:var(--pk-accent)">
+      <rect x="10" y="20" width="20" height="15" rx="3" fill="currentColor" opacity="0.15"/>
+      <rect x="10" y="20" width="20" height="15" rx="3" stroke="currentColor" stroke-width="2"/>
+      <path d="M15 20V15a5 5 0 0110 0v5" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round"/>
+      <rect x="18.5" y="26" width="3" height="4" rx="1.5" fill="currentColor"/>
+    </svg>
+    <h2 id="unlock-title" class="pk-state-title"></h2>
+    <p id="unlock-sub" class="pk-state-sub"></p>
+    <div class="pk-unlock-form">
+      <input id="master-password-input" type="password" class="pk-input"
+             autocomplete="current-password" spellcheck="false"/>
+      <button id="btn-unlock" class="pk-btn pk-btn-accent" type="button"></button>
+    </div>
+    <p id="unlock-error" class="pk-error" hidden aria-live="polite"></p>
+  </div>
+
+  <!-- ── STATE: empty ───────────────────────────────────────────── -->
+  <div id="state-empty" class="pk-state" hidden>
+    <svg class="pk-state-icon" width="32" height="32" viewBox="0 0 32 32" fill="none"
+         aria-hidden="true" style="color:var(--pk-text-3)">
+      <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2"/>
+      <rect x="15" y="10" width="2" height="2" rx="1" fill="currentColor"/>
+      <rect x="15" y="14" width="2" height="8" rx="1" fill="currentColor"/>
+    </svg>
+    <h2 id="empty-title" class="pk-state-title pk-state-title--sm"></h2>
+    <p id="empty-sub" class="pk-state-sub"></p>
+  </div>
+
+  <!-- ── STATE: list ────────────────────────────────────────────── -->
+  <div id="state-list" class="pk-list-view" hidden>
+
+    <!-- Tab pills (shown when HTTP URL available) -->
+    <div id="tab-pills" class="pk-tabs" role="tablist" hidden>
+      <button id="tab-site" class="pk-tab pk-tab--active" role="tab"
+              aria-selected="true" type="button"></button>
+      <button id="tab-all" class="pk-tab" role="tab"
+              aria-selected="false" type="button"></button>
+    </div>
+
+    <!-- Search bar -->
+    <div class="pk-search-bar">
+      <div class="pk-search-wrap">
+        <svg class="pk-search-icon" width="16" height="16" viewBox="0 0 16 16"
+             fill="none" aria-hidden="true">
+          <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input id="search-input" type="search" class="pk-search-input"
+               autocomplete="off" spellcheck="false"/>
+        <button id="btn-clear-search" class="pk-clear-btn" type="button" hidden>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results count (visible during search) -->
+    <div id="results-count" class="pk-count" hidden aria-live="polite"></div>
+
+    <!-- Credentials list -->
+    <ul id="credentials-list" class="pk-cred-list" role="list"></ul>
+  </div>
+
+  <!-- Footer -->
+  <footer class="pk-footer">
+    <button id="btn-open-app" class="pk-footer-link" type="button"></button>
+    <span id="footer-version" class="pk-footer-version"></span>
+  </footer>
+
+  <script src="../lib/url-utils.js"></script>
+  <script src="../lib/messages.js"></script>
+  <script src="../lib/i18n.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
