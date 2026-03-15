@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Install Windows App SDK workload
+        run: dotnet workload install windowsdesktop
+
+      - name: Restore
+        run: dotnet restore PassKey.sln
+
+      - name: Build Core
+        run: dotnet build src/PassKey.Core/PassKey.Core.csproj -c Release
+
+      - name: Build BrowserHost
+        run: dotnet build src/PassKey.BrowserHost/PassKey.BrowserHost.csproj -c Release -r win-x64
+
+      - name: Test
+        run: dotnet test src/PassKey.Tests/PassKey.Tests.csproj --verbosity normal
+
+      - name: Build Desktop
+        run: dotnet build src/PassKey.Desktop/PassKey.Desktop.csproj -p:Platform=x64 -c Release

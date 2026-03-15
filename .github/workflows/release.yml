@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Install Windows App SDK workload
+        run: dotnet workload install windowsdesktop
+
+      - name: Restore
+        run: dotnet restore PassKey.sln
+
+      - name: Test
+        run: dotnet test src/PassKey.Tests/PassKey.Tests.csproj --verbosity normal
+
+      - name: Publish Desktop (self-contained x64)
+        run: >
+          dotnet publish src/PassKey.Desktop/PassKey.Desktop.csproj
+          -c Release -p:Platform=x64 -r win-x64
+          --self-contained true
+          -o publish/
+
+      - name: Publish BrowserHost (single file)
+        run: >
+          dotnet publish src/PassKey.BrowserHost/PassKey.BrowserHost.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true
+          -o publish/
+
+      - name: Create portable ZIP
+        run: Compress-Archive -Path publish/* -DestinationPath PassKey-Portable-x64.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            PassKey-Portable-x64.zip
