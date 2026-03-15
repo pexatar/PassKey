@@ -1,0 +1,51 @@
+# ─── Sensitive — NEVER commit ───────────────────────────────────────────────
+*.pem
+passkey-extension-key.pem
+
+# ─── Build output ────────────────────────────────────────────────────────────
+bin/
+obj/
+dist/
+
+# ─── Visual Studio ───────────────────────────────────────────────────────────
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# ─── Test results ────────────────────────────────────────────────────────────
+TestResults/
+coverage.xml
+*.coverage
+
+# ─── One-time utility scripts ────────────────────────────────────────────────
+gen-extension-key.ps1
+
+# ─── Windows NUL device artefact ─────────────────────────────────────────────
+nul
+
+# ─── OS artefacts ────────────────────────────────────────────────────────────
+Thumbs.db
+.DS_Store
+
+# ─── Installer output ────────────────────────────────────────────────────────
+Installer/Output/
+*.iss.bak
+*.exe.sig
+
+# ─── MSIX / AppPackages ───────────────────────────────────────────────────────
+AppPackages/
+
+# ─── Extension packs built locally ───────────────────────────────────────────
+extensions/chrome/dist/
+extensions/firefox/dist/
+*.crx
+*.xpi
+
+# ─── Node (web-ext) ───────────────────────────────────────────────────────────
+node_modules/
+web-ext-artifacts/
+
+# ─── Publish output ──────────────────────────────────────────────────────────
+publish/
