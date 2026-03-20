@@ -28,6 +28,30 @@ public sealed partial class MainWindow : Window
         _mainViewModel.PropertyChanged += OnViewModelPropertyChanged;
 
         Activated += OnActivated;
+        AppWindow.Closing += OnWindowClosing;
+    }
+
+    private async void OnWindowClosing(Microsoft.UI.Windowing.AppWindow sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs args)
+    {
+        args.Cancel = true;
+
+        var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+        {
+            Title = "PassKey",
+            Content = "Vuoi mantenere PassKey attivo in background?",
+            PrimaryButtonText = "Minimizza",
+            SecondaryButtonText = "Chiudi PassKey",
+            CloseButtonText = "Annulla",
+            DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Primary,
+            XamlRoot = Content.XamlRoot
+        };
+
+        var result = await dialog.ShowAsync();
+
+        if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
+            AppWindow.Hide();
+        else if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
+            Application.Current.Exit();
     }
 
     private async void OnActivated(object sender, WindowActivatedEventArgs args)

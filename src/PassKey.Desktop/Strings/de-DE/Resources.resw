@@ -1105,6 +1105,9 @@
   <data name="NotesPinButton.Text" xml:space="preserve">
     <value>Anheften</value>
   </data>
+  <data name="NotesPinButtonLabel" xml:space="preserve">
+    <value>Anheften</value>
+  </data>
   <data name="NotesPinnedButton" xml:space="preserve">
     <value>Angeheftet</value>
   </data>

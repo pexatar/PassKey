@@ -3,8 +3,8 @@
 
 [Setup]
 AppName=PassKey
-AppVersion=1.0.0
-AppVerName=PassKey 1.0.0
+AppVersion=1.0.1
+AppVerName=PassKey 1.0.1
 AppPublisher=Giuseppe Imperato
 AppPublisherURL=https://github.com/pexatar/PassKey
 AppSupportURL=https://github.com/pexatar/PassKey/issues
