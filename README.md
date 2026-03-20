@@ -10,7 +10,7 @@
 
 PassKey stores your passwords, credit cards, identities, and secure notes in a locally encrypted vault. Your data never leaves your computer. There are no accounts to create, no subscription fees, and no servers that can be breached.
 
-![PassKey main interface](docs/assets/img/screenshot-main.png)
+![PassKey main interface](docs/assets/img/passkey/01%20-%20dashboard.png)
 
 ---
 
