@@ -176,15 +176,18 @@ PassKey handles sensitive cryptographic key material. Please read [SECURITY.md](
 
 ## 🙏 Acknowledgements
 
-PassKey was designed and conceived by **Giuseppe Imperato**.
+PassKey was conceived and designed by **Giuseppe Imperato**.
 
-The implementation was made possible with the extensive assistance of
-[Claude](https://www.anthropic.com/claude) by Anthropic — an AI assistant
-that helped architect, code-review, debug, and document the entire project
-across dozens of development sessions.
+Its realization was made possible through the extensive assistance of
+[Claude](https://www.anthropic.com/claude) by Anthropic—an AI assistant
+that helped architect, write and review code, debug, and document the
+entire project across dozens of development sessions (and 35 failed attempts).
 
-This project is a demonstration of human-AI collaboration in building
-production-quality, security-critical software.
+This project is a demonstration of human-AI collaboration in building a
+project where the vision was clear, but the technical skills were distinctly
+lacking. As the saying goes: "this is not the finish line, but rather a
+starting point"; it is my hope, therefore, that this project can serve as
+an inspiration for anyone.
 
 ---
 

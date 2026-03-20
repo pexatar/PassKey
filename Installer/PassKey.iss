@@ -2,6 +2,7 @@
 ; Builds the Windows installer for PassKey Desktop + BrowserHost
 
 [Setup]
+AppId={{A7F3C2D1-8E4B-4F9A-B6D5-3C1E7A2F0D84}
 AppName=PassKey
 AppVersion=1.0.1
 AppVerName=PassKey 1.0.1

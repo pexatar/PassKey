@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -29,6 +30,9 @@ public sealed partial class MainWindow : Window
 
         Activated += OnActivated;
         AppWindow.Closing += OnWindowClosing;
+
+        // Doppio click sull'icona tray → mostra la finestra
+        TrayIcon.DoubleClickCommand = new RelayCommand(RestoreWindow);
     }
 
     private async void OnWindowClosing(Microsoft.UI.Windowing.AppWindow sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs args)
@@ -183,4 +187,24 @@ public sealed partial class MainWindow : Window
         view.SetViewModel(vm);
         return view;
     }
+
+    // ── Tray icon ────────────────────────────────────────────────────────────
+
+    public void RestoreWindow()
+    {
+        AppWindow.Show();
+        Activate();
+    }
+
+    private void TrayShow_Click(object sender, RoutedEventArgs e)
+        => RestoreWindow();
+
+    private void TrayLock_Click(object sender, RoutedEventArgs e)
+    {
+        App.Services.GetRequiredService<IVaultStateService>().Lock();
+        RestoreWindow();
+    }
+
+    private void TrayExit_Click(object sender, RoutedEventArgs e)
+        => Application.Current.Exit();
 }
