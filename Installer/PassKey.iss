@@ -4,8 +4,8 @@
 [Setup]
 AppId={{A7F3C2D1-8E4B-4F9A-B6D5-3C1E7A2F0D84}
 AppName=PassKey
-AppVersion=1.0.1
-AppVerName=PassKey 1.0.1
+AppVersion=1.0.2
+AppVerName=PassKey 1.0.2
 AppPublisher=Giuseppe Imperato
 AppPublisherURL=https://github.com/pexatar/PassKey
 AppSupportURL=https://github.com/pexatar/PassKey/issues
