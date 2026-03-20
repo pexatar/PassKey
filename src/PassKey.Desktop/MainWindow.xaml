@@ -12,17 +12,17 @@
             ToolTipText="PassKey">
             <tb:TaskbarIcon.ContextFlyout>
                 <MenuFlyout>
-                    <MenuFlyoutItem x:Name="TrayShowItem"
+                    <MenuFlyoutItem
                         Text="Mostra PassKey"
-                        Click="TrayShow_Click" />
+                        Command="{x:Bind TrayShowCommand}" />
                     <MenuFlyoutSeparator />
-                    <MenuFlyoutItem x:Name="TrayLockItem"
+                    <MenuFlyoutItem
                         Text="Blocca Vault"
-                        Click="TrayLock_Click" />
+                        Command="{x:Bind TrayLockCommand}" />
                     <MenuFlyoutSeparator />
-                    <MenuFlyoutItem x:Name="TrayExitItem"
+                    <MenuFlyoutItem
                         Text="Esci"
-                        Click="TrayExit_Click" />
+                        Command="{x:Bind TrayExitCommand}" />
                 </MenuFlyout>
             </tb:TaskbarIcon.ContextFlyout>
         </tb:TaskbarIcon>
