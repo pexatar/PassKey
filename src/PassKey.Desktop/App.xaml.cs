@@ -86,6 +86,10 @@ public partial class App : Application
         MainWindow = new MainWindow();
         MainWindow.Activate();
 
+        var settings = Services.GetRequiredService<ISettingsService>();
+        if (settings.StartMinimized)
+            MainWindow.AppWindow.Hide();
+
         // Gestisce attivazione da URI passkey://unlock (es. click su link browser)
         var protocolAction = ProtocolActivationService.GetActivationAction();
         if (protocolAction == ProtocolAction.Unlock)

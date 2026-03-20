@@ -80,7 +80,31 @@ The browser extension requires PassKey Desktop to be installed and running. See 
 
 ## 📸 Screenshots
 
-*Screenshots will be added with the first public release.*
+### Application
+
+<p align="center">
+  <img src="docs/assets/img/passkey/00 - welcome page.png" width="48%" alt="Welcome page" />
+  <img src="docs/assets/img/passkey/01 - dashboard.png" width="48%" alt="Dashboard" />
+</p>
+<p align="center">
+  <img src="docs/assets/img/passkey/02 - password.png" width="48%" alt="Password list" />
+  <img src="docs/assets/img/passkey/03 - add password.png" width="48%" alt="Add password" />
+</p>
+<p align="center">
+  <img src="docs/assets/img/passkey/04 - card.png" width="48%" alt="Credit cards" />
+  <img src="docs/assets/img/passkey/09 - note sicure.png" width="48%" alt="Secure notes" />
+</p>
+<p align="center">
+  <img src="docs/assets/img/passkey/11 - generatore password.png" width="48%" alt="Password generator" />
+  <img src="docs/assets/img/passkey/17 - impostazioni.png" width="48%" alt="Settings" />
+</p>
+
+### Installer
+
+<p align="center">
+  <img src="docs/assets/img/installer/02.png" width="48%" alt="Installer — select folder" />
+  <img src="docs/assets/img/installer/06.png" width="48%" alt="Installer — complete" />
+</p>
 
 ---
 
