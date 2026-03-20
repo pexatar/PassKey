@@ -44,7 +44,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\**" />
+    <!-- CopyToOutputDirectory + CopyToPublishDirectory required for RID-specific builds
+         (-r win-x64) and dotnet publish self-contained. Without these, WinUI 3 build
+         targets only copy Assets for the default (non-RID) output directory. -->
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <!-- Copy BrowserHost.exe to Desktop output after build.
