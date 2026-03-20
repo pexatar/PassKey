@@ -2,8 +2,29 @@
     x:Class="PassKey.Desktop.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tb="using:H.NotifyIcon"
     Title="PassKey">
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ContentPresenter x:Name="RootPresenter" />
+        <tb:TaskbarIcon
+            x:Name="TrayIcon"
+            IconSource="Assets/PassKey.ico"
+            ToolTipText="PassKey">
+            <tb:TaskbarIcon.ContextFlyout>
+                <MenuFlyout>
+                    <MenuFlyoutItem x:Name="TrayShowItem"
+                        Text="Mostra PassKey"
+                        Click="TrayShow_Click" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem x:Name="TrayLockItem"
+                        Text="Blocca Vault"
+                        Click="TrayLock_Click" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem x:Name="TrayExitItem"
+                        Text="Esci"
+                        Click="TrayExit_Click" />
+                </MenuFlyout>
+            </tb:TaskbarIcon.ContextFlyout>
+        </tb:TaskbarIcon>
     </Grid>
 </Window>
