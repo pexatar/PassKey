@@ -36,6 +36,14 @@ public sealed partial class MainWindow : Window
         Title = "PassKey";
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "PassKey.ico"));
 
+        // Imposta l'icona tray con percorso assoluto (AppContext.BaseDirectory).
+        // NON usare path relativo in XAML: H.NotifyIcon risolve tramite File.OpenRead()
+        // relativo alla working directory del processo (C:\Windows\System32 in produzione).
+        TrayIcon.IconSource = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(
+            new Uri("file:///" +
+                System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "PassKey.ico")
+                .Replace('\\', '/')));
+
         // Update title bar colors whenever the system theme changes (user has "System" selected)
         if (Content is FrameworkElement root)
             root.ActualThemeChanged += (s, _) => UpdateTitleBarColors(((FrameworkElement)s).ActualTheme == ElementTheme.Dark);
