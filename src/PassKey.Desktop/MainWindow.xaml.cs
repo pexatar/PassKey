@@ -15,8 +15,23 @@ public sealed partial class MainWindow : Window
     private readonly MainViewModel _mainViewModel;
     private bool _initialized;
 
+    // Comandi tray: x:Bind li risolve a compile-time sulla MainWindow, evitando
+    // il routing XAML degli eventi Click (che non funziona dal popup di H.NotifyIcon).
+    public IRelayCommand TrayShowCommand { get; }
+    public IRelayCommand TrayLockCommand { get; }
+    public IRelayCommand TrayExitCommand { get; }
+
     public MainWindow()
     {
+        // Inizializza i comandi PRIMA di InitializeComponent() così x:Bind li trova
+        TrayShowCommand = new RelayCommand(RestoreWindow);
+        TrayLockCommand = new RelayCommand(() =>
+        {
+            App.Services.GetRequiredService<IVaultStateService>().Lock();
+            RestoreWindow();
+        });
+        TrayExitCommand = new RelayCommand(() => Application.Current.Exit());
+
         InitializeComponent();
         Title = "PassKey";
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "PassKey.ico"));
@@ -190,21 +205,23 @@ public sealed partial class MainWindow : Window
 
     // ── Tray icon ────────────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Registra l'icona nel system tray via ForceCreate() (bypassa il visual
+    /// tree) e poi nasconde la finestra. Chiamato da App.OnLaunched quando
+    /// StartMinimized=true per evitare la race condition tra AppWindow.Hide()
+    /// e TaskbarIcon.Loaded (il Loaded spara solo dopo il layout XAML, che è
+    /// asincrono rispetto ad Activate()).
+    /// </summary>
+    public void HideToTray()
+    {
+        TrayIcon.ForceCreate();
+        AppWindow.Hide();
+    }
+
     public void RestoreWindow()
     {
         AppWindow.Show();
         Activate();
     }
 
-    private void TrayShow_Click(object sender, RoutedEventArgs e)
-        => RestoreWindow();
-
-    private void TrayLock_Click(object sender, RoutedEventArgs e)
-    {
-        App.Services.GetRequiredService<IVaultStateService>().Lock();
-        RestoreWindow();
-    }
-
-    private void TrayExit_Click(object sender, RoutedEventArgs e)
-        => Application.Current.Exit();
 }
