@@ -8,7 +8,6 @@
         <ContentPresenter x:Name="RootPresenter" />
         <tb:TaskbarIcon
             x:Name="TrayIcon"
-            IconSource="Assets/PassKey.ico"
             ToolTipText="PassKey">
             <tb:TaskbarIcon.ContextFlyout>
                 <MenuFlyout>
