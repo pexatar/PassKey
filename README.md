@@ -48,7 +48,7 @@ PassKey stores your passwords, credit cards, identities, and secure notes in a l
 
 ### Accessibility & i18n
 - **WCAG AA** compliant: ARIA labels, live regions, custom `AutomationPeer`, focus rings
-- Full keyboard navigation: `Ctrl+N` `Ctrl+F` `Ctrl+L` `F2` `Del` `Esc` `Ctrl+1–7`
+- Full keyboard navigation: `Ctrl+N` `Ctrl+F` `Ctrl+L` `F2` `Del` `Esc` `Ctrl+1–8` `Ctrl+H`
 - **6 languages**: Italian, English, French, German, Spanish, Portuguese
 
 ---
@@ -57,8 +57,8 @@ PassKey stores your passwords, credit cards, identities, and secure notes in a l
 
 | Version | Platform | Type |
 |---------|----------|------|
-| [v1.0.2](https://github.com/pexatar/PassKey/releases/tag/v1.0.2) | Windows x64 | Installer EXE |
-| [v1.0.2](https://github.com/pexatar/PassKey/releases/tag/v1.0.2) | Windows x64 | Portable ZIP |
+| [v1.0.3](https://github.com/pexatar/PassKey/releases/tag/v1.0.3) | Windows x64 | Installer EXE |
+| [v1.0.3](https://github.com/pexatar/PassKey/releases/tag/v1.0.3) | Windows x64 | Portable ZIP |
 
 > **Requirements:** Windows 10 version 1809 (build 17763) or later, x64 processor.
 > No .NET runtime required — PassKey is fully self-contained.
