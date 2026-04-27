@@ -980,14 +980,17 @@
   <data name="HelpShortcutsNavTitle" xml:space="preserve">
     <value>Navegación</value>
   </data>
-  <data name="HelpShortcutNav17" xml:space="preserve">
-    <value>Navegar entre secciones (Panel, Contraseñas, Tarjetas…)</value>
+  <data name="HelpShortcutNav18" xml:space="preserve">
+    <value>Navegar entre secciones (Panel, Contrase&#241;as, Tarjetas&#8230;, Configuraci&#243;n)</value>
   </data>
   <data name="HelpShortcutSearch" xml:space="preserve">
     <value>Buscar (en el Panel)</value>
   </data>
   <data name="HelpShortcutLock" xml:space="preserve">
     <value>Bloquear el cofre</value>
+  </data>
+    <data name="HelpShortcutHelp" xml:space="preserve">
+    <value>Abrir ayuda</value>
   </data>
   <data name="HelpShortcutsActionsTitle" xml:space="preserve">
     <value>Acciones</value>

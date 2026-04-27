@@ -168,13 +168,33 @@ public sealed partial class ShellView : UserControl
 
     private void NavShortcut_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
-        // Ctrl+1 through Ctrl+7 for quick navigation
-        var keyNumber = sender.Key - Windows.System.VirtualKey.Number1;
-        if (keyNumber >= 0 && keyNumber < NavView.MenuItems.Count)
+        var keyNumber = (int)(sender.Key - Windows.System.VirtualKey.Number1); // 0-based
+
+        // Ctrl+8 → Settings
+        if (keyNumber == 7)
         {
-            NavView.SelectedItem = NavView.MenuItems[keyNumber];
-            _viewModel?.NavigateTo(keyNumber);
+            NavView.SelectedItem = NavView.SettingsItem;
+            // SelectionChanged fires → _viewModel?.NavigateToSettings()
+            args.Handled = true;
+            return;
         }
+
+        // Ctrl+1–7: skip NavigationViewItemSeparator, navigate via Tag
+        var navItems = NavView.MenuItems.OfType<NavigationViewItem>().ToList();
+        if (keyNumber >= 0 && keyNumber < navItems.Count)
+        {
+            var item = navItems[keyNumber];
+            NavView.SelectedItem = item;
+            if (int.TryParse(item.Tag?.ToString(), out var navIndex))
+                _viewModel?.NavigateTo(navIndex);
+        }
+        args.Handled = true;
+    }
+
+    private void Help_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+    {
+        _viewModel?.NavigateToHelp();
+        NavView.SelectedItem = NavItemHelp;
         args.Handled = true;
     }
 }

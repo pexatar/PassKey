@@ -968,14 +968,17 @@
   <data name="HelpShortcutsNavTitle" xml:space="preserve">
     <value>Navigation</value>
   </data>
-  <data name="HelpShortcutNav17" xml:space="preserve">
-    <value>Navigate between sections (Dashboard, Passwords, Cards…)</value>
+  <data name="HelpShortcutNav18" xml:space="preserve">
+    <value>Navigate between sections (Dashboard, Passwords, Cards&#8230;, Settings)</value>
   </data>
   <data name="HelpShortcutSearch" xml:space="preserve">
     <value>Search (in Dashboard)</value>
   </data>
   <data name="HelpShortcutLock" xml:space="preserve">
     <value>Lock vault</value>
+  </data>
+    <data name="HelpShortcutHelp" xml:space="preserve">
+    <value>Open Help</value>
   </data>
   <data name="HelpShortcutsActionsTitle" xml:space="preserve">
     <value>Actions</value>
