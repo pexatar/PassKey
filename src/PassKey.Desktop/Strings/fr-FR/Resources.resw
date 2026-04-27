@@ -980,14 +980,17 @@
   <data name="HelpShortcutsNavTitle" xml:space="preserve">
     <value>Navigation</value>
   </data>
-  <data name="HelpShortcutNav17" xml:space="preserve">
-    <value>Naviguer entre les sections (Tableau de bord, Mots de passe, Cartes…)</value>
+  <data name="HelpShortcutNav18" xml:space="preserve">
+    <value>Naviguer entre les sections (Tableau de bord, Mots de passe, Cartes&#8230;, Param&#232;tres)</value>
   </data>
   <data name="HelpShortcutSearch" xml:space="preserve">
     <value>Rechercher (dans le Tableau de bord)</value>
   </data>
   <data name="HelpShortcutLock" xml:space="preserve">
     <value>Verrouiller le coffre</value>
+  </data>
+    <data name="HelpShortcutHelp" xml:space="preserve">
+    <value>Ouvrir l'aide</value>
   </data>
   <data name="HelpShortcutsActionsTitle" xml:space="preserve">
     <value>Actions</value>

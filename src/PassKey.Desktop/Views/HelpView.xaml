@@ -35,11 +35,11 @@
                                Margin="0,0,0,8" />
 
                     <Grid ColumnDefinitions="160,*" Margin="0,4">
-                        <TextBlock Grid.Column="0" Text="Ctrl+1 … Ctrl+7"
+                        <TextBlock Grid.Column="0" Text="Ctrl+1 … Ctrl+8"
                                    Style="{StaticResource BodyStrongTextBlockStyle}"
                                    FontFamily="Cascadia Code, Consolas, Courier New" />
-                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutNav17"
-                                   Text="Naviga tra le sezioni (Dashboard, Password, Carte…)"
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutNav18"
+                                   Text="Naviga tra le sezioni (Dashboard, Password, Carte…, Impostazioni)"
                                    Style="{StaticResource BodyTextBlockStyle}"
                                    TextWrapping="Wrap" />
                     </Grid>
@@ -57,6 +57,14 @@
                                    FontFamily="Cascadia Code, Consolas, Courier New" />
                         <TextBlock Grid.Column="1" x:Uid="HelpShortcutLock"
                                    Text="Blocca vault"
+                                   Style="{StaticResource BodyTextBlockStyle}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="160,*" Margin="0,4">
+                        <TextBlock Grid.Column="0" Text="Ctrl+H"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   FontFamily="Cascadia Code, Consolas, Courier New" />
+                        <TextBlock Grid.Column="1" x:Uid="HelpShortcutHelp"
+                                   Text="Apri Guida"
                                    Style="{StaticResource BodyTextBlockStyle}" />
                     </Grid>
 

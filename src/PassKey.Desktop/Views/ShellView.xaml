@@ -9,6 +9,7 @@
         IsSettingsVisible="True"
         PaneDisplayMode="Left"
         OpenPaneLength="220"
+        KeyboardAcceleratorPlacementMode="Hidden"
         SelectionChanged="NavView_SelectionChanged"
         ItemInvoked="NavView_ItemInvoked">
 
@@ -94,6 +95,8 @@
             <KeyboardAccelerator Modifiers="Control" Key="Number5" Invoked="NavShortcut_Invoked" />
             <KeyboardAccelerator Modifiers="Control" Key="Number6" Invoked="NavShortcut_Invoked" />
             <KeyboardAccelerator Modifiers="Control" Key="Number7" Invoked="NavShortcut_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="Number8" Invoked="NavShortcut_Invoked" />
+            <KeyboardAccelerator Modifiers="Control" Key="H" Invoked="Help_Invoked" />
         </NavigationView.KeyboardAccelerators>
 
         <!-- Page content area -->

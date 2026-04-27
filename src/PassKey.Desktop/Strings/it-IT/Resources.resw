@@ -980,14 +980,17 @@
   <data name="HelpShortcutsNavTitle" xml:space="preserve">
     <value>Navigazione</value>
   </data>
-  <data name="HelpShortcutNav17" xml:space="preserve">
-    <value>Naviga tra le sezioni (Dashboard, Password, Carte…)</value>
+  <data name="HelpShortcutNav18" xml:space="preserve">
+    <value>Naviga tra le sezioni (Dashboard, Password, Carte&#8230;, Impostazioni)</value>
   </data>
   <data name="HelpShortcutSearch" xml:space="preserve">
     <value>Cerca (nella Dashboard)</value>
   </data>
   <data name="HelpShortcutLock" xml:space="preserve">
     <value>Blocca vault</value>
+  </data>
+    <data name="HelpShortcutHelp" xml:space="preserve">
+    <value>Apri Guida</value>
   </data>
   <data name="HelpShortcutsActionsTitle" xml:space="preserve">
     <value>Azioni</value>

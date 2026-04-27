@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.ApplicationModel.Resources;
@@ -13,6 +14,7 @@ public sealed partial class SettingsView : UserControl
     private SettingsViewModel? _viewModel;
     private bool _updatingFromVm;
     private readonly ResourceLoader _res = new();
+    private IDialogQueueService _dialogQueue = null!;
 
     /// <summary>Raised when the user clicks "Guida e scorciatoie" to navigate to HelpView.</summary>
     public event Action? NavigateToHelpRequested;
@@ -26,6 +28,7 @@ public sealed partial class SettingsView : UserControl
     {
         _viewModel = vm;
         DataContext = vm;
+        _dialogQueue = App.Services.GetRequiredService<IDialogQueueService>();
 
         _updatingFromVm = true;
 
@@ -207,7 +210,7 @@ public sealed partial class SettingsView : UserControl
             }
         };
 
-        var result = await dialog.ShowAsync();
+        var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         if (result != ContentDialogResult.Primary)
             return;
 
@@ -237,7 +240,7 @@ public sealed partial class SettingsView : UserControl
         }
     }
 
-    private async Task ShowInfoDialogAsync(string title, string message)
+    private Task ShowInfoDialogAsync(string title, string message)
     {
         var dialog = new ContentDialog
         {
@@ -247,7 +250,7 @@ public sealed partial class SettingsView : UserControl
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = XamlRoot
         };
-        await dialog.ShowAsync();
+        return _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
     }
 
     // ═══ BACKUP / RESTORE / IMPORT ═══
@@ -339,7 +342,7 @@ public sealed partial class SettingsView : UserControl
             }
         };
 
-        var result = await dialog.ShowAsync();
+        var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         return result == ContentDialogResult.Primary
             ? (pwBox.Password, true)
             : (string.Empty, false);
@@ -356,7 +359,7 @@ public sealed partial class SettingsView : UserControl
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = XamlRoot
         };
-        var result = await dialog.ShowAsync();
+        var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         return result == ContentDialogResult.Primary;
     }
 
@@ -379,7 +382,7 @@ public sealed partial class SettingsView : UserControl
             XamlRoot = XamlRoot
         };
 
-        var result = await dialog.ShowAsync();
+        var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         return result == ContentDialogResult.Primary
             ? (pwBox.Password, true)
             : (string.Empty, false);
@@ -404,7 +407,7 @@ public sealed partial class SettingsView : UserControl
             XamlRoot = XamlRoot
         };
 
-        var result = await dialog.ShowAsync();
+        var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         if (result != ContentDialogResult.Primary)
             return (ImportFormat.Csv, false);
 
@@ -432,7 +435,7 @@ public sealed partial class SettingsView : UserControl
             XamlRoot = XamlRoot
         };
 
-        var result = await dialog.ShowAsync();
+        var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         return result == ContentDialogResult.Primary
             ? (pwBox.Password, true)
             : (string.Empty, false);
@@ -473,7 +476,7 @@ public sealed partial class SettingsView : UserControl
             XamlRoot = XamlRoot
         };
 
-        var result = await dialog.ShowAsync();
+        var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         if (result != ContentDialogResult.Primary)
             return (ImportMergeStrategy.SkipDuplicates, false);
 
