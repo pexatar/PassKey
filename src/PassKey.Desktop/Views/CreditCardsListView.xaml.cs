@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Models;
 using PassKey.Core.Services;
@@ -15,6 +16,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class CreditCardsListView : UserControl
 {
     private CreditCardsListViewModel? _viewModel;
+    private readonly ResourceLoader _res = new();
 
     public CreditCardsListView()
     {
@@ -25,6 +27,11 @@ public sealed partial class CreditCardsListView : UserControl
     {
         _viewModel = vm;
         DataContext = vm;
+
+        // Apply localized empty-state strings (guarantees correct language on every OS locale).
+        EmptyState.Title = _res.GetString("EmptyCardsTitle");
+        EmptyState.Subtitle = _res.GetString("EmptyCardsSubtitle");
+        EmptyState.PrimaryActionText = _res.GetString("EmptyCardsPrimaryAction");
 
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.SaveCompleted += ShowSavedToast;

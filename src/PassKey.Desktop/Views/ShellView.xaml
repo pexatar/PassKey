@@ -68,6 +68,7 @@
 
         <NavigationView.FooterMenuItems>
             <NavigationViewItem x:Uid="NavLockVault" Content="Blocca Vault" Tag="lock"
+                                KeyboardAcceleratorPlacementMode="Hidden"
                                 AutomationProperties.Name="Blocca vault">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE72E;" />

@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
 using PassKey.Desktop.ViewModels;
 
@@ -16,6 +17,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class IdentitiesListView : UserControl
 {
     private IdentitiesListViewModel? _viewModel;
+    private readonly ResourceLoader _res = new();
 
     public IdentitiesListView()
     {
@@ -29,6 +31,11 @@ public sealed partial class IdentitiesListView : UserControl
 
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.SaveCompleted += ShowSavedToast;
+
+        // Apply localized empty-state strings (guarantees correct language on every OS locale).
+        EmptyState.Title = _res.GetString("EmptyIdentitiesTitle");
+        EmptyState.Subtitle = _res.GetString("EmptyIdentitiesSubtitle");
+        EmptyState.PrimaryActionText = _res.GetString("EmptyIdentitiesPrimaryAction");
 
         // Wire EmptyState primary action to AddNew
         EmptyState.PrimaryActionCommand = new RelayCommand(() => _viewModel?.AddNewCommand.Execute(null));

@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
 using PassKey.Desktop.ViewModels;
 using Windows.Storage.Streams;
@@ -16,6 +17,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class PasswordsListView : UserControl
 {
     private PasswordsListViewModel? _viewModel;
+    private readonly ResourceLoader _res = new();
 
     public PasswordsListView()
     {
@@ -26,6 +28,11 @@ public sealed partial class PasswordsListView : UserControl
     {
         _viewModel = vm;
         DataContext = vm;
+
+        // Apply localized empty-state strings (guarantees correct language on every OS locale).
+        EmptyState.Title = _res.GetString("EmptyPasswordsTitle");
+        EmptyState.Subtitle = _res.GetString("EmptyPasswordsSubtitle");
+        EmptyState.PrimaryActionText = _res.GetString("EmptyPasswordsPrimaryAction");
 
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.SaveCompleted += ShowSavedToast;
