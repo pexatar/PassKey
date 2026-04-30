@@ -140,6 +140,36 @@
   <data name="EmptyNotesTitle" xml:space="preserve">
     <value>Aucune note</value>
   </data>
+  <data name="EmptyPasswordsSubtitle" xml:space="preserve">
+    <value>Ajoutez votre premier mot de passe pour commencer à protéger vos comptes.</value>
+  </data>
+  <data name="EmptyPasswordsPrimaryAction" xml:space="preserve">
+    <value>Nouveau mot de passe</value>
+  </data>
+  <data name="EmptyCardsSubtitle" xml:space="preserve">
+    <value>Ajoutez votre première carte de crédit pour la garder en sécurité.</value>
+  </data>
+  <data name="EmptyCardsPrimaryAction" xml:space="preserve">
+    <value>Nouvelle carte</value>
+  </data>
+  <data name="EmptyIdentitiesSubtitle" xml:space="preserve">
+    <value>Ajoutez votre première identité pour enregistrer des données personnelles, adresses et documents.</value>
+  </data>
+  <data name="EmptyIdentitiesPrimaryAction" xml:space="preserve">
+    <value>Ajouter une identité</value>
+  </data>
+  <data name="EmptyNotesSubtitle" xml:space="preserve">
+    <value>Créez votre première note sécurisée pour enregistrer des informations confidentielles.</value>
+  </data>
+  <data name="EmptyNotesPrimaryAction" xml:space="preserve">
+    <value>Nouvelle note</value>
+  </data>
+  <data name="EmptyFilteredTitle" xml:space="preserve">
+    <value>Aucun résultat</value>
+  </data>
+  <data name="EmptyFilteredSubtitle" xml:space="preserve">
+    <value>Essayez de modifier les filtres ou la recherche.</value>
+  </data>
   <data name="EmptySearchTitle" xml:space="preserve">
     <value>Aucun résultat pour « {0} »</value>
   </data>

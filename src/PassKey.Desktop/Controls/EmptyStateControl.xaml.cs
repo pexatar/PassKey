@@ -91,6 +91,9 @@ public sealed partial class EmptyStateControl : UserControl
     public EmptyStateControl()
     {
         InitializeComponent();
+        // Buttons start hidden; become visible only when their text is set (see callbacks below).
+        PrimaryButton.Visibility = Visibility.Collapsed;
+        SecondaryButton.Visibility = Visibility.Collapsed;
     }
 
     // ─── Property Changed Callbacks ───────────────────────────────────────────
@@ -116,7 +119,11 @@ public sealed partial class EmptyStateControl : UserControl
     private static void OnPrimaryActionTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is EmptyStateControl self)
-            self.PrimaryButton.Content = (string?)e.NewValue;
+        {
+            var text = (string?)e.NewValue;
+            self.PrimaryButton.Content = text;
+            self.PrimaryButton.Visibility = string.IsNullOrEmpty(text) ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 
     private static void OnPrimaryActionCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -128,7 +135,11 @@ public sealed partial class EmptyStateControl : UserControl
     private static void OnSecondaryActionTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is EmptyStateControl self)
-            self.SecondaryButton.Content = (string?)e.NewValue;
+        {
+            var text = (string?)e.NewValue;
+            self.SecondaryButton.Content = text;
+            self.SecondaryButton.Visibility = string.IsNullOrEmpty(text) ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 
     private static void OnSecondaryActionCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

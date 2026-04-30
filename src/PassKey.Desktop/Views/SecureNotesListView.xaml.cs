@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Models;
 using PassKey.Desktop.ViewModels;
@@ -18,6 +19,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class SecureNotesListView : UserControl
 {
     private SecureNotesListViewModel? _viewModel;
+    private readonly ResourceLoader _res = new();
 
     public SecureNotesListView()
     {
@@ -33,6 +35,13 @@ public sealed partial class SecureNotesListView : UserControl
         vm.SaveCompleted += ShowSavedToast;
 
         BuildCategoryFilter();
+
+        // Apply localized empty-state strings (guarantees correct language on every OS locale).
+        EmptyState.Title = _res.GetString("EmptyNotesTitle");
+        EmptyState.Subtitle = _res.GetString("EmptyNotesSubtitle");
+        EmptyState.PrimaryActionText = _res.GetString("EmptyNotesPrimaryAction");
+        FilteredEmptyState.Title = _res.GetString("EmptyFilteredTitle");
+        FilteredEmptyState.Subtitle = _res.GetString("EmptyFilteredSubtitle");
 
         // Wire EmptyState primary action button
         EmptyState.PrimaryActionCommand = new RelayCommand(() => _viewModel?.AddNewCommand.Execute(null));

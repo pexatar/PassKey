@@ -140,6 +140,36 @@
   <data name="EmptyNotesTitle" xml:space="preserve">
     <value>Keine Notizen</value>
   </data>
+  <data name="EmptyPasswordsSubtitle" xml:space="preserve">
+    <value>Fügen Sie Ihr erstes Passwort hinzu, um Ihre Konten zu schützen.</value>
+  </data>
+  <data name="EmptyPasswordsPrimaryAction" xml:space="preserve">
+    <value>Neues Passwort</value>
+  </data>
+  <data name="EmptyCardsSubtitle" xml:space="preserve">
+    <value>Fügen Sie Ihre erste Kreditkarte hinzu, um sie sicher aufzubewahren.</value>
+  </data>
+  <data name="EmptyCardsPrimaryAction" xml:space="preserve">
+    <value>Neue Karte</value>
+  </data>
+  <data name="EmptyIdentitiesSubtitle" xml:space="preserve">
+    <value>Fügen Sie Ihre erste Identität hinzu, um persönliche Daten, Adressen und Dokumente zu speichern.</value>
+  </data>
+  <data name="EmptyIdentitiesPrimaryAction" xml:space="preserve">
+    <value>Identität hinzufügen</value>
+  </data>
+  <data name="EmptyNotesSubtitle" xml:space="preserve">
+    <value>Erstellen Sie Ihre erste sichere Notiz, um vertrauliche Informationen zu speichern.</value>
+  </data>
+  <data name="EmptyNotesPrimaryAction" xml:space="preserve">
+    <value>Neue Notiz</value>
+  </data>
+  <data name="EmptyFilteredTitle" xml:space="preserve">
+    <value>Keine Ergebnisse</value>
+  </data>
+  <data name="EmptyFilteredSubtitle" xml:space="preserve">
+    <value>Versuchen Sie, die Filter oder die Suche zu ändern.</value>
+  </data>
   <data name="EmptySearchTitle" xml:space="preserve">
     <value>Keine Ergebnisse für „{0}“</value>
   </data>
