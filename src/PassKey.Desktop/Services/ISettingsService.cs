@@ -44,6 +44,15 @@ public interface ISettingsService
     /// <summary>Gets or sets whether favicon downloading from site URLs is enabled.</summary>
     bool FaviconDownloadEnabled { get; set; }
 
+    /// <summary>Gets or sets whether the app checks for updates automatically at startup. Default is <c>true</c>.</summary>
+    bool AutoUpdateCheckEnabled { get; set; }
+
+    /// <summary>Gets or sets the UTC timestamp of the last successful update check. <c>null</c> means never checked.</summary>
+    DateTime? LastUpdateCheckUtc { get; set; }
+
+    /// <summary>Gets or sets the release tag the user chose to skip (e.g. <c>"v1.0.5"</c>). <c>null</c> means no version has been skipped.</summary>
+    string? SkippedUpdateVersion { get; set; }
+
     /// <summary>Serialises all current settings to <c>settings.json</c> on disk.</summary>
     void Save();
 
