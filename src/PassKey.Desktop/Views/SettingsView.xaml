@@ -224,6 +224,49 @@
 
             <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
 
+            <!-- ═══ AGGIORNAMENTI ═══ -->
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
+                <FontIcon Glyph="&#xE895;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="SettingsUpdatesSection" Text="Aggiornamenti"
+                           Style="{StaticResource SubtitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <!-- Toggle controllo automatico -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="24" Margin="0,4">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsAutoUpdateTitle" Text="Controllo automatico"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsAutoUpdateDesc" Text="Verifica nuove versioni all'avvio"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <ToggleSwitch x:Name="AutoUpdateToggle" Grid.Column="1" VerticalAlignment="Center"
+                              Toggled="AutoUpdateToggle_Toggled" TabIndex="91" />
+            </Grid>
+
+            <!-- Controllo manuale -->
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="24" Margin="0,4">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsCheckUpdateTitle" Text="Controlla aggiornamenti"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Name="UpdateStatusTextBlock"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <ProgressRing x:Name="UpdateCheckRing" Width="20" Height="20"
+                                  IsActive="False" Visibility="Collapsed" />
+                    <Button x:Name="CheckUpdateButton" x:Uid="SettingsCheckUpdateBtn"
+                            Content="Controlla ora"
+                            Click="CheckUpdateButton_Click" TabIndex="92" />
+                </StackPanel>
+            </Grid>
+
+            <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
+
             <!-- ═══ INFORMAZIONI ═══ -->
             <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,8">
                 <FontIcon Glyph="&#xE946;" FontSize="16"

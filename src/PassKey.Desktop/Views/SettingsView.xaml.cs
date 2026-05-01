@@ -41,7 +41,9 @@ public sealed partial class SettingsView : UserControl
         StartWithWindowsToggle.IsOn = vm.StartWithWindows;
         StartMinimizedCheck.IsChecked = vm.StartMinimized;
         StartMinimizedCheck.IsEnabled = vm.StartWithWindows;
-        VersionText.Text = vm.AppVersion;
+        VersionText.Text              = vm.AppVersion;
+        AutoUpdateToggle.IsOn         = vm.AutoUpdateCheckEnabled;
+        UpdateStatusTextBlock.Text    = FormatLastCheckTime(vm.LastUpdateCheckUtc);
 
         _updatingFromVm = false;
 
@@ -251,6 +253,42 @@ public sealed partial class SettingsView : UserControl
             XamlRoot = XamlRoot
         };
         return _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
+    }
+
+    // ═══ AGGIORNAMENTI ═══
+
+    private void AutoUpdateToggle_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_updatingFromVm || _viewModel is null) return;
+        _viewModel.AutoUpdateCheckEnabled = AutoUpdateToggle.IsOn;
+    }
+
+    private async void CheckUpdateButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null) return;
+
+        CheckUpdateButton.IsEnabled   = false;
+        UpdateCheckRing.Visibility    = Visibility.Visible;
+        UpdateCheckRing.IsActive      = true;
+
+        await _viewModel.CheckUpdateManuallyCommand.ExecuteAsync(null);
+
+        UpdateCheckRing.IsActive      = false;
+        UpdateCheckRing.Visibility    = Visibility.Collapsed;
+        CheckUpdateButton.IsEnabled   = true;
+
+        // Refresh the status text with the new timestamp
+        UpdateStatusTextBlock.Text = FormatLastCheckTime(_viewModel.LastUpdateCheckUtc);
+    }
+
+    private string FormatLastCheckTime(DateTime? utc)
+    {
+        if (!utc.HasValue)          return _res.GetString("UpdateNeverChecked");
+        var diff = DateTime.Now - utc.Value.ToLocalTime();
+        if (diff.TotalMinutes < 1)  return _res.GetString("UpdateJustChecked");
+        if (diff.TotalHours   < 1)  return string.Format(_res.GetString("UpdateCheckedMinutesAgo"), (int)diff.TotalMinutes);
+        if (diff.TotalDays    < 1)  return string.Format(_res.GetString("UpdateCheckedHoursAgo"),   (int)diff.TotalHours);
+        return utc.Value.ToLocalTime().ToString("d MMM yyyy, HH:mm");
     }
 
     // ═══ BACKUP / RESTORE / IMPORT ═══
