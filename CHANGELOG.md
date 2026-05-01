@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-05-02
+
+### Fixed
+- PassKey.Desktop is now published as a truly self-contained executable: the .NET 10 runtime is
+  bundled inside the installer and the portable ZIP. Users no longer need to install .NET separately.
+  The README claim "No .NET runtime required" is now accurate.
+
 ## [1.0.6] - 2026-05-01
 
 ### Changed
@@ -110,7 +117,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Giuseppe Imperato** — concept, design, product decisions
 - **[Claude](https://www.anthropic.com/claude) by Anthropic** — architecture, implementation, documentation
 
-[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.6...HEAD
+[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.7...HEAD
+[1.0.7]: https://github.com/pexatar/PassKey/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/pexatar/PassKey/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/pexatar/PassKey/compare/v1.0.0...v1.0.5
 [1.0.0]: https://github.com/pexatar/PassKey/releases/tag/v1.0.0
