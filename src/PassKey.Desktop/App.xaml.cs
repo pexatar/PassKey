@@ -41,6 +41,7 @@ public partial class App : Application
                 services.AddSingleton<IDatabaseService, DatabaseService>();
                 services.AddSingleton<IVaultRepository, SqliteVaultRepository>();
                 services.AddSingleton<IBrowserIpcService, BrowserIpcService>();
+                services.AddSingleton<IUpdateService, UpdateService>();
 
                 // Backup/Import services
                 services.AddSingleton<IBackupService, BackupService>();
@@ -104,6 +105,44 @@ public partial class App : Application
         catch
         {
             // IPC service failure should not prevent app from starting
+        }
+
+        // Fire-and-forget: silent update check (max once per 24h, 10s timeout)
+        _ = CheckForUpdateSilentlyAsync();
+    }
+
+    private async Task CheckForUpdateSilentlyAsync()
+    {
+        try
+        {
+            var settings = Services.GetRequiredService<ISettingsService>();
+
+            if (!settings.AutoUpdateCheckEnabled) return;
+
+            // Throttle: check at most once every 24 hours
+            if (settings.LastUpdateCheckUtc.HasValue &&
+                (DateTime.UtcNow - settings.LastUpdateCheckUtc.Value).TotalHours < 24)
+                return;
+
+            using var cts  = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var updateSvc  = Services.GetRequiredService<IUpdateService>();
+            var result     = await updateSvc.CheckForUpdateAsync(cts.Token);
+
+            // Record timestamp regardless of outcome — avoids hammering the API when offline
+            settings.LastUpdateCheckUtc = DateTime.UtcNow;
+            settings.Save();
+
+            if (result is null || !result.UpdateAvailable) return;
+
+            // Skip if the user previously dismissed this exact version
+            if (settings.SkippedUpdateVersion == $"v{result.NewVersion}") return;
+
+            // Publish on the UI thread — UpdateDetected subscribers touch XAML controls
+            MainWindow?.DispatcherQueue.TryEnqueue(() => updateSvc.Publish(result));
+        }
+        catch
+        {
+            // Never let an update check crash the app
         }
     }
 
