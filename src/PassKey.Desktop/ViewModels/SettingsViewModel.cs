@@ -28,6 +28,7 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IFilePickerService _filePicker;
     private readonly IMergeService _merge;
     private readonly IImportOrchestrator _importOrchestrator;
+    private readonly IUpdateService _updateService;
     private bool _initializing;
 
     private static readonly int[] AutoLockValues = [30, 60, 300, 600, 0];
@@ -49,6 +50,16 @@ public partial class SettingsViewModel : ObservableObject
 
     [ObservableProperty]
     public partial string AppVersion { get; set; } = string.Empty;
+
+    // Update check
+    [ObservableProperty]
+    public partial bool AutoUpdateCheckEnabled { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsCheckingUpdate { get; set; }
+
+    /// <summary>Exposes LastUpdateCheckUtc for the code-behind to format the status string.</summary>
+    public DateTime? LastUpdateCheckUtc => _settings.LastUpdateCheckUtc;
 
     // Existing events
     public event Action<ElementTheme>? ThemeChangeRequested;
@@ -72,7 +83,8 @@ public partial class SettingsViewModel : ObservableObject
         IBackupFileService backupFile,
         IFilePickerService filePicker,
         IMergeService merge,
-        IImportOrchestrator importOrchestrator)
+        IImportOrchestrator importOrchestrator,
+        IUpdateService updateService)
     {
         _settings = settings;
         _vaultState = vaultState;
@@ -81,6 +93,7 @@ public partial class SettingsViewModel : ObservableObject
         _filePicker = filePicker;
         _merge = merge;
         _importOrchestrator = importOrchestrator;
+        _updateService = updateService;
     }
 
     public void Initialize()
@@ -119,7 +132,47 @@ public partial class SettingsViewModel : ObservableObject
         var version = Assembly.GetExecutingAssembly().GetName().Version;
         AppVersion = version is not null ? $"{version.Major}.{version.Minor}.{version.Build}" : "1.0.0";
 
+        // Update check settings
+        AutoUpdateCheckEnabled = _settings.AutoUpdateCheckEnabled;
+
         _initializing = false;
+    }
+
+    partial void OnAutoUpdateCheckEnabledChanged(bool value)
+    {
+        if (_initializing) return;
+        _settings.AutoUpdateCheckEnabled = value;
+        _settings.Save();
+    }
+
+    /// <summary>
+    /// Manually checks GitHub for an update. Invoked by the "Controlla ora" button in SettingsView.
+    /// Shows a spinner while checking; publishes the result to the InfoBar bus on success.
+    /// The code-behind updates the status text after this command completes.
+    /// </summary>
+    [RelayCommand]
+    public async Task CheckUpdateManuallyAsync()
+    {
+        IsCheckingUpdate = true;
+        try
+        {
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var result    = await _updateService.CheckForUpdateAsync(cts.Token);
+
+            _settings.LastUpdateCheckUtc = DateTime.UtcNow;
+            _settings.Save();
+
+            if (result?.UpdateAvailable == true)
+                _updateService.Publish(result);
+        }
+        catch
+        {
+            // Silently absorb — the code-behind shows the status string
+        }
+        finally
+        {
+            IsCheckingUpdate = false;
+        }
     }
 
     partial void OnSelectedThemeIndexChanged(int value)

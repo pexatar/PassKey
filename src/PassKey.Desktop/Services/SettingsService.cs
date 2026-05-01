@@ -67,6 +67,15 @@ public sealed class SettingsService : ISettingsService
     /// <summary>Gets or sets whether favicon downloading is enabled for password entries. Default is false.</summary>
     public bool FaviconDownloadEnabled { get; set; }
 
+    /// <summary>Gets or sets whether automatic update checks at startup are enabled. Default is true.</summary>
+    public bool AutoUpdateCheckEnabled { get; set; } = true;
+
+    /// <summary>Gets or sets the UTC timestamp of the last successful update check. Null means never checked.</summary>
+    public DateTime? LastUpdateCheckUtc { get; set; }
+
+    /// <summary>Gets or sets the release tag the user chose to skip. Null means no version has been skipped.</summary>
+    public string? SkippedUpdateVersion { get; set; }
+
     /// <summary>
     /// Initializes a new instance of <see cref="SettingsService"/> and loads persisted settings
     /// from disk. If the settings file does not exist, all properties retain their default values.
@@ -117,7 +126,10 @@ public sealed class SettingsService : ISettingsService
             PasswordGeneratorDigits = loaded.PasswordGeneratorDigits;
             PasswordGeneratorSymbols = loaded.PasswordGeneratorSymbols;
             PasswordGeneratorExcludeAmbiguous = loaded.PasswordGeneratorExcludeAmbiguous;
-            FaviconDownloadEnabled = loaded.FaviconDownloadEnabled;
+            FaviconDownloadEnabled   = loaded.FaviconDownloadEnabled;
+            AutoUpdateCheckEnabled   = loaded.AutoUpdateCheckEnabled;
+            LastUpdateCheckUtc       = loaded.LastUpdateCheckUtc;
+            SkippedUpdateVersion     = loaded.SkippedUpdateVersion;
         }
         catch
         {

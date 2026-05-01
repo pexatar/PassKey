@@ -1351,4 +1351,54 @@
   <data name="AuditEmptyText.Text" xml:space="preserve">
     <value>Aucun mot de passe dans le coffre. Ajoutez des mots de passe pour effectuer l'audit.</value>
   </data>
+
+  <!-- ═══ MISES À JOUR ═══ -->
+  <data name="UpdateInfoBar.Message" xml:space="preserve">
+    <value>Téléchargez et installez pour obtenir les dernières corrections et améliorations.</value>
+  </data>
+  <data name="UpdateDownloadButton.Content" xml:space="preserve">
+    <value>Télécharger et installer</value>
+  </data>
+  <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
+    <value>Nouveautés</value>
+  </data>
+  <data name="SettingsUpdatesSection.Text" xml:space="preserve">
+    <value>Mises à jour</value>
+  </data>
+  <data name="SettingsAutoUpdateTitle.Text" xml:space="preserve">
+    <value>Mises à jour automatiques</value>
+  </data>
+  <data name="SettingsAutoUpdateDesc.Text" xml:space="preserve">
+    <value>Vérifier les nouvelles versions au démarrage</value>
+  </data>
+  <data name="SettingsCheckUpdateTitle.Text" xml:space="preserve">
+    <value>Rechercher des mises à jour</value>
+  </data>
+  <data name="SettingsCheckUpdateBtn.Content" xml:space="preserve">
+    <value>Vérifier maintenant</value>
+  </data>
+  <data name="UpdateNeverChecked" xml:space="preserve">
+    <value>Dernière vérification : jamais</value>
+  </data>
+  <data name="UpdateJustChecked" xml:space="preserve">
+    <value>Vérifié à l'instant</value>
+  </data>
+  <data name="UpdateCheckedMinutesAgo" xml:space="preserve">
+    <value>Vérifié il y a {0} min</value>
+  </data>
+  <data name="UpdateCheckedHoursAgo" xml:space="preserve">
+    <value>Vérifié il y a {0} h</value>
+  </data>
+  <data name="UpdateChecking" xml:space="preserve">
+    <value>Vérification en cours…</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>Connexion impossible</value>
+  </data>
+  <data name="UpdateUpToDate" xml:space="preserve">
+    <value>PassKey est à jour</value>
+  </data>
+  <data name="UpdateFound" xml:space="preserve">
+    <value>Version {0} disponible !</value>
+  </data>
 </root>
