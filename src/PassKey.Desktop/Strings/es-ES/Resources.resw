@@ -1352,4 +1352,54 @@
     <value>No hay contraseñas en el vault. Añade contraseñas para ejecutar la auditoría.</value>
   </data>
 
+  <!-- ═══ ACTUALIZACIONES ═══ -->
+  <data name="UpdateInfoBar.Message" xml:space="preserve">
+    <value>Descarga e instala para obtener las últimas correcciones y mejoras.</value>
+  </data>
+  <data name="UpdateDownloadButton.Content" xml:space="preserve">
+    <value>Descargar e instalar</value>
+  </data>
+  <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
+    <value>Novedades</value>
+  </data>
+  <data name="SettingsUpdatesSection.Text" xml:space="preserve">
+    <value>Actualizaciones</value>
+  </data>
+  <data name="SettingsAutoUpdateTitle.Text" xml:space="preserve">
+    <value>Actualizaciones automáticas</value>
+  </data>
+  <data name="SettingsAutoUpdateDesc.Text" xml:space="preserve">
+    <value>Buscar nuevas versiones al iniciar</value>
+  </data>
+  <data name="SettingsCheckUpdateTitle.Text" xml:space="preserve">
+    <value>Buscar actualizaciones</value>
+  </data>
+  <data name="SettingsCheckUpdateBtn.Content" xml:space="preserve">
+    <value>Comprobar ahora</value>
+  </data>
+  <data name="UpdateNeverChecked" xml:space="preserve">
+    <value>Última comprobación: nunca</value>
+  </data>
+  <data name="UpdateJustChecked" xml:space="preserve">
+    <value>Comprobado ahora mismo</value>
+  </data>
+  <data name="UpdateCheckedMinutesAgo" xml:space="preserve">
+    <value>Comprobado hace {0} min</value>
+  </data>
+  <data name="UpdateCheckedHoursAgo" xml:space="preserve">
+    <value>Comprobado hace {0} h</value>
+  </data>
+  <data name="UpdateChecking" xml:space="preserve">
+    <value>Comprobando…</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>No se puede conectar</value>
+  </data>
+  <data name="UpdateUpToDate" xml:space="preserve">
+    <value>PassKey está actualizado</value>
+  </data>
+  <data name="UpdateFound" xml:space="preserve">
+    <value>¡Versión {0} disponible!</value>
+  </data>
+
 </root>

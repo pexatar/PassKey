@@ -1339,4 +1339,54 @@
   <data name="AuditEmptyText.Text" xml:space="preserve">
     <value>No passwords in the vault. Add passwords to run the audit.</value>
   </data>
+
+  <!-- ═══ UPDATES ═══ -->
+  <data name="UpdateInfoBar.Message" xml:space="preserve">
+    <value>Download and install to get the latest fixes and improvements.</value>
+  </data>
+  <data name="UpdateDownloadButton.Content" xml:space="preserve">
+    <value>Download &amp; install</value>
+  </data>
+  <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
+    <value>What's new</value>
+  </data>
+  <data name="SettingsUpdatesSection.Text" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="SettingsAutoUpdateTitle.Text" xml:space="preserve">
+    <value>Automatic updates</value>
+  </data>
+  <data name="SettingsAutoUpdateDesc.Text" xml:space="preserve">
+    <value>Check for updates at startup</value>
+  </data>
+  <data name="SettingsCheckUpdateTitle.Text" xml:space="preserve">
+    <value>Check for updates</value>
+  </data>
+  <data name="SettingsCheckUpdateBtn.Content" xml:space="preserve">
+    <value>Check now</value>
+  </data>
+  <data name="UpdateNeverChecked" xml:space="preserve">
+    <value>Last check: never</value>
+  </data>
+  <data name="UpdateJustChecked" xml:space="preserve">
+    <value>Checked just now</value>
+  </data>
+  <data name="UpdateCheckedMinutesAgo" xml:space="preserve">
+    <value>Checked {0} min ago</value>
+  </data>
+  <data name="UpdateCheckedHoursAgo" xml:space="preserve">
+    <value>Checked {0} hr ago</value>
+  </data>
+  <data name="UpdateChecking" xml:space="preserve">
+    <value>Checking…</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>Unable to connect</value>
+  </data>
+  <data name="UpdateUpToDate" xml:space="preserve">
+    <value>PassKey is up to date</value>
+  </data>
+  <data name="UpdateFound" xml:space="preserve">
+    <value>Version {0} available!</value>
+  </data>
 </root>

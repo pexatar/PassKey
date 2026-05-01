@@ -1349,4 +1349,54 @@
   <data name="AuditEmptyText.Text" xml:space="preserve">
     <value>Keine Passwörter im Tresor. Fügen Sie Passwörter hinzu, um das Audit durchzuführen.</value>
   </data>
+
+  <!-- ═══ UPDATES ═══ -->
+  <data name="UpdateInfoBar.Message" xml:space="preserve">
+    <value>Installieren Sie die neueste Version mit den aktuellen Korrekturen und Verbesserungen.</value>
+  </data>
+  <data name="UpdateDownloadButton.Content" xml:space="preserve">
+    <value>Herunterladen und installieren</value>
+  </data>
+  <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
+    <value>Neuigkeiten</value>
+  </data>
+  <data name="SettingsUpdatesSection.Text" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="SettingsAutoUpdateTitle.Text" xml:space="preserve">
+    <value>Automatische Updates</value>
+  </data>
+  <data name="SettingsAutoUpdateDesc.Text" xml:space="preserve">
+    <value>Beim Start nach neuen Versionen suchen</value>
+  </data>
+  <data name="SettingsCheckUpdateTitle.Text" xml:space="preserve">
+    <value>Nach Updates suchen</value>
+  </data>
+  <data name="SettingsCheckUpdateBtn.Content" xml:space="preserve">
+    <value>Jetzt prüfen</value>
+  </data>
+  <data name="UpdateNeverChecked" xml:space="preserve">
+    <value>Zuletzt geprüft: nie</value>
+  </data>
+  <data name="UpdateJustChecked" xml:space="preserve">
+    <value>Gerade geprüft</value>
+  </data>
+  <data name="UpdateCheckedMinutesAgo" xml:space="preserve">
+    <value>Vor {0} Min. geprüft</value>
+  </data>
+  <data name="UpdateCheckedHoursAgo" xml:space="preserve">
+    <value>Vor {0} Std. geprüft</value>
+  </data>
+  <data name="UpdateChecking" xml:space="preserve">
+    <value>Wird geprüft…</value>
+  </data>
+  <data name="UpdateCheckFailed" xml:space="preserve">
+    <value>Verbindung fehlgeschlagen</value>
+  </data>
+  <data name="UpdateUpToDate" xml:space="preserve">
+    <value>PassKey ist aktuell</value>
+  </data>
+  <data name="UpdateFound" xml:space="preserve">
+    <value>Version {0} verfügbar!</value>
+  </data>
 </root>
