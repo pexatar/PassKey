@@ -39,12 +39,8 @@ public sealed partial class SecureNotesListView : UserControl
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
         EmptyState.Title = _res.GetString("EmptyNotesTitle");
         EmptyState.Subtitle = _res.GetString("EmptyNotesSubtitle");
-        EmptyState.PrimaryActionText = _res.GetString("EmptyNotesPrimaryAction");
         FilteredEmptyState.Title = _res.GetString("EmptyFilteredTitle");
         FilteredEmptyState.Subtitle = _res.GetString("EmptyFilteredSubtitle");
-
-        // Wire EmptyState primary action button
-        EmptyState.PrimaryActionCommand = new RelayCommand(() => _viewModel?.AddNewCommand.Execute(null));
 
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();

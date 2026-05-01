@@ -31,8 +31,6 @@ public sealed partial class CreditCardsListView : UserControl
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
         EmptyState.Title = _res.GetString("EmptyCardsTitle");
         EmptyState.Subtitle = _res.GetString("EmptyCardsSubtitle");
-        EmptyState.PrimaryActionText = _res.GetString("EmptyCardsPrimaryAction");
-
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.SaveCompleted += ShowSavedToast;
 

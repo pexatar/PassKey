@@ -32,8 +32,6 @@ public sealed partial class PasswordsListView : UserControl
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
         EmptyState.Title = _res.GetString("EmptyPasswordsTitle");
         EmptyState.Subtitle = _res.GetString("EmptyPasswordsSubtitle");
-        EmptyState.PrimaryActionText = _res.GetString("EmptyPasswordsPrimaryAction");
-
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.SaveCompleted += ShowSavedToast;
 
@@ -68,6 +66,7 @@ public sealed partial class PasswordsListView : UserControl
         if (_viewModel is null) return;
         EmptyState.Visibility = _viewModel.IsEmpty ? Visibility.Visible : Visibility.Collapsed;
         PasswordList.Visibility = _viewModel.IsEmpty ? Visibility.Collapsed : Visibility.Visible;
+        ColumnHeadersGrid.Visibility = _viewModel.IsEmpty ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void UpdateDetailPanel()

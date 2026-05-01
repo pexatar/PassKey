@@ -6,8 +6,7 @@
     <StackPanel
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        Spacing="16"
-        MaxWidth="400">
+        Spacing="16">
 
         <FontIcon
             x:Name="IconElement"
@@ -26,6 +25,7 @@
             Style="{StaticResource BodyTextBlockStyle}"
             HorizontalAlignment="Center"
             TextAlignment="Center"
+            TextWrapping="NoWrap"
             Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
 
         <StackPanel

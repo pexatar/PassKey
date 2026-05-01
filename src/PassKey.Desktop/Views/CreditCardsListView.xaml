@@ -182,7 +182,7 @@
                 Icon="&#xE8C7;"
                 Title="Nessuna carta salvata"
                 Subtitle="Aggiungi la tua prima carta di credito per averla sempre al sicuro."
-                PrimaryActionText="Nuova carta" />
+                />
         </Grid>
 
         <!-- Detail panel (right side, 400px) -->

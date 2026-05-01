@@ -60,10 +60,11 @@
                     x:Uid="EmptyIdentities"
                     x:Name="EmptyState"
                     Visibility="Collapsed"
+                    Margin="0,16,0,0"
                     Icon="&#xE77B;"
                     Title="Nessuna identità"
                     Subtitle="Aggiungi la tua prima identità per salvare dati personali, indirizzi e documenti."
-                    PrimaryActionText="Aggiungi identità" />
+                    />
 
                 <!-- Identity GridView (card layout) -->
                 <GridView x:Name="IdentityList"

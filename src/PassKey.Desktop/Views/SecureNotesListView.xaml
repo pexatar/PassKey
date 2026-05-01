@@ -171,7 +171,6 @@
                 Icon="&#xE70B;"
                 Title="Nessuna nota"
                 Subtitle="Crea la tua prima nota sicura per salvare informazioni riservate."
-                PrimaryActionText="Nuova nota"
                 AutomationProperties.Name="Nessuna nota. Crea la tua prima nota sicura." />
 
             <!-- Empty state: filtro attivo ma 0 risultati -->
