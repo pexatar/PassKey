@@ -5,21 +5,16 @@ using PassKey.Desktop.Services;
 namespace PassKey.Desktop.ViewModels;
 
 /// <summary>
-/// Shell container ViewModel. Manages NavigationView sidebar selection
-/// and hosts the current page ViewModel inside the authenticated shell.
+/// Shell container ViewModel. Manages NavigationView sidebar selection,
+/// hosts the current page ViewModel inside the authenticated shell,
+/// and coordinates the update-available InfoBar.
 /// </summary>
-/// <remarks>
-/// Dependencies injected via constructor: <see cref="IVaultStateService"/>, <see cref="INavigationStack"/>,
-/// <see cref="DashboardViewModel"/>, <see cref="PasswordsListViewModel"/>,
-/// <see cref="CreditCardsListViewModel"/>, <see cref="IdentitiesListViewModel"/>,
-/// <see cref="SecureNotesListViewModel"/>, <see cref="GeneratorViewModel"/>,
-/// <see cref="PasswordVerifierViewModel"/>, <see cref="SettingsViewModel"/>, <see cref="HelpViewModel"/>.
-/// All child ViewModels are pre-created and cached so navigation is instantaneous.
-/// </remarks>
-public partial class ShellViewModel : ObservableObject
+public partial class ShellViewModel : ObservableObject, IDisposable
 {
     private readonly IVaultStateService _vaultState;
     private readonly INavigationStack _navigation;
+    private readonly IUpdateService _updateService;
+    private readonly ISettingsService _settings;
     private readonly DashboardViewModel _dashboardViewModel;
     private readonly PasswordsListViewModel _passwordsListViewModel;
     private readonly CreditCardsListViewModel _creditCardsListViewModel;
@@ -30,35 +25,49 @@ public partial class ShellViewModel : ObservableObject
     private readonly SettingsViewModel _settingsViewModel;
     private readonly HelpViewModel _helpViewModel;
 
-    /// <summary>
-    /// Gets or sets the ViewModel of the page currently displayed in the shell content area.
-    /// </summary>
+    private UpdateCheckResult? _currentUpdate;
+
+    // ── Navigation ────────────────────────────────────────────────────────────
+
+    /// <summary>Gets or sets the ViewModel of the page currently displayed in the shell content area.</summary>
     [ObservableProperty]
     public partial ObservableObject? CurrentPage { get; set; }
 
-    /// <summary>
-    /// Gets or sets the zero-based index of the currently selected NavigationView sidebar item.
-    /// </summary>
+    /// <summary>Gets or sets the zero-based index of the currently selected NavigationView sidebar item.</summary>
     [ObservableProperty]
     public partial int SelectedNavigationIndex { get; set; }
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="ShellViewModel"/> with all page ViewModels.
-    /// </summary>
-    /// <param name="vaultState">Vault state service used by the lock command.</param>
-    /// <param name="navigation">Navigation stack (not actively used in shell; kept for DI consistency).</param>
-    /// <param name="dashboardViewModel">Pre-created Dashboard ViewModel.</param>
-    /// <param name="passwordsListViewModel">Pre-created Passwords list ViewModel.</param>
-    /// <param name="creditCardsListViewModel">Pre-created Credit Cards list ViewModel.</param>
-    /// <param name="identitiesListViewModel">Pre-created Identities list ViewModel.</param>
-    /// <param name="secureNotesListViewModel">Pre-created Secure Notes list ViewModel.</param>
-    /// <param name="generatorViewModel">Pre-created Generator ViewModel.</param>
-    /// <param name="verifierViewModel">Pre-created Password Verifier ViewModel.</param>
-    /// <param name="settingsViewModel">Pre-created Settings ViewModel.</param>
-    /// <param name="helpViewModel">Pre-created Help ViewModel.</param>
+    // ── Update InfoBar ────────────────────────────────────────────────────────
+
+    /// <summary>Controls whether the update-available InfoBar is shown.</summary>
+    [ObservableProperty]
+    public partial bool IsUpdateInfoBarOpen { get; set; }
+
+    /// <summary>Dynamic title for the InfoBar, e.g. "PassKey 1.0.5 disponibile".</summary>
+    [ObservableProperty]
+    public partial string UpdateInfoBarTitle { get; set; } = string.Empty;
+
+    /// <summary>True while the installer is being downloaded.</summary>
+    [ObservableProperty]
+    public partial bool IsDownloading { get; set; }
+
+    /// <summary>Download progress 0–100 for the ProgressBar.</summary>
+    [ObservableProperty]
+    public partial double DownloadProgress { get; set; }
+
+    /// <summary>Computed inverse of <see cref="IsDownloading"/> — drives Button visibility.</summary>
+    public bool IsNotDownloading => !IsDownloading;
+
+    partial void OnIsDownloadingChanged(bool value) =>
+        OnPropertyChanged(nameof(IsNotDownloading));
+
+    // ── Constructor ───────────────────────────────────────────────────────────
+
     public ShellViewModel(
         IVaultStateService vaultState,
         INavigationStack navigation,
+        IUpdateService updateService,
+        ISettingsService settings,
         DashboardViewModel dashboardViewModel,
         PasswordsListViewModel passwordsListViewModel,
         CreditCardsListViewModel creditCardsListViewModel,
@@ -69,32 +78,49 @@ public partial class ShellViewModel : ObservableObject
         SettingsViewModel settingsViewModel,
         HelpViewModel helpViewModel)
     {
-        _vaultState = vaultState;
-        _navigation = navigation;
-        _dashboardViewModel = dashboardViewModel;
-        _passwordsListViewModel = passwordsListViewModel;
+        _vaultState               = vaultState;
+        _navigation               = navigation;
+        _updateService            = updateService;
+        _settings                 = settings;
+        _dashboardViewModel       = dashboardViewModel;
+        _passwordsListViewModel   = passwordsListViewModel;
         _creditCardsListViewModel = creditCardsListViewModel;
-        _identitiesListViewModel = identitiesListViewModel;
+        _identitiesListViewModel  = identitiesListViewModel;
         _secureNotesListViewModel = secureNotesListViewModel;
-        _generatorViewModel = generatorViewModel;
-        _verifierViewModel = verifierViewModel;
-        _settingsViewModel = settingsViewModel;
-        _helpViewModel = helpViewModel;
+        _generatorViewModel       = generatorViewModel;
+        _verifierViewModel        = verifierViewModel;
+        _settingsViewModel        = settingsViewModel;
+        _helpViewModel            = helpViewModel;
+
+        // Handle race: background check may have completed before this VM was constructed
+        if (_updateService.PendingUpdate is { UpdateAvailable: true } pending)
+            ShowUpdateInfoBar(pending);
+
+        // Subscribe for future notifications (e.g. manual check from SettingsView)
+        _updateService.UpdateDetected += OnUpdateDetected;
     }
 
     /// <summary>
-    /// Called after the ShellView is displayed. Navigates to the Dashboard (index 0).
+    /// Called after ShellView is displayed. Navigates to the Dashboard (index 0).
     /// </summary>
     public void Initialize()
     {
         NavigateTo(0);
     }
 
+    // ── Dispose ───────────────────────────────────────────────────────────────
+
+    public void Dispose()
+    {
+        _updateService.UpdateDetected -= OnUpdateDetected;
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────────
+
     /// <summary>
     /// Navigates to a page by its sidebar index.
-    /// Valid indices: 0=Dashboard, 1=Passwords, 2=Cards, 3=Identities, 4=Notes, 5=Generator, 6=Verifier.
+    /// Valid: 0=Dashboard, 1=Passwords, 2=Cards, 3=Identities, 4=Notes, 5=Generator, 6=Verifier.
     /// </summary>
-    /// <param name="index">Zero-based sidebar navigation index.</param>
     public void NavigateTo(int index)
     {
         SelectedNavigationIndex = index;
@@ -112,30 +138,83 @@ public partial class ShellViewModel : ObservableObject
         };
     }
 
-    /// <summary>
-    /// Navigates to the Settings page (outside the indexed sidebar items).
-    /// </summary>
+    /// <summary>Navigates to the Settings page (outside indexed sidebar items).</summary>
     public void NavigateToSettings()
     {
         CurrentPage = _settingsViewModel;
     }
 
-    /// <summary>
-    /// Navigates to the Help page (outside the indexed sidebar items).
-    /// </summary>
+    /// <summary>Navigates to the Help page (outside indexed sidebar items).</summary>
     public void NavigateToHelp()
     {
         CurrentPage = _helpViewModel;
     }
 
-    /// <summary>
-    /// Locks the vault by calling <see cref="IVaultStateService.Lock"/>.
-    /// <see cref="MainViewModel"/> detects the lock event and navigates back to <see cref="LoginViewModel"/>.
-    /// </summary>
+    // ── Vault lock ────────────────────────────────────────────────────────────
+
+    /// <summary>Locks the vault. MainViewModel detects the event and navigates to LoginViewModel.</summary>
     [RelayCommand]
     private void LockVault()
     {
         _vaultState.Lock();
-        // MainViewModel detects lock event and navigates back to LoginView
+    }
+
+    // ── Update InfoBar logic ──────────────────────────────────────────────────
+
+    private void OnUpdateDetected(UpdateCheckResult result)
+    {
+        if (result.UpdateAvailable)
+            ShowUpdateInfoBar(result);
+    }
+
+    private void ShowUpdateInfoBar(UpdateCheckResult result)
+    {
+        _currentUpdate     = result;
+        UpdateInfoBarTitle = $"PassKey {result.NewVersion} disponibile";
+        IsUpdateInfoBarOpen = true;
+        IsDownloading      = false;
+        DownloadProgress   = 0;
+    }
+
+    /// <summary>
+    /// Called when the user closes the InfoBar without installing.
+    /// Persists the skipped version so the InfoBar is not shown again for this release.
+    /// </summary>
+    public void OnUpdateInfoBarClosed()
+    {
+        if (_currentUpdate is null) return;
+        _settings.SkippedUpdateVersion = $"v{_currentUpdate.NewVersion}";
+        _settings.Save();
+        IsUpdateInfoBarOpen = false;
+    }
+
+    /// <summary>Downloads the installer and launches it, then exits the app.</summary>
+    [RelayCommand]
+    private async Task DownloadAndInstallAsync()
+    {
+        if (_currentUpdate?.InstallerDownloadUrl is not { Length: > 0 } url) return;
+
+        IsDownloading = true;
+        var progress  = new Progress<double>(p => DownloadProgress = p * 100.0);
+        var path      = await _updateService.DownloadInstallerAsync(url, progress);
+        IsDownloading = false;
+
+        if (path is null)
+        {
+            // Download failed — reset progress silently; InfoBar stays open
+            DownloadProgress = 0;
+            return;
+        }
+
+        _updateService.LaunchInstallerAndExit(path);
+    }
+
+    /// <summary>Opens the GitHub release page in the default browser.</summary>
+    [RelayCommand]
+    private async Task OpenReleasePageAsync()
+    {
+        if (_currentUpdate?.ReleasePageUrl is { } url &&
+            Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            await Windows.System.Launcher.LaunchUriAsync(uri);
     }
 }

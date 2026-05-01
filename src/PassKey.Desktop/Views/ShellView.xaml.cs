@@ -13,6 +13,12 @@ public sealed partial class ShellView : UserControl
 {
     private ShellViewModel? _viewModel;
 
+    /// <summary>
+    /// Exposes the current ViewModel for {x:Bind} expressions in ShellView.xaml.
+    /// Must be a public property (x:Bind does not work with private fields).
+    /// </summary>
+    public ShellViewModel? ViewModel => _viewModel;
+
     public ShellView()
     {
         InitializeComponent();
@@ -20,6 +26,10 @@ public sealed partial class ShellView : UserControl
 
     public void SetViewModel(ShellViewModel vm)
     {
+        // Unsubscribe and dispose the previous VM if any
+        if (_viewModel is IDisposable old) old.Dispose();
+        if (_viewModel is not null) _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
         _viewModel = vm;
         DataContext = vm;
 
@@ -29,7 +39,13 @@ public sealed partial class ShellView : UserControl
             NavView.SelectedItem = NavView.MenuItems[0];
 
         vm.Initialize();
+
+        // Notify x:Bind that ViewModel has changed
+        Bindings.Update();
     }
+
+    private void UpdateInfoBar_Closed(InfoBar sender, InfoBarClosedEventArgs args)
+        => _viewModel?.OnUpdateInfoBarClosed();
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
