@@ -35,11 +35,6 @@ public sealed partial class IdentitiesListView : UserControl
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
         EmptyState.Title = _res.GetString("EmptyIdentitiesTitle");
         EmptyState.Subtitle = _res.GetString("EmptyIdentitiesSubtitle");
-        EmptyState.PrimaryActionText = _res.GetString("EmptyIdentitiesPrimaryAction");
-
-        // Wire EmptyState primary action to AddNew
-        EmptyState.PrimaryActionCommand = new RelayCommand(() => _viewModel?.AddNewCommand.Execute(null));
-
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();
         UpdateEmptyState();
