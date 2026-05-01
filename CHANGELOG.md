@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-05-01
+
+### Added
+
+#### Auto-updater
+- Silent update check at startup: compares the running version against the latest GitHub Release every 24 hours (throttled, no check on every launch)
+- Non-invasive InfoBar notification in the main shell when a newer version is detected — shown above the content area, does not interrupt workflow
+- **Download & install** button inside the InfoBar: downloads the installer in the background with a live progress bar, then launches it and exits the app cleanly
+- **What's new** button: opens the GitHub Release page in the default browser
+- Skip version: dismissing the InfoBar records the skipped version in `settings.json` — the notification will not reappear for that version
+- Manual update check in **Settings → Updates**: a "Check now" button with spinner and a localised last-check timestamp (e.g. "Checked 3 min ago")
+- Toggle in Settings to disable automatic update checks at startup
+- All update-related strings fully localised in 6 languages (it-IT, en-GB, fr-FR, de-DE, es-ES, pt-PT)
+
+### Technical
+- `IUpdateService` / `UpdateService` singleton: GitHub Releases API via `HttpClient` (10 s timeout, `User-Agent: PassKey-Desktop-Updater/1.0`), AOT-safe `UpdateJsonContext` (System.Text.Json source generation)
+- Streaming installer download with `HttpCompletionOption.ResponseHeadersRead` and 80 KB buffer; temporary file cleaned up on failure
+- `ISettingsService` extended with `AutoUpdateCheckEnabled`, `LastUpdateCheckUtc` (`DateTime?`, ISO 8601), `SkippedUpdateVersion`
+
 ## [1.0.0] - 2026-03-15
 
 ### Added
@@ -81,5 +100,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Giuseppe Imperato** — concept, design, product decisions
 - **[Claude](https://www.anthropic.com/claude) by Anthropic** — architecture, implementation, documentation
 
-[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.5...HEAD
+[1.0.5]: https://github.com/pexatar/PassKey/compare/v1.0.0...v1.0.5
 [1.0.0]: https://github.com/pexatar/PassKey/releases/tag/v1.0.0
