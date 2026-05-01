@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-05-01
+
+### Changed
+
+#### UI / UX
+- Empty state screens (Passwords, Credit Cards, Identities, Secure Notes) no longer show a duplicate add button at the centre of the page — the action is already available in the top-right toolbar
+- Empty state subtitle text no longer wraps to a second line
+- Passwords view: column headers (Title / Username / URL / Modified) are now hidden when the list is empty, keeping the empty state vertically centred
+- All four empty state icons are now vertically aligned at the same height across sections
+
 ## [1.0.5] - 2026-05-01
 
 ### Added
@@ -100,6 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Giuseppe Imperato** — concept, design, product decisions
 - **[Claude](https://www.anthropic.com/claude) by Anthropic** — architecture, implementation, documentation
 
-[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.6...HEAD
+[1.0.6]: https://github.com/pexatar/PassKey/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/pexatar/PassKey/compare/v1.0.0...v1.0.5
 [1.0.0]: https://github.com/pexatar/PassKey/releases/tag/v1.0.0
