@@ -34,6 +34,11 @@ Installer/Output/
 *.iss.bak
 *.exe.sig
 
+# Windows App Runtime redistributable — exceeds GitHub's 100 MB limit.
+# Download before building the installer:
+#   .\Installer\Download-Runtime.ps1
+Installer/WindowsAppRuntimeInstall-x64.exe
+
 # ─── MSIX / AppPackages ───────────────────────────────────────────────────────
 AppPackages/
 

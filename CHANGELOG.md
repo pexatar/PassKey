@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.9] - 2026-05-04
+
+### Fixed
+- **HVCI crash (STATUS_INVALID_IMAGE_HASH)**: PassKey v1.0.7 and v1.0.8 crashed silently on
+  every PC with Hypervisor-Protected Code Integrity (HVCI) enabled — the majority of modern
+  Windows 11 systems with TPM. Windows Code Integrity rejected the NuGet-bundled
+  `Microsoft.UI.Xaml.dll` with exception code `0xc000027b` because NuGet copies are not
+  registered in the Windows system catalog. No window ever appeared and no crash log was
+  written (the exception is a native SEH fault that bypasses .NET `catch`).
+
+  The fix removes `WindowsAppSDKSelfContained` from the build (the publish folder no longer
+  contains `Microsoft.UI.Xaml.dll`), adds an explicit `Bootstrap.Initialize(1.8)` call in
+  `Program.cs`, and bundles the official **Windows App Runtime 1.8** installer
+  (`WindowsAppRuntimeInstall-x64.exe`) inside the PassKey installer. The runtime is installed
+  silently during setup; its DLLs are fully trusted by Windows Code Integrity.
+
+  A user-visible error dialog (Win32 `MessageBoxW`) is shown on the rare occasion that
+  `Bootstrap.Initialize` fails (e.g. corrupt runtime installation), replacing the previous
+  silent disappearance.
+
 ## [1.0.8] - 2026-05-04
 
 ### Fixed
@@ -128,7 +148,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Giuseppe Imperato** — concept, design, product decisions
 - **[Claude](https://www.anthropic.com/claude) by Anthropic** — architecture, implementation, documentation
 
-[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.8...HEAD
+[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.9...HEAD
+[1.0.9]: https://github.com/pexatar/PassKey/compare/v1.0.8...v1.0.9
 [1.0.8]: https://github.com/pexatar/PassKey/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/pexatar/PassKey/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/pexatar/PassKey/compare/v1.0.5...v1.0.6
