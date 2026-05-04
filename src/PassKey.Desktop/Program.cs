@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
@@ -61,6 +62,31 @@ public static class Program
         // ── App startup ──────────────────────────────────────────────────────
         // Note: ApplySavedLanguage() is called inside App() constructor before
         // InitializeComponent(), following the official Microsoft docs pattern.
+
+        // ── Windows App Runtime bootstrap ────────────────────────────────────
+        // Required for unpackaged apps with a custom Main (DISABLE_XAML_GENERATED_MAIN)
+        // when WindowsAppSDKSelfContained is NOT set. Locates and activates the
+        // system-installed Windows App Runtime 1.8 instead of NuGet-bundled copies.
+        // NuGet-bundled Microsoft.UI.Xaml.dll triggers STATUS_INVALID_IMAGE_HASH
+        // (0xc000027b) on HVCI-enabled systems because it is not in the Windows
+        // Code Integrity system catalog.
+        try
+        {
+            // 0x00010008 = (1 << 16) | 8 → minimum version 1.8
+            Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap.Initialize(0x00010008);
+        }
+        catch (Exception ex)
+        {
+            WriteCrashLog(ex);
+            _ = MessageBoxW(
+                IntPtr.Zero,
+                "Windows App Runtime 1.8 is required but could not be initialised.\n\n" +
+                "Please reinstall PassKey to restore the required runtime.",
+                "PassKey — Missing Runtime",
+                0x10 /* MB_ICONERROR */);
+            return;
+        }
+
         try
         {
             WinRT.ComWrappersSupport.InitializeComWrappers();
@@ -118,4 +144,7 @@ public static class Program
             // If we can't write the log, there is nothing more we can do.
         }
     }
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    private static extern int MessageBoxW(IntPtr hWnd, string text, string caption, uint type);
 }
