@@ -66,10 +66,10 @@ Root: HKCU; Subkey: "SOFTWARE\Mozilla\NativeMessagingHosts\com.passkey.host"; Va
 
 [Run]
 ; 1. Install Windows App Runtime 1.8 silently (waits for completion before continuing).
-;    RunOnceId prevents re-running on reinstall/repair if the runtime is already present.
+;    The installer is idempotent: if the runtime is already present it exits immediately.
 Filename: "{tmp}\WindowsAppRuntimeInstall-x64.exe"; Parameters: "--quiet"; \
     StatusMsg: "Installing Windows App Runtime 1.8..."; \
-    Flags: waituntilterminated; RunOnceId: "WinAppRuntime18"
+    Flags: waituntilterminated
 
 ; 2. Launch PassKey after installation completes.
 Filename: "{app}\PassKey.Desktop.exe"; Description: "Launch PassKey"; Flags: nowait postinstall skipifsilent
