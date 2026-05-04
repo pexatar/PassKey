@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-05-04
+
+### Fixed
+- Single-instance protection: launching PassKey when it is already running in the system tray
+  now brings the existing window to the foreground instead of silently starting (and immediately
+  hiding) a second invisible process. This was the primary cause of the "app installs but
+  doesn't start" symptom reported on v1.0.7.
+- Startup crash log: if the application fails to initialise before the main window is created,
+  a diagnostic file is written to `%LOCALAPPDATA%\PassKey\startup-crash.log`. This makes
+  silent startup failures diagnosable without attaching a debugger.
+
 ## [1.0.7] - 2026-05-02
 
 ### Fixed
@@ -117,7 +128,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Giuseppe Imperato** — concept, design, product decisions
 - **[Claude](https://www.anthropic.com/claude) by Anthropic** — architecture, implementation, documentation
 
-[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.7...HEAD
+[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.8...HEAD
+[1.0.8]: https://github.com/pexatar/PassKey/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/pexatar/PassKey/compare/v1.0.6...v1.0.7
 [1.0.6]: https://github.com/pexatar/PassKey/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/pexatar/PassKey/compare/v1.0.0...v1.0.5
