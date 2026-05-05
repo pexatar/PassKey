@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Models;
+using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -19,7 +20,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class SecureNotesListView : UserControl
 {
     private SecureNotesListViewModel? _viewModel;
-    private readonly ResourceLoader _res = new();
+    private readonly ResourceLoader _resourceLoader = new();
 
     public SecureNotesListView()
     {
@@ -37,10 +38,10 @@ public sealed partial class SecureNotesListView : UserControl
         BuildCategoryFilter();
 
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
-        EmptyState.Title = _res.GetString("EmptyNotesTitle");
-        EmptyState.Subtitle = _res.GetString("EmptyNotesSubtitle");
-        FilteredEmptyState.Title = _res.GetString("EmptyFilteredTitle");
-        FilteredEmptyState.Subtitle = _res.GetString("EmptyFilteredSubtitle");
+        EmptyState.Title = _resourceLoader.GetString("EmptyNotesTitle");
+        EmptyState.Subtitle = _resourceLoader.GetString("EmptyNotesSubtitle");
+        FilteredEmptyState.Title = _resourceLoader.GetString("EmptyFilteredTitle");
+        FilteredEmptyState.Subtitle = _resourceLoader.GetString("EmptyFilteredSubtitle");
 
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();
@@ -310,18 +311,7 @@ public sealed partial class SecureNotesListView : UserControl
 
     // --- Toast conferma salvataggio ---
 
-    public void ShowSavedToast()
-    {
-        SavedTip.IsOpen = true;
-        Announce("Nota salvata.");
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-        timer.Tick += (s, _) =>
-        {
-            SavedTip.IsOpen = false;
-            ((DispatcherTimer)s!).Stop();
-        };
-        timer.Start();
-    }
+    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip, () => Announce("Nota salvata."));
 
     // --- Helpers ---
 

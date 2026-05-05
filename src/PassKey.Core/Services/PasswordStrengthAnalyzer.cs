@@ -104,6 +104,19 @@ public sealed class PasswordStrengthAnalyzer : IPasswordStrengthAnalyzer
         return false;
     }
 
+    /// <summary>
+    /// Time conversion constants used when formatting the estimated crack-time string.
+    /// </summary>
+    private static class TimeConstants
+    {
+        internal const double SecondsPerMinute     = 60;
+        internal const double SecondsPerHour       = 3_600;        // 60 * 60
+        internal const double SecondsPerDay        = 86_400;       // 60 * 60 * 24
+        internal const double SecondsPerYear       = 31_536_000;   // 365 * 24 * 60 * 60
+        internal const double SecondsPerCentury    = SecondsPerYear * 100;
+        internal const double SecondsPerMillennium = SecondsPerYear * 1_000;
+    }
+
     private static string EstimateCrackTime(int length, bool hasUpper, bool hasLower, bool hasDigit, bool hasSymbol)
     {
         var charsetSize = 0;
@@ -121,12 +134,12 @@ public sealed class PasswordStrengthAnalyzer : IPasswordStrengthAnalyzer
         return seconds switch
         {
             < 1 => "instant",
-            < 60 => "seconds",
-            < 3600 => $"{(int)(seconds / 60)} minutes",
-            < 86400 => $"{(int)(seconds / 3600)} hours",
-            < 31536000 => $"{(int)(seconds / 86400)} days",
-            < 31536000.0 * 100 => $"{(int)(seconds / 31536000)} years",
-            < 31536000.0 * 1000 => "centuries",
+            < TimeConstants.SecondsPerMinute     => "seconds",
+            < TimeConstants.SecondsPerHour       => $"{(int)(seconds / TimeConstants.SecondsPerMinute)} minutes",
+            < TimeConstants.SecondsPerDay        => $"{(int)(seconds / TimeConstants.SecondsPerHour)} hours",
+            < TimeConstants.SecondsPerYear       => $"{(int)(seconds / TimeConstants.SecondsPerDay)} days",
+            < TimeConstants.SecondsPerCentury    => $"{(int)(seconds / TimeConstants.SecondsPerYear)} years",
+            < TimeConstants.SecondsPerMillennium => "centuries",
             _ => "millennia"
         };
     }

@@ -13,7 +13,7 @@ public sealed partial class IdentityDetailView : UserControl
 {
     private IdentityDetailViewModel? _viewModel;
     private bool _updatingFromVm;
-    private readonly Microsoft.Windows.ApplicationModel.Resources.ResourceLoader _res = new();
+    private readonly Microsoft.Windows.ApplicationModel.Resources.ResourceLoader _resourceLoader = new();
 
     public IdentityDetailView()
     {
@@ -68,8 +68,8 @@ public sealed partial class IdentityDetailView : UserControl
 
         // Subtitle
         PanelSubtitle.Text = isEdit
-            ? _res.GetString("IdPanelSubtitleEdit")
-            : _res.GetString("IdPanelSubtitleNew");
+            ? _resourceLoader.GetString("IdPanelSubtitleEdit")
+            : _resourceLoader.GetString("IdPanelSubtitleNew");
 
         // Expand sections that have data in edit mode
         if (!string.IsNullOrWhiteSpace(vm.Street) || !string.IsNullOrWhiteSpace(vm.City) ||
@@ -236,7 +236,7 @@ public sealed partial class IdentityDetailView : UserControl
     {
         SaveProgress.IsActive = saving;
         SaveProgress.Visibility = saving ? Visibility.Visible : Visibility.Collapsed;
-        SaveButtonText.Text = saving ? _res.GetString("SaveInProgress") : _res.GetString("ButtonSave");
+        SaveButtonText.Text = saving ? _resourceLoader.GetString("SaveInProgress") : _resourceLoader.GetString("ButtonSave");
         SaveButton.IsEnabled = !saving;
     }
 

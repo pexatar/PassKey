@@ -5,6 +5,34 @@ namespace PassKey.Core.Services;
 public static class CardTypeDetector
 {
     /// <summary>
+    /// BIN (Bank Identification Number) / IIN prefix ranges used for card-type detection.
+    /// Sources: EMVCo IIN Registry; updated ranges as of 2024.
+    /// </summary>
+    private static class BinRanges
+    {
+        // MasterCard: standard range 51-55 is checked inline with a 2-digit prefix;
+        // the expanded range covers re-issued BINs introduced in 2017.
+        internal const int MasterCardExpandedStart = 2221;
+        internal const int MasterCardExpandedEnd   = 2720;
+
+        // Discover: 3-digit prefix range (644-649)
+        internal const int DiscoverRange3Start = 644;
+        internal const int DiscoverRange3End   = 649;
+
+        // Discover: 6-digit IIN range (co-branded UnionPay; 622126-622925)
+        internal const int DiscoverRange6Start = 622126;
+        internal const int DiscoverRange6End   = 622925;
+
+        // JCB: 4-digit prefix range (3528-3589)
+        internal const int JcbRangeStart = 3528;
+        internal const int JcbRangeEnd   = 3589;
+
+        // Diners Club Classic: 3-digit prefix range (300-305)
+        internal const int DinersRange3Start = 300;
+        internal const int DinersRange3End   = 305;
+    }
+
+    /// <summary>
     /// Detects the card type from the card number using BIN prefix tables.
     /// </summary>
     public static CardType Detect(string cardNumber)
@@ -24,7 +52,7 @@ public static class CardTypeDetector
         if (digits.StartsWith('4'))
             return CardType.Visa;
 
-        // MasterCard: 51-55 or 2221-2720
+        // MasterCard: 51-55 or expanded range 2221-2720
         if (digits.Length >= 2)
         {
             var prefix2 = int.Parse(digits[..2]);
@@ -34,7 +62,7 @@ public static class CardTypeDetector
         if (digits.Length >= 4)
         {
             var prefix4 = int.Parse(digits[..4]);
-            if (prefix4 >= 2221 && prefix4 <= 2720)
+            if (prefix4 >= BinRanges.MasterCardExpandedStart && prefix4 <= BinRanges.MasterCardExpandedEnd)
                 return CardType.MasterCard;
         }
 
@@ -44,13 +72,13 @@ public static class CardTypeDetector
         if (digits.Length >= 3)
         {
             var prefix3 = int.Parse(digits[..3]);
-            if (prefix3 >= 644 && prefix3 <= 649)
+            if (prefix3 >= BinRanges.DiscoverRange3Start && prefix3 <= BinRanges.DiscoverRange3End)
                 return CardType.Discover;
         }
         if (digits.Length >= 6)
         {
             var prefix6 = int.Parse(digits[..6]);
-            if (prefix6 >= 622126 && prefix6 <= 622925)
+            if (prefix6 >= BinRanges.DiscoverRange6Start && prefix6 <= BinRanges.DiscoverRange6End)
                 return CardType.Discover;
         }
 
@@ -58,7 +86,7 @@ public static class CardTypeDetector
         if (digits.Length >= 4)
         {
             var prefix4 = int.Parse(digits[..4]);
-            if (prefix4 >= 3528 && prefix4 <= 3589)
+            if (prefix4 >= BinRanges.JcbRangeStart && prefix4 <= BinRanges.JcbRangeEnd)
                 return CardType.JCB;
         }
 
@@ -68,7 +96,7 @@ public static class CardTypeDetector
         if (digits.Length >= 3)
         {
             var prefix3 = int.Parse(digits[..3]);
-            if (prefix3 >= 300 && prefix3 <= 305)
+            if (prefix3 >= BinRanges.DinersRange3Start && prefix3 <= BinRanges.DinersRange3End)
                 return CardType.DinersClub;
         }
 

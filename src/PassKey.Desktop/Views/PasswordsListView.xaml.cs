@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
+using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 using Windows.Storage.Streams;
 
@@ -17,7 +18,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class PasswordsListView : UserControl
 {
     private PasswordsListViewModel? _viewModel;
-    private readonly ResourceLoader _res = new();
+    private readonly ResourceLoader _resourceLoader = new();
 
     public PasswordsListView()
     {
@@ -30,8 +31,8 @@ public sealed partial class PasswordsListView : UserControl
         DataContext = vm;
 
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
-        EmptyState.Title = _res.GetString("EmptyPasswordsTitle");
-        EmptyState.Subtitle = _res.GetString("EmptyPasswordsSubtitle");
+        EmptyState.Title = _resourceLoader.GetString("EmptyPasswordsTitle");
+        EmptyState.Subtitle = _resourceLoader.GetString("EmptyPasswordsSubtitle");
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.SaveCompleted += ShowSavedToast;
 
@@ -99,19 +100,9 @@ public sealed partial class PasswordsListView : UserControl
         }
     }
 
-    // --- Toast (Step F) ---
+    // --- Toast ---
 
-    public void ShowSavedToast()
-    {
-        SavedTip.IsOpen = true;
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-        timer.Tick += (s, _) =>
-        {
-            SavedTip.IsOpen = false;
-            ((DispatcherTimer)s!).Stop();
-        };
-        timer.Start();
-    }
+    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip);
 
     // --- Search ---
 

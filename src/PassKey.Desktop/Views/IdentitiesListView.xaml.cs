@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
+using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -17,7 +18,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class IdentitiesListView : UserControl
 {
     private IdentitiesListViewModel? _viewModel;
-    private readonly ResourceLoader _res = new();
+    private readonly ResourceLoader _resourceLoader = new();
 
     public IdentitiesListView()
     {
@@ -33,8 +34,8 @@ public sealed partial class IdentitiesListView : UserControl
         vm.SaveCompleted += ShowSavedToast;
 
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
-        EmptyState.Title = _res.GetString("EmptyIdentitiesTitle");
-        EmptyState.Subtitle = _res.GetString("EmptyIdentitiesSubtitle");
+        EmptyState.Title = _resourceLoader.GetString("EmptyIdentitiesTitle");
+        EmptyState.Subtitle = _resourceLoader.GetString("EmptyIdentitiesSubtitle");
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();
         UpdateEmptyState();
@@ -181,17 +182,7 @@ public sealed partial class IdentitiesListView : UserControl
     }
 
     // Save confirmation toast
-    public void ShowSavedToast()
-    {
-        SavedTip.IsOpen = true;
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-        timer.Tick += (s, _) =>
-        {
-            SavedTip.IsOpen = false;
-            ((DispatcherTimer)s!).Stop();
-        };
-        timer.Start();
-    }
+    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip);
 
     // ── Formatters ────────────────────────────────────────────────────────────
 
