@@ -10,11 +10,15 @@ public sealed class PasswordGenerator : IPasswordGenerator
     private const string Symbols = "!@#$%^&*()-_=+[]{}|;:',.<>?/~`";
     private const string AmbiguousChars = "0O1lI|";
 
+    private const int MinPasswordLength = 8;
+    private const int MaxPasswordLength = 128;
+
     public string Generate(PasswordGeneratorOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
-        if (options.Length < 8 || options.Length > 128)
-            throw new ArgumentOutOfRangeException(nameof(options), "Length must be between 8 and 128.");
+        if (options.Length < MinPasswordLength || options.Length > MaxPasswordLength)
+            throw new ArgumentOutOfRangeException(nameof(options),
+                $"Length must be between {MinPasswordLength} and {MaxPasswordLength}.");
 
         var charPool = BuildCharPool(options);
         if (charPool.Length == 0)

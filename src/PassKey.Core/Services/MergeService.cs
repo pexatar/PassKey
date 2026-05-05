@@ -11,81 +11,55 @@ public sealed class MergeService : IMergeService
         ArgumentNullException.ThrowIfNull(target);
         ArgumentNullException.ThrowIfNull(source);
 
-        int pwImported = 0, cardImported = 0, idImported = 0, noteImported = 0;
-        int skipped = 0, overwritten = 0;
-
-        // Build hash sets of existing entries
-        var existingPwHashes = BuildHashSet(target.Passwords, ComputePasswordHash);
-        var existingCardHashes = BuildHashSet(target.CreditCards, ComputeCardHash);
-        var existingIdHashes = BuildHashSet(target.Identities, ComputeIdentityHash);
-        var existingNoteHashes = BuildHashSet(target.SecureNotes, ComputeNoteHash);
-
-        // Merge passwords
-        foreach (var entry in source.Passwords)
-        {
-            var hash = ComputePasswordHash(entry);
-            var result = MergeEntry(target.Passwords, entry, hash, existingPwHashes, strategy, ComputePasswordHash);
-            switch (result)
-            {
-                case MergeAction.Imported: pwImported++; break;
-                case MergeAction.Skipped: skipped++; break;
-                case MergeAction.Overwritten: overwritten++; break;
-            }
-        }
-
-        // Merge credit cards
-        foreach (var entry in source.CreditCards)
-        {
-            var hash = ComputeCardHash(entry);
-            var result = MergeEntry(target.CreditCards, entry, hash, existingCardHashes, strategy, ComputeCardHash);
-            switch (result)
-            {
-                case MergeAction.Imported: cardImported++; break;
-                case MergeAction.Skipped: skipped++; break;
-                case MergeAction.Overwritten: overwritten++; break;
-            }
-        }
-
-        // Merge identities
-        foreach (var entry in source.Identities)
-        {
-            var hash = ComputeIdentityHash(entry);
-            var result = MergeEntry(target.Identities, entry, hash, existingIdHashes, strategy, ComputeIdentityHash);
-            switch (result)
-            {
-                case MergeAction.Imported: idImported++; break;
-                case MergeAction.Skipped: skipped++; break;
-                case MergeAction.Overwritten: overwritten++; break;
-            }
-        }
-
-        // Merge secure notes
-        foreach (var entry in source.SecureNotes)
-        {
-            var hash = ComputeNoteHash(entry);
-            var result = MergeEntry(target.SecureNotes, entry, hash, existingNoteHashes, strategy, ComputeNoteHash);
-            switch (result)
-            {
-                case MergeAction.Imported: noteImported++; break;
-                case MergeAction.Skipped: skipped++; break;
-                case MergeAction.Overwritten: overwritten++; break;
-            }
-        }
+        var (pwImported,   pwSkipped,   pwOverwritten)   = MergeCollection(target.Passwords,   source.Passwords,   strategy, ComputePasswordHash);
+        var (cardImported, cardSkipped, cardOverwritten) = MergeCollection(target.CreditCards, source.CreditCards, strategy, ComputeCardHash);
+        var (idImported,   idSkipped,   idOverwritten)   = MergeCollection(target.Identities,  source.Identities,  strategy, ComputeIdentityHash);
+        var (noteImported, noteSkipped, noteOverwritten) = MergeCollection(target.SecureNotes, source.SecureNotes, strategy, ComputeNoteHash);
 
         target.LastModified = DateTime.UtcNow;
 
         return new ImportResult
         {
-            PasswordsImported = pwImported,
-            CardsImported = cardImported,
+            PasswordsImported  = pwImported,
+            CardsImported      = cardImported,
             IdentitiesImported = idImported,
-            NotesImported = noteImported,
-            Skipped = skipped,
-            Overwritten = overwritten
+            NotesImported      = noteImported,
+            Skipped    = pwSkipped    + cardSkipped    + idSkipped    + noteSkipped,
+            Overwritten = pwOverwritten + cardOverwritten + idOverwritten + noteOverwritten
         };
     }
 
     private enum MergeAction { Imported, Skipped, Overwritten }
+
+    private const int NoteHashSnippetLength = 256;
+
+    /// <summary>
+    /// Merges all entries from <paramref name="sourceList"/> into <paramref name="targetList"/>
+    /// applying the given <paramref name="strategy"/> for duplicates.
+    /// Returns a tuple of (imported, skipped, overwritten) counts.
+    /// </summary>
+    private static (int imported, int skipped, int overwritten) MergeCollection<T>(
+        List<T> targetList,
+        List<T> sourceList,
+        ImportMergeStrategy strategy,
+        Func<T, string> hashFunc) where T : class
+    {
+        int imported = 0, skipped = 0, overwritten = 0;
+        var existingHashes = BuildHashSet(targetList, hashFunc);
+
+        foreach (var entry in sourceList)
+        {
+            var hash = hashFunc(entry);
+            var result = MergeEntry(targetList, entry, hash, existingHashes, strategy, hashFunc);
+            switch (result)
+            {
+                case MergeAction.Imported:    imported++;    break;
+                case MergeAction.Skipped:     skipped++;     break;
+                case MergeAction.Overwritten: overwritten++; break;
+            }
+        }
+        return (imported, skipped, overwritten);
+    }
 
     private static MergeAction MergeEntry<T>(
         List<T> targetList, T entry, string hash,
@@ -165,8 +139,8 @@ public sealed class MergeService : IMergeService
 
     internal static string ComputeNoteHash(SecureNoteEntry entry)
     {
-        var contentSnippet = entry.Content.Length > 256
-            ? entry.Content[..256]
+        var contentSnippet = entry.Content.Length > NoteHashSnippetLength
+            ? entry.Content[..NoteHashSnippetLength]
             : entry.Content;
         var input = $"{entry.Title.ToLowerInvariant()}|{contentSnippet}";
         return ComputeSha256(input);

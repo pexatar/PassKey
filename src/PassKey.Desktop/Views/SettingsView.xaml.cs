@@ -13,7 +13,7 @@ public sealed partial class SettingsView : UserControl
 {
     private SettingsViewModel? _viewModel;
     private bool _updatingFromVm;
-    private readonly ResourceLoader _res = new();
+    private readonly ResourceLoader _resourceLoader = new();
     private IDialogQueueService _dialogQueue = null!;
 
     /// <summary>Raised when the user clicks "Guida e scorciatoie" to navigate to HelpView.</summary>
@@ -143,21 +143,21 @@ public sealed partial class SettingsView : UserControl
 
         var currentPwBox = new SecureInputBox
         {
-            PlaceholderText = _res.GetString("ChangePwCurrentPlaceholder"),
+            PlaceholderText = _resourceLoader.GetString("ChangePwCurrentPlaceholder"),
             ShowRevealButton = Visibility.Visible,
             Width = 320
         };
 
         var newPwBox = new SecureInputBox
         {
-            PlaceholderText = _res.GetString("ChangePwNewPlaceholder"),
+            PlaceholderText = _resourceLoader.GetString("ChangePwNewPlaceholder"),
             ShowRevealButton = Visibility.Visible,
             Width = 320
         };
 
         var confirmPwBox = new SecureInputBox
         {
-            PlaceholderText = _res.GetString("ChangePwConfirmPlaceholder"),
+            PlaceholderText = _resourceLoader.GetString("ChangePwConfirmPlaceholder"),
             ShowRevealButton = Visibility.Visible,
             Width = 320
         };
@@ -178,10 +178,10 @@ public sealed partial class SettingsView : UserControl
 
         var dialog = new ContentDialog
         {
-            Title = _res.GetString("ChangePwDialogTitle"),
+            Title = _resourceLoader.GetString("ChangePwDialogTitle"),
             Content = panel,
-            PrimaryButtonText = _res.GetString("ChangePwDialogPrimary"),
-            CloseButtonText = _res.GetString("ChangePwDialogClose"),
+            PrimaryButtonText = _resourceLoader.GetString("ChangePwDialogPrimary"),
+            CloseButtonText = _resourceLoader.GetString("ChangePwDialogClose"),
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = XamlRoot
         };
@@ -196,13 +196,13 @@ public sealed partial class SettingsView : UserControl
             string? error = null;
 
             if (string.IsNullOrEmpty(currentPw))
-                error = _res.GetString("ChangePwErrEmpty");
+                error = _resourceLoader.GetString("ChangePwErrEmpty");
             else if (newPw.Length < 8)
-                error = _res.GetString("ChangePwErrShort");
+                error = _resourceLoader.GetString("ChangePwErrShort");
             else if (newPw != confirmPw)
-                error = _res.GetString("ChangePwErrMismatch");
+                error = _resourceLoader.GetString("ChangePwErrMismatch");
             else if (newPw == currentPw)
-                error = _res.GetString("ChangePwErrSame");
+                error = _resourceLoader.GetString("ChangePwErrSame");
 
             if (error is not null)
             {
@@ -226,14 +226,14 @@ public sealed partial class SettingsView : UserControl
             if (success)
             {
                 await ShowInfoDialogAsync(
-                    _res.GetString("ChangePwSuccessTitle"),
-                    _res.GetString("ChangePwSuccessMessage"));
+                    _resourceLoader.GetString("ChangePwSuccessTitle"),
+                    _resourceLoader.GetString("ChangePwSuccessMessage"));
             }
             else
             {
                 await ShowInfoDialogAsync(
-                    _res.GetString("ChangePwErrorTitle"),
-                    _res.GetString("ChangePwErrorMessage"));
+                    _resourceLoader.GetString("ChangePwErrorTitle"),
+                    _resourceLoader.GetString("ChangePwErrorMessage"));
             }
         }
         finally
@@ -283,11 +283,11 @@ public sealed partial class SettingsView : UserControl
 
     private string FormatLastCheckTime(DateTime? utc)
     {
-        if (!utc.HasValue)          return _res.GetString("UpdateNeverChecked");
+        if (!utc.HasValue)          return _resourceLoader.GetString("UpdateNeverChecked");
         var diff = DateTime.Now - utc.Value.ToLocalTime();
-        if (diff.TotalMinutes < 1)  return _res.GetString("UpdateJustChecked");
-        if (diff.TotalHours   < 1)  return string.Format(_res.GetString("UpdateCheckedMinutesAgo"), (int)diff.TotalMinutes);
-        if (diff.TotalDays    < 1)  return string.Format(_res.GetString("UpdateCheckedHoursAgo"),   (int)diff.TotalHours);
+        if (diff.TotalMinutes < 1)  return _resourceLoader.GetString("UpdateJustChecked");
+        if (diff.TotalHours   < 1)  return string.Format(_resourceLoader.GetString("UpdateCheckedMinutesAgo"), (int)diff.TotalMinutes);
+        if (diff.TotalDays    < 1)  return string.Format(_resourceLoader.GetString("UpdateCheckedHoursAgo"),   (int)diff.TotalHours);
         return utc.Value.ToLocalTime().ToString("d MMM yyyy, HH:mm");
     }
 
@@ -321,13 +321,13 @@ public sealed partial class SettingsView : UserControl
     {
         var pwBox = new SecureInputBox
         {
-            PlaceholderText = _res.GetString("BackupPwPlaceholder"),
+            PlaceholderText = _resourceLoader.GetString("BackupPwPlaceholder"),
             ShowRevealButton = Visibility.Visible,
             Width = 320
         };
         var confirmBox = new SecureInputBox
         {
-            PlaceholderText = _res.GetString("BackupPwConfirmPlaceholder"),
+            PlaceholderText = _resourceLoader.GetString("BackupPwConfirmPlaceholder"),
             ShowRevealButton = Visibility.Visible,
             Width = 320
         };
@@ -341,7 +341,7 @@ public sealed partial class SettingsView : UserControl
 
         var descText = new TextBlock
         {
-            Text = _res.GetString("BackupPwDialogDesc"),
+            Text = _resourceLoader.GetString("BackupPwDialogDesc"),
             TextWrapping = TextWrapping.Wrap,
             Margin = new Thickness(0, 0, 0, 12)
         };
@@ -354,10 +354,10 @@ public sealed partial class SettingsView : UserControl
 
         var dialog = new ContentDialog
         {
-            Title = _res.GetString("BackupPwDialogTitle"),
+            Title = _resourceLoader.GetString("BackupPwDialogTitle"),
             Content = panel,
             PrimaryButtonText = "OK",
-            CloseButtonText = _res.GetString("RestoreWarningCancel"),
+            CloseButtonText = _resourceLoader.GetString("RestoreWarningCancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
@@ -366,11 +366,11 @@ public sealed partial class SettingsView : UserControl
         {
             string? error = null;
             if (string.IsNullOrEmpty(pwBox.Password))
-                error = _res.GetString("BackupPwErrEmpty");
+                error = _resourceLoader.GetString("BackupPwErrEmpty");
             else if (pwBox.Password.Length < 8)
-                error = _res.GetString("BackupPwErrShort");
+                error = _resourceLoader.GetString("BackupPwErrShort");
             else if (pwBox.Password != confirmBox.Password)
-                error = _res.GetString("BackupPwErrMismatch");
+                error = _resourceLoader.GetString("BackupPwErrMismatch");
 
             if (error is not null)
             {
@@ -390,10 +390,10 @@ public sealed partial class SettingsView : UserControl
     {
         var dialog = new ContentDialog
         {
-            Title = _res.GetString("RestoreWarningTitle"),
-            Content = _res.GetString("RestoreWarningMessage"),
-            PrimaryButtonText = _res.GetString("RestoreWarningConfirm"),
-            CloseButtonText = _res.GetString("RestoreWarningCancel"),
+            Title = _resourceLoader.GetString("RestoreWarningTitle"),
+            Content = _resourceLoader.GetString("RestoreWarningMessage"),
+            PrimaryButtonText = _resourceLoader.GetString("RestoreWarningConfirm"),
+            CloseButtonText = _resourceLoader.GetString("RestoreWarningCancel"),
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = XamlRoot
         };
@@ -405,17 +405,17 @@ public sealed partial class SettingsView : UserControl
     {
         var pwBox = new SecureInputBox
         {
-            PlaceholderText = _res.GetString("RestorePwPlaceholder"),
+            PlaceholderText = _resourceLoader.GetString("RestorePwPlaceholder"),
             ShowRevealButton = Visibility.Visible,
             Width = 320
         };
 
         var dialog = new ContentDialog
         {
-            Title = _res.GetString("RestorePwDialogTitle"),
+            Title = _resourceLoader.GetString("RestorePwDialogTitle"),
             Content = pwBox,
             PrimaryButtonText = "OK",
-            CloseButtonText = _res.GetString("RestoreWarningCancel"),
+            CloseButtonText = _resourceLoader.GetString("RestoreWarningCancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
@@ -429,18 +429,18 @@ public sealed partial class SettingsView : UserControl
     private async Task<(ImportFormat format, bool confirmed)> OnImportFormatRequested()
     {
         var combo = new ComboBox { Width = 320 };
-        combo.Items.Add(new ComboBoxItem { Content = _res.GetString("ImportFormatCsv"), Tag = ImportFormat.Csv });
-        combo.Items.Add(new ComboBoxItem { Content = _res.GetString("ImportFormatKdbx"), Tag = ImportFormat.Kdbx });
-        combo.Items.Add(new ComboBoxItem { Content = _res.GetString("ImportFormatOnePux"), Tag = ImportFormat.OnePux });
-        combo.Items.Add(new ComboBoxItem { Content = _res.GetString("ImportFormatBitwarden"), Tag = ImportFormat.Bitwarden });
+        combo.Items.Add(new ComboBoxItem { Content = _resourceLoader.GetString("ImportFormatCsv"), Tag = ImportFormat.Csv });
+        combo.Items.Add(new ComboBoxItem { Content = _resourceLoader.GetString("ImportFormatKdbx"), Tag = ImportFormat.Kdbx });
+        combo.Items.Add(new ComboBoxItem { Content = _resourceLoader.GetString("ImportFormatOnePux"), Tag = ImportFormat.OnePux });
+        combo.Items.Add(new ComboBoxItem { Content = _resourceLoader.GetString("ImportFormatBitwarden"), Tag = ImportFormat.Bitwarden });
         combo.SelectedIndex = 0;
 
         var dialog = new ContentDialog
         {
-            Title = _res.GetString("ImportFormatDialogTitle"),
+            Title = _resourceLoader.GetString("ImportFormatDialogTitle"),
             Content = combo,
             PrimaryButtonText = "OK",
-            CloseButtonText = _res.GetString("RestoreWarningCancel"),
+            CloseButtonText = _resourceLoader.GetString("RestoreWarningCancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
@@ -458,17 +458,17 @@ public sealed partial class SettingsView : UserControl
     {
         var pwBox = new SecureInputBox
         {
-            PlaceholderText = _res.GetString("ImportKdbxPwPlaceholder"),
+            PlaceholderText = _resourceLoader.GetString("ImportKdbxPwPlaceholder"),
             ShowRevealButton = Visibility.Visible,
             Width = 320
         };
 
         var dialog = new ContentDialog
         {
-            Title = _res.GetString("ImportKdbxPwTitle"),
+            Title = _resourceLoader.GetString("ImportKdbxPwTitle"),
             Content = pwBox,
             PrimaryButtonText = "OK",
-            CloseButtonText = _res.GetString("RestoreWarningCancel"),
+            CloseButtonText = _resourceLoader.GetString("RestoreWarningCancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
@@ -488,15 +488,15 @@ public sealed partial class SettingsView : UserControl
             Margin = new Thickness(0, 0, 0, 16)
         };
         var lines = new System.Text.StringBuilder();
-        if (pwCount > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummaryPasswords"), pwCount));
-        if (cardCount > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummaryCards"), cardCount));
-        if (idCount > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummaryIdentities"), idCount));
-        if (noteCount > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummaryNotes"), noteCount));
+        if (pwCount > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummaryPasswords"), pwCount));
+        if (cardCount > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummaryCards"), cardCount));
+        if (idCount > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummaryIdentities"), idCount));
+        if (noteCount > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummaryNotes"), noteCount));
         summaryText.Text = lines.ToString().TrimEnd();
 
-        var skipRadio = new RadioButton { Content = _res.GetString("ImportMergeSkip"), IsChecked = true };
-        var overwriteRadio = new RadioButton { Content = _res.GetString("ImportMergeOverwrite") };
-        var keepBothRadio = new RadioButton { Content = _res.GetString("ImportMergeKeepBoth") };
+        var skipRadio = new RadioButton { Content = _resourceLoader.GetString("ImportMergeSkip"), IsChecked = true };
+        var overwriteRadio = new RadioButton { Content = _resourceLoader.GetString("ImportMergeOverwrite") };
+        var keepBothRadio = new RadioButton { Content = _resourceLoader.GetString("ImportMergeKeepBoth") };
 
         var panel = new StackPanel { Spacing = 8 };
         panel.Children.Add(summaryText);
@@ -506,10 +506,10 @@ public sealed partial class SettingsView : UserControl
 
         var dialog = new ContentDialog
         {
-            Title = _res.GetString("ImportMergeTitle"),
+            Title = _resourceLoader.GetString("ImportMergeTitle"),
             Content = panel,
             PrimaryButtonText = "OK",
-            CloseButtonText = _res.GetString("RestoreWarningCancel"),
+            CloseButtonText = _resourceLoader.GetString("RestoreWarningCancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
@@ -529,37 +529,37 @@ public sealed partial class SettingsView : UserControl
     private async Task OnImportCompleted(ImportResult result)
     {
         var lines = new System.Text.StringBuilder();
-        if (result.PasswordsImported > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummaryPasswords"), result.PasswordsImported));
-        if (result.CardsImported > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummaryCards"), result.CardsImported));
-        if (result.IdentitiesImported > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummaryIdentities"), result.IdentitiesImported));
-        if (result.NotesImported > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummaryNotes"), result.NotesImported));
-        if (result.Skipped > 0) lines.AppendLine(string.Format(_res.GetString("ImportSummarySkipped"), result.Skipped));
+        if (result.PasswordsImported > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummaryPasswords"), result.PasswordsImported));
+        if (result.CardsImported > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummaryCards"), result.CardsImported));
+        if (result.IdentitiesImported > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummaryIdentities"), result.IdentitiesImported));
+        if (result.NotesImported > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummaryNotes"), result.NotesImported));
+        if (result.Skipped > 0) lines.AppendLine(string.Format(_resourceLoader.GetString("ImportSummarySkipped"), result.Skipped));
 
-        await ShowInfoDialogAsync(_res.GetString("ImportSummaryTitle"), lines.ToString().TrimEnd());
+        await ShowInfoDialogAsync(_resourceLoader.GetString("ImportSummaryTitle"), lines.ToString().TrimEnd());
     }
 
     private async Task OnBackupCompleted(string path)
     {
         await ShowInfoDialogAsync(
-            _res.GetString("BackupSuccessTitle"),
-            _res.GetString("BackupSuccessMessage"));
+            _resourceLoader.GetString("BackupSuccessTitle"),
+            _resourceLoader.GetString("BackupSuccessMessage"));
     }
 
     private async Task OnRestoreCompleted()
     {
         await ShowInfoDialogAsync(
-            _res.GetString("RestoreSuccessTitle"),
-            _res.GetString("RestoreSuccessMessage"));
+            _resourceLoader.GetString("RestoreSuccessTitle"),
+            _resourceLoader.GetString("RestoreSuccessMessage"));
     }
 
     private async Task OnOperationError(string errorCode)
     {
         var message = errorCode switch
         {
-            "WRONG_PASSWORD" => _res.GetString("RestoreErrorWrongPw"),
-            "INVALID_FILE" => _res.GetString("RestoreErrorInvalid"),
+            "WRONG_PASSWORD" => _resourceLoader.GetString("RestoreErrorWrongPw"),
+            "INVALID_FILE" => _resourceLoader.GetString("RestoreErrorInvalid"),
             _ => errorCode
         };
-        await ShowInfoDialogAsync(_res.GetString("ImportErrorTitle"), message);
+        await ShowInfoDialogAsync(_resourceLoader.GetString("ImportErrorTitle"), message);
     }
 }

@@ -16,7 +16,7 @@ public sealed partial class CreditCardDetailView : UserControl
 {
     private CreditCardDetailViewModel? _viewModel;
     private bool _updatingFromVm;
-    private readonly Microsoft.Windows.ApplicationModel.Resources.ResourceLoader _res = new();
+    private readonly Microsoft.Windows.ApplicationModel.Resources.ResourceLoader _resourceLoader = new();
 
     /// <summary>
     /// All 10 accent colors for the swatch selector.
@@ -100,8 +100,8 @@ public sealed partial class CreditCardDetailView : UserControl
 
         // Subtitle
         PanelSubtitle.Text = isEdit
-            ? _res.GetString("CardPanelSubtitleEdit")
-            : _res.GetString("CardPanelSubtitleNew");
+            ? _resourceLoader.GetString("CardPanelSubtitleEdit")
+            : _resourceLoader.GetString("CardPanelSubtitleNew");
 
         // Hook SecureInputBox events
         CvvInput.PasswordChanged += OnCvvChanged;
@@ -265,7 +265,7 @@ public sealed partial class CreditCardDetailView : UserControl
             CardType.JCB => "JCB",
             CardType.Maestro => "Maestro",
             CardType.DinersClub => "Diners Club",
-            _ => _res.GetString("CardTypeUnknown")
+            _ => _resourceLoader.GetString("CardTypeUnknown")
         };
 
         // Luhn validation
@@ -278,14 +278,14 @@ public sealed partial class CreditCardDetailView : UserControl
             {
                 LuhnIcon.Glyph = "\uE73E"; // checkmark
                 LuhnIcon.Foreground = (Brush)Application.Current.Resources["LuhnValidBrush"];
-                LuhnLabel.Text = _res.GetString("LuhnValid");
+                LuhnLabel.Text = _resourceLoader.GetString("LuhnValid");
                 LuhnLabel.Foreground = (Brush)Application.Current.Resources["LuhnValidBrush"];
             }
             else
             {
                 LuhnIcon.Glyph = "\uE711"; // dismiss
                 LuhnIcon.Foreground = (Brush)Application.Current.Resources["LuhnInvalidBrush"];
-                LuhnLabel.Text = _res.GetString("LuhnInvalid");
+                LuhnLabel.Text = _resourceLoader.GetString("LuhnInvalid");
                 LuhnLabel.Foreground = (Brush)Application.Current.Resources["LuhnInvalidBrush"];
             }
         }
@@ -318,7 +318,7 @@ public sealed partial class CreditCardDetailView : UserControl
     {
         SaveProgress.IsActive = saving;
         SaveProgress.Visibility = saving ? Visibility.Visible : Visibility.Collapsed;
-        SaveButtonText.Text = saving ? _res.GetString("SaveInProgress") : _res.GetString("ButtonSaveLabel/Text");
+        SaveButtonText.Text = saving ? _resourceLoader.GetString("SaveInProgress") : _resourceLoader.GetString("ButtonSaveLabel/Text");
         SaveButton.IsEnabled = !saving;
     }
 

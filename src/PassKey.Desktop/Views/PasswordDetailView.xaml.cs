@@ -17,7 +17,7 @@ public sealed partial class PasswordDetailView : UserControl
 {
     private PasswordDetailViewModel? _viewModel;
     private bool _updatingFromVm;
-    private readonly ResourceLoader _res = new();
+    private readonly ResourceLoader _resourceLoader = new();
 
     // 24 Segoe MDL2 Assets glyphs for the icon picker
     private static readonly string[] IconGlyphs =
@@ -65,8 +65,8 @@ public sealed partial class PasswordDetailView : UserControl
 
         // Subtitle
         PanelSubtitle.Text = isEdit
-            ? _res.GetString("PwPanelSubtitleEdit")
-            : _res.GetString("PwPanelSubtitleNew");
+            ? _resourceLoader.GetString("PwPanelSubtitleEdit")
+            : _resourceLoader.GetString("PwPanelSubtitleNew");
 
         // Strength indicator
         UpdateStrengthLabel();
@@ -219,11 +219,11 @@ public sealed partial class PasswordDetailView : UserControl
         StrengthLabel.Visibility = Visibility.Visible;
         StrengthLabel.Text = label switch
         {
-            "VeryWeak" => _res.GetString("StrengthVeryWeak"),
-            "Weak" => _res.GetString("StrengthWeak"),
-            "Medium" => _res.GetString("StrengthMedium"),
-            "Strong" => _res.GetString("StrengthStrong"),
-            "VeryStrong" => _res.GetString("StrengthVeryStrong"),
+            "VeryWeak" => _resourceLoader.GetString("StrengthVeryWeak"),
+            "Weak" => _resourceLoader.GetString("StrengthWeak"),
+            "Medium" => _resourceLoader.GetString("StrengthMedium"),
+            "Strong" => _resourceLoader.GetString("StrengthStrong"),
+            "VeryStrong" => _resourceLoader.GetString("StrengthVeryStrong"),
             _ => label
         };
         StrengthLabel.Foreground = GetStrengthBrush(_viewModel.PasswordStrengthScore);

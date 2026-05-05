@@ -13,18 +13,18 @@ namespace PassKey.Desktop.Views;
 public sealed partial class DashboardView : UserControl
 {
     private DashboardViewModel? _viewModel;
-    private readonly ResourceLoader _res = new();
+    private readonly ResourceLoader _resourceLoader = new();
     private DispatcherTimer? _searchTimer;
 
     public DashboardView()
     {
         InitializeComponent();
-        EmptyState.Title = _res.GetString("EmptyDashboardTitle");
-        EmptyState.Subtitle = _res.GetString("EmptyDashboardSubtitle");
-        EmptyState.PrimaryActionText = _res.GetString("AddPassword");
-        EmptyState.SecondaryActionText = _res.GetString("ImportData");
+        EmptyState.Title = _resourceLoader.GetString("EmptyDashboardTitle");
+        EmptyState.Subtitle = _resourceLoader.GetString("EmptyDashboardSubtitle");
+        EmptyState.PrimaryActionText = _resourceLoader.GetString("AddPassword");
+        EmptyState.SecondaryActionText = _resourceLoader.GetString("ImportData");
 
-        VaultOverviewTitle.Text = _res.GetString("DashVaultOverview");
+        VaultOverviewTitle.Text = _resourceLoader.GetString("DashVaultOverview");
     }
 
     public async void SetViewModel(DashboardViewModel vm)
@@ -36,20 +36,20 @@ public sealed partial class DashboardView : UserControl
 
         // Pass localized resources to ViewModel
         vm.SetGreetingResources(
-            _res.GetString("GreetingMorning"),
-            _res.GetString("GreetingAfternoon"),
-            _res.GetString("GreetingEvening"));
+            _resourceLoader.GetString("GreetingMorning"),
+            _resourceLoader.GetString("GreetingAfternoon"),
+            _resourceLoader.GetString("GreetingEvening"));
 
         vm.SetActionLabels(
-            _res.GetString("ActionCreated"),
-            _res.GetString("ActionModified"),
-            _res.GetString("ActionDeleted"));
+            _resourceLoader.GetString("ActionCreated"),
+            _resourceLoader.GetString("ActionModified"),
+            _resourceLoader.GetString("ActionDeleted"));
 
         vm.SetDeletedLabels(
-            _res.GetString("DeletedPassword"),
-            _res.GetString("DeletedCard"),
-            _res.GetString("DeletedIdentity"),
-            _res.GetString("DeletedNote"));
+            _resourceLoader.GetString("DeletedPassword"),
+            _resourceLoader.GetString("DeletedCard"),
+            _resourceLoader.GetString("DeletedIdentity"),
+            _resourceLoader.GetString("DeletedNote"));
 
         // Wire empty state buttons via PrimaryActionCommand/SecondaryActionCommand
         EmptyState.PrimaryActionCommand = new CommunityToolkit.Mvvm.Input.RelayCommand(
@@ -102,13 +102,13 @@ public sealed partial class DashboardView : UserControl
         NotesCount.Text = _viewModel.TotalNotes.ToString();
 
         // Stat card subtitles
-        PasswordsSubtitle.Text = _res.GetString("DashSubtitlePasswords");
-        CardsSubtitle.Text = _res.GetString("DashSubtitleCards");
-        IdentitiesSubtitle.Text = _res.GetString("DashSubtitleIdentities");
-        NotesSubtitle.Text = _res.GetString("DashSubtitleNotes");
+        PasswordsSubtitle.Text = _resourceLoader.GetString("DashSubtitlePasswords");
+        CardsSubtitle.Text = _resourceLoader.GetString("DashSubtitleCards");
+        IdentitiesSubtitle.Text = _resourceLoader.GetString("DashSubtitleIdentities");
+        NotesSubtitle.Text = _resourceLoader.GetString("DashSubtitleNotes");
 
         // Per-card compact activity (3 indicators each)
-        var noChangesLabel = _res.GetString("DashCardNoChanges");
+        var noChangesLabel = _resourceLoader.GetString("DashCardNoChanges");
         UpdateCardActivity(_viewModel.PasswordsAdded, _viewModel.PasswordsRemoved, _viewModel.PasswordsModified,
             PwActivityRow, PwNoChanges, PwAdded, PwRemoved, PwModified, noChangesLabel);
         UpdateCardActivity(_viewModel.CardsAdded, _viewModel.CardsRemoved, _viewModel.CardsModified,
@@ -125,10 +125,10 @@ public sealed partial class DashboardView : UserControl
             HealthRing.Value = _viewModel.VaultHealthScore;
             HealthScoreText.Text = $"{_viewModel.VaultHealthScore}%";
             HealthRing.Foreground = GetHealthBrush(_viewModel.VaultHealthScore);
-            HealthTitle.Text = _res.GetString("DashHealthTitle");
+            HealthTitle.Text = _resourceLoader.GetString("DashHealthTitle");
             HealthSubtitle.Text = _viewModel.WeakPasswordCount > 0
-                ? string.Format(_res.GetString("DashHealthWeak"), _viewModel.WeakPasswordCount)
-                : _res.GetString("DashHealthGood");
+                ? string.Format(_resourceLoader.GetString("DashHealthWeak"), _viewModel.WeakPasswordCount)
+                : _resourceLoader.GetString("DashHealthGood");
         }
         else
         {
@@ -141,7 +141,7 @@ public sealed partial class DashboardView : UserControl
             ExpiringCardsAlert.Visibility = Visibility.Visible;
             ExpiringCardsAlert.IsOpen = true;
             ExpiringCardsAlert.Message = string.Format(
-                _res.GetString("DashExpiringCards"), _viewModel.ExpiringCardsCount);
+                _resourceLoader.GetString("DashExpiringCards"), _viewModel.ExpiringCardsCount);
         }
         else
         {

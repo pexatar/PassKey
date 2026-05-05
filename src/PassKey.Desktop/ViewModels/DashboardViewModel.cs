@@ -34,91 +34,143 @@ public partial class DashboardViewModel : ObservableObject
     private string _deletedIdentity = "Identità eliminata";
     private string _deletedNote = "Nota eliminata";
 
-    // Greeting
+    // ── Greeting ─────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Personalised greeting shown at the top of the dashboard.
+    /// Text is time-dependent: morning / afternoon / evening variant.
+    /// Updated each time <see cref="RefreshAsync"/> runs.
+    /// </summary>
     [ObservableProperty]
     public partial string GreetingMessage { get; set; } = string.Empty;
 
-    // Stat card totals
+    // ── Stat card totals ─────────────────────────────────────────────────────
+
+    /// <summary>Total count of password entries currently in the vault.</summary>
     [ObservableProperty]
     public partial int TotalPasswords { get; set; }
 
+    /// <summary>Total count of credit card entries currently in the vault.</summary>
     [ObservableProperty]
     public partial int TotalCards { get; set; }
 
+    /// <summary>Total count of identity profiles currently in the vault.</summary>
     [ObservableProperty]
     public partial int TotalIdentities { get; set; }
 
+    /// <summary>Total count of secure notes currently in the vault.</summary>
     [ObservableProperty]
     public partial int TotalNotes { get; set; }
 
-    // Per-card weekly activity (4 types × 3 actions = 12 properties)
+    // ── Weekly activity counters (4 types × 3 actions = 12 properties) ───────
+
+    /// <summary>Number of password entries added in the past 7 days.</summary>
     [ObservableProperty]
     public partial int PasswordsAdded { get; set; }
 
+    /// <summary>Number of password entries deleted in the past 7 days.</summary>
     [ObservableProperty]
     public partial int PasswordsRemoved { get; set; }
 
+    /// <summary>Number of password entries edited in the past 7 days.</summary>
     [ObservableProperty]
     public partial int PasswordsModified { get; set; }
 
+    /// <summary>Number of credit card entries added in the past 7 days.</summary>
     [ObservableProperty]
     public partial int CardsAdded { get; set; }
 
+    /// <summary>Number of credit card entries deleted in the past 7 days.</summary>
     [ObservableProperty]
     public partial int CardsRemoved { get; set; }
 
+    /// <summary>Number of credit card entries edited in the past 7 days.</summary>
     [ObservableProperty]
     public partial int CardsModified { get; set; }
 
+    /// <summary>Number of identity profiles added in the past 7 days.</summary>
     [ObservableProperty]
     public partial int IdentitiesAdded { get; set; }
 
+    /// <summary>Number of identity profiles deleted in the past 7 days.</summary>
     [ObservableProperty]
     public partial int IdentitiesRemoved { get; set; }
 
+    /// <summary>Number of identity profiles edited in the past 7 days.</summary>
     [ObservableProperty]
     public partial int IdentitiesModified { get; set; }
 
+    /// <summary>Number of secure notes added in the past 7 days.</summary>
     [ObservableProperty]
     public partial int NotesAdded { get; set; }
 
+    /// <summary>Number of secure notes deleted in the past 7 days.</summary>
     [ObservableProperty]
     public partial int NotesRemoved { get; set; }
 
+    /// <summary>Number of secure notes edited in the past 7 days.</summary>
     [ObservableProperty]
     public partial int NotesModified { get; set; }
 
-    // Password health
+    // ── Vault health ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Overall vault health score (0–100).
+    /// Computed from the ratio of strong vs. weak passwords in the vault.
+    /// </summary>
     [ObservableProperty]
     public partial int VaultHealthScore { get; set; }
 
+    /// <summary>Count of password entries rated Weak or VeryWeak by the strength analyser.</summary>
     [ObservableProperty]
     public partial int WeakPasswordCount { get; set; }
 
-    // Expiring cards
+    // ── Expiring credit cards ─────────────────────────────────────────────────
+
+    /// <summary>Number of credit cards expiring within the next 60 days.</summary>
     [ObservableProperty]
     public partial int ExpiringCardsCount { get; set; }
 
+    /// <summary><see langword="true"/> when at least one card is expiring soon; drives the warning banner visibility.</summary>
     [ObservableProperty]
     public partial bool HasExpiringCards { get; set; }
 
-    // Recent activity
+    // ── Recent activity ───────────────────────────────────────────────────────
+
+    /// <summary>Up to 15 most recent vault activity items, shown in the dashboard timeline.</summary>
     public ObservableCollection<RecentActivityItem> RecentItems { get; } = [];
 
-    // Empty state
+    // ── Empty state ───────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// <see langword="true"/> when the vault contains no entries of any type.
+    /// Drives the dashboard empty-state placeholder visibility.
+    /// </summary>
     [ObservableProperty]
     public partial bool IsVaultEmpty { get; set; }
 
-    // Search
+    // ── Search ────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Current search query entered by the user in the dashboard search box.
+    /// Setting this property triggers a reactive search across all vault entry types.
+    /// </summary>
     [ObservableProperty]
     public partial string SearchQuery { get; set; } = string.Empty;
 
+    /// <summary>Flat list of search results across all vault sections, bound to the search results panel.</summary>
     public ObservableCollection<SearchResultItem> SearchResults { get; } = [];
 
+    /// <summary><see langword="true"/> when <see cref="SearchResults"/> is non-empty; drives the results panel visibility.</summary>
     [ObservableProperty]
     public partial bool HasSearchResults { get; set; }
 
-    // Navigation event: fired when user clicks a recent item or search result
+    // ── Navigation ────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Fired when the user clicks a recent-activity item or a search result.
+    /// Parameters: vault section identifier (e.g. "Passwords") and entry <see cref="Guid"/>.
+    /// </summary>
     public event Action<string, Guid>? NavigateToItemRequested;
 
     public DashboardViewModel(

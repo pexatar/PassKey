@@ -6,6 +6,7 @@ using PassKey.Core.Constants;
 using PassKey.Core.Models;
 using PassKey.Core.Services;
 using PassKey.Desktop.Controls;
+using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -16,7 +17,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class CreditCardsListView : UserControl
 {
     private CreditCardsListViewModel? _viewModel;
-    private readonly ResourceLoader _res = new();
+    private readonly ResourceLoader _resourceLoader = new();
 
     public CreditCardsListView()
     {
@@ -29,8 +30,8 @@ public sealed partial class CreditCardsListView : UserControl
         DataContext = vm;
 
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
-        EmptyState.Title = _res.GetString("EmptyCardsTitle");
-        EmptyState.Subtitle = _res.GetString("EmptyCardsSubtitle");
+        EmptyState.Title = _resourceLoader.GetString("EmptyCardsTitle");
+        EmptyState.Subtitle = _resourceLoader.GetString("EmptyCardsSubtitle");
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.SaveCompleted += ShowSavedToast;
 
@@ -208,17 +209,7 @@ public sealed partial class CreditCardsListView : UserControl
 
     // --- Toast ---
 
-    public void ShowSavedToast()
-    {
-        SavedTip.IsOpen = true;
-        var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
-        timer.Tick += (s, _) =>
-        {
-            SavedTip.IsOpen = false;
-            ((DispatcherTimer)s!).Stop();
-        };
-        timer.Start();
-    }
+    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip);
 
     // Hover effects — show/hide action buttons
     private void Row_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
