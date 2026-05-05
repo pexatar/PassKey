@@ -18,7 +18,12 @@ dotnet publish "$root\src\PassKey.BrowserHost\PassKey.BrowserHost.csproj" `
     -o "$root\$OutDir" --verbosity quiet
 if ($LASTEXITCODE -ne 0) { throw "BrowserHost publish failed (exit $LASTEXITCODE)" }
 
-# 2. Publish Desktop (self-contained: bundles both WindowsAppSDK and .NET runtime)
+# 2. Publish Desktop (self-contained: .NET runtime is bundled in the output folder).
+#    WindowsAppSDKSelfContained is NOT set, so Microsoft.UI.Xaml.dll and other
+#    Windows App Runtime DLLs are NOT bundled — they are loaded at runtime from the
+#    system-installed Windows App Runtime 1.8 via Bootstrap.Initialize().
+#    This avoids both the STATUS_INVALID_IMAGE_HASH (NuGet DLLs rejected by HVCI)
+#    and the .NET-not-found startup failure caused by a silent .NET installer failure.
 Write-Host "`n[2/2] Publishing Desktop..." -ForegroundColor Yellow
 $platformArg = if ($Arch -eq "arm64") { "ARM64" } else { "x64" }
 dotnet publish "$root\src\PassKey.Desktop\PassKey.Desktop.csproj" `

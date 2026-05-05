@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.12] - 2026-05-05
+
+### Fixed
+- **".NET must be installed" startup failure**: PassKey v1.0.11 showed "You must install
+  or update .NET to run this application" because the bundled `.NET 10.0.7` installer
+  was failing silently during setup (likely due to a pre-existing .NET 8/9 installation
+  triggering an incorrect skip condition). The fix switches `PassKey.Desktop` back to
+  **self-contained** publishing: the .NET runtime is now bundled directly in the
+  application folder, so no separate .NET installer is required. The `.NET 10.0.7`
+  redistributable has been removed from the installer entirely.
+  Windows App Runtime 1.8.260416003 (introduced in v1.0.11) is still bundled and
+  continues to address the Windows 11 25H2 STATUS_INVALID_IMAGE_HASH crash.
+
+## [1.0.11] - 2026-05-04
+
+### Fixed
+- **Windows 11 25H2 crash (STATUS_INVALID_IMAGE_HASH — Windows App Runtime 1.8.260101001)**:
+  PassKey v1.0.10 crashed on Windows 11 25H2 (Build 26200+) with exception code `0xc000027b`
+  in `Microsoft.UI.Xaml.dll` even with the system-installed Windows App Runtime 1.8.
+  The root cause is a compatibility bug in Windows App Runtime **1.8.260101001** with
+  Windows 11 25H2. The fix upgrades the bundled Windows App Runtime installer and the NuGet SDK
+  from `1.8.260101001` to **1.8.260416003** (released 21 April 2026).
+
+## [1.0.10] - 2026-05-04
+
+### Fixed
+- **Windows 11 25H2 crash (STATUS_INVALID_IMAGE_HASH — self-contained .NET)**: PassKey v1.0.9
+  crashed on Windows 11 25H2 (Build 26200+) because the self-contained .NET 10 apphost
+  triggers a WinRT activation incompatibility with the Windows App Runtime framework package:
+  `Microsoft.UI.Xaml.dll` throws `STATUS_INVALID_IMAGE_HASH` internally. The same crash
+  was reproducible on clean VirtualBox VMs with no third-party security software, confirming
+  the root cause is a Windows 11 25H2-specific behaviour.
+
+  The fix switches `PassKey.Desktop` to **framework-dependent** publishing
+  (`--self-contained false`). The installer now bundles and silently installs the
+  **.NET 10.0.7 Runtime** (29 MB, from `builds.dotnet.microsoft.com`) before launching
+  PassKey, so end users still do not need to install .NET manually.
+
+  The `BrowserHost` component remains self-contained (single-file executable, unaffected
+  by the WinRT issue).
+
 ## [1.0.9] - 2026-05-04
 
 ### Fixed
@@ -148,7 +189,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Giuseppe Imperato** — concept, design, product decisions
 - **[Claude](https://www.anthropic.com/claude) by Anthropic** — architecture, implementation, documentation
 
-[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.9...HEAD
+[Unreleased]: https://github.com/pexatar/PassKey/compare/v1.0.12...HEAD
+[1.0.12]: https://github.com/pexatar/PassKey/compare/v1.0.11...v1.0.12
+[1.0.11]: https://github.com/pexatar/PassKey/compare/v1.0.10...v1.0.11
+[1.0.10]: https://github.com/pexatar/PassKey/compare/v1.0.9...v1.0.10
 [1.0.9]: https://github.com/pexatar/PassKey/compare/v1.0.8...v1.0.9
 [1.0.8]: https://github.com/pexatar/PassKey/compare/v1.0.7...v1.0.8
 [1.0.7]: https://github.com/pexatar/PassKey/compare/v1.0.6...v1.0.7

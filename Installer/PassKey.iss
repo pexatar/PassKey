@@ -4,8 +4,8 @@
 [Setup]
 AppId={{A7F3C2D1-8E4B-4F9A-B6D5-3C1E7A2F0D84}
 AppName=PassKey
-AppVersion=1.0.9
-AppVerName=PassKey 1.0.9
+AppVersion=1.0.12
+AppVerName=PassKey 1.0.12
 AppPublisher=Giuseppe Imperato
 AppPublisherURL=https://github.com/pexatar/PassKey
 AppSupportURL=https://github.com/pexatar/PassKey/issues
@@ -21,10 +21,10 @@ SolidCompression=yes
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64os
 MinVersion=10.0.17763
-PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
+PrivilegesRequired=admin
 UninstallDisplayIcon={app}\PassKey.Desktop.exe
 WizardStyle=modern
+SetupLogging=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -39,9 +39,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; Flags: unchecked
 
 [Files]
 ; Windows App Runtime 1.8 redistributable — installed silently before the app launches.
-; HVCI (Hypervisor-Protected Code Integrity) rejects DLLs that are not in the Windows
-; Code Integrity system catalog. The official runtime installer registers trusted, cataloged
-; DLLs; the NuGet-bundled copies (WindowsAppSDKSelfContained) do not.
+; PassKey.Desktop is published self-contained (.NET bundled), so no separate .NET
+; installer is needed.  The App Runtime provides Microsoft.UI.Xaml.dll and WinRT
+; support; it is loaded at runtime via Bootstrap.Initialize().
 Source: "WindowsAppRuntimeInstall-x64.exe"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall
 
 ; Published self-contained output (Desktop + BrowserHost)
@@ -52,21 +52,15 @@ Name: "{group}\PassKey"; Filename: "{app}\PassKey.Desktop.exe"
 Name: "{group}\{cm:UninstallProgram,PassKey}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\PassKey"; Filename: "{app}\PassKey.Desktop.exe"; Tasks: desktopicon
 
-[Registry]
-; passkey:// URL scheme handler
-Root: HKCU; Subkey: "SOFTWARE\Classes\passkey"; ValueType: string; ValueData: "PassKey Protocol"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "SOFTWARE\Classes\passkey"; ValueType: string; ValueName: "URL Protocol"; ValueData: ""; Flags: uninsdeletekey
-Root: HKCU; Subkey: "SOFTWARE\Classes\passkey\shell\open\command"; ValueType: string; ValueData: """{app}\PassKey.Desktop.exe"" ""%1"""; Flags: uninsdeletekey
-
-; Native Messaging Host for Chrome
-Root: HKCU; Subkey: "SOFTWARE\Google\Chrome\NativeMessagingHosts\com.passkey.host"; ValueType: string; ValueData: "{app}\com.passkey.host.json"; Flags: uninsdeletevalue
-
-; Native Messaging Host for Firefox
-Root: HKCU; Subkey: "SOFTWARE\Mozilla\NativeMessagingHosts\com.passkey.host"; ValueType: string; ValueData: "{app}\com.passkey.host.json"; Flags: uninsdeletevalue
+; Registry entries for passkey:// URL scheme and Native Messaging Hosts are NOT
+; written here. PassKey.Desktop.exe registers them in HKCU at first launch via
+; ProtocolActivationService.EnsureRegistered() — this avoids HKCU/HKLM conflicts
+; when the installer runs elevated and also keeps uninstall clean (app removes them
+; on uninstall).
 
 [Run]
-; 1. Install Windows App Runtime 1.8 silently (waits for completion before continuing).
-;    The installer is idempotent: if the runtime is already present it exits immediately.
+; 1. Install Windows App Runtime 1.8 silently.
+;    Idempotent: exits immediately if the same or newer version is already present.
 Filename: "{tmp}\WindowsAppRuntimeInstall-x64.exe"; Parameters: "--quiet"; \
     StatusMsg: "Installing Windows App Runtime 1.8..."; \
     Flags: waituntilterminated
