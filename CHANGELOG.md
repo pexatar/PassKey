@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.12] - 2026-05-05
 
+### Changed
+- **Installer follows system theme**: The setup wizard now automatically switches between
+  light and dark appearance based on the Windows system theme (`WizardStyle=modern dynamic`
+  in Inno Setup 6.6+).
+
 ### Fixed
 - **".NET must be installed" startup failure**: PassKey v1.0.11 showed "You must install
   or update .NET to run this application" because the bundled `.NET 10.0.7` installer

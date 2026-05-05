@@ -23,7 +23,7 @@ ArchitecturesInstallIn64BitMode=x64os
 MinVersion=10.0.17763
 PrivilegesRequired=admin
 UninstallDisplayIcon={app}\PassKey.Desktop.exe
-WizardStyle=modern
+WizardStyle=modern dynamic
 SetupLogging=yes
 
 [Languages]
