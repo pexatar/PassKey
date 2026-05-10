@@ -64,7 +64,7 @@ $chromeManifest = @{
     path = "PassKey.BrowserHost.exe"
     type = "stdio"
     allowed_origins = @(
-        "chrome-extension://jmddfinmjgpgmfkiblhnjccagheadpop/"
+        "chrome-extension://jadfnbfppmcpbfiickiolonfldkphmfb/"
     )
 } | ConvertTo-Json -Depth 3
 

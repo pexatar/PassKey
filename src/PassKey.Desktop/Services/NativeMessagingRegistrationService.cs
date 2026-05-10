@@ -20,7 +20,7 @@ public static class NativeMessagingRegistrationService
 
     // Chrome extension ID — must match the 'key' field in extensions/chrome/manifest.json.
     // See Item 2 for how to generate/update this value.
-    internal const string ChromeExtensionId = "jmddfinmjgpgmfkiblhnjccagheadpop";
+    internal const string ChromeExtensionId = "jadfnbfppmcpbfiickiolonfldkphmfb";
 
     // Firefox extension ID — defined in browser_specific_settings.gecko.id in Firefox manifest.
     // Must match extensions/firefox/manifest.json → browser_specific_settings.gecko.id.
