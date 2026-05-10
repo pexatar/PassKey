@@ -52,22 +52,34 @@ dotnet publish "$RepoRoot\src\PassKey.BrowserHost\PassKey.BrowserHost.csproj" `
     -o $publishPath
 if ($LASTEXITCODE -ne 0) { throw "BrowserHost publish failed" }
 
-# 3. Generate Native Messaging Host manifest
-Write-Host "Generating NMH manifest..." -ForegroundColor Green
-$nmhManifest = @{
+# 3. Generate Native Messaging Host manifest (reference copy bundled with installer)
+# NOTE: The authoritative manifests are generated at runtime by NativeMessagingRegistrationService
+# into %LOCALAPPDATA%\PassKey\native-messaging\ with correct absolute paths.
+# Chrome and Firefox need separate manifests (different field names), so two files are created.
+Write-Host "Generating NMH manifests..." -ForegroundColor Green
+
+$chromeManifest = @{
     name = "com.passkey.host"
     description = "PassKey Native Messaging Host"
     path = "PassKey.BrowserHost.exe"
     type = "stdio"
     allowed_origins = @(
-        "chrome-extension://passkey-extension-id/"
-    )
-    allowed_extensions = @(
-        "passkey@passkey.local"
+        "chrome-extension://jmddfinmjgpgmfkiblhnjccagheadpop/"
     )
 } | ConvertTo-Json -Depth 3
 
-$nmhManifest | Out-File -Encoding utf8 -FilePath (Join-Path $publishPath "com.passkey.host.json")
+$firefoxManifest = @{
+    name = "com.passkey.host"
+    description = "PassKey Native Messaging Host"
+    path = "PassKey.BrowserHost.exe"
+    type = "stdio"
+    allowed_extensions = @(
+        "{3E08FACC-D43B-4B20-89E7-7888F6082E9D}"
+    )
+} | ConvertTo-Json -Depth 3
+
+$chromeManifest  | Out-File -Encoding utf8 -FilePath (Join-Path $publishPath "com.passkey.host.json")
+$firefoxManifest | Out-File -Encoding utf8 -FilePath (Join-Path $publishPath "com.passkey.host.firefox.json")
 
 # 4. Compile Inno Setup installer
 if (Test-Path $InnoSetupPath) {

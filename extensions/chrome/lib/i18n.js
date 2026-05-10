@@ -103,7 +103,7 @@ const STRINGS = {
     unlockBtn:           'Déverrouiller',
     wrongPassword:       'Mot de passe incorrect. Réessayez.',
     unlocking:           'Déverrouillage...',
-    emptyTitle:          'Aucune identifiant',
+    emptyTitle:          'Aucun identifiant',
     emptySub:            'Aucun identifiant enregistré.',
     loadingText:         'Connexion...',
     tabThisSite:         'Ce site',
@@ -215,6 +215,6 @@ const STRINGS = {
 };
 
 // Resolve the two-character primary language subtag from the browser locale.
-// Falls back to Italian ('it') for unsupported locales.
-const lang = (navigator.language || 'it').slice(0, 2).toLowerCase();
-window.t = STRINGS[lang] || STRINGS['it'];
+// Falls back to English ('en') for unsupported locales.
+const lang = (navigator.language || 'en').slice(0, 2).toLowerCase();
+window.t = STRINGS[lang] || STRINGS['en'];

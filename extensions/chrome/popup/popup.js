@@ -39,6 +39,21 @@ const SPIN_SVG = `<svg class="pk-spin" width="15" height="15" viewBox="0 0 15 15
           stroke-dasharray="24 12" stroke-linecap="round"/>
 </svg>`;
 
+// ─── SVG helper (CSP-safe: avoids .innerHTML) ────────────────────────────────
+
+/**
+ * Parses an SVG string and appends the resulting SVG element as the sole child
+ * of the given element. Uses DOMParser instead of .innerHTML to comply with
+ * the extension's Content Security Policy (script-src 'self').
+ *
+ * @param {Element} element - The container element to update.
+ * @param {string}  svgString - Raw SVG markup string.
+ */
+function setSvgIcon(element, svgString) {
+  const doc = new DOMParser().parseFromString(svgString, 'image/svg+xml');
+  element.replaceChildren(doc.documentElement);
+}
+
 // ─── State ────────────────────────────────────────────────────────────────────
 
 const STATES = ['loading', 'disconnected', 'unlock', 'empty', 'list'];
@@ -85,6 +100,9 @@ const footerVersion     = $('footer-version');
  */
 function initStrings() {
   const t = window.t;
+  // Set lang attribute dynamically so screen readers and CSS :lang() rules
+  // reflect the actual locale (popup.html defaults to 'en' as static fallback).
+  document.documentElement.lang = (navigator.language || 'en').slice(0, 2).toLowerCase();
   loadingText.textContent       = t.loadingText;
   disconnectedTitle.textContent = t.disconnectedTitle;
   disconnectedSub.textContent   = t.disconnectedSub;
@@ -283,7 +301,7 @@ tabAll.addEventListener('click',  () => switchView('all'));
  * @param {Array<{id: string, title: string, username: string, hasPassword: boolean}>} creds
  */
 function renderList(creds) {
-  credList.innerHTML = '';
+  credList.replaceChildren();
   for (const cred of creds) {
     credList.appendChild(buildItem(cred));
   }
@@ -345,7 +363,7 @@ function buildItem(cred) {
   const pwIndicator = document.createElement('span');
   pwIndicator.className = 'pk-pw-indicator';
   if (window.t.hasPassword) pwIndicator.setAttribute('aria-label', window.t.hasPassword);
-  pwIndicator.innerHTML = LOCK_SM_SVG;
+  setSvgIcon(pwIndicator, LOCK_SM_SVG);
 
   li.appendChild(avatar);
   li.appendChild(body);
@@ -397,7 +415,7 @@ function makeIconBtn(svgHtml, label, action) {
   btn.setAttribute('data-action', action);
   btn.setAttribute('tabindex', '-1');
   btn.type = 'button';
-  btn.innerHTML = svgHtml;
+  setSvgIcon(btn, svgHtml);
   return btn;
 }
 
@@ -422,7 +440,7 @@ function makeActionBtn(svgHtml, label, action) {
   const icon = document.createElement('span');
   icon.className = 'pk-action-icon';
   icon.setAttribute('aria-hidden', 'true');
-  icon.innerHTML = svgHtml;
+  setSvgIcon(icon, svgHtml);
 
   const text = document.createElement('span');
   text.className = 'pk-action-label';
@@ -459,7 +477,7 @@ async function onCopyUsername(cred, btn) {
  */
 async function onCopyPassword(cred, btn) {
   const iconTarget = btn.querySelector('.pk-action-icon') ?? btn;
-  iconTarget.innerHTML = SPIN_SVG;
+  setSvgIcon(iconTarget, SPIN_SVG);
   btn.disabled = true;
 
   try {
@@ -485,15 +503,19 @@ async function onCopyPassword(cred, btn) {
 async function onFill(cred, btn) {
   if (btn) {
     const iconTarget = btn.querySelector('.pk-action-icon') ?? btn;
-    iconTarget.innerHTML = SPIN_SVG;
+    setSvgIcon(iconTarget, SPIN_SVG);
     btn.disabled = true;
   }
   try {
+    // Re-query active tab at fill time to avoid stale tab ID (user may have
+    // switched tabs without closing the popup).
+    const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!activeTab?.id) { window.close(); return; }
     await chrome.runtime.sendMessage({
       type: 'fill-credential',
       id: cred.id,
       username: cred.username,
-      tabId: activeTabId
+      tabId: activeTab.id
     });
   } catch { /* ignore */ }
   window.close();
@@ -512,7 +534,7 @@ async function onFill(cred, btn) {
 function showBtnFeedback(btn, iconSvg, ok, isError = false, restoreIcon = null) {
   // Support both icon-only (.pk-icon-btn) and labeled (.pk-action-btn) buttons
   const iconTarget = btn.querySelector('.pk-action-icon') ?? btn;
-  iconTarget.innerHTML = iconSvg;
+  setSvgIcon(iconTarget, iconSvg);
   btn.classList.toggle('success', ok && !isError);
   btn.classList.toggle('error',   isError);
   btn.disabled = false;
@@ -521,7 +543,7 @@ function showBtnFeedback(btn, iconSvg, ok, isError = false, restoreIcon = null) 
   copyFeedback.textContent = window.t[msgKey];
 
   setTimeout(() => {
-    iconTarget.innerHTML = restoreIcon ?? (ok ? CHECK_SVG : iconSvg);
+    setSvgIcon(iconTarget, restoreIcon ?? (ok ? CHECK_SVG : iconSvg));
     btn.classList.remove('success', 'error');
     copyFeedback.textContent = '';
   }, 1500);
@@ -543,7 +565,7 @@ async function doUnlock() {
   if (!pw) return;
 
   unlockError.hidden = true;
-  btnUnlock.innerHTML = SPIN_SVG;
+  setSvgIcon(btnUnlock, SPIN_SVG);
   btnUnlock.disabled  = true;
 
   let result;
@@ -562,15 +584,18 @@ async function doUnlock() {
   } else {
     unlockError.textContent = window.t.wrongPassword;
     unlockError.hidden = false;
-    btnUnlock.innerHTML = window.t.unlockBtn;
-    btnUnlock.disabled  = false;
+    btnUnlock.textContent = window.t.unlockBtn;
+    btnUnlock.disabled    = false;
     pwInput.focus();
   }
 }
 
 // ─── Retry / reconnect ────────────────────────────────────────────────────────
 
-btnRetry.addEventListener('click', init);
+btnRetry.addEventListener('click', () => {
+  btnRetry.disabled = true;
+  init().finally(() => { btnRetry.disabled = false; });
+});
 
 // ─── Search / filter ──────────────────────────────────────────────────────────
 

@@ -1,6 +1,6 @@
 # PassKey Privacy Policy
 
-**Last updated:** 2026-03-15
+**Last updated:** 2026-05-10
 
 ---
 
@@ -39,6 +39,7 @@ The extension requests only the minimum permissions required:
 |------------|---------|
 | `nativeMessaging` | Communicate with PassKey Desktop via Native Messaging |
 | `activeTab` | Read the current tab's URL to match credentials |
+| `tabs` | Inject autofill into the active tab and keep the popup's tab reference current |
 
 ---
 

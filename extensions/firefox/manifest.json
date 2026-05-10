@@ -2,14 +2,18 @@
   "manifest_version": 3,
   "name": "PassKey",
   "version": "1.0.0",
-  "description": "PassKey Password Manager - Autofill Extension",
+  "author": "Giuseppe Imperato",
+  "homepage_url": "https://github.com/pexatar/PassKey",
+  "description": "Local password manager integration for PassKey desktop app. Autofill credentials, credit cards and identities stored securely on your PC — no cloud, no subscription.",
   "permissions": [
     "nativeMessaging",
-    "activeTab"
+    "activeTab",
+    "tabs"
   ],
+  "host_permissions": ["https://*/*", "http://*/*"],
   "browser_specific_settings": {
     "gecko": {
-      "id": "passkey@passkey.local",
+      "id": "{3E08FACC-D43B-4B20-89E7-7888F6082E9D}",
       "strict_min_version": "128.0"
     }
   },
@@ -18,7 +22,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["https://*/*", "http://*/*"],
       "js": ["lib/url-utils.js", "lib/messages.js", "content.js"],
       "run_at": "document_idle",
       "all_frames": false

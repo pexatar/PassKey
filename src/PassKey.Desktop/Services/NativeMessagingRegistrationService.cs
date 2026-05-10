@@ -23,7 +23,8 @@ public static class NativeMessagingRegistrationService
     internal const string ChromeExtensionId = "jmddfinmjgpgmfkiblhnjccagheadpop";
 
     // Firefox extension ID — defined in browser_specific_settings.gecko.id in Firefox manifest.
-    private const string FirefoxExtensionId = "passkey@passkey.local";
+    // Must match extensions/firefox/manifest.json → browser_specific_settings.gecko.id.
+    private const string FirefoxExtensionId = "{3E08FACC-D43B-4B20-89E7-7888F6082E9D}";
 
     /// <summary>
     /// Ensures that Chrome, Edge, and Firefox Native Messaging Host manifests are written to disk
