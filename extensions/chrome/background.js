@@ -221,7 +221,7 @@ async function handleMessage(msg, sender) {
 async function handleGetStatus() {
   try {
     const req = buildRequest('get-status');
-    const resp = await sendNativeMessage(req);
+    const resp = parseResponse(await sendNativeMessage(req));
     return resp;
   } catch (err) {
     return { success: false, error: err.message || 'desktop-not-running' };
@@ -238,7 +238,7 @@ async function handleGetStatus() {
 async function handleGetCredentials(url) {
   try {
     const req = buildRequest('get-credentials', { url });
-    const resp = await sendNativeMessage(req);
+    const resp = parseResponse(await sendNativeMessage(req));
     return resp;
   } catch (err) {
     return { success: false, error: err.message || 'desktop-not-running' };
@@ -253,7 +253,7 @@ async function handleGetCredentials(url) {
 async function handleGetAllCredentials() {
   try {
     const req = buildRequest('get-all-credentials');
-    const resp = await sendNativeMessage(req);
+    const resp = parseResponse(await sendNativeMessage(req));
     return resp;
   } catch (err) {
     return { success: false, error: err.message || 'desktop-not-running' };
@@ -272,7 +272,7 @@ async function handleCopyCredential(credentialId) {
   try {
     await ensureSession();
     const req = buildRequest('get-credential-password', { id: credentialId });
-    const resp = await sendNativeMessage(req);
+    const resp = parseResponse(await sendNativeMessage(req));
     if (!resp.success) return resp;
 
     let password;
@@ -297,7 +297,7 @@ async function handleCopyCredential(credentialId) {
 async function handleUnlockVault(masterPassword) {
   try {
     const req = buildRequest('unlock-vault', { masterPassword });
-    const resp = await sendNativeMessage(req);
+    const resp = parseResponse(await sendNativeMessage(req));
     return resp;
   } catch (err) {
     return { success: false, error: err.message || 'unlock-failed' };
@@ -312,7 +312,7 @@ async function handleUnlockVault(masterPassword) {
 async function handleShowWindow() {
   try {
     const req = buildRequest('show-window');
-    const resp = await sendNativeMessage(req);
+    const resp = parseResponse(await sendNativeMessage(req));
     return resp;
   } catch (err) {
     return { success: false, error: err.message || 'show-window-failed' };
@@ -371,7 +371,7 @@ async function handleFillCredential(credentialId, username, tabId) {
 
     // Request encrypted password
     const req = buildRequest('get-credential-password', { id: credentialId });
-    const resp = await sendNativeMessage(req);
+    const resp = parseResponse(await sendNativeMessage(req));
 
     if (!resp.success) {
       return resp;

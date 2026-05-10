@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — PassKey</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #ffffff;
+      --bg-alt:    #f6f8fa;
+      --border:    #d0d7de;
+      --accent:    #0078d4;
+      --text:      #1f2328;
+      --text-2:    #656d76;
+      --text-3:    #8c959f;
+      --radius:    8px;
+      --max-w:     740px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                   Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+      padding: 0 1rem 4rem;
+    }
+
+    /* ── Header ── */
+    .pk-header {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 2.5rem 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .pk-logo {
+      width: 36px; height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .pk-logo svg { display: block; }
+    .pk-site-name {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .pk-site-name:hover { color: var(--accent); }
+
+    /* ── Content ── */
+    .pk-content {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding-top: 2.5rem;
+    }
+
+    /* Badge */
+    .pk-badge {
+      display: inline-block;
+      background: #dff6dd;
+      color: #1a7f37;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      padding: .2em .65em;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: .5rem;
+    }
+
+    .pk-meta {
+      color: var(--text-2);
+      font-size: .9rem;
+      margin-bottom: 2.5rem;
+    }
+
+    /* TL;DR box */
+    .pk-tldr {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .pk-tldr strong {
+      display: block;
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-2);
+      margin-bottom: .4rem;
+    }
+    .pk-tldr p { margin: 0; }
+
+    /* Sections */
+    section { margin-bottom: 2.5rem; }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: .75rem;
+      padding-bottom: .4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    p + p { margin-top: .75rem; }
+
+    ul, ol {
+      padding-left: 1.4rem;
+      margin-top: .5rem;
+    }
+    li { margin-bottom: .35rem; }
+
+    /* Permission table */
+    .pk-table-wrap { overflow-x: auto; margin-top: .75rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+    thead tr { background: var(--bg-alt); }
+    th, td {
+      text-align: left;
+      padding: .6rem .85rem;
+      border: 1px solid var(--border);
+    }
+    th { font-weight: 600; color: var(--text-2); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+    code {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: .88em;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: .1em .35em;
+    }
+
+    /* Footer */
+    .pk-footer {
+      max-width: var(--max-w);
+      margin: 3rem auto 0;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-3);
+      font-size: .85rem;
+    }
+    .pk-footer a { color: var(--accent); text-decoration: none; }
+    .pk-footer a:hover { text-decoration: underline; }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:      #0d1117;
+        --bg-alt:  #161b22;
+        --border:  #30363d;
+        --text:    #e6edf3;
+        --text-2:  #8b949e;
+        --text-3:  #6e7681;
+      }
+      .pk-badge { background: #1a4731; color: #3fb950; }
+      .pk-logo  { background: #1f6feb; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="pk-header">
+    <div class="pk-logo" aria-hidden="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="11" width="16" height="11" rx="2.5" stroke="white" stroke-width="1.8"/>
+        <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="12" cy="16.5" r="1.5" fill="white"/>
+      </svg>
+    </div>
+    <a class="pk-site-name" href="https://github.com/pexatar/PassKey">PassKey</a>
+  </header>
+
+  <main class="pk-content">
+
+    <div class="pk-badge">Privacy Policy</div>
+    <h1>Your data stays on your device. Always.</h1>
+    <p class="pk-meta">Last updated: May 10, 2026 &nbsp;·&nbsp; Applies to PassKey Desktop and Browser Extension</p>
+
+    <div class="pk-tldr">
+      <strong>TL;DR</strong>
+      <p>PassKey never sends your data anywhere. No cloud, no servers, no analytics, no telemetry.
+         Everything stays encrypted on your computer.</p>
+    </div>
+
+    <!-- 1 -->
+    <section id="overview">
+      <h2>1. Overview</h2>
+      <p>PassKey is a local-first password manager for Windows. The desktop application and its
+         browser extension store and manage your credentials exclusively on your device.
+         No account is required to use PassKey. No data is ever transmitted to any remote server
+         — by design, there is no remote server to transmit data to.</p>
+      <p>This policy describes what information PassKey reads or processes while running on
+         your computer and how that information is used.</p>
+    </section>
+
+    <!-- 2 -->
+    <section id="data-storage">
+      <h2>2. Data Storage</h2>
+      <ul>
+        <li>All vault data (passwords, credit cards, identities, secure notes) is stored in an
+            encrypted SQLite database on your local disk.</li>
+        <li>Default location: <code>%LOCALAPPDATA%\PassKey\vault.db</code></li>
+        <li>Encryption: <strong>AES-256-GCM</strong>, keys derived from your master password via
+            <strong>Argon2id</strong> (or PBKDF2-SHA256 for vaults created on older versions).</li>
+        <li>Your master password is never persisted — it is held in memory only for the duration
+            it is needed to derive the decryption key, then zeroed.</li>
+      </ul>
+    </section>
+
+    <!-- 3 -->
+    <section id="network-activity">
+      <h2>3. Network Activity</h2>
+      <p>PassKey makes <strong>zero</strong> outbound network connections. The only communication
+         that occurs is between the browser extension and the PassKey Desktop application on your
+         own computer, via the browser's Native Messaging API over a local Named Pipe:</p>
+      <ul>
+        <li>This communication never leaves your machine.</li>
+        <li>The channel is protected with ephemeral <strong>ECDH P-256 + AES-256-GCM</strong>
+            session keys negotiated at runtime.</li>
+      </ul>
+      <p>There is no analytics, no telemetry, no crash reporting, no update checking,
+         and no advertising — not now, not ever.</p>
+    </section>
+
+    <!-- 4 -->
+    <section id="browser-extension">
+      <h2>4. Browser Extension Permissions</h2>
+      <p>The PassKey browser extension (available for Chrome, Edge, and Firefox) requests the
+         minimum permissions necessary to operate. Below is a complete list of what each
+         permission is used for:</p>
+      <div class="pk-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Permission</th>
+              <th>Why it is needed</th>
+              <th>What it accesses</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>nativeMessaging</code></td>
+              <td>Communicate with PassKey Desktop via the browser's Native Messaging API</td>
+              <td>Local IPC channel to PassKey Desktop — no internet access</td>
+            </tr>
+            <tr>
+              <td><code>activeTab</code></td>
+              <td>Read the URL of the current tab to find matching credentials</td>
+              <td>URL only — no page content, no cookies, no form data</td>
+            </tr>
+            <tr>
+              <td><code>tabs</code></td>
+              <td>Inject autofill into the active tab and keep the popup's tab reference current</td>
+              <td>Active tab ID and URL — no browsing history</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:.75rem">The extension reads the URL of the tab you are currently
+         viewing solely to identify which saved credentials match the site. This URL is passed
+         to the local PassKey Desktop app for matching and is never stored by the extension or
+         sent anywhere else.</p>
+    </section>
+
+    <!-- 5 -->
+    <section id="data-sharing">
+      <h2>5. Data Sharing</h2>
+      <p>PassKey does not share any data with third parties. There are no third-party SDKs,
+         advertising networks, or analytics providers embedded in PassKey. There is no data
+         to share because no data leaves your device.</p>
+    </section>
+
+    <!-- 6 -->
+    <section id="backups">
+      <h2>6. Backups</h2>
+      <p>Encrypted backups (<code>.pkbak</code> files) are stored locally at a location you
+         choose. Backups are independently encrypted with AES-256-GCM using an Argon2id-derived
+         key from a password you provide at backup time. PassKey does not offer or access any
+         cloud backup service.</p>
+    </section>
+
+    <!-- 7 -->
+    <section id="open-source">
+      <h2>7. Open Source &amp; Auditability</h2>
+      <p>PassKey is open-source software licensed under the
+         <a href="https://github.com/pexatar/PassKey/blob/main/LICENSE">GNU GPL v3</a>.
+         The complete source code is publicly available. You can audit every line of code that
+         handles your data at
+         <a href="https://github.com/pexatar/PassKey">github.com/pexatar/PassKey</a>.</p>
+    </section>
+
+    <!-- 8 -->
+    <section id="changes">
+      <h2>8. Changes to This Policy</h2>
+      <p>If this policy is updated, the new version will be published at this URL with an
+         updated date at the top. Because PassKey collects no personal data, changes will
+         typically only reflect new features or clarifications to existing practices.</p>
+    </section>
+
+    <!-- 9 -->
+    <section id="contact">
+      <h2>9. Contact</h2>
+      <ul>
+        <li><strong>Security issues:</strong> report privately via
+            <a href="https://github.com/pexatar/PassKey/security/advisories/new">GitHub Security Advisories</a></li>
+        <li><strong>General questions and bug reports:</strong>
+            <a href="https://github.com/pexatar/PassKey/issues">GitHub Issues</a></li>
+        <li><strong>Email:</strong>
+            <a href="mailto:pexatar@gmail.com">pexatar@gmail.com</a></li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="pk-footer">
+    <p>
+      © 2026 Giuseppe Imperato &nbsp;·&nbsp;
+      <a href="https://github.com/pexatar/PassKey">PassKey on GitHub</a> &nbsp;·&nbsp;
+      <a href="https://github.com/pexatar/PassKey/blob/main/LICENSE">GPLv3 License</a>
+    </p>
+  </footer>
+
+</body>
+</html>
