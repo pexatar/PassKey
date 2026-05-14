@@ -26,7 +26,8 @@ $RepoRoot = Split-Path -Parent $PSScriptRoot
 
 # Guard: block release builds that still contain the development Chrome Extension ID.
 # The dev ID (jmdd...) must never appear in src/ or scripts/ — only the Web Store ID (jadf...) is valid.
-$devChromeId = "jmddfinmjgpgmfkiblhnjccagheadpop"
+# NOTE: the ID is split here intentionally so the guard does not match its own definition.
+$devChromeId = "jmdd" + "finmjgpgmfkiblhnjccagheadpop"
 $hits = Get-ChildItem -Recurse -File -Path "$RepoRoot\src","$RepoRoot\scripts" |
         Select-String -Pattern $devChromeId -ErrorAction SilentlyContinue
 if ($hits) {
