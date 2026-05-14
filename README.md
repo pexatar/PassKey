@@ -5,6 +5,8 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11%20x64-0078D4)]()
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4)]()
 [![WinUI 3](https://img.shields.io/badge/WinUI-3-0078D4)]()
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/jadfnbfppmcpbfiickiolonfldkphmfb?label=Chrome%20Extension&logo=google-chrome&logoColor=white)](https://chromewebstore.google.com/detail/passkey/jadfnbfppmcpbfiickiolonfldkphmfb)
+[![Firefox Add-on](https://img.shields.io/amo/v/passkey?label=Firefox%20Add-on&logo=firefox-browser&logoColor=white)](https://addons.mozilla.org/firefox/addon/passkey/)
 
 > Open-source password manager for Windows — encrypted, offline-first, no cloud required.
 
@@ -57,8 +59,8 @@ PassKey stores your passwords, credit cards, identities, and secure notes in a l
 
 | Version | Platform | Type |
 |---------|----------|------|
-| [v1.0.12](https://github.com/pexatar/PassKey/releases/tag/v1.0.12) | Windows x64 | Installer EXE |
-| [v1.0.12](https://github.com/pexatar/PassKey/releases/tag/v1.0.12) | Windows x64 | Portable ZIP |
+| [v1.0.13](https://github.com/pexatar/PassKey/releases/tag/v1.0.13) | Windows x64 | Installer EXE |
+| [v1.0.13](https://github.com/pexatar/PassKey/releases/tag/v1.0.13) | Windows x64 | Portable ZIP |
 
 > **Requirements:** Windows 10 version 1809 (build 17763) or later, x64 processor.
 > No .NET runtime required — PassKey is fully self-contained.
@@ -69,10 +71,10 @@ PassKey stores your passwords, credit cards, identities, and secure notes in a l
 
 ## 🔌 Browser Extensions
 
-| Browser | Store |
-|---------|-------|
-| Chrome | [Chrome Web Store](https://chrome.google.com/webstore) *(coming soon)* |
-| Firefox | [Firefox Add-ons (AMO)](https://addons.mozilla.org) *(coming soon)* |
+| Browser | Store | Extension |
+|---------|-------|-----------|
+| Chrome / Edge | [Chrome Web Store](https://chromewebstore.google.com/detail/passkey/jadfnbfppmcpbfiickiolonfldkphmfb) | Manifest V3 |
+| Firefox | [Firefox Add-ons (AMO)](https://addons.mozilla.org/firefox/addon/passkey/) | Manifest V3 |
 
 The browser extension requires PassKey Desktop to be installed and running. See the [Browser Extension guide](docs/user-guide/06-browser-extension.md) for installation instructions.
 
