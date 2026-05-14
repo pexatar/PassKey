@@ -24,6 +24,19 @@ param(
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 
+# Guard: block release builds that still contain the development Chrome Extension ID.
+# The dev ID (jmdd...) must never appear in src/ or scripts/ — only the Web Store ID (jadf...) is valid.
+$devChromeId = "jmddfinmjgpgmfkiblhnjccagheadpop"
+$hits = Get-ChildItem -Recurse -File -Path "$RepoRoot\src","$RepoRoot\scripts" |
+        Select-String -Pattern $devChromeId -ErrorAction SilentlyContinue
+if ($hits) {
+    $locations = $hits | ForEach-Object { "  $($_.Filename):$($_.LineNumber)" }
+    Write-Error ("BUILD BLOCKED: development Chrome Extension ID found in source.`n" +
+                 "Replace '$devChromeId' with the Web Store ID in:`n" +
+                 ($locations -join "`n"))
+    exit 1
+}
+
 Write-Host "=== PassKey Build Script ===" -ForegroundColor Cyan
 Write-Host "Configuration: $Configuration"
 Write-Host "Output: $OutputDir"
