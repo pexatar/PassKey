@@ -144,4 +144,38 @@ public class CryptoServiceTests
         // After dispose, accessing Span should throw
         Assert.Throws<ObjectDisposedException>(() => buffer.Span.ToArray());
     }
+
+    [Fact]
+    public void DeriveKeyFromPassword_Argon2id_RespectsIterationsParam()
+    {
+        // The Argon2id branch must honour an explicit `iterations` value when positive,
+        // not silently fall back to CryptoConstants.Argon2TimeCost as the v1.x code did.
+        // Verified indirectly: a derivation with iterations=1 must NOT equal a derivation
+        // with the OWASP-tuned default (Argon2TimeCost > 1).
+        var salt = _crypto.GenerateRandomBytes(CryptoConstants.SaltSizeBytes);
+        var password = "Argon2-Iterations-Test".AsSpan();
+
+        using var keyExplicit1 = _crypto.DeriveKeyFromPassword(password, salt, iterations: 1, CryptoConstants.KdfAlgorithmArgon2Id);
+        using var keyDefault   = _crypto.DeriveKeyFromPassword(password, salt, iterations: 0, CryptoConstants.KdfAlgorithmArgon2Id);
+
+        // Different iteration counts → different key material (same password+salt).
+        // If the iterations parameter were ignored, the two keys would be identical.
+        Assert.False(keyExplicit1.Span.SequenceEqual(keyDefault.Span),
+            "Argon2id derivation must use the supplied iterations count, not the default.");
+    }
+
+    [Fact]
+    public void DeriveKeyFromPassword_Argon2id_ZeroIterations_FallsBackToDefault()
+    {
+        // Passing iterations=0 documents the contract that the default (Argon2TimeCost)
+        // is used. Two derivations with iterations=0 must produce identical keys.
+        var salt = _crypto.GenerateRandomBytes(CryptoConstants.SaltSizeBytes);
+        var password = "Argon2-Default-Fallback".AsSpan();
+
+        using var keyA = _crypto.DeriveKeyFromPassword(password, salt, iterations: 0, CryptoConstants.KdfAlgorithmArgon2Id);
+        using var keyB = _crypto.DeriveKeyFromPassword(password, salt, iterations: 0, CryptoConstants.KdfAlgorithmArgon2Id);
+
+        Assert.True(keyA.Span.SequenceEqual(keyB.Span),
+            "Two Argon2id derivations with the same password+salt and iterations=0 must produce the same key.");
+    }
 }
