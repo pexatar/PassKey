@@ -110,8 +110,17 @@ public partial class SetupViewModel : ObservableObject
         try
         {
             var chars = password.ToCharArray();
-            await Task.Run(async () => await _vaultState.InitializeAsync(chars));
-            Array.Clear(chars);
+            // Run KDF on the thread pool to keep the UI responsive during Argon2id.
+            // Using Task.Run(Func<Task>) — not Task.Run(async lambda) — to avoid the
+            // anti-pattern of an async lambda that simply awaits another async call.
+            try
+            {
+                await Task.Run(() => _vaultState.InitializeAsync(chars));
+            }
+            finally
+            {
+                Array.Clear(chars);
+            }
 
             _navigation.Replace<WelcomeViewModel>();
         }

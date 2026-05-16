@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using PassKey.Core.Constants;
 using PassKey.Core.Models;
 using PassKey.Desktop.Services;
+using PassKey.Desktop.ViewModels.Base;
 
 namespace PassKey.Desktop.ViewModels;
 
@@ -10,23 +11,20 @@ namespace PassKey.Desktop.ViewModels;
 /// Secure note detail ViewModel for the editor panel.
 /// Fields: Title, Category (with color), Content (multiline), character/word counter,
 /// pin toggle, unsaved changes indicator.
+/// Shared add/edit/save/delete plumbing is provided by <see cref="BaseDetailViewModel{TEntry}"/>.
 /// </summary>
-public partial class SecureNoteDetailViewModel : ObservableObject
+/// <remarks>
+/// Unlike the other detail ViewModels, after a successful "create new" save this VM
+/// keeps the panel open and transitions in-place to "edit" mode, so the user can keep
+/// writing without re-opening the entry.
+/// </remarks>
+public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteEntry>
 {
-    private readonly IVaultStateService _vaultState;
-    private readonly IDialogQueueService _dialogQueue;
-
-    private SecureNoteEntry? _editingEntry;
-    private bool _isNew;
-
-    // Snapshot valori originali per tracking "non salvato"
+    // Snapshot of original values for "unsaved changes" tracking.
     private string _originalTitle = string.Empty;
     private string _originalContent = string.Empty;
     private NoteCategory _originalCategory = NoteCategory.General;
     private bool _originalIsPinned;
-
-    [ObservableProperty]
-    public partial string PanelTitle { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string Title { get; set; } = string.Empty;
@@ -44,12 +42,6 @@ public partial class SecureNoteDetailViewModel : ObservableObject
     public partial int WordCount { get; set; }
 
     [ObservableProperty]
-    public partial bool CanSave { get; set; }
-
-    [ObservableProperty]
-    public partial bool IsSaving { get; set; }
-
-    [ObservableProperty]
     public partial bool IsEditMode { get; set; }
 
     [ObservableProperty]
@@ -58,32 +50,28 @@ public partial class SecureNoteDetailViewModel : ObservableObject
     [ObservableProperty]
     public partial bool HasUnsavedChanges { get; set; }
 
-    /// <summary>Callback when save completes: (isNew, entryId).</summary>
-    public Action<bool, Guid>? Saved { get; set; }
-
-    /// <summary>Callback when delete completes: (entryId).</summary>
-    public Action<Guid>? Deleted { get; set; }
-
-    /// <summary>Callback when cancel is clicked.</summary>
-    public Action? Cancelled { get; set; }
-
-    /// <summary>Callback when pin is toggled (instant save, no Save button needed).</summary>
+    /// <summary>Raised when <see cref="IsPinned"/> is toggled (instant-save, no Save button needed).</summary>
     public Action? PinToggled { get; set; }
 
     public SecureNoteDetailViewModel(
         IVaultStateService vaultState,
         IDialogQueueService dialogQueue)
+        : base(vaultState, dialogQueue)
     {
-        _vaultState = vaultState;
-        _dialogQueue = dialogQueue;
     }
 
-    public void StartNew()
+    // ─── Template-method overrides ────────────────────────────────────────────
+
+    protected override string GetPanelTitleForNew() => "Nuova nota";
+    protected override string GetPanelTitleForEdit() => "Modifica nota";
+    protected override string GetDeleteDialogTitle() => "Elimina nota";
+    protected override string GetDeleteDisplayName(SecureNoteEntry entry)
+        => !string.IsNullOrWhiteSpace(entry.Title) ? entry.Title : "Nota senza titolo";
+
+    protected override IList<SecureNoteEntry> GetVaultCollection(Vault vault) => vault.SecureNotes;
+
+    protected override void ResetFieldsForNew()
     {
-        _editingEntry = null;
-        _isNew = true;
-        IsEditMode = false;
-        PanelTitle = "Nuova nota";
         Title = string.Empty;
         Category = NoteCategory.General;
         Content = string.Empty;
@@ -91,21 +79,16 @@ public partial class SecureNoteDetailViewModel : ObservableObject
         WordCount = 0;
         IsPinned = false;
         HasUnsavedChanges = false;
+        IsEditMode = false;
 
         _originalTitle = string.Empty;
         _originalContent = string.Empty;
         _originalCategory = NoteCategory.General;
         _originalIsPinned = false;
-
-        UpdateCanSave();
     }
 
-    public void StartEdit(SecureNoteEntry entry)
+    protected override void LoadFromEntry(SecureNoteEntry entry)
     {
-        _editingEntry = entry;
-        _isNew = false;
-        IsEditMode = true;
-        PanelTitle = "Modifica nota";
         Title = entry.Title;
         Category = entry.Category;
         Content = entry.Content;
@@ -113,14 +96,53 @@ public partial class SecureNoteDetailViewModel : ObservableObject
         WordCount = CountWords(entry.Content);
         IsPinned = entry.IsPinned;
         HasUnsavedChanges = false;
+        IsEditMode = true;
 
         _originalTitle = entry.Title;
         _originalContent = entry.Content;
         _originalCategory = entry.Category;
         _originalIsPinned = entry.IsPinned;
-
-        UpdateCanSave();
     }
+
+    protected override SecureNoteEntry CreateNewEntry() => new()
+    {
+        Title = Title.Trim(),
+        Category = Category,
+        Content = Content,
+        IsPinned = IsPinned
+    };
+
+    protected override void ApplyToEntry(SecureNoteEntry entry)
+    {
+        entry.Title = Title.Trim();
+        entry.Category = Category;
+        entry.Content = Content;
+        entry.IsPinned = IsPinned;
+    }
+
+    protected override void UpdateCanSave()
+    {
+        CanSave = !string.IsNullOrWhiteSpace(Title);
+    }
+
+    /// <summary>After saving a brand-new note, transition the panel to edit-mode in-place
+    /// so the user can keep editing without re-opening the entry.</summary>
+    protected override void OnSavedNew(SecureNoteEntry entry)
+    {
+        EditingEntry = entry;
+        SetIsNew(false);
+        IsEditMode = true;
+        PanelTitle = GetPanelTitleForEdit();
+        UpdateSnapshotFromCurrent();
+    }
+
+    /// <summary>After applying edits, refresh the "original" snapshot so the dirty-flag clears.</summary>
+    protected override void OnSavedEdit(SecureNoteEntry entry)
+    {
+        UpdateSnapshotFromCurrent();
+    }
+
+    // ─── Property change handlers ─────────────────────────────────────────────
 
     partial void OnTitleChanged(string value)
     {
@@ -136,20 +158,8 @@ public partial class SecureNoteDetailViewModel : ObservableObject
         UpdateHasUnsavedChanges();
     }
 
-    partial void OnCategoryChanged(NoteCategory value)
-    {
-        UpdateHasUnsavedChanges();
-    }
-
-    partial void OnIsPinnedChanged(bool value)
-    {
-        UpdateHasUnsavedChanges();
-    }
-
-    private void UpdateCanSave()
-    {
-        CanSave = !string.IsNullOrWhiteSpace(Title);
-    }
+    partial void OnCategoryChanged(NoteCategory value) => UpdateHasUnsavedChanges();
+    partial void OnIsPinnedChanged(bool value) => UpdateHasUnsavedChanges();
 
     private void UpdateHasUnsavedChanges()
     {
@@ -159,116 +169,34 @@ public partial class SecureNoteDetailViewModel : ObservableObject
             || IsPinned != _originalIsPinned;
     }
 
+    private void UpdateSnapshotFromCurrent()
+    {
+        _originalTitle = Title;
+        _originalContent = Content;
+        _originalCategory = Category;
+        _originalIsPinned = IsPinned;
+        HasUnsavedChanges = false;
+    }
+
+    // ─── Type-specific command (instant pin toggle, bypasses Save flow) ───────
+
     [RelayCommand]
     private void TogglePin()
     {
         IsPinned = !IsPinned;
 
-        // Persiste immediatamente sul model (senza passare da Save)
-        if (_editingEntry is not null)
+        // Persist immediately on the model (does not go through Save).
+        if (EditingEntry is not null)
         {
-            _editingEntry.IsPinned = IsPinned;
+            EditingEntry.IsPinned = IsPinned;
         }
 
-        // Aggiorna snapshot: il pin non conta come "modifica non salvata"
+        // The pin toggle does not count as an "unsaved change".
         _originalIsPinned = IsPinned;
         UpdateHasUnsavedChanges();
 
-        // Callback: salva vault e aggiorna lista
+        // Caller saves the vault to disk and refreshes the list.
         PinToggled?.Invoke();
-    }
-
-    [RelayCommand]
-    private Task SaveAsync()
-    {
-        if (!CanSave) return Task.CompletedTask;
-
-        var vault = _vaultState.CurrentVault;
-        if (vault is null) return Task.CompletedTask;
-
-        IsSaving = true;
-
-        try
-        {
-            bool wasNew = _isNew;
-            Guid entryId;
-
-            if (_isNew)
-            {
-                var entry = new SecureNoteEntry
-                {
-                    Title = Title.Trim(),
-                    Category = Category,
-                    Content = Content,
-                    IsPinned = IsPinned
-                };
-                vault.SecureNotes.Add(entry);
-                _editingEntry = entry;
-                _isNew = false;
-                IsEditMode = true;
-                PanelTitle = "Modifica nota";
-                entryId = entry.Id;
-            }
-            else if (_editingEntry is not null)
-            {
-                _editingEntry.Title = Title.Trim();
-                _editingEntry.Category = Category;
-                _editingEntry.Content = Content;
-                _editingEntry.IsPinned = IsPinned;
-                _editingEntry.ModifiedAt = DateTime.UtcNow;
-                entryId = _editingEntry.Id;
-            }
-            else
-            {
-                return Task.CompletedTask;
-            }
-
-            // Aggiorna snapshot dopo save riuscito
-            _originalTitle = Title;
-            _originalContent = Content;
-            _originalCategory = Category;
-            _originalIsPinned = IsPinned;
-            HasUnsavedChanges = false;
-
-            Saved?.Invoke(wasNew, entryId);
-        }
-        finally
-        {
-            IsSaving = false;
-        }
-
-        return Task.CompletedTask;
-    }
-
-    [RelayCommand]
-    private async Task DeleteAsync()
-    {
-        if (_editingEntry is null || _isNew) return;
-
-        var displayName = !string.IsNullOrWhiteSpace(_editingEntry.Title)
-            ? _editingEntry.Title
-            : "Nota senza titolo";
-
-        var result = await _dialogQueue.EnqueueAndWait(() =>
-        {
-            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
-            {
-                Title = "Elimina nota",
-                Content = $"Eliminare \"{displayName}\"?\nQuesta azione è irreversibile.",
-                PrimaryButtonText = "Elimina",
-                CloseButtonText = "Annulla",
-                DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Close
-            };
-            return dialog.ShowAsync().AsTask();
-        });
-
-        if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
-        {
-            var vault = _vaultState.CurrentVault;
-            var entryId = _editingEntry.Id;
-            vault?.SecureNotes.Remove(_editingEntry);
-            Deleted?.Invoke(entryId);
-        }
     }
 
     private static int CountWords(string text)

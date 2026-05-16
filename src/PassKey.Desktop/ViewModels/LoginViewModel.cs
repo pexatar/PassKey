@@ -67,8 +67,19 @@ public partial class LoginViewModel : ObservableObject
         try
         {
             var chars = password.ToCharArray();
-            var success = await Task.Run(async () => await _vaultState.UnlockAsync(chars));
-            Array.Clear(chars);
+            // Run KDF + decrypt on the thread pool so the synchronous CPU-bound parts
+            // of UnlockAsync (Argon2id / AES-GCM) do not freeze the UI thread.
+            // Using Task.Run(Func<Task<T>>) — NOT Task.Run(async lambda) — to avoid the
+            // anti-pattern of an async lambda just awaiting another async call.
+            bool success;
+            try
+            {
+                success = await Task.Run(() => _vaultState.UnlockAsync(chars));
+            }
+            finally
+            {
+                Array.Clear(chars);
+            }
 
             if (success)
             {

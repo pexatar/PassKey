@@ -10,12 +10,13 @@ namespace PassKey.Desktop.ViewModels;
 /// <summary>
 /// Passwords list ViewModel: collection, sort, search, selected entry, detail panel state.
 /// </summary>
-public partial class PasswordsListViewModel : ObservableObject
+public partial class PasswordsListViewModel : ObservableObject, IDisposable
 {
     private readonly IVaultStateService _vaultState;
     private readonly IClipboardService _clipboard;
     private readonly IDialogQueueService _dialogQueue;
     private readonly IVaultRepository _repository;
+    private bool _disposed;
 
     private List<PasswordEntry> _allEntries = [];
 
@@ -58,6 +59,28 @@ public partial class PasswordsListViewModel : ObservableObject
         _dialogQueue = dialogQueue;
         _repository = repository;
         _detailVm = detailViewModel;
+
+        // Hygiene: clear in-memory entries when the vault is locked so we never
+        // retain decrypted data after lock. Named handler so it can be unsubscribed.
+        _vaultState.VaultLocked += OnVaultLocked;
+    }
+
+    private void OnVaultLocked()
+    {
+        _allEntries = [];
+        Entries.Clear();
+        CloseDetail();
+        SelectedEntry = null;
+        SearchQuery = string.Empty;
+        IsEmpty = false;
+    }
+
+    /// <summary>Detaches the <see cref="IVaultStateService.VaultLocked"/> handler to prevent leaks.</summary>
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _vaultState.VaultLocked -= OnVaultLocked;
     }
 
     [RelayCommand]
@@ -169,20 +192,13 @@ public partial class PasswordsListViewModel : ObservableObject
     {
         if (SelectedEntry is null) return;
 
-        var result = await _dialogQueue.EnqueueAndWait(() =>
-        {
-            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
-            {
-                Title = "Elimina password",
-                Content = $"Eliminare \"{SelectedEntry.Title}\"?\nQuesta azione è irreversibile.",
-                PrimaryButtonText = "Elimina",
-                CloseButtonText = "Annulla",
-                DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Close
-            };
-            return dialog.ShowAsync().AsTask();
-        });
+        var confirmed = await _dialogQueue.ConfirmAsync(
+            title: "Elimina password",
+            content: $"Eliminare \"{SelectedEntry.Title}\"?\nQuesta azione è irreversibile.",
+            primaryButtonText: "Elimina",
+            closeButtonText: "Annulla");
 
-        if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
+        if (confirmed)
         {
             var vault = _vaultState.CurrentVault;
             var entryId = SelectedEntry.Id;

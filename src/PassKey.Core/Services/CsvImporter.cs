@@ -18,10 +18,25 @@ public sealed class CsvImporter : ICsvImporter
 
         if (columnMap.Count == 0) return vault;
 
+        // NordPass and a few other exporters include a "type" column distinguishing
+        // password / credit_card / identity / note rows in a single CSV. When present,
+        // only "password" (or unrecognised/empty types) are imported here as
+        // PasswordEntries; richer cross-type import is tracked for a future release.
+        var typeColumnIndex = TryFindTypeColumn(headers);
+
         for (int i = 1; i < lines.Length; i++)
         {
             var fields = ParseCsvLine(lines[i]);
             if (fields.Count == 0) continue;
+
+            // Skip non-password rows when a "type" column is present so card/identity/note
+            // labels don't pollute the imported password list.
+            if (typeColumnIndex >= 0 && typeColumnIndex < fields.Count)
+            {
+                var rowType = fields[typeColumnIndex].Trim().ToLowerInvariant();
+                if (rowType.Length > 0 && rowType != "password" && rowType != "login")
+                    continue;
+            }
 
             var entry = new PasswordEntry
             {
@@ -71,7 +86,8 @@ public sealed class CsvImporter : ICsvImporter
                 case "url" or "uri" or "website" or "login_uri":
                     map.TryAdd(ColumnType.Url, i);
                     break;
-                case "notes" or "comment" or "comments" or "extra":
+                case "notes" or "note" or "comment" or "comments" or "extra":
+                    // "note" (singular) is required for NordPass exports.
                     map.TryAdd(ColumnType.Notes, i);
                     break;
             }
@@ -85,6 +101,21 @@ public sealed class CsvImporter : ICsvImporter
         if (!map.TryGetValue(type, out var idx) || idx >= fields.Count)
             return string.Empty;
         return fields[idx].Trim();
+    }
+
+    /// <summary>
+    /// Returns the zero-based index of a "type"-style column in the header row, or -1 if absent.
+    /// Used to detect mixed-format exports (e.g. NordPass) so non-password rows can be skipped.
+    /// </summary>
+    private static int TryFindTypeColumn(List<string> headers)
+    {
+        for (int i = 0; i < headers.Count; i++)
+        {
+            var name = headers[i].Trim().ToLowerInvariant();
+            if (name == "type" || name == "item_type" || name == "entry_type")
+                return i;
+        }
+        return -1;
     }
 
     /// <summary>

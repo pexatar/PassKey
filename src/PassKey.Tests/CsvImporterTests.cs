@@ -103,4 +103,38 @@ public class CsvImporterTests
         Assert.Single(vault.Passwords);
         Assert.Equal("GitHub", vault.Passwords[0].Title);
     }
+
+    [Fact]
+    public void ParseCsv_NordPassFormat_OnlyPasswordTypeImported()
+    {
+        // NordPass export format: 24 columns including a "type" column that distinguishes
+        // password / credit_card / identity / note rows. Only the password rows should be
+        // imported here; the other types must be skipped (richer import is future work).
+        var csv =
+            "name,url,additional_urls,username,password,note,cardholdername,cardnumber,cvc,pin,expirydate,zipcode,folder,shared_folder,full_name,phone_number,email,address1,address2,city,country,state,type,custom_fields\n" +
+            "GitHub,https://github.com,,me@x.com,pw1,,,,,,,,,,,,,,,,,,password,\n" +
+            "My Visa,,,,,,John Doe,4111111111111111,123,,12/30,,,,,,,,,,,,credit_card,\n" +
+            "Personale,,,,,,,,,,,,,,Mario Rossi,3331234567,mario@x.com,Via X 1,,Milano,IT,MI,identity,\n" +
+            "Wifi key,,,,,Pass: hunter2,,,,,,,,,,,,,,,,,note,\n" +
+            "GitLab,https://gitlab.com,,me@x.com,pw2,Secondary note,,,,,,,,,,,,,,,,,password,";
+
+        var vault = _importer.ParseCsv(csv);
+
+        Assert.Equal(2, vault.Passwords.Count);
+        Assert.Equal("GitHub", vault.Passwords[0].Title);
+        Assert.Equal("pw1", vault.Passwords[0].Password);
+        Assert.Equal("GitLab", vault.Passwords[1].Title);
+        Assert.Equal("Secondary note", vault.Passwords[1].Notes);
+    }
+
+    [Fact]
+    public void ParseCsv_NoteSingularAlias_ImportedAsNotes()
+    {
+        // NordPass uses "note" (singular). The legacy mapper only accepted "notes".
+        var csv = "name,username,password,note\nGitHub,me,pw,My singular note";
+        var vault = _importer.ParseCsv(csv);
+
+        Assert.Single(vault.Passwords);
+        Assert.Equal("My singular note", vault.Passwords[0].Notes);
+    }
 }

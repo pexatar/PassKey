@@ -5,7 +5,7 @@ namespace PassKey.Core.Models;
 /// Instances are serialized to JSON, encrypted with AES-GCM, and stored as a
 /// single encrypted blob in the VaultData SQLite table.
 /// </summary>
-public sealed class PasswordEntry
+public sealed class PasswordEntry : IVaultEntry
 {
     /// <summary>Gets or sets the unique identifier for this entry.</summary>
     public Guid Id { get; set; } = Guid.NewGuid();

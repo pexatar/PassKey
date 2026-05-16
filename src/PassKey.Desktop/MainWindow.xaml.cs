@@ -89,6 +89,13 @@ public sealed partial class MainWindow : Window
         // Apply saved theme on startup
         ApplySavedTheme();
 
+        // Register a lazy XamlRoot accessor with the dialog service so ViewModels can show
+        // ContentDialogs without each having to plumb a XamlRoot reference. A delegate is
+        // used (rather than caching Content.XamlRoot directly) because that property can be
+        // null until the window has rendered; reading it just-in-time, when each dialog is
+        // about to be shown, is always safe.
+        App.Services.GetRequiredService<IDialogQueueService>().XamlRootAccessor = () => Content?.XamlRoot;
+
         try
         {
             await _mainViewModel.InitializeAsync();

@@ -12,6 +12,8 @@ public static class CardTypeDetector
     {
         // MasterCard: standard range 51-55 is checked inline with a 2-digit prefix;
         // the expanded range covers re-issued BINs introduced in 2017.
+        internal const int MasterCardStandardStart = 51;
+        internal const int MasterCardStandardEnd   = 55;
         internal const int MasterCardExpandedStart = 2221;
         internal const int MasterCardExpandedEnd   = 2720;
 
@@ -32,6 +34,25 @@ public static class CardTypeDetector
         internal const int DinersRange3End   = 305;
     }
 
+    /// <summary>Network-specific literal prefixes used for card-type detection (string-startswith match).</summary>
+    private static class BinPrefixes
+    {
+        /// <summary>American Express: 34 or 37.</summary>
+        internal static readonly string[] Amex = ["34", "37"];
+
+        /// <summary>Visa always starts with 4.</summary>
+        internal const string Visa = "4";
+
+        /// <summary>Discover: 6011 or 65 (in addition to the 3- and 6-digit ranges in <see cref="BinRanges"/>).</summary>
+        internal static readonly string[] Discover = ["6011", "65"];
+
+        /// <summary>Diners Club: 36 or 38 (in addition to the 300-305 range in <see cref="BinRanges"/>).</summary>
+        internal static readonly string[] Diners = ["36", "38"];
+
+        /// <summary>Maestro: 5018, 5020, 5038, 6304, 6759, 6761, 6762, 6763.</summary>
+        internal static readonly string[] Maestro = ["5018", "5020", "5038", "6304", "6759", "6761", "6762", "6763"];
+    }
+
     /// <summary>
     /// Detects the card type from the card number using BIN prefix tables.
     /// </summary>
@@ -44,19 +65,19 @@ public static class CardTypeDetector
         if (digits.Length < 4)
             return CardType.Unknown;
 
-        // Amex: starts with 34 or 37
-        if (digits.StartsWith("34") || digits.StartsWith("37"))
+        // Amex: starts with 34 or 37.
+        if (StartsWithAny(digits, BinPrefixes.Amex))
             return CardType.Amex;
 
-        // Visa: starts with 4
-        if (digits.StartsWith('4'))
+        // Visa: starts with 4.
+        if (digits.StartsWith(BinPrefixes.Visa))
             return CardType.Visa;
 
-        // MasterCard: 51-55 or expanded range 2221-2720
+        // MasterCard: 51-55 or expanded range 2221-2720.
         if (digits.Length >= 2)
         {
             var prefix2 = int.Parse(digits[..2]);
-            if (prefix2 >= 51 && prefix2 <= 55)
+            if (prefix2 >= BinRanges.MasterCardStandardStart && prefix2 <= BinRanges.MasterCardStandardEnd)
                 return CardType.MasterCard;
         }
         if (digits.Length >= 4)
@@ -66,8 +87,8 @@ public static class CardTypeDetector
                 return CardType.MasterCard;
         }
 
-        // Discover: 6011, 622126-622925, 644-649, 65
-        if (digits.StartsWith("6011") || digits.StartsWith("65"))
+        // Discover: 6011, 622126-622925, 644-649, 65.
+        if (StartsWithAny(digits, BinPrefixes.Discover))
             return CardType.Discover;
         if (digits.Length >= 3)
         {
@@ -82,7 +103,7 @@ public static class CardTypeDetector
                 return CardType.Discover;
         }
 
-        // JCB: 3528-3589
+        // JCB: 3528-3589.
         if (digits.Length >= 4)
         {
             var prefix4 = int.Parse(digits[..4]);
@@ -90,8 +111,8 @@ public static class CardTypeDetector
                 return CardType.JCB;
         }
 
-        // Diners Club: 300-305, 36, 38
-        if (digits.StartsWith("36") || digits.StartsWith("38"))
+        // Diners Club: 300-305, 36, 38.
+        if (StartsWithAny(digits, BinPrefixes.Diners))
             return CardType.DinersClub;
         if (digits.Length >= 3)
         {
@@ -100,12 +121,21 @@ public static class CardTypeDetector
                 return CardType.DinersClub;
         }
 
-        // Maestro: 5018, 5020, 5038, 6304, 6759, 6761, 6762, 6763
-        string[] maestroPrefixes = ["5018", "5020", "5038", "6304", "6759", "6761", "6762", "6763"];
-        if (digits.Length >= 4 && maestroPrefixes.Any(p => digits.StartsWith(p)))
+        // Maestro: 5018, 5020, 5038, 6304, 6759, 6761, 6762, 6763.
+        if (digits.Length >= 4 && StartsWithAny(digits, BinPrefixes.Maestro))
             return CardType.Maestro;
 
         return CardType.Unknown;
+    }
+
+    /// <summary>Returns true if the supplied digit string starts with any of the supplied prefixes.</summary>
+    private static bool StartsWithAny(string digits, string[] prefixes)
+    {
+        foreach (var prefix in prefixes)
+        {
+            if (digits.StartsWith(prefix)) return true;
+        }
+        return false;
     }
 
     /// <summary>
