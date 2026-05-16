@@ -71,28 +71,53 @@ public sealed class VaultStateService : IVaultStateService, IDisposable
     /// </summary>
     /// <param name="masterPassword">The master password to verify.</param>
     /// <returns>True if the password is correct and the vault is now unlocked; false otherwise.</returns>
+    /// <remarks>
+    /// <b>DEK lifecycle.</b> The derived <see cref="PinnedSecureBuffer"/> is held in a local
+    /// variable until <see cref="IVaultService.DecryptVault"/> has succeeded. Only then is it
+    /// promoted to the long-lived <see cref="_dek"/> field and <see cref="CurrentVault"/>
+    /// assigned. If decryption throws (corrupt blob, GCM tag failure, unexpected DEK length,
+    /// etc.), the local buffer is zeroed and disposed in the <c>catch</c>/<c>finally</c> path,
+    /// so plaintext key material is never retained in memory after a failed unlock.
+    /// </remarks>
     public async Task<bool> UnlockAsync(ReadOnlyMemory<char> masterPassword)
     {
         var metadata = await _repository.LoadMetadataAsync();
         if (metadata is null) return false;
 
+        PinnedSecureBuffer? candidateDek;
         try
         {
-            _dek = _vaultService.UnlockVault(masterPassword.Span, metadata);
+            candidateDek = _vaultService.UnlockVault(masterPassword.Span, metadata);
         }
-        catch
+        catch (Exception ex)
         {
+            // Wrong password / unsupported KDF / corrupted metadata — nothing to clean up,
+            // the constructor of the failed buffer (if any) is the implementation's
+            // responsibility. Surface the exception type/message to a Debug listener so
+            // diagnostics aren't lost during development; we still return false so the
+            // user-facing path stays generic ("incorrect master password").
+            System.Diagnostics.Debug.WriteLine($"[VaultStateService] UnlockVault failed: {ex.GetType().Name}: {ex.Message}");
             return false;
         }
 
-        var encryptedBlob = await _repository.LoadEncryptedVaultAsync();
-        if (encryptedBlob is null)
+        try
         {
-            CurrentVault = new Vault();
+            var encryptedBlob = await _repository.LoadEncryptedVaultAsync();
+            Vault decryptedVault = encryptedBlob is null
+                ? new Vault()
+                : _vaultService.DecryptVault(encryptedBlob, candidateDek.ReadOnlySpan);
+
+            // Promote only after decryption succeeds — the previous implementation assigned
+            // _dek before this line, leaving the plaintext key in memory if decryption threw.
+            _dek = candidateDek;
+            CurrentVault = decryptedVault;
+            candidateDek = null; // ownership transferred to _dek; skip the cleanup below
         }
-        else
+        finally
         {
-            CurrentVault = _vaultService.DecryptVault(encryptedBlob, _dek.ReadOnlySpan);
+            // If we never promoted (decrypt failed or threw) zero and release the candidate
+            // immediately so the DEK does not outlive a failed unlock attempt.
+            candidateDek?.Dispose();
         }
 
         VaultUnlocked?.Invoke();

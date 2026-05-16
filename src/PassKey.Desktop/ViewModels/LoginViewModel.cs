@@ -91,8 +91,12 @@ public partial class LoginViewModel : ObservableObject
                 ErrorMessage = "IncorrectPassword"; // Localization key
             }
         }
-        catch
+        catch (Exception ex)
         {
+            // Generic catch — UI shows a localized "UnlockFailed" key without leaking the
+            // underlying error to the user. Forward the original exception to Debug so it's
+            // still visible to developers during local diagnostics.
+            System.Diagnostics.Debug.WriteLine($"[LoginViewModel] Login failed: {ex.GetType().Name}: {ex.Message}");
             HasError = true;
             ErrorMessage = "UnlockFailed"; // Localization key
         }

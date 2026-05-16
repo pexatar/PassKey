@@ -42,7 +42,48 @@ public class BackupServiceTests
         Assert.Equal(0x4B, blob[1]); // 'K'
         Assert.Equal(0x42, blob[2]); // 'B'
         Assert.Equal(0x4B, blob[3]); // 'K'
-        Assert.Equal(0x01, blob[4]); // version
+        // PassKey 2.0 backups are written with version 0x02 (Argon2id KDF). The 0x01
+        // version (PBKDF2-SHA256) is still accepted on restore for v1.x compatibility.
+        Assert.Equal(0x02, blob[4]);
+    }
+
+    [Fact]
+    public void CreateBackupBlob_UsesArgon2id_VersionByteIs2()
+    {
+        // Regression guard: ensure new backups never silently regress to the legacy
+        // PBKDF2 format. The version byte at offset 4 must be exactly 0x02.
+        var vault = new Vault();
+        var blob = _backup.CreateBackupBlob(vault, "AnyP@ssword1!".AsSpan());
+        Assert.Equal(0x02, blob[4]);
+    }
+
+    [Fact]
+    public void RestoreFromBlob_LegacyV1Pbkdf2Format_StillRestores()
+    {
+        // Hand-craft a legacy v1.x backup blob — derive key with PBKDF2, write 0x01 in
+        // the version byte — and verify that PassKey 2.0 can still restore it. This
+        // guarantees that .pkbak files produced by previous releases remain usable.
+        var password = "Legacy@Backup1!".AsSpan();
+        var vault = CreateSampleVault();
+        var jsonBytes = System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(vault, VaultJsonContext.Default.Vault);
+        var salt = _crypto.GenerateRandomBytes(PassKey.Core.Constants.CryptoConstants.SaltSizeBytes);
+        using var key = _crypto.DeriveKeyFromPassword(
+            password,
+            salt,
+            PassKey.Core.Constants.CryptoConstants.DefaultKdfIterations,
+            PassKey.Core.Constants.CryptoConstants.KdfAlgorithmPbkdf2);
+        var encrypted = _crypto.Encrypt(jsonBytes, key.ReadOnlySpan);
+
+        var legacyBlob = new byte[5 + PassKey.Core.Constants.CryptoConstants.SaltSizeBytes + encrypted.Length];
+        legacyBlob[0] = 0x50; legacyBlob[1] = 0x4B; legacyBlob[2] = 0x42; legacyBlob[3] = 0x4B;
+        legacyBlob[4] = 0x01; // legacy version byte
+        salt.CopyTo(legacyBlob.AsSpan(5));
+        encrypted.CopyTo(legacyBlob.AsSpan(5 + PassKey.Core.Constants.CryptoConstants.SaltSizeBytes));
+
+        var restored = _backup.RestoreFromBlob(legacyBlob, password);
+
+        Assert.Single(restored.Passwords);
+        Assert.Equal("GitHub", restored.Passwords[0].Title);
     }
 
     [Fact]

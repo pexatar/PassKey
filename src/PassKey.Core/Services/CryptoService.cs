@@ -22,12 +22,17 @@ public sealed class CryptoService : ICryptoService
 
                 if (kdfAlgorithm == CryptoConstants.KdfAlgorithmArgon2Id)
                 {
+                    // Honour an explicit caller-supplied iteration count when positive; fall back
+                    // to the OWASP-tuned default in CryptoConstants for the (legitimate) callers
+                    // that pass 0 — e.g. unit tests or backward-compat code paths that don't know
+                    // about Argon2-specific tunings. This keeps the Argon2id path symmetric with
+                    // the PBKDF2 branch below, which already threads the parameter through.
                     using var argon2 = new Argon2id(passwordBytes)
                     {
                         Salt                = salt,
                         DegreeOfParallelism = CryptoConstants.Argon2Parallelism,
                         MemorySize          = CryptoConstants.Argon2MemoryCostKiB,
-                        Iterations          = CryptoConstants.Argon2TimeCost
+                        Iterations          = iterations > 0 ? iterations : CryptoConstants.Argon2TimeCost,
                     };
                     var derived = argon2.GetBytes(CryptoConstants.KeySizeBytes);
                     try   { derived.CopyTo(buffer.Span); }
