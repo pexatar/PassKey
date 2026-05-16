@@ -14,13 +14,16 @@ namespace PassKey.Desktop.ViewModels;
 /// <see cref="INavigationStack"/>, <see cref="IDatabaseService"/>, <see cref="IVaultStateService"/>.
 /// Subscribes to <see cref="IVaultStateService.VaultLocked"/> to redirect to the login screen
 /// whenever the vault is locked programmatically or after auto-lock timeout.
+/// Implements <see cref="IDisposable"/> to detach event handlers and prevent leaks if the
+/// instance is ever re-created within the same process lifetime.
 /// </remarks>
-public partial class MainViewModel : ObservableObject
+public partial class MainViewModel : ObservableObject, IDisposable
 {
     private readonly IVaultRepository _repository;
     private readonly INavigationStack _navigation;
     private readonly IDatabaseService _database;
     private readonly IVaultStateService _vaultState;
+    private bool _disposed;
 
     /// <summary>
     /// Gets or sets the currently active page ViewModel displayed in the main content area.
@@ -47,9 +50,12 @@ public partial class MainViewModel : ObservableObject
         _database = database;
         _vaultState = vaultState;
 
-        _navigation.CurrentChanged += vm => CurrentPage = vm;
+        // Named handlers (not lambdas) so they can be unsubscribed in Dispose.
+        _navigation.CurrentChanged += OnNavigationCurrentChanged;
         _vaultState.VaultLocked += OnVaultLocked;
     }
+
+    private void OnNavigationCurrentChanged(ObservableObject? vm) => CurrentPage = vm;
 
     private void OnVaultLocked()
     {
@@ -75,5 +81,18 @@ public partial class MainViewModel : ObservableObject
         {
             _navigation.NavigateTo<SetupViewModel>();
         }
+    }
+
+    /// <summary>
+    /// Detaches event handlers from <see cref="INavigationStack"/> and
+    /// <see cref="IVaultStateService"/> to prevent memory leaks if the instance is replaced.
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+
+        _navigation.CurrentChanged -= OnNavigationCurrentChanged;
+        _vaultState.VaultLocked -= OnVaultLocked;
     }
 }

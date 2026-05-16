@@ -5,7 +5,7 @@ namespace PassKey.Core.Models;
 /// Stores contact information, postal address, and government-issued document numbers.
 /// Stored as part of the encrypted vault blob in the VaultData SQLite table.
 /// </summary>
-public sealed class IdentityEntry
+public sealed class IdentityEntry : IVaultEntry
 {
     /// <summary>Gets or sets the unique identifier for this entry.</summary>
     public Guid Id { get; set; } = Guid.NewGuid();

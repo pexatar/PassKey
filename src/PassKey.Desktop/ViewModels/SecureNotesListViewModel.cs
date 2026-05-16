@@ -14,11 +14,12 @@ namespace PassKey.Desktop.ViewModels;
 /// search, pin sorting, CRUD.
 /// Left panel shows mini-cards with colored left border; right panel shows editor.
 /// </summary>
-public partial class SecureNotesListViewModel : ObservableObject
+public partial class SecureNotesListViewModel : ObservableObject, IDisposable
 {
     private readonly IVaultStateService _vaultState;
     private readonly IDialogQueueService _dialogQueue;
     private readonly IVaultRepository _repository;
+    private bool _disposed;
 
     private List<SecureNoteEntry> _allEntries = [];
 
@@ -60,6 +61,29 @@ public partial class SecureNotesListViewModel : ObservableObject
         _dialogQueue = dialogQueue;
         _repository = repository;
         _detailVm = detailViewModel;
+
+        _vaultState.VaultLocked += OnVaultLocked;
+    }
+
+    private void OnVaultLocked()
+    {
+        _allEntries = [];
+        Entries.Clear();
+        IsEditorOpen = false;
+        DetailViewModel = null;
+        SelectedEntry = null;
+        SearchQuery = string.Empty;
+        FilterCategory = null;
+        IsEmpty = false;
+        IsFilteredEmpty = false;
+    }
+
+    /// <summary>Detaches the <see cref="IVaultStateService.VaultLocked"/> handler to prevent leaks.</summary>
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _vaultState.VaultLocked -= OnVaultLocked;
     }
 
     [RelayCommand]
@@ -160,20 +184,13 @@ public partial class SecureNotesListViewModel : ObservableObject
     {
         if (SelectedEntry is null) return;
 
-        var result = await _dialogQueue.EnqueueAndWait(() =>
-        {
-            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
-            {
-                Title = "Elimina nota",
-                Content = $"Eliminare \"{SelectedEntry.Title}\"?\nQuesta azione è irreversibile.",
-                PrimaryButtonText = "Elimina",
-                CloseButtonText = "Annulla",
-                DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Close
-            };
-            return dialog.ShowAsync().AsTask();
-        });
+        var confirmed = await _dialogQueue.ConfirmAsync(
+            title: "Elimina nota",
+            content: $"Eliminare \"{SelectedEntry.Title}\"?\nQuesta azione è irreversibile.",
+            primaryButtonText: "Elimina",
+            closeButtonText: "Annulla");
 
-        if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
+        if (confirmed)
         {
             var vault = _vaultState.CurrentVault;
             var entryId = SelectedEntry.Id;

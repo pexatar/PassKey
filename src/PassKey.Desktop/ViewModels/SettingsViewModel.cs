@@ -417,6 +417,22 @@ public partial class SettingsViewModel : ObservableObject
             // 4. Parse file
             var importedVault = await _importOrchestrator.ParseFileAsync(path, format, importPassword);
 
+            var totalImported = importedVault.Passwords.Count
+                               + importedVault.CreditCards.Count
+                               + importedVault.Identities.Count
+                               + importedVault.SecureNotes.Count;
+
+            // Guard: if the imported file produced no entries (e.g. empty/malformed CSV,
+            // unsupported export structure, headers that we don't recognise), surface
+            // an explicit "no data" error instead of silently advancing to the merge
+            // dialog and then showing "Import completed" with zero changes applied.
+            if (totalImported == 0)
+            {
+                if (OperationError is not null)
+                    await OperationError.Invoke("Il file selezionato non contiene alcuna voce riconoscibile. Verifica che l'esportazione di origine non sia vuota e che il formato sia supportato.");
+                return;
+            }
+
             // 5. Show counts and ask for merge strategy
             if (MergeStrategyRequested is null) return;
             var (strategy, mergeConfirmed) = await MergeStrategyRequested.Invoke(

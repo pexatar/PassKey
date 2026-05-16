@@ -6,7 +6,7 @@ namespace PassKey.Core.Models;
 /// Represents an encrypted free-text note in the PassKey vault.
 /// Stored as part of the encrypted vault blob in the VaultData SQLite table.
 /// </summary>
-public sealed class SecureNoteEntry
+public sealed class SecureNoteEntry : IVaultEntry
 {
     /// <summary>Gets or sets the unique identifier for this note.</summary>
     public Guid Id { get; set; } = Guid.NewGuid();

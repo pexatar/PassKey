@@ -7,7 +7,7 @@ namespace PassKey.Core.Models;
 /// Fields follow the physical card flow: Number → Name → Expiry → CVV → metadata.
 /// Stored as part of the encrypted vault blob in the VaultData SQLite table.
 /// </summary>
-public sealed class CreditCardEntry
+public sealed class CreditCardEntry : IVaultEntry
 {
     /// <summary>Gets or sets the unique identifier for this entry.</summary>
     public Guid Id { get; set; } = Guid.NewGuid();

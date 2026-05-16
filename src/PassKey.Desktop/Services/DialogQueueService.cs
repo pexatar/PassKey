@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace PassKey.Desktop.Services;
@@ -21,6 +22,35 @@ public sealed class DialogQueueService : IDialogQueueService
 {
     private readonly Queue<Func<Task>> _queue = new();
     private bool _isPumping;
+
+    /// <inheritdoc/>
+    public Func<XamlRoot?>? XamlRootAccessor { get; set; }
+
+    /// <inheritdoc/>
+    public Task<bool> ConfirmAsync(
+        string title,
+        string content,
+        string primaryButtonText,
+        string closeButtonText,
+        ContentDialogButton defaultButton = ContentDialogButton.Close)
+    {
+        return EnqueueAndWait(() =>
+        {
+            // Resolve the XamlRoot lazily — on the UI thread, at the exact moment the dialog
+            // is about to be shown — so the value is guaranteed to be non-null by the time the
+            // window has rendered and the user has triggered a delete (or similar) action.
+            var dialog = new ContentDialog
+            {
+                Title = title,
+                Content = content,
+                PrimaryButtonText = primaryButtonText,
+                CloseButtonText = closeButtonText,
+                DefaultButton = defaultButton,
+                XamlRoot = XamlRootAccessor?.Invoke(),
+            };
+            return dialog.ShowAsync().AsTask();
+        }).ContinueWith(t => t.Result == ContentDialogResult.Primary, TaskScheduler.Default);
+    }
 
     /// <summary>
     /// Enqueues a dialog factory for fire-and-forget display. The result is discarded.

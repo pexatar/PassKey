@@ -12,12 +12,13 @@ namespace PassKey.Desktop.ViewModels;
 /// <summary>
 /// Credit cards list ViewModel: collection, sort, search, view toggle (card/list), detail panel.
 /// </summary>
-public partial class CreditCardsListViewModel : ObservableObject
+public partial class CreditCardsListViewModel : ObservableObject, IDisposable
 {
     private readonly IVaultStateService _vaultState;
     private readonly IClipboardService _clipboard;
     private readonly IDialogQueueService _dialogQueue;
     private readonly IVaultRepository _repository;
+    private bool _disposed;
 
     private List<CreditCardEntry> _allEntries = [];
 
@@ -64,6 +65,27 @@ public partial class CreditCardsListViewModel : ObservableObject
         _dialogQueue = dialogQueue;
         _repository = repository;
         _detailVm = detailViewModel;
+
+        _vaultState.VaultLocked += OnVaultLocked;
+    }
+
+    private void OnVaultLocked()
+    {
+        _allEntries = [];
+        Entries.Clear();
+        IsDetailOpen = false;
+        DetailViewModel = null;
+        SelectedEntry = null;
+        SearchQuery = string.Empty;
+        IsEmpty = false;
+    }
+
+    /// <summary>Detaches the <see cref="IVaultStateService.VaultLocked"/> handler to prevent leaks.</summary>
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _vaultState.VaultLocked -= OnVaultLocked;
     }
 
     [RelayCommand]
@@ -177,20 +199,13 @@ public partial class CreditCardsListViewModel : ObservableObject
     {
         if (SelectedEntry is null) return;
 
-        var result = await _dialogQueue.EnqueueAndWait(() =>
-        {
-            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
-            {
-                Title = "Elimina carta",
-                Content = $"Eliminare \"{SelectedEntry.Label}\"?\nQuesta azione è irreversibile.",
-                PrimaryButtonText = "Elimina",
-                CloseButtonText = "Annulla",
-                DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Close
-            };
-            return dialog.ShowAsync().AsTask();
-        });
+        var confirmed = await _dialogQueue.ConfirmAsync(
+            title: "Elimina carta",
+            content: $"Eliminare \"{SelectedEntry.Label}\"?\nQuesta azione è irreversibile.",
+            primaryButtonText: "Elimina",
+            closeButtonText: "Annulla");
 
-        if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
+        if (confirmed)
         {
             var vault = _vaultState.CurrentVault;
             var entryId = SelectedEntry.Id;
