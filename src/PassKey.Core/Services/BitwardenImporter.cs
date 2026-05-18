@@ -6,6 +6,19 @@ namespace PassKey.Core.Services;
 
 public sealed class BitwardenImporter : IBitwardenImporter
 {
+    private readonly ITotpService? _totp;
+
+    /// <summary>
+    /// Initialises the importer. Pass an <see cref="ITotpService"/> to enable
+    /// structured TOTP import from the Bitwarden <c>login.totp</c> field; otherwise
+    /// the importer falls back to the legacy v1.x behaviour and appends the raw
+    /// TOTP string to the entry notes.
+    /// </summary>
+    public BitwardenImporter(ITotpService? totp = null)
+    {
+        _totp = totp;
+    }
+
     public Vault ParseBitwarden(string jsonContent)
     {
         ArgumentNullException.ThrowIfNull(jsonContent);
@@ -38,29 +51,67 @@ public sealed class BitwardenImporter : IBitwardenImporter
         return vault;
     }
 
-    private static PasswordEntry MapLogin(BitwardenItem item)
+    private PasswordEntry MapLogin(BitwardenItem item)
     {
         var login = item.Login;
-        return new PasswordEntry
+        var entry = new PasswordEntry
         {
             Id = Guid.NewGuid(),
             Title = item.Name ?? string.Empty,
             Username = login?.Username ?? string.Empty,
             Password = login?.Password ?? string.Empty,
             Url = login?.Uris?.FirstOrDefault()?.Uri ?? string.Empty,
-            Notes = BuildNotes(item.Notes, login?.Totp),
+            Notes = item.Notes ?? string.Empty,
             CreatedAt = DateTime.UtcNow,
             ModifiedAt = DateTime.UtcNow
         };
+
+        ApplyBitwardenTotp(entry, login?.Totp);
+        return entry;
     }
 
-    private static string BuildNotes(string? notes, string? totp)
+    /// <summary>
+    /// Bitwarden stores TOTP either as a raw Base32 secret or as an <c>otpauth://</c> URI
+    /// in the <c>login.totp</c> field. PassKey 2.0 parses both shapes into the structured
+    /// <see cref="PasswordEntry.TotpSecret"/> family of fields so the user gets a live code
+    /// in the UI instead of a string in the notes blob.
+    /// </summary>
+    /// <remarks>
+    /// When no <see cref="ITotpService"/> was injected (legacy callers, future tests),
+    /// the value is appended to the notes — preserving the original v1.x behaviour.
+    /// Steam Guard tokens (<c>steam://</c>) are not standard TOTP and are kept as notes.
+    /// </remarks>
+    private void ApplyBitwardenTotp(PasswordEntry entry, string? totp)
     {
-        if (string.IsNullOrEmpty(totp)) return notes ?? string.Empty;
-        var result = notes ?? string.Empty;
-        if (!string.IsNullOrEmpty(result)) result += "\n";
-        result += $"TOTP: {totp}";
-        return result;
+        if (string.IsNullOrWhiteSpace(totp)) return;
+
+        if (_totp is not null)
+        {
+            // 1. otpauth:// URI → parse all parameters.
+            if (totp.StartsWith("otpauth://", StringComparison.OrdinalIgnoreCase))
+            {
+                var parsed = _totp.ParseOtpAuthUri(totp);
+                if (parsed?.TotpSecret is { Length: > 0 })
+                {
+                    entry.TotpSecret = parsed.TotpSecret;
+                    entry.TotpAlgorithm = parsed.TotpAlgorithm;
+                    entry.TotpDigits = parsed.TotpDigits;
+                    entry.TotpPeriod = parsed.TotpPeriod;
+                    return;
+                }
+            }
+
+            // 2. Bare Base32 secret → use defaults (SHA1, 6 digits, 30 s).
+            if (_totp.IsValidBase32(totp))
+            {
+                entry.TotpSecret = totp.Trim();
+                return;
+            }
+        }
+
+        // 3. Unrecognised (e.g. steam://) or no TotpService — preserve as notes.
+        if (!string.IsNullOrEmpty(entry.Notes)) entry.Notes += "\n";
+        entry.Notes += $"TOTP: {totp}";
     }
 
     private static SecureNoteEntry MapSecureNote(BitwardenItem item)

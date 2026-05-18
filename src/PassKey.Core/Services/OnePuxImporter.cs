@@ -6,6 +6,18 @@ namespace PassKey.Core.Services;
 
 public sealed class OnePuxImporter : IOnePuxImporter
 {
+    private readonly ITotpService? _totp;
+
+    /// <summary>
+    /// Initialises the importer. Pass an <see cref="ITotpService"/> to enable
+    /// structured TOTP import for login items (extracting <c>otpauth://</c> URIs
+    /// from item sections); without it the URIs remain only in the notes blob.
+    /// </summary>
+    public OnePuxImporter(ITotpService? totp = null)
+    {
+        _totp = totp;
+    }
+
     public Vault ParseOnePux(string exportDataJson)
     {
         ArgumentNullException.ThrowIfNull(exportDataJson);
@@ -32,7 +44,7 @@ public sealed class OnePuxImporter : IOnePuxImporter
         return vault;
     }
 
-    private static void MapItem(Vault vault, OnePuxItem item)
+    private void MapItem(Vault vault, OnePuxItem item)
     {
         var title = item.Overview?.Title ?? string.Empty;
         var notes = item.Details?.NotesPlain ?? string.Empty;
@@ -45,7 +57,11 @@ public sealed class OnePuxImporter : IOnePuxImporter
         // Check if it's a login (has username/password fields)
         if (HasLoginFields(loginFields))
         {
-            vault.Passwords.Add(MapToPassword(title, url, notes, loginFields!));
+            var pw = MapToPassword(title, url, notes, loginFields!);
+            // Look in sections for a TOTP one-time password URI and promote it to
+            // the structured fields when found (otpauth:// form preferred).
+            ApplyTotpFromSections(pw, sections);
+            vault.Passwords.Add(pw);
             return;
         }
 
@@ -90,6 +106,62 @@ public sealed class OnePuxImporter : IOnePuxImporter
         return fields.Any(f =>
             string.Equals(f.Designation, "username", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(f.Designation, "password", StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Searches the item's sections for a one-time password (TOTP) URI and applies it
+    /// to <paramref name="entry"/>. Supports three field shapes seen in 1Password 1pux
+    /// exports:
+    /// <list type="bullet">
+    ///   <item><c>value.totp</c> with an <c>otpauth://</c> URI (newest exports);</item>
+    ///   <item><c>value.string</c> or <c>value.concealed</c> with an <c>otpauth://</c>
+    ///   URI and the field title matching "one-time password" or "totp" (older exports).</item>
+    /// </list>
+    /// Falls back to a no-op when no <see cref="ITotpService"/> was injected (the URI,
+    /// if any, remains visible in the entry notes blob).
+    /// </summary>
+    private void ApplyTotpFromSections(PasswordEntry entry, OnePuxSection[]? sections)
+    {
+        if (_totp is null || sections is null) return;
+
+        foreach (var section in sections)
+        {
+            if (section.Fields is null) continue;
+            foreach (var field in section.Fields)
+            {
+                var candidate = ExtractTotpCandidate(field);
+                if (string.IsNullOrWhiteSpace(candidate)) continue;
+
+                var parsed = _totp.ParseOtpAuthUri(candidate);
+                if (parsed?.TotpSecret is { Length: > 0 })
+                {
+                    entry.TotpSecret = parsed.TotpSecret;
+                    entry.TotpAlgorithm = parsed.TotpAlgorithm;
+                    entry.TotpDigits = parsed.TotpDigits;
+                    entry.TotpPeriod = parsed.TotpPeriod;
+                    return; // first match wins
+                }
+            }
+        }
+    }
+
+    private static string? ExtractTotpCandidate(OnePuxSectionField field)
+    {
+        var value = field.Value;
+        if (value is null) return null;
+
+        if (!string.IsNullOrWhiteSpace(value.Totp)) return value.Totp;
+
+        var titleLower = field.Title?.ToLowerInvariant() ?? string.Empty;
+        if (titleLower.Contains("one-time password") || titleLower.Contains("totp"))
+        {
+            if (value.String is { Length: > 0 } s && s.StartsWith("otpauth://", StringComparison.OrdinalIgnoreCase))
+                return s;
+            if (value.Concealed is { Length: > 0 } c && c.StartsWith("otpauth://", StringComparison.OrdinalIgnoreCase))
+                return c;
+        }
+
+        return null;
     }
 
     private static PasswordEntry MapToPassword(string title, string url, string notes, OnePuxLoginField[] fields)

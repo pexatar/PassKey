@@ -1,12 +1,19 @@
 using System.IO;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Windows.ApplicationModel.Resources;
+using PassKey.Desktop.Services;
 using PassKey.Desktop.ViewModels;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Graphics.Imaging;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using WinRT.Interop;
+using ZXing;
+using ZXing.Common;
 
 namespace PassKey.Desktop.Views;
 
@@ -18,6 +25,9 @@ public sealed partial class PasswordDetailView : UserControl
     private PasswordDetailViewModel? _viewModel;
     private bool _updatingFromVm;
     private readonly ResourceLoader _resourceLoader = new();
+
+    /// <summary>Per-second timer that refreshes the live TOTP code while the view is loaded.</summary>
+    private DispatcherQueueTimer? _totpTimer;
 
     // 24 Segoe MDL2 Assets glyphs for the icon picker
     private static readonly string[] IconGlyphs =
@@ -33,6 +43,8 @@ public sealed partial class PasswordDetailView : UserControl
         InitializeComponent();
         PasswordInput.PasswordChanged += OnPasswordInputChanged;
         IconPickerGrid.ItemsSource = IconGlyphs;
+
+        Unloaded += (_, _) => StopTotpTimer();
     }
 
     public void SetViewModel(PasswordDetailViewModel vm)
@@ -74,6 +86,10 @@ public sealed partial class PasswordDetailView : UserControl
         // Icon preview
         _ = UpdateIconPreviewAsync();
 
+        // TOTP section state + per-second refresh timer
+        UpdateTotpUi();
+        StartTotpTimer();
+
         // Focus first field
         TitleBox.Focus(FocusState.Programmatic);
     }
@@ -106,6 +122,262 @@ public sealed partial class PasswordDetailView : UserControl
                 if (string.IsNullOrEmpty(_viewModel?.FaviconBase64))
                     _ = UpdateIconPreviewAsync();
                 break;
+            case nameof(PasswordDetailViewModel.TotpSecret):
+            case nameof(PasswordDetailViewModel.CurrentTotpCode):
+            case nameof(PasswordDetailViewModel.TotpRemainingSeconds):
+                UpdateTotpUi();
+                break;
+        }
+    }
+
+    // ─── TOTP UI helpers ─────────────────────────────────────────────────────
+
+    private void StartTotpTimer()
+    {
+        StopTotpTimer();
+        if (_viewModel is null) return;
+
+        var dq = DispatcherQueue.GetForCurrentThread();
+        if (dq is null) return;
+
+        _totpTimer = dq.CreateTimer();
+        _totpTimer.Interval = TimeSpan.FromSeconds(1);
+        _totpTimer.IsRepeating = true;
+        _totpTimer.Tick += (_, _) => _viewModel?.RefreshTotpDisplay();
+        _totpTimer.Start();
+    }
+
+    private void StopTotpTimer()
+    {
+        _totpTimer?.Stop();
+        _totpTimer = null;
+    }
+
+    private void UpdateTotpUi()
+    {
+        if (_viewModel is null) return;
+
+        var hasTotp = _viewModel.HasTotp;
+        TotpEmptyPanel.Visibility = hasTotp ? Visibility.Collapsed : Visibility.Visible;
+        TotpFilledPanel.Visibility = hasTotp ? Visibility.Visible : Visibility.Collapsed;
+
+        if (hasTotp)
+        {
+            TotpCodeText.Text = string.IsNullOrEmpty(_viewModel.CurrentTotpCode) ? "—" : _viewModel.CurrentTotpCode;
+            TotpCountdownText.Text = _viewModel.TotpRemainingSeconds > 0
+                ? _viewModel.TotpRemainingSeconds.ToString()
+                : "—";
+
+            // The ProgressRing visualises remaining/total. We invert the value so the ring
+            // fills as the period elapses (full at 0s left, empty at period seconds left).
+            TotpCountdownRing.Maximum = _viewModel.TotpPeriod;
+            TotpCountdownRing.Value = _viewModel.TotpPeriod - _viewModel.TotpRemainingSeconds;
+            TotpCountdownRing.IsActive = true;
+
+            // Hide the secret readout unless the user explicitly asked to show it.
+            // (Show button toggles it from below.)
+        }
+        else
+        {
+            TotpSecretReadout.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private async void TotpScanQrButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null) return;
+
+        var picker = new FileOpenPicker();
+        InitializeWithWindow.Initialize(picker, WindowNative.GetWindowHandle(App.MainWindow));
+        picker.FileTypeFilter.Add(".png");
+        picker.FileTypeFilter.Add(".jpg");
+        picker.FileTypeFilter.Add(".jpeg");
+        picker.FileTypeFilter.Add(".bmp");
+
+        var file = await picker.PickSingleFileAsync();
+        if (file is null) return;
+
+        var otpauthUri = await DecodeQrFromFileAsync(file);
+        if (string.IsNullOrEmpty(otpauthUri))
+        {
+            ToolTipService.SetToolTip(TotpScanQrButton, "Nessun codice QR riconoscibile nell'immagine.");
+            return;
+        }
+
+        if (!_viewModel.ApplyOtpAuthUri(otpauthUri))
+        {
+            ToolTipService.SetToolTip(TotpScanQrButton, "QR riconosciuto ma non è un URI 'otpauth://' valido.");
+            return;
+        }
+
+        // Re-sync TextBoxes if the URI carried Title/Username so the user sees them populated.
+        SyncTextBoxesFromViewModel();
+    }
+
+    private void TotpPasteUriButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null) return;
+
+        var pkg = Clipboard.GetContent();
+        if (!pkg.Contains(StandardDataFormats.Text))
+        {
+            ToolTipService.SetToolTip(TotpPasteUriButton, "Negli appunti non c'è testo.");
+            return;
+        }
+
+        _ = ApplyClipboardUriAsync(pkg);
+    }
+
+    private async Task ApplyClipboardUriAsync(DataPackageView pkg)
+    {
+        try
+        {
+            var text = await pkg.GetTextAsync();
+            if (_viewModel is null || string.IsNullOrWhiteSpace(text)) return;
+
+            if (!_viewModel.ApplyOtpAuthUri(text.Trim()))
+            {
+                ToolTipService.SetToolTip(TotpPasteUriButton, "Il testo negli appunti non è un URI 'otpauth://' valido.");
+                return;
+            }
+            SyncTextBoxesFromViewModel();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[TOTP paste] {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
+    private async void TotpEnterSecretButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null) return;
+
+        var input = new TextBox
+        {
+            PlaceholderText = "Es. JBSW Y3DP EHPK 3PXP",
+            FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Consolas, Courier New"),
+            AcceptsReturn = false,
+        };
+        var dialog = new ContentDialog
+        {
+            Title = "Inserisci chiave 2FA",
+            Content = new StackPanel
+            {
+                Spacing = 8,
+                Children =
+                {
+                    new TextBlock
+                    {
+                        Text = "Incolla la chiave Base32 fornita dal sito (lo stesso testo che inseriresti in Google Authenticator). Maiuscole e spazi vengono ignorati.",
+                        TextWrapping = TextWrapping.Wrap,
+                    },
+                    input,
+                },
+            },
+            PrimaryButtonText = "Salva",
+            CloseButtonText = "Annulla",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = XamlRoot,
+        };
+
+        var res = await dialog.ShowAsync();
+        if (res != ContentDialogResult.Primary) return;
+        if (!_viewModel.ApplyManualSeed(input.Text))
+            ToolTipService.SetToolTip(TotpEnterSecretButton, "Chiave Base32 non valida (usa solo A-Z e 2-7).");
+    }
+
+    private void TotpCopyButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null) return;
+        var raw = _viewModel.GetCurrentTotpCodeRaw();
+        if (string.IsNullOrEmpty(raw)) return;
+
+        // Reuse the existing ClipboardService so the auto-clear / history-suppression
+        // behaviour matches the rest of the app (sensitive copy, 30 s auto-clear).
+        var clip = App.Services.GetService(typeof(IClipboardService)) as IClipboardService;
+        if (clip is null)
+        {
+            // Fallback: plain clipboard set without auto-clear.
+            var pkg = new DataPackage();
+            pkg.SetText(raw);
+            Clipboard.SetContent(pkg);
+        }
+        else
+        {
+            clip.Copy(raw, CopyType.Sensitive);
+        }
+    }
+
+    private void TotpShowSecretButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null) return;
+        if (TotpSecretReadout.Visibility == Visibility.Visible)
+        {
+            TotpSecretReadout.Visibility = Visibility.Collapsed;
+            TotpSecretReadout.Text = string.Empty;
+        }
+        else
+        {
+            TotpSecretReadout.Visibility = Visibility.Visible;
+            TotpSecretReadout.Text = _viewModel.TotpSecret ?? string.Empty;
+        }
+    }
+
+    private void TotpRemoveButton_Click(object sender, RoutedEventArgs e)
+    {
+        _viewModel?.RemoveTotp();
+    }
+
+    private void SyncTextBoxesFromViewModel()
+    {
+        if (_viewModel is null) return;
+        _updatingFromVm = true;
+        try
+        {
+            if (TitleBox.Text != _viewModel.Title) TitleBox.Text = _viewModel.Title;
+            if (UsernameBox.Text != _viewModel.Username) UsernameBox.Text = _viewModel.Username;
+        }
+        finally
+        {
+            _updatingFromVm = false;
+        }
+    }
+
+    /// <summary>
+    /// Decodes a QR code from an image file using ZXing.Net and the Windows
+    /// <see cref="BitmapDecoder"/> API to extract raw 32-bit pixels. Returns the
+    /// decoded textual payload (typically an <c>otpauth://...</c> URI) or null on failure.
+    /// </summary>
+    private static async Task<string?> DecodeQrFromFileAsync(StorageFile file)
+    {
+        try
+        {
+            using var stream = await file.OpenAsync(FileAccessMode.Read);
+            var decoder = await BitmapDecoder.CreateAsync(stream);
+            var pixelData = await decoder.GetPixelDataAsync(
+                BitmapPixelFormat.Bgra8,
+                BitmapAlphaMode.Premultiplied,
+                new BitmapTransform(),
+                ExifOrientationMode.RespectExifOrientation,
+                ColorManagementMode.DoNotColorManage);
+            var bytes = pixelData.DetachPixelData();
+
+            var luminance = new RGBLuminanceSource(bytes,
+                (int)decoder.PixelWidth,
+                (int)decoder.PixelHeight,
+                RGBLuminanceSource.BitmapFormat.BGRA32);
+
+            var reader = new ZXing.QrCode.QRCodeReader();
+            var binarizer = new HybridBinarizer(luminance);
+            var bitmap = new BinaryBitmap(binarizer);
+
+            var result = reader.decode(bitmap);
+            return result?.Text;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[QR decode] {ex.GetType().Name}: {ex.Message}");
+            return null;
         }
     }
 
