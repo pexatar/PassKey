@@ -78,6 +78,14 @@ public sealed class OnePuxFieldValue
     public string? Concealed { get; set; }
     public OnePuxAddress? Address { get; set; }
     public OnePuxDate? Date { get; set; }
+
+    /// <summary>
+    /// Some 1Password 1pux exports use a dedicated <c>totp</c> field for one-time
+    /// password URIs (full <c>otpauth://...</c> form). Older exports embed the URI
+    /// in <see cref="String"/> or <see cref="Concealed"/> with the field title set
+    /// to "one-time password" — the importer handles both shapes.
+    /// </summary>
+    public string? Totp { get; set; }
 }
 
 public sealed class OnePuxAddress

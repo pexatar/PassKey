@@ -36,6 +36,12 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.2" />
     <PackageReference Include="pt.KeePassLibStd" Version="2.50.0.4849" />
     <PackageReference Include="H.NotifyIcon.WinUI" Version="2.3.0" />
+    <!-- QR code decoding for importing TOTP seeds via 'otpauth://' URI screenshots.
+         We use only the core ZXing.Net package and feed RGBLuminanceSource directly from
+         a Windows.Graphics.Imaging.BitmapDecoder, so no platform-binding subpackage is
+         needed (the available bindings require SkiaSharp 3.x which conflicts with our
+         2.88.9 pin override for the SkiaSharp CVE GHSA-j7hp-h8jx-5ppr). -->
+    <PackageReference Include="ZXing.Net" Version="0.16.11" />
   </ItemGroup>
 
   <ItemGroup>

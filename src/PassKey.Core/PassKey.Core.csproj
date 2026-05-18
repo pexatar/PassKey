@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <PackageReference Include="Konscious.Security.Cryptography.Argon2" Version="1.3.1" />
+    <!-- RFC 6238 TOTP (Time-based One-Time Password) — used by TotpService for 2FA codes. -->
+    <PackageReference Include="Otp.NET" Version="1.4.1" />
   </ItemGroup>
 
 </Project>

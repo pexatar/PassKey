@@ -31,6 +31,7 @@ public partial class App : Application
                 services.AddSingleton<IVaultService, VaultService>();
                 services.AddSingleton<IPasswordGenerator, PasswordGenerator>();
                 services.AddSingleton<IPasswordStrengthAnalyzer, PasswordStrengthAnalyzer>();
+                services.AddSingleton<ITotpService, TotpService>();
 
                 // Desktop services
                 services.AddSingleton<INavigationStack, NavigationStack>();
