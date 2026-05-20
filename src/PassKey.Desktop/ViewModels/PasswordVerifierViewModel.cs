@@ -8,14 +8,25 @@ using PassKey.Desktop.Services;
 namespace PassKey.Desktop.ViewModels;
 
 /// <summary>
-/// ViewModel for the Password Verifier page (Phase 10).
-/// Tab 1: Manual password strength check.
-/// Tab 2: Vault-wide audit (weak + duplicate passwords).
+/// ViewModel for the "Verifica" page. Hosts two tabs:
+/// <list type="bullet">
+///   <item><b>Password</b> — manual single-password strength check (paste/type a password
+///         and see the strength meter / suggestions / breach status update live).</item>
+///   <item><b>Vault</b> — vault-wide audit combining local strength + duplicate detection
+///         with optional HIBP k-anonymity checks (when the user has opted in). Owned by
+///         <see cref="IWatchtowerScanService"/> for the scan orchestration; this VM is
+///         the presentation layer.</item>
+/// </list>
+/// In PassKey 2.0 the standalone "Watchtower" page was folded into Tab 2 to remove the
+/// redundancy between "Audit Vault" (local only) and "Watchtower" (HIBP only).
 /// </summary>
-public partial class PasswordVerifierViewModel : ObservableObject
+public partial class PasswordVerifierViewModel : ObservableObject, IDisposable
 {
     private readonly IPasswordStrengthAnalyzer _analyzer;
     private readonly IVaultStateService _vaultState;
+    private readonly IWatchtowerScanService _scan;
+    private readonly ISettingsService _settings;
+    private bool _disposed;
 
     // ===== Tab 1: Manual Verify =====
 
@@ -37,6 +48,9 @@ public partial class PasswordVerifierViewModel : ObservableObject
     public partial int TotalPasswords { get; set; }
 
     [ObservableProperty]
+    public partial int CompromisedCount { get; set; }
+
+    [ObservableProperty]
     public partial int WeakCount { get; set; }
 
     [ObservableProperty]
@@ -46,17 +60,32 @@ public partial class PasswordVerifierViewModel : ObservableObject
     public partial bool IsAuditLoading { get; set; }
 
     [ObservableProperty]
+    public partial double AuditProgress { get; set; }
+
+    [ObservableProperty]
     public partial bool HasAuditResults { get; set; }
 
-    public ObservableCollection<AuditItem> WeakPasswords { get; } = [];
-    public ObservableCollection<DuplicateGroup> DuplicateGroups { get; } = [];
+    [ObservableProperty]
+    public partial bool HibpEnabled { get; set; }
+
+    public ObservableCollection<WatchtowerIssue> CompromisedPasswords { get; } = [];
+    public ObservableCollection<WatchtowerIssue> WeakPasswords { get; } = [];
+    public ObservableCollection<WatchtowerIssue> DuplicateEntries { get; } = [];
 
     public PasswordVerifierViewModel(
         IPasswordStrengthAnalyzer analyzer,
-        IVaultStateService vaultState)
+        IVaultStateService vaultState,
+        IWatchtowerScanService scan,
+        ISettingsService settings)
     {
         _analyzer = analyzer;
         _vaultState = vaultState;
+        _scan = scan;
+        _settings = settings;
+        HibpEnabled = settings.HibpEnabled;
+
+        _scan.Progress += OnScanProgress;
+        _scan.Completed += OnScanCompleted;
     }
 
     /// <summary>
@@ -77,7 +106,8 @@ public partial class PasswordVerifierViewModel : ObservableObject
     }
 
     /// <summary>
-    /// Runs a full audit of all passwords in the vault.
+    /// Runs a full audit of the vault: local strength + duplicate detection always; HIBP
+    /// k-anonymity checks only when the user has explicitly opted in (privacy-by-default).
     /// </summary>
     [RelayCommand]
     private async Task RunAuditAsync()
@@ -85,100 +115,99 @@ public partial class PasswordVerifierViewModel : ObservableObject
         var vault = _vaultState.CurrentVault;
         if (vault is null) return;
 
-        IsAuditLoading = true;
-        WeakPasswords.Clear();
-        DuplicateGroups.Clear();
+        try
+        {
+            IsAuditLoading = true;
+            AuditProgress = 0;
 
-        // Heavy computation on background thread
-        var (weak, dupes, totalCount, weakCount, dupeCount, avgScore, scoreLabel) =
-            await Task.Run(() =>
-            {
-                var passwords = vault.Passwords;
-                var auditItems = new List<AuditItem>(passwords.Count);
-                var passwordGroups = new Dictionary<string, List<AuditItem>>();
+            // Reset *both* the collections and the count properties to a known-blank state
+            // so the UI does not briefly show stale numbers from a previous scan while the
+            // new one is in flight.
+            CompromisedPasswords.Clear();
+            WeakPasswords.Clear();
+            DuplicateEntries.Clear();
+            TotalPasswords = 0;
+            CompromisedCount = 0;
+            WeakCount = 0;
+            DuplicateCount = 0;
+            VaultScore = 0;
+            VaultScoreLabel = string.Empty;
+            HasAuditResults = false;
 
-                foreach (var entry in passwords)
-                {
-                    var result = _analyzer.Analyze(entry.Password.AsSpan());
-                    var item = new AuditItem
-                    {
-                        Id = entry.Id,
-                        Title = entry.Title,
-                        Username = entry.Username,
-                        Score = result.Score,
-                        Label = result.Label
-                    };
-
-                    auditItems.Add(item);
-
-                    if (!string.IsNullOrEmpty(entry.Password))
-                    {
-                        if (!passwordGroups.TryGetValue(entry.Password, out var group))
-                        {
-                            group = [];
-                            passwordGroups[entry.Password] = group;
-                        }
-                        group.Add(item);
-                    }
-                }
-
-                var w = auditItems.Where(a => a.Score < 60).OrderBy(a => a.Score).ToList();
-                var d = passwordGroups
-                    .Where(kv => kv.Value.Count > 1)
-                    .Select(kv => new DuplicateGroup { Count = kv.Value.Count, Entries = kv.Value })
-                    .ToList();
-
-                var total = passwords.Count;
-                var wCount = w.Count;
-                var dCount = d.Sum(g => g.Entries.Count);
-                var avg = total > 0 ? (int)auditItems.Average(a => a.Score) : 0;
-                var label = avg switch
-                {
-                    < 20 => "VeryWeak",
-                    < 40 => "Weak",
-                    < 60 => "Medium",
-                    < 80 => "Strong",
-                    _ => "VeryStrong"
-                };
-
-                return (w, d, total, wCount, dCount, avg, label);
-            });
-
-        // Back on UI thread — update observable properties
-        TotalPasswords = totalCount;
-        WeakCount = weakCount;
-        DuplicateCount = dupeCount;
-        VaultScore = avgScore;
-        VaultScoreLabel = scoreLabel;
-
-        foreach (var w in weak)
-            WeakPasswords.Add(w);
-        foreach (var d in dupes)
-            DuplicateGroups.Add(d);
-
-        HasAuditResults = true;
-        IsAuditLoading = false;
+            await _scan.ScanAsync(forceRefresh: true);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[Verifier] Audit failed: {ex.GetType().Name}: {ex.Message}");
+        }
     }
 
     public void Initialize()
     {
-        // Auto-run audit if vault has passwords
-        if (_vaultState.CurrentVault?.Passwords.Count > 0)
+        // Refresh the read-only opt-in mirror on every page entry (the user may have toggled
+        // it in Settings since the last visit).
+        HibpEnabled = _settings.HibpEnabled;
+
+        var currentCount = _vaultState.CurrentVault?.Passwords.Count ?? 0;
+
+        // If we have a cached scan whose total still matches the current vault size, show
+        // it immediately so the UI never blanks. We then ALWAYS kick off a fresh scan in the
+        // background — the user explicitly asked for an auto-refresh on every navigation
+        // to Verifica/Vault. Cached entries get superseded smoothly when the scan completes.
+        if (_scan.LastResult is { } cached && cached.TotalPasswords == currentCount)
+        {
+            ApplyResult(cached);
+        }
+
+        if (currentCount > 0)
             RunAuditCommand.Execute(null);
     }
-}
 
-public sealed class AuditItem
-{
-    public Guid Id { get; init; }
-    public string Title { get; init; } = string.Empty;
-    public string Username { get; init; } = string.Empty;
-    public int Score { get; init; }
-    public string Label { get; init; } = string.Empty;
-}
+    // ─── Scan service event handlers ──────────────────────────────────────────
 
-public sealed class DuplicateGroup
-{
-    public int Count { get; init; }
-    public List<AuditItem> Entries { get; init; } = [];
+    private void OnScanProgress(double pct) => AuditProgress = pct;
+
+    private void OnScanCompleted(WatchtowerResult? result)
+    {
+        IsAuditLoading = false;
+        if (result is not null) ApplyResult(result);
+    }
+
+    private void ApplyResult(WatchtowerResult result)
+    {
+        // IMPORTANT — populate the ObservableCollections *before* mutating the count
+        // properties. The View rebuilds each expander when its corresponding *Count
+        // property changes; if the collection were still empty at that moment the
+        // expander header would say "(N)" but the body would be blank.
+        CompromisedPasswords.Clear();
+        foreach (var i in result.Compromised) CompromisedPasswords.Add(i);
+        WeakPasswords.Clear();
+        foreach (var i in result.Weak) WeakPasswords.Add(i);
+        DuplicateEntries.Clear();
+        foreach (var i in result.Duplicates) DuplicateEntries.Add(i);
+
+        TotalPasswords = result.TotalPasswords;
+        CompromisedCount = result.CompromisedCount;
+        WeakCount = result.WeakCount;
+        DuplicateCount = result.DuplicateCount;
+        VaultScore = result.HealthScore;
+        VaultScoreLabel = result.HealthScore switch
+        {
+            < 20 => "VeryWeak",
+            < 40 => "Weak",
+            < 60 => "Medium",
+            < 80 => "Strong",
+            _    => "VeryStrong",
+        };
+
+        HasAuditResults = true;
+    }
+
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _scan.Progress -= OnScanProgress;
+        _scan.Completed -= OnScanCompleted;
+    }
 }

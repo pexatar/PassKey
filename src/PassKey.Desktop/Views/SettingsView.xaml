@@ -171,6 +171,25 @@
                         TabIndex="60" />
             </Grid>
 
+            <!-- HIBP / Watchtower opt-in -->
+            <Grid ColumnDefinitions="*,Auto" Margin="0,4" ColumnSpacing="24">
+                <StackPanel>
+                    <TextBlock x:Uid="SettingsHibpTitle"
+                               Text="Controlla password compromesse"
+                               Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    <TextBlock x:Uid="SettingsHibpDesc"
+                               Text="Verifica le password contro Have I Been Pwned. Solo i primi 5 caratteri dell'hash SHA-1 lasciano il dispositivo (k-anonymity)."
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+                <ToggleSwitch x:Name="HibpToggle" Grid.Column="1"
+                              VerticalAlignment="Center"
+                              Toggled="HibpToggle_Toggled"
+                              TabIndex="65"
+                              AutomationProperties.Name="Controllo password compromesse" />
+            </Grid>
+
             <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />
 
             <!-- ═══ BACKUP E IMPORTAZIONE ═══ -->

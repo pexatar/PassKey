@@ -55,6 +55,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     public partial bool AutoUpdateCheckEnabled { get; set; }
 
+    // HIBP / Watchtower opt-in
+    [ObservableProperty]
+    public partial bool HibpEnabled { get; set; }
+
     [ObservableProperty]
     public partial bool IsCheckingUpdate { get; set; }
 
@@ -135,7 +139,17 @@ public partial class SettingsViewModel : ObservableObject
         // Update check settings
         AutoUpdateCheckEnabled = _settings.AutoUpdateCheckEnabled;
 
+        // HIBP / Watchtower opt-in
+        HibpEnabled = _settings.HibpEnabled;
+
         _initializing = false;
+    }
+
+    partial void OnHibpEnabledChanged(bool value)
+    {
+        if (_initializing) return;
+        _settings.HibpEnabled = value;
+        _settings.Save();
     }
 
     partial void OnAutoUpdateCheckEnabledChanged(bool value)

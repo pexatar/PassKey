@@ -58,12 +58,22 @@
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
-            <NavigationViewItem x:Uid="NavVerifier" Content="Verifica" Tag="6"
-                                AutomationProperties.Name="Verifica password">
+            <NavigationViewItem x:Name="NavItemVerifier"
+                                x:Uid="NavVerifier" Content="Verifica" Tag="6"
+                                AutomationProperties.Name="Verifica password e audit del vault">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE9D5;" />
                 </NavigationViewItem.Icon>
+                <NavigationViewItem.InfoBadge>
+                    <!-- Small red dot indicating "there is at least one compromised password
+                         in the vault". The dot variant is preferred over the iconized one to
+                         avoid two visually competing red shapes on the same nav item. -->
+                    <InfoBadge x:Name="VerifierBadge"
+                               Style="{ThemeResource CriticalDotInfoBadgeStyle}"
+                               Visibility="Collapsed" />
+                </NavigationViewItem.InfoBadge>
             </NavigationViewItem>
+
         </NavigationView.MenuItems>
 
         <NavigationView.FooterMenuItems>

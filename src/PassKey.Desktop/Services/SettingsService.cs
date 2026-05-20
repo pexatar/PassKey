@@ -70,6 +70,21 @@ public sealed class SettingsService : ISettingsService
     /// <summary>Gets or sets whether automatic update checks at startup are enabled. Default is true.</summary>
     public bool AutoUpdateCheckEnabled { get; set; } = true;
 
+    /// <summary>
+    /// Gets or sets whether PassKey is allowed to query the Have I Been Pwned "Pwned Passwords"
+    /// API to detect compromised passwords. Default is <see langword="false"/> — the user must
+    /// opt in explicitly because this is the only feature that issues network requests
+    /// (privacy-by-default for an otherwise offline-first vault). Only the first 5 hex chars
+    /// of the SHA-1 hash are ever transmitted (k-anonymity).
+    /// </summary>
+    public bool HibpEnabled { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UTC timestamp of the last successful Watchtower full-vault scan.
+    /// Used to decide when the 24-hour cache must be invalidated. Null means never scanned.
+    /// </summary>
+    public DateTime? LastHibpScanUtc { get; set; }
+
     /// <summary>Gets or sets the UTC timestamp of the last successful update check. Null means never checked.</summary>
     public DateTime? LastUpdateCheckUtc { get; set; }
 
@@ -130,6 +145,8 @@ public sealed class SettingsService : ISettingsService
             AutoUpdateCheckEnabled   = loaded.AutoUpdateCheckEnabled;
             LastUpdateCheckUtc       = loaded.LastUpdateCheckUtc;
             SkippedUpdateVersion     = loaded.SkippedUpdateVersion;
+            HibpEnabled              = loaded.HibpEnabled;
+            LastHibpScanUtc          = loaded.LastHibpScanUtc;
         }
         catch
         {
