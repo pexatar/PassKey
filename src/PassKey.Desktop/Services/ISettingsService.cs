@@ -53,6 +53,14 @@ public interface ISettingsService
     /// <summary>Gets or sets the release tag the user chose to skip (e.g. <c>"v1.0.5"</c>). <c>null</c> means no version has been skipped.</summary>
     string? SkippedUpdateVersion { get; set; }
 
+    /// <summary>Gets or sets whether the user has opted in to Have I Been Pwned k-anonymity checks.
+    /// Default is <c>false</c> (privacy-by-default — no network traffic until explicitly enabled).</summary>
+    bool HibpEnabled { get; set; }
+
+    /// <summary>Gets or sets the UTC timestamp of the last successful Watchtower scan.
+    /// Used to anchor the 24-hour cache that prevents re-scanning every navigation.</summary>
+    DateTime? LastHibpScanUtc { get; set; }
+
     /// <summary>Serialises all current settings to <c>settings.json</c> on disk.</summary>
     void Save();
 

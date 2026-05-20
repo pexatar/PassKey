@@ -83,6 +83,8 @@ public sealed partial class DashboardView : UserControl
             case nameof(DashboardViewModel.IsVaultEmpty):
             case nameof(DashboardViewModel.VaultHealthScore):
             case nameof(DashboardViewModel.WeakPasswordCount):
+            case nameof(DashboardViewModel.CompromisedPasswordCount):
+            case nameof(DashboardViewModel.DuplicatePasswordCount):
             case nameof(DashboardViewModel.HasExpiringCards):
                 UpdateUI();
                 break;
@@ -126,9 +128,19 @@ public sealed partial class DashboardView : UserControl
             HealthScoreText.Text = $"{_viewModel.VaultHealthScore}%";
             HealthRing.Foreground = GetHealthBrush(_viewModel.VaultHealthScore);
             HealthTitle.Text = _resourceLoader.GetString("DashHealthTitle");
-            HealthSubtitle.Text = _viewModel.WeakPasswordCount > 0
-                ? string.Format(_resourceLoader.GetString("DashHealthWeak"), _viewModel.WeakPasswordCount)
+            // Subtitle prefers the worst-news headline: compromised > weak > all good.
+            HealthSubtitle.Text =
+                _viewModel.CompromisedPasswordCount > 0
+                    ? string.Format(_resourceLoader.GetString("DashHealthCompromisedSummary"), _viewModel.CompromisedPasswordCount)
+                : _viewModel.WeakPasswordCount > 0
+                    ? string.Format(_resourceLoader.GetString("DashHealthWeak"), _viewModel.WeakPasswordCount)
                 : _resourceLoader.GetString("DashHealthGood");
+
+            // 3 mini counters — leading-zero formatting ("01", "07") keeps the right column
+            // visually aligned and matches the compact stacked layout from the user mockup.
+            HealthCompromisedText.Text = _viewModel.CompromisedPasswordCount.ToString("D2");
+            HealthWeakText.Text = _viewModel.WeakPasswordCount.ToString("D2");
+            HealthDuplicatesText.Text = _viewModel.DuplicatePasswordCount.ToString("D2");
         }
         else
         {
@@ -229,6 +241,23 @@ public sealed partial class DashboardView : UserControl
     }
 
     private void StatCard_PointerExited(object sender, PointerRoutedEventArgs e)
+    {
+        ProtectedCursor = Microsoft.UI.Input.InputSystemCursor.Create(Microsoft.UI.Input.InputSystemCursorShape.Arrow);
+    }
+
+    // --- Health badge (clickable card → Verifica/Vault) ---
+
+    private void HealthBadge_PointerPressed(object sender, PointerRoutedEventArgs e)
+    {
+        _viewModel?.RequestNavigationToVerifier();
+    }
+
+    private void HealthBadge_PointerEntered(object sender, PointerRoutedEventArgs e)
+    {
+        ProtectedCursor = Microsoft.UI.Input.InputSystemCursor.Create(Microsoft.UI.Input.InputSystemCursorShape.Hand);
+    }
+
+    private void HealthBadge_PointerExited(object sender, PointerRoutedEventArgs e)
     {
         ProtectedCursor = Microsoft.UI.Input.InputSystemCursor.Create(Microsoft.UI.Input.InputSystemCursorShape.Arrow);
     }

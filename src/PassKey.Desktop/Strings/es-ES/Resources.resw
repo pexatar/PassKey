@@ -1277,13 +1277,13 @@
     <value>Generador de contraseñas</value>
   </data>
   <data name="PageVerifier.Text" xml:space="preserve">
-    <value>Verificador de contraseñas</value>
+    <value>Verificacion</value>
   </data>
   <data name="TabVerify.Header" xml:space="preserve">
-    <value>Verificar</value>
+    <value>Contrasena</value>
   </data>
   <data name="TabAuditVault.Header" xml:space="preserve">
-    <value>Auditoría de la bóveda</value>
+    <value>Vault</value>
   </data>
   <data name="RequirementsTitle.Text" xml:space="preserve">
     <value>Requisitos</value>
@@ -1416,5 +1416,88 @@
   </data>
   <data name="TotpScanQrLabel.Text" xml:space="preserve">
     <value>Escanear QR</value>
+  </data>
+  <data name="NavWatchtower.Content" xml:space="preserve">
+    <value>Watchtower</value>
+  </data>
+  <data name="SettingsHibpDesc.Text" xml:space="preserve">
+    <value>Verificar las contrasenas contra Have I Been Pwned. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
+  </data>
+  <data name="SettingsHibpTitle.Text" xml:space="preserve">
+    <value>Comprobar contrasenas comprometidas</value>
+  </data>
+  <data name="WatchtowerCompromisedHeader.Text" xml:space="preserve">
+    <value>Contrasenas comprometidas</value>
+  </data>
+  <data name="WatchtowerDuplicatesHeader.Text" xml:space="preserve">
+    <value>Contrasenas reutilizadas</value>
+  </data>
+  <data name="WatchtowerHibpDisabledBanner.Message" xml:space="preserve">
+    <value>Para comprobar tus contrasenas contra Have I Been Pwned activa la opcion en Ajustes -&gt; Seguridad. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
+  </data>
+  <data name="WatchtowerHibpDisabledBanner.Title" xml:space="preserve">
+    <value>Comprobacion de contrasenas comprometidas desactivada</value>
+  </data>
+  <data name="WatchtowerScanButton.Text" xml:space="preserve">
+    <value>Iniciar escaneo</value>
+  </data>
+  <data name="WatchtowerStatCompromised.Text" xml:space="preserve">
+    <value>Comprometidas</value>
+  </data>
+  <data name="WatchtowerStatDuplicates.Text" xml:space="preserve">
+    <value>Duplicadas</value>
+  </data>
+  <data name="WatchtowerStatTotal.Text" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="WatchtowerStatWeak.Text" xml:space="preserve">
+    <value>Debiles</value>
+  </data>
+  <data name="WatchtowerSubtitle.Text" xml:space="preserve">
+    <value>Auditoria del vault: contrasenas debiles, reutilizadas y comprometidas en filtraciones publicas.</value>
+  </data>
+  <data name="WatchtowerTitle.Text" xml:space="preserve">
+    <value>Watchtower</value>
+  </data>
+  <data name="WatchtowerWeakHeader.Text" xml:space="preserve">
+    <value>Contrasenas debiles</value>
+  </data>
+  <data name="VerifierHibpDisabledBanner.Message" xml:space="preserve">
+    <value>Para comprobar tus contrasenas contra Have I Been Pwned activa la opcion en Ajustes -&gt; Seguridad. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
+  </data>
+  <data name="AuditCompromised.Text" xml:space="preserve">
+    <value>Comprometidas</value>
+  </data>
+  <data name="VerifierCompromisedHeader.Text" xml:space="preserve">
+    <value>Contrasenas comprometidas</value>
+  </data>
+  <data name="VerifierHibpDisabledBanner.Title" xml:space="preserve">
+    <value>Comprobacion de contrasenas comprometidas desactivada</value>
+  </data>
+  <data name="HibpConsentClose" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="HibpConsentMessage" xml:space="preserve">
+    <value>PassKey verificara tus contrasenas contra la base de datos publica de Have I Been Pwned. Solo los primeros 5 caracteres del hash SHA-1 de cada contrasena saldran del dispositivo (k-anonymity) - la contrasena en texto claro siempre se queda local.
+
+Deseas activar esta verificacion?</value>
+  </data>
+  <data name="HibpConsentPrimary" xml:space="preserve">
+    <value>Activar</value>
+  </data>
+  <data name="HibpConsentTitle" xml:space="preserve">
+    <value>Activar la comprobacion de contrasenas comprometidas?</value>
+  </data>
+  <data name="DashHealthCompromisedLabel.Text" xml:space="preserve">
+    <value>Comprometidas</value>
+  </data>
+  <data name="DashHealthCompromisedSummary" xml:space="preserve">
+    <value>{0} contrasenas comprometidas</value>
+  </data>
+  <data name="DashHealthDuplicatesLabel.Text" xml:space="preserve">
+    <value>Reutilizadas</value>
+  </data>
+  <data name="DashHealthWeakLabel.Text" xml:space="preserve">
+    <value>Debiles</value>
   </data>
 </root>

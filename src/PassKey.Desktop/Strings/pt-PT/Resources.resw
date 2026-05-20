@@ -1275,13 +1275,13 @@
     <value>Gerador de palavras-passe</value>
   </data>
   <data name="PageVerifier.Text" xml:space="preserve">
-    <value>Verificador de palavras-passe</value>
+    <value>Verificacao</value>
   </data>
   <data name="TabVerify.Header" xml:space="preserve">
-    <value>Verificar</value>
+    <value>Palavra-passe</value>
   </data>
   <data name="TabAuditVault.Header" xml:space="preserve">
-    <value>Auditoria do cofre</value>
+    <value>Cofre</value>
   </data>
   <data name="RequirementsTitle.Text" xml:space="preserve">
     <value>Requisitos</value>
@@ -1413,5 +1413,88 @@
   </data>
   <data name="TotpScanQrLabel.Text" xml:space="preserve">
     <value>Digitalizar QR</value>
+  </data>
+  <data name="NavWatchtower.Content" xml:space="preserve">
+    <value>Watchtower</value>
+  </data>
+  <data name="SettingsHibpDesc.Text" xml:space="preserve">
+    <value>Verificar palavras-passe contra Have I Been Pwned. Apenas os primeiros 5 caracteres do hash SHA-1 saem do dispositivo (k-anonymity).</value>
+  </data>
+  <data name="SettingsHibpTitle.Text" xml:space="preserve">
+    <value>Verificar palavras-passe comprometidas</value>
+  </data>
+  <data name="WatchtowerCompromisedHeader.Text" xml:space="preserve">
+    <value>Palavras-passe comprometidas</value>
+  </data>
+  <data name="WatchtowerDuplicatesHeader.Text" xml:space="preserve">
+    <value>Palavras-passe reutilizadas</value>
+  </data>
+  <data name="WatchtowerHibpDisabledBanner.Message" xml:space="preserve">
+    <value>Para verificar as suas palavras-passe contra Have I Been Pwned ative a opcao em Definicoes -&gt; Seguranca. Apenas os primeiros 5 caracteres do hash SHA-1 saem do dispositivo (k-anonymity).</value>
+  </data>
+  <data name="WatchtowerHibpDisabledBanner.Title" xml:space="preserve">
+    <value>Verificacao de palavras-passe comprometidas desativada</value>
+  </data>
+  <data name="WatchtowerScanButton.Text" xml:space="preserve">
+    <value>Iniciar verificacao</value>
+  </data>
+  <data name="WatchtowerStatCompromised.Text" xml:space="preserve">
+    <value>Comprometidas</value>
+  </data>
+  <data name="WatchtowerStatDuplicates.Text" xml:space="preserve">
+    <value>Duplicadas</value>
+  </data>
+  <data name="WatchtowerStatTotal.Text" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="WatchtowerStatWeak.Text" xml:space="preserve">
+    <value>Fracas</value>
+  </data>
+  <data name="WatchtowerSubtitle.Text" xml:space="preserve">
+    <value>Auditoria do cofre: palavras-passe fracas, reutilizadas e comprometidas em fugas publicas.</value>
+  </data>
+  <data name="WatchtowerTitle.Text" xml:space="preserve">
+    <value>Watchtower</value>
+  </data>
+  <data name="WatchtowerWeakHeader.Text" xml:space="preserve">
+    <value>Palavras-passe fracas</value>
+  </data>
+  <data name="VerifierHibpDisabledBanner.Message" xml:space="preserve">
+    <value>Para verificar as suas palavras-passe contra Have I Been Pwned ative a opcao em Definicoes -&gt; Seguranca. Apenas os primeiros 5 caracteres do hash SHA-1 saem do dispositivo (k-anonymity).</value>
+  </data>
+  <data name="AuditCompromised.Text" xml:space="preserve">
+    <value>Comprometidas</value>
+  </data>
+  <data name="VerifierCompromisedHeader.Text" xml:space="preserve">
+    <value>Palavras-passe comprometidas</value>
+  </data>
+  <data name="VerifierHibpDisabledBanner.Title" xml:space="preserve">
+    <value>Verificacao de palavras-passe comprometidas desativada</value>
+  </data>
+  <data name="HibpConsentClose" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="HibpConsentMessage" xml:space="preserve">
+    <value>O PassKey verificara as suas palavras-passe contra a base de dados publica do Have I Been Pwned. Apenas os primeiros 5 caracteres do hash SHA-1 de cada palavra-passe sairao do dispositivo (k-anonymity) - a palavra-passe em texto claro fica sempre local.
+
+Deseja ativar esta verificacao?</value>
+  </data>
+  <data name="HibpConsentPrimary" xml:space="preserve">
+    <value>Ativar</value>
+  </data>
+  <data name="HibpConsentTitle" xml:space="preserve">
+    <value>Ativar a verificacao de palavras-passe comprometidas?</value>
+  </data>
+  <data name="DashHealthCompromisedLabel.Text" xml:space="preserve">
+    <value>Comprometidas</value>
+  </data>
+  <data name="DashHealthCompromisedSummary" xml:space="preserve">
+    <value>{0} palavras-passe comprometidas</value>
+  </data>
+  <data name="DashHealthDuplicatesLabel.Text" xml:space="preserve">
+    <value>Reutilizadas</value>
+  </data>
+  <data name="DashHealthWeakLabel.Text" xml:space="preserve">
+    <value>Fracas</value>
   </data>
 </root>

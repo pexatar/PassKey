@@ -11,7 +11,7 @@ namespace PassKey.Desktop.ViewModels;
 /// <summary>
 /// Dashboard ViewModel: greeting, 4 stat cards, 15 recent activity items, search.
 /// </summary>
-public partial class DashboardViewModel : ObservableObject
+public partial class DashboardViewModel : ObservableObject, IDisposable
 {
     private readonly IVaultStateService _vaultState;
     private readonly IVaultRepository _repository;
@@ -125,6 +125,18 @@ public partial class DashboardViewModel : ObservableObject
     [ObservableProperty]
     public partial int WeakPasswordCount { get; set; }
 
+    /// <summary>Count of passwords reused across multiple entries (each duplicate's id contributes).</summary>
+    [ObservableProperty]
+    public partial int DuplicatePasswordCount { get; set; }
+
+    /// <summary>
+    /// Count of passwords confirmed compromised in the Have I Been Pwned database by the
+    /// most recent Watchtower scan. Stays at <c>0</c> when HIBP is opted out or no scan has
+    /// been performed yet — the dashboard never issues network requests on its own.
+    /// </summary>
+    [ObservableProperty]
+    public partial int CompromisedPasswordCount { get; set; }
+
     // ── Expiring credit cards ─────────────────────────────────────────────────
 
     /// <summary>Number of credit cards expiring within the next 60 days.</summary>
@@ -173,17 +185,62 @@ public partial class DashboardViewModel : ObservableObject
     /// </summary>
     public event Action<string, Guid>? NavigateToItemRequested;
 
+    /// <summary>
+    /// Fired when the user clicks the "Salute del vault" health card, expecting to land on
+    /// the Verifica → Vault audit page. The shell owns the navigation index, so we surface
+    /// the intent as an event and let it route.
+    /// </summary>
+    public event Action? NavigateToVerifierRequested;
+
     public DashboardViewModel(
         IVaultStateService vaultState,
         IVaultRepository repository,
         IPasswordStrengthAnalyzer strengthAnalyzer,
-        IClipboardService clipboard)
+        IClipboardService clipboard,
+        IWatchtowerScanService scan)
     {
         _vaultState = vaultState;
         _repository = repository;
         _strengthAnalyzer = strengthAnalyzer;
         _clipboard = clipboard;
+        _scan = scan;
+
+        // Mirror compromised-password totals from the shared Watchtower scan service so the
+        // Dashboard health card stays in sync with the Verifica/Vault tab. We never trigger
+        // a scan from here — the dashboard reflects whatever the verifier most recently
+        // produced (live updates when the user runs a fresh scan from the Verifier).
+        _scan.Completed += OnScanCompleted;
+        if (_scan.LastResult is { } cached) CompromisedPasswordCount = cached.CompromisedCount;
     }
+
+    private readonly IWatchtowerScanService _scan;
+    private bool _disposed;
+
+    private void OnScanCompleted(WatchtowerResult? result)
+    {
+        if (result is null) return;
+        CompromisedPasswordCount = result.CompromisedCount;
+        // Refresh the duplicate / weak counts from the result too — the scan service uses
+        // identical logic to our local UpdatePasswordHealth but iterates the vault on a
+        // background thread, so it is the authoritative source post-scan.
+        DuplicatePasswordCount = result.DuplicateCount;
+        WeakPasswordCount = result.WeakCount;
+        VaultHealthScore = result.HealthScore;
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        _scan.Completed -= OnScanCompleted;
+    }
+
+    /// <summary>
+    /// Surfaces the user's intent to navigate from the Dashboard health card to the Verifier
+    /// (Vault audit tab). The View calls this in response to PointerPressed on the card.
+    /// </summary>
+    public void RequestNavigationToVerifier() => NavigateToVerifierRequested?.Invoke();
 
     /// <summary>
     /// Set localized greeting resources from View code-behind (ResourceLoader).
@@ -321,19 +378,34 @@ public partial class DashboardViewModel : ObservableObject
         {
             VaultHealthScore = 0;
             WeakPasswordCount = 0;
+            DuplicatePasswordCount = 0;
+            // CompromisedPasswordCount is fed by the Watchtower scan service, leave it as-is
+            // until the next scan finishes — the dashboard does not perform network checks.
             return;
         }
 
         int totalScore = 0, weak = 0;
+        // Build a count map for duplicate detection. Memory-cheap for typical vault sizes;
+        // we use ordinal comparison because passwords are byte-identical when reused.
+        var freq = new Dictionary<string, int>(StringComparer.Ordinal);
         foreach (var pw in vault.Passwords)
         {
             var result = _strengthAnalyzer.Analyze(pw.Password.AsSpan());
             totalScore += result.Score;
             if (result.Score < 40) weak++;
+
+            if (!string.IsNullOrEmpty(pw.Password))
+            {
+                freq.TryGetValue(pw.Password, out var n);
+                freq[pw.Password] = n + 1;
+            }
         }
 
         VaultHealthScore = totalScore / vault.Passwords.Count;
         WeakPasswordCount = weak;
+        // Every entry that appears in a duplicated group contributes to the count, so the
+        // figure on the dashboard matches the "Password riutilizzate" header in the Verifier.
+        DuplicatePasswordCount = freq.Values.Where(c => c > 1).Sum();
     }
 
     private void UpdateExpiringCards()

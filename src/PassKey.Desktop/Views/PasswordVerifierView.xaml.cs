@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using PassKey.Core.Models;
+using PassKey.Desktop.Services;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -20,6 +21,12 @@ public sealed partial class PasswordVerifierView : UserControl
         InitializeComponent();
         _strengthSegments = [StrengthSeg0, StrengthSeg1, StrengthSeg2, StrengthSeg3, StrengthSeg4];
     }
+
+    /// <summary>
+    /// Selects the second Pivot item ("Vault"). Called by the Shell when the user clicks
+    /// the Dashboard health card so the audit is the first thing they see.
+    /// </summary>
+    public void SelectVaultTab() => TabPivot.SelectedIndex = 1;
 
     public void SetViewModel(PasswordVerifierViewModel vm)
     {
@@ -49,22 +56,119 @@ public sealed partial class PasswordVerifierView : UserControl
             case nameof(PasswordVerifierViewModel.TotalPasswords):
                 TotalCountText.Text = _viewModel!.TotalPasswords.ToString();
                 break;
+            case nameof(PasswordVerifierViewModel.CompromisedCount):
+                CompromisedCountText.Text = _viewModel!.CompromisedCount.ToString();
+                CompromisedExpanderHeaderText.Text = $"Password compromesse ({_viewModel.CompromisedCount})";
+                RebuildIssueList(CompromisedPasswordsList, _viewModel.CompromisedPasswords);
+                break;
             case nameof(PasswordVerifierViewModel.WeakCount):
                 WeakCountText.Text = _viewModel!.WeakCount.ToString();
-                UpdateWeakList();
+                WeakExpanderHeaderText.Text = $"Password deboli ({_viewModel.WeakCount})";
+                RebuildIssueList(WeakPasswordsList, _viewModel.WeakPasswords);
                 break;
             case nameof(PasswordVerifierViewModel.DuplicateCount):
                 DuplicateCountText.Text = _viewModel!.DuplicateCount.ToString();
-                UpdateDuplicateList();
+                DuplicateExpanderHeaderText.Text = $"Password riutilizzate ({_viewModel.DuplicateCount})";
+                RebuildIssueList(DuplicateGroupsList, _viewModel.DuplicateEntries);
                 break;
             case nameof(PasswordVerifierViewModel.IsAuditLoading):
                 AuditLoadingRing.IsActive = _viewModel!.IsAuditLoading;
+                AuditLoadingRing.Visibility = _viewModel.IsAuditLoading ? Visibility.Visible : Visibility.Collapsed;
                 break;
             case nameof(PasswordVerifierViewModel.HasAuditResults):
                 var hasPasswords = _viewModel!.TotalPasswords > 0;
                 AuditEmptyText.Visibility = !hasPasswords ? Visibility.Visible : Visibility.Collapsed;
                 break;
+            case nameof(PasswordVerifierViewModel.HibpEnabled):
+                HibpDisabledBanner.IsOpen = !_viewModel!.HibpEnabled;
+                break;
         }
+    }
+
+    /// <summary>
+    /// Rebuilds an expander's content stack from a flat list of <see cref="WatchtowerIssue"/>.
+    /// Used for the Compromised / Weak / Duplicates lists inside the Vault tab.
+    /// </summary>
+    private void RebuildIssueList(StackPanel host, IEnumerable<WatchtowerIssue> items)
+    {
+        host.Children.Clear();
+        foreach (var item in items)
+        {
+            host.Children.Add(BuildIssueRow(item));
+        }
+    }
+
+    private static Grid BuildIssueRow(WatchtowerIssue item)
+    {
+        var row = new Grid { Padding = new Thickness(8, 6, 8, 6), ColumnSpacing = 10 };
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+        row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+        // Severity dot (red for breached, orange for weak, otherwise muted)
+        var dot = new Ellipse
+        {
+            Width = 10,
+            Height = 10,
+            Fill = SeverityBrush(item),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        Grid.SetColumn(dot, 0);
+        row.Children.Add(dot);
+
+        // Title + sub-info (username, breach count, "riutilizzata" flag)
+        var info = new StackPanel { Spacing = 2 };
+        info.Children.Add(new TextBlock
+        {
+            Text = string.IsNullOrEmpty(item.Title) ? "(senza titolo)" : item.Title,
+            Style = (Style)Application.Current.Resources["BodyStrongTextBlockStyle"],
+        });
+        var details = new System.Text.StringBuilder();
+        if (!string.IsNullOrEmpty(item.Username)) details.Append(item.Username);
+        if (item.BreachCount > 0)
+        {
+            if (details.Length > 0) details.Append(" — ");
+            details.Append($"{item.BreachCount:N0} breach");
+        }
+        if (item.IsDuplicate)
+        {
+            if (details.Length > 0) details.Append(" — ");
+            details.Append("riutilizzata");
+        }
+        if (details.Length > 0)
+        {
+            info.Children.Add(new TextBlock
+            {
+                Text = details.ToString(),
+                Style = (Style)Application.Current.Resources["CaptionTextBlockStyle"],
+                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+            });
+        }
+        Grid.SetColumn(info, 1);
+        row.Children.Add(info);
+
+        // Strength score (right side)
+        var score = new TextBlock
+        {
+            Text = item.StrengthScore.ToString(),
+            FontFamily = new FontFamily("Consolas, Courier New"),
+            FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
+            VerticalAlignment = VerticalAlignment.Center,
+            Foreground = GetStrengthBrush(item.StrengthScore),
+        };
+        Grid.SetColumn(score, 2);
+        row.Children.Add(score);
+
+        return row;
+    }
+
+    private static Brush SeverityBrush(WatchtowerIssue item)
+    {
+        if (item.BreachCount > 0)
+            return (Brush)Application.Current.Resources["StatRemovedBrush"];
+        if (item.StrengthScore < 40)
+            return (Brush)Application.Current.Resources["StatModifiedBrush"];
+        return (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"];
     }
 
     private void VerifyPasswordInput_PasswordChanged(object sender, string password)
@@ -213,80 +317,6 @@ public sealed partial class PasswordVerifierView : UserControl
         VaultScoreLabelText.Text = GetLocalizedLabel(_viewModel.VaultScoreLabel);
     }
 
-    private void UpdateWeakList()
-    {
-        WeakPasswordsList.Children.Clear();
-        if (_viewModel is null) return;
-
-        foreach (var item in _viewModel.WeakPasswords)
-        {
-            var row = new Grid { Padding = new Thickness(8, 6, 8, 6) };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            // Strength dot (colored by score)
-            var dot = new Ellipse
-            {
-                Width = 10,
-                Height = 10,
-                Fill = GetStrengthBrush(item.Score),
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 12, 0)
-            };
-            Grid.SetColumn(dot, 0);
-            row.Children.Add(dot);
-
-            // Info
-            var info = new StackPanel { Spacing = 2 };
-            info.Children.Add(new TextBlock
-            {
-                Text = item.Title,
-                Style = (Style)Application.Current.Resources["BodyStrongTextBlockStyle"]
-            });
-            info.Children.Add(new TextBlock
-            {
-                Text = $"{item.Username} — Punteggio: {item.Score}",
-                Style = (Style)Application.Current.Resources["CaptionTextBlockStyle"],
-                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"]
-            });
-            Grid.SetColumn(info, 1);
-            row.Children.Add(info);
-
-            WeakPasswordsList.Children.Add(row);
-        }
-
-        WeakExpanderHeaderText.Text = $"Password deboli ({_viewModel.WeakCount})";
-    }
-
-    private void UpdateDuplicateList()
-    {
-        DuplicateGroupsList.Children.Clear();
-        if (_viewModel is null) return;
-
-        foreach (var group in _viewModel.DuplicateGroups)
-        {
-            var groupPanel = new StackPanel { Spacing = 4 };
-            groupPanel.Children.Add(new TextBlock
-            {
-                Text = $"Gruppo ({group.Count} password identiche)",
-                Style = (Style)Application.Current.Resources["BodyStrongTextBlockStyle"]
-            });
-
-            foreach (var entry in group.Entries)
-            {
-                groupPanel.Children.Add(new TextBlock
-                {
-                    Text = $"  \u2022 {entry.Title} ({entry.Username})",
-                    Style = (Style)Application.Current.Resources["CaptionTextBlockStyle"],
-                    Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"]
-                });
-            }
-
-            DuplicateGroupsList.Children.Add(groupPanel);
-        }
-
-        DuplicateExpanderHeaderText.Text = $"Password riutilizzate ({_viewModel.DuplicateCount})";
-    }
 
     private static string GetLocalizedLabel(string label) => label switch
     {

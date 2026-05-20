@@ -69,6 +69,122 @@
                 Style="{StaticResource SubtitleTextBlockStyle}"
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
 
+            <!-- Password Health Badge — clickable card that jumps straight to Verifica/Vault.
+                 Width is locked to exactly 2 stat-card columns (Grid.ColumnSpan="2" in a 4-col
+                 sizer grid that mirrors StatCardsGrid's geometry). Internal layout puts the
+                 counters tight against the ring on the left, per the user mockup. -->
+            <Grid x:Name="HealthBadgeSizer" ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="HealthBadge"
+                      Grid.Column="0" Grid.ColumnSpan="2"
+                      Padding="16,14" CornerRadius="8"
+                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1"
+                      Visibility="Collapsed"
+                      PointerPressed="HealthBadge_PointerPressed"
+                      PointerEntered="HealthBadge_PointerEntered"
+                      PointerExited="HealthBadge_PointerExited"
+                      ToolTipService.ToolTip="Apri Verifica vault"
+                      AutomationProperties.Name="Salute del vault — apri Verifica vault">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Score ring -->
+                    <Grid Grid.Column="0" Width="56" Height="56">
+                        <ProgressRing x:Name="HealthRing" IsIndeterminate="False"
+                                      Value="0" Maximum="100"
+                                      Width="56" Height="56" />
+                        <TextBlock x:Name="HealthScoreText" Text="0%"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   FontSize="14" FontWeight="SemiBold" />
+                    </Grid>
+
+                    <!-- 3 mini-counters stacked vertically — sit after the title block.
+                         Each row: dot + label + number (leading-zero formatted). -->
+                    <Grid Grid.Column="2" VerticalAlignment="Center" Margin="16,0,12,0" RowSpacing="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Row 0: Compromesse -->
+                        <Ellipse Grid.Row="0" Grid.Column="0" Width="8" Height="8"
+                                 Fill="{ThemeResource StatRemovedBrush}"
+                                 VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Grid.Row="0" Grid.Column="1"
+                                   x:Uid="DashHealthCompromisedLabel" Text="Compromesse"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="0" Grid.Column="2"
+                                   x:Name="HealthCompromisedText" Text="00"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource StatRemovedBrush}"
+                                   Margin="8,0,0,0" VerticalAlignment="Center" />
+
+                        <!-- Row 1: Deboli -->
+                        <Ellipse Grid.Row="1" Grid.Column="0" Width="8" Height="8"
+                                 Fill="{ThemeResource StatModifiedBrush}"
+                                 VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Grid.Row="1" Grid.Column="1"
+                                   x:Uid="DashHealthWeakLabel" Text="Deboli"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="1" Grid.Column="2"
+                                   x:Name="HealthWeakText" Text="00"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{ThemeResource StatModifiedBrush}"
+                                   Margin="8,0,0,0" VerticalAlignment="Center" />
+
+                        <!-- Row 2: Riutilizzate -->
+                        <Ellipse Grid.Row="2" Grid.Column="0" Width="8" Height="8"
+                                 Fill="{ThemeResource TextFillColorTertiaryBrush}"
+                                 VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Grid.Row="2" Grid.Column="1"
+                                   x:Uid="DashHealthDuplicatesLabel" Text="Riutilizzate"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="2" Grid.Column="2"
+                                   x:Name="HealthDuplicatesText" Text="00"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </Grid>
+
+                    <!-- Title + subtitle — sits right after the ring, stretches to fill -->
+                    <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Spacing="2">
+                        <TextBlock x:Name="HealthTitle" Style="{StaticResource BodyStrongTextBlockStyle}"
+                                   TextTrimming="CharacterEllipsis" />
+                        <TextBlock x:Name="HealthSubtitle" Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+
+                    <!-- Affordance chevron — communicates "click to open" (last column, pushed right by spacer) -->
+                    <FontIcon Grid.Column="4" Glyph="&#xE76C;" FontSize="14"
+                              VerticalAlignment="Center"
+                              Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                </Grid>
+            </Grid>
+
             <!-- 4 Stat Cards (clickable) -->
             <Grid x:Name="StatCardsGrid" ColumnSpacing="16" RowSpacing="16">
                 <Grid.ColumnDefinitions>
@@ -270,30 +386,6 @@
                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}" Visibility="Collapsed" />
                     </StackPanel>
                 </Grid>
-            </Grid>
-
-            <!-- Password Health Badge -->
-            <Grid x:Name="HealthBadge" Padding="16" CornerRadius="8"
-                  Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1"
-                  Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0" Width="56" Height="56">
-                    <ProgressRing x:Name="HealthRing" IsIndeterminate="False"
-                                  Value="0" Maximum="100"
-                                  Width="56" Height="56" />
-                    <TextBlock x:Name="HealthScoreText" Text="0%"
-                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                               FontSize="14" FontWeight="SemiBold" />
-                </Grid>
-                <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center" Spacing="2">
-                    <TextBlock x:Name="HealthTitle" Style="{StaticResource BodyStrongTextBlockStyle}" />
-                    <TextBlock x:Name="HealthSubtitle" Style="{StaticResource CaptionTextBlockStyle}"
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
             </Grid>
 
             <!-- Expiring Cards Alert -->

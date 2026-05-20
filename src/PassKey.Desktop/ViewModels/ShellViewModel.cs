@@ -119,7 +119,8 @@ public partial class ShellViewModel : ObservableObject, IDisposable
 
     /// <summary>
     /// Navigates to a page by its sidebar index.
-    /// Valid: 0=Dashboard, 1=Passwords, 2=Cards, 3=Identities, 4=Notes, 5=Generator, 6=Verifier.
+    /// Valid: 0=Dashboard, 1=Passwords, 2=Cards, 3=Identities, 4=Notes, 5=Generator,
+    /// 6=Verifier (manual password check + vault audit + HIBP).
     /// </summary>
     public void NavigateTo(int index)
     {

@@ -1277,13 +1277,13 @@
     <value>Generatore Password</value>
   </data>
   <data name="PageVerifier.Text" xml:space="preserve">
-    <value>Verifica Password</value>
-  </data>
-  <data name="TabVerify.Header" xml:space="preserve">
     <value>Verifica</value>
   </data>
+  <data name="TabVerify.Header" xml:space="preserve">
+    <value>Password</value>
+  </data>
   <data name="TabAuditVault.Header" xml:space="preserve">
-    <value>Audit Vault</value>
+    <value>Vault</value>
   </data>
   <data name="RequirementsTitle.Text" xml:space="preserve">
     <value>Requisiti</value>
@@ -1416,5 +1416,88 @@
   </data>
   <data name="TotpScanQrLabel.Text" xml:space="preserve">
     <value>Scansiona QR</value>
+  </data>
+  <data name="NavWatchtower.Content" xml:space="preserve">
+    <value>Watchtower</value>
+  </data>
+  <data name="SettingsHibpDesc.Text" xml:space="preserve">
+    <value>Verifica le password contro Have I Been Pwned. Solo i primi 5 caratteri dell&apos;hash SHA-1 lasciano il dispositivo (k-anonymity).</value>
+  </data>
+  <data name="SettingsHibpTitle.Text" xml:space="preserve">
+    <value>Controlla password compromesse</value>
+  </data>
+  <data name="WatchtowerCompromisedHeader.Text" xml:space="preserve">
+    <value>Password compromesse</value>
+  </data>
+  <data name="WatchtowerDuplicatesHeader.Text" xml:space="preserve">
+    <value>Password duplicate</value>
+  </data>
+  <data name="WatchtowerHibpDisabledBanner.Message" xml:space="preserve">
+    <value>Per controllare le tue password contro Have I Been Pwned attiva l&apos;opzione in Impostazioni -&gt; Sicurezza. PassKey invia solo i primi 5 caratteri dell&apos;hash SHA-1 (k-anonymity).</value>
+  </data>
+  <data name="WatchtowerHibpDisabledBanner.Title" xml:space="preserve">
+    <value>Controllo password compromesse disattivato</value>
+  </data>
+  <data name="WatchtowerScanButton.Text" xml:space="preserve">
+    <value>Avvia scansione</value>
+  </data>
+  <data name="WatchtowerStatCompromised.Text" xml:space="preserve">
+    <value>Compromesse</value>
+  </data>
+  <data name="WatchtowerStatDuplicates.Text" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="WatchtowerStatTotal.Text" xml:space="preserve">
+    <value>Totali</value>
+  </data>
+  <data name="WatchtowerStatWeak.Text" xml:space="preserve">
+    <value>Deboli</value>
+  </data>
+  <data name="WatchtowerSubtitle.Text" xml:space="preserve">
+    <value>Audit del vault: password deboli, riutilizzate e compromesse in data breach pubblici.</value>
+  </data>
+  <data name="WatchtowerTitle.Text" xml:space="preserve">
+    <value>Watchtower</value>
+  </data>
+  <data name="WatchtowerWeakHeader.Text" xml:space="preserve">
+    <value>Password deboli</value>
+  </data>
+  <data name="VerifierHibpDisabledBanner.Message" xml:space="preserve">
+    <value>Per controllare le tue password contro Have I Been Pwned attiva l&apos;opzione in Impostazioni -&gt; Sicurezza. PassKey invia solo i primi 5 caratteri dell&apos;hash SHA-1 (k-anonymity).</value>
+  </data>
+  <data name="AuditCompromised.Text" xml:space="preserve">
+    <value>Compromesse</value>
+  </data>
+  <data name="VerifierCompromisedHeader.Text" xml:space="preserve">
+    <value>Password compromesse</value>
+  </data>
+  <data name="VerifierHibpDisabledBanner.Title" xml:space="preserve">
+    <value>Controllo password compromesse disattivato</value>
+  </data>
+  <data name="HibpConsentClose" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="HibpConsentMessage" xml:space="preserve">
+    <value>PassKey controllera&apos; le tue password contro il database pubblico di Have I Been Pwned. Solo i primi 5 caratteri dell&apos;hash SHA-1 di ogni password lasceranno il dispositivo (k-anonymity) - la password in chiaro resta sempre locale.
+
+Vuoi attivare questa verifica?</value>
+  </data>
+  <data name="HibpConsentPrimary" xml:space="preserve">
+    <value>Attiva</value>
+  </data>
+  <data name="HibpConsentTitle" xml:space="preserve">
+    <value>Attivare il controllo password compromesse?</value>
+  </data>
+  <data name="DashHealthCompromisedLabel.Text" xml:space="preserve">
+    <value>Compromesse</value>
+  </data>
+  <data name="DashHealthCompromisedSummary" xml:space="preserve">
+    <value>{0} password compromesse</value>
+  </data>
+  <data name="DashHealthDuplicatesLabel.Text" xml:space="preserve">
+    <value>Riutilizzate</value>
+  </data>
+  <data name="DashHealthWeakLabel.Text" xml:space="preserve">
+    <value>Deboli</value>
   </data>
 </root>

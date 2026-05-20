@@ -41,6 +41,7 @@ public sealed partial class SettingsView : UserControl
         StartWithWindowsToggle.IsOn = vm.StartWithWindows;
         StartMinimizedCheck.IsChecked = vm.StartMinimized;
         StartMinimizedCheck.IsEnabled = vm.StartWithWindows;
+        HibpToggle.IsOn               = vm.HibpEnabled;
         VersionText.Text              = vm.AppVersion;
         AutoUpdateToggle.IsOn         = vm.AutoUpdateCheckEnabled;
         UpdateStatusTextBlock.Text    = FormatLastCheckTime(vm.LastUpdateCheckUtc);
@@ -261,6 +262,37 @@ public sealed partial class SettingsView : UserControl
     {
         if (_updatingFromVm || _viewModel is null) return;
         _viewModel.AutoUpdateCheckEnabled = AutoUpdateToggle.IsOn;
+    }
+
+    private async void HibpToggle_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_updatingFromVm || _viewModel is null) return;
+
+        // Enabling HIBP is the only PassKey setting that opens a network connection,
+        // so we ask the user for an explicit, informed consent the moment the toggle
+        // flips ON. Disabling is silent — turning OFF should never need confirmation.
+        if (HibpToggle.IsOn)
+        {
+            // Strings come from the shared resource bundle so the dialog is consistent
+            // across the six supported UI cultures (see Strings/{lang}/Resources.resw —
+            // keys: HibpConsentTitle / HibpConsentMessage / HibpConsentPrimary / HibpConsentClose).
+            var confirmed = await _dialogQueue.ConfirmAsync(
+                title: _resourceLoader.GetString("HibpConsentTitle"),
+                content: _resourceLoader.GetString("HibpConsentMessage"),
+                primaryButtonText: _resourceLoader.GetString("HibpConsentPrimary"),
+                closeButtonText: _resourceLoader.GetString("HibpConsentClose"),
+                defaultButton: Microsoft.UI.Xaml.Controls.ContentDialogButton.Primary);
+
+            if (!confirmed)
+            {
+                _updatingFromVm = true;
+                HibpToggle.IsOn = false;
+                _updatingFromVm = false;
+                return;
+            }
+        }
+
+        _viewModel.HibpEnabled = HibpToggle.IsOn;
     }
 
     private async void CheckUpdateButton_Click(object sender, RoutedEventArgs e)

@@ -77,16 +77,54 @@ public sealed partial class ShellView : UserControl
         // Unsubscribe first to avoid duplicate handlers when Dashboard is revisited
         vm.NavigateToItemRequested -= OnDashboardNavigateToItem;
         vm.NavigateToItemRequested += OnDashboardNavigateToItem;
+        vm.NavigateToVerifierRequested -= OnDashboardNavigateToVerifier;
+        vm.NavigateToVerifierRequested += OnDashboardNavigateToVerifier;
         v.SetViewModel(vm);
         return v;
+    }
+
+    private void OnDashboardNavigateToVerifier()
+    {
+        // Index 6 is the "Verifica" entry per ShellViewModel.NavigateTo. NavigateTo triggers
+        // UpdatePageContent which constructs a fresh PasswordVerifierView; once that view is
+        // hosted we explicitly select the second Pivot item ("Vault") because clicking the
+        // health card on the Dashboard is a "show me the audit" gesture, not a "verify a
+        // single password" one.
+        _viewModel?.NavigateTo(6);
+        NavView.SelectedItem = NavItemVerifier;
+
+        if (ShellContent.Content is PasswordVerifierView verifier)
+            verifier.SelectVaultTab();
     }
     private static PasswordsListView SetVm(PasswordsListView v, PasswordsListViewModel vm) { v.SetViewModel(vm); return v; }
     private static CreditCardsListView SetVm(CreditCardsListView v, CreditCardsListViewModel vm) { v.SetViewModel(vm); return v; }
     private static IdentitiesListView SetVm(IdentitiesListView v, IdentitiesListViewModel vm) { v.SetViewModel(vm); return v; }
     private static SecureNotesListView SetVm(SecureNotesListView v, SecureNotesListViewModel vm) { v.SetViewModel(vm); return v; }
     private static GeneratorView SetVm(GeneratorView v, GeneratorViewModel vm) { v.SetViewModel(vm); return v; }
-    private static PasswordVerifierView SetVm(PasswordVerifierView v, PasswordVerifierViewModel vm) { v.SetViewModel(vm); return v; }
+    private PasswordVerifierView SetVm(PasswordVerifierView v, PasswordVerifierViewModel vm)
+    {
+        // Sync the compromise badge on the Verifica nav entry whenever the scan reports
+        // breached passwords. Single source of truth lives in the verifier VM since the
+        // standalone Watchtower entry has been folded into this page in PassKey 2.0.
+        vm.PropertyChanged -= OnVerifierVmPropertyChanged;
+        vm.PropertyChanged += OnVerifierVmPropertyChanged;
+        UpdateVerifierBadge(vm.CompromisedCount);
+        v.SetViewModel(vm);
+        return v;
+    }
     private static HelpView SetVm(HelpView v, HelpViewModel vm) { v.SetViewModel(vm); return v; }
+
+    private void OnVerifierVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (sender is PasswordVerifierViewModel vm && e.PropertyName == nameof(PasswordVerifierViewModel.CompromisedCount))
+            UpdateVerifierBadge(vm.CompromisedCount);
+    }
+
+    private void UpdateVerifierBadge(int compromised)
+    {
+        if (FindName("VerifierBadge") is Microsoft.UI.Xaml.Controls.InfoBadge badge)
+            badge.Visibility = compromised > 0 ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+    }
 
     private SettingsView SetVm(SettingsView v, SettingsViewModel vm)
     {
