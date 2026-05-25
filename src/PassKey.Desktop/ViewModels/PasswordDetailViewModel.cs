@@ -72,6 +72,17 @@ public partial class PasswordDetailViewModel : BaseDetailViewModel<PasswordEntry
     /// <summary>True when <see cref="TotpSecret"/> is non-empty — the View flips between empty/filled states off this.</summary>
     public bool HasTotp => !string.IsNullOrWhiteSpace(TotpSecret);
 
+    // ── Inline validation (T5.6) ───────────────────────────────────────────────
+
+    [ObservableProperty]
+    public partial bool IsTitleEmpty { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsUsernameEmpty { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsPasswordEmpty { get; set; }
+
     public PasswordDetailViewModel(
         IVaultStateService vaultState,
         IPasswordGenerator generator,
@@ -108,6 +119,9 @@ public partial class PasswordDetailViewModel : BaseDetailViewModel<PasswordEntry
         TotpPeriod = 30;
         CurrentTotpCode = string.Empty;
         TotpRemainingSeconds = 0;
+        IsTitleEmpty = true;
+        IsUsernameEmpty = true;
+        IsPasswordEmpty = true;
     }
 
     protected override void LoadFromEntry(PasswordEntry entry)
@@ -162,10 +176,21 @@ public partial class PasswordDetailViewModel : BaseDetailViewModel<PasswordEntry
 
     // ─── Property change handlers ─────────────────────────────────────────────
 
-    partial void OnTitleChanged(string value) => UpdateCanSave();
-    partial void OnUsernameChanged(string value) => UpdateCanSave();
+    partial void OnTitleChanged(string value)
+    {
+        IsTitleEmpty = string.IsNullOrWhiteSpace(value);
+        UpdateCanSave();
+    }
+
+    partial void OnUsernameChanged(string value)
+    {
+        IsUsernameEmpty = string.IsNullOrWhiteSpace(value);
+        UpdateCanSave();
+    }
+
     partial void OnPasswordChanged(string value)
     {
+        IsPasswordEmpty = string.IsNullOrWhiteSpace(value);
         UpdateCanSave();
         UpdatePasswordStrength();
     }

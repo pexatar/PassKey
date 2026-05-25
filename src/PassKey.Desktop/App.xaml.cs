@@ -39,6 +39,8 @@ public partial class App : Application
                 services.AddSingleton<INavigationStack, NavigationStack>();
                 services.AddSingleton<ISettingsService, SettingsService>();
                 services.AddSingleton<IDialogQueueService, DialogQueueService>();
+                services.AddSingleton<IToastService, ToastService>();
+                services.AddSingleton<IAutoLockService, AutoLockService>();
                 services.AddSingleton<IClipboardService, ClipboardService>();
                 services.AddSingleton<IVaultStateService, VaultStateService>();
                 services.AddSingleton<IDatabaseService, DatabaseService>();
@@ -75,6 +77,7 @@ public partial class App : Application
                 services.AddTransient<PasswordVerifierViewModel>();
                 services.AddTransient<SettingsViewModel>();
                 services.AddTransient<HelpViewModel>();
+                services.AddTransient<ActivityLogViewModel>();
             })
             .Build();
     }

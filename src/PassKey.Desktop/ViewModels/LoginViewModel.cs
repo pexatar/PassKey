@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PassKey.Core.Services;
 using PassKey.Desktop.Services;
 
 namespace PassKey.Desktop.ViewModels;
@@ -18,6 +19,8 @@ public partial class LoginViewModel : ObservableObject
 {
     private readonly IVaultStateService _vaultState;
     private readonly INavigationStack _navigation;
+    private readonly IBackupService _backupService;
+    private readonly IBackupFileService _backupFile;
 
     /// <summary>
     /// Gets or sets a value indicating whether a vault unlock operation is in progress.
@@ -45,10 +48,18 @@ public partial class LoginViewModel : ObservableObject
     /// </summary>
     /// <param name="vaultState">Vault state service used to attempt vault unlock.</param>
     /// <param name="navigation">Navigation stack for replacing the current page with the Shell on success.</param>
-    public LoginViewModel(IVaultStateService vaultState, INavigationStack navigation)
+    /// <param name="backupService">Backup crypto service used by the "restore backup" recovery path.</param>
+    /// <param name="backupFile">Backup file reader used by the "restore backup" recovery path.</param>
+    public LoginViewModel(
+        IVaultStateService vaultState,
+        INavigationStack navigation,
+        IBackupService backupService,
+        IBackupFileService backupFile)
     {
         _vaultState = vaultState;
         _navigation = navigation;
+        _backupService = backupService;
+        _backupFile = backupFile;
     }
 
     /// <summary>
@@ -103,6 +114,46 @@ public partial class LoginViewModel : ObservableObject
         finally
         {
             IsAuthenticating = false;
+        }
+    }
+
+    /// <summary>
+    /// Recovery path: abandons the current (inaccessible) vault and routes to first-run setup.
+    /// The existing vault data is overwritten only when the user completes setup — abandoning
+    /// the setup screen leaves the old vault untouched, so this is non-destructive until then.
+    /// </summary>
+    public void StartNewVault() => _navigation.Replace<SetupViewModel>();
+
+    /// <summary>
+    /// Recovery path: restores a <c>.pkbak</c> backup as the new vault. The backup's own
+    /// password becomes the master password, so the user logs straight in afterwards.
+    /// </summary>
+    /// <param name="path">Full path to the selected <c>.pkbak</c> file.</param>
+    /// <param name="backupPassword">The password the backup was encrypted with.</param>
+    /// <returns>
+    /// True if the backup was decrypted and adopted as the new vault (navigation to the Shell
+    /// has already happened); false if the password was wrong or the file was invalid.
+    /// </returns>
+    public async Task<bool> RestoreFromBackupAsync(string path, ReadOnlyMemory<char> backupPassword)
+    {
+        try
+        {
+            var blob = await _backupFile.ReadBackupAsync(path);
+
+            // RestoreFromBlob runs Argon2id (CPU-bound, ~1 s) — keep it off the UI thread.
+            var vault = await Task.Run(
+                () => _backupService.RestoreFromBlob(blob, backupPassword.Span));
+
+            await _vaultState.InitializeWithVaultAsync(backupPassword, vault);
+            _navigation.Replace<ShellViewModel>();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // Wrong backup password (GCM tag mismatch) or corrupt/invalid file — surface a
+            // generic failure to the caller; details go to the debug listener only.
+            System.Diagnostics.Debug.WriteLine($"[LoginViewModel] Restore failed: {ex.GetType().Name}: {ex.Message}");
+            return false;
         }
     }
 }

@@ -67,6 +67,11 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     [ObservableProperty]
     public partial string Notes { get; set; } = string.Empty;
 
+    // ── Inline validation (T5.6) ───────────────────────────────────────────────
+
+    [ObservableProperty]
+    public partial bool IsFirstAndLastNameEmpty { get; set; }
+
     public IdentityDetailViewModel(
         IVaultStateService vaultState,
         IDialogQueueService dialogQueue)
@@ -109,6 +114,7 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
         DrivingLicenseNumber = string.Empty;
         PassportNumber = string.Empty;
         Notes = string.Empty;
+        IsFirstAndLastNameEmpty = true;
     }
 
     protected override void LoadFromEntry(IdentityEntry entry)
@@ -185,7 +191,22 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
 
     // ─── Property change handlers ─────────────────────────────────────────────
 
-    partial void OnFirstNameChanged(string value) => UpdateCanSave();
-    partial void OnLastNameChanged(string value) => UpdateCanSave();
+    partial void OnFirstNameChanged(string value)
+    {
+        UpdateValidationState();
+        UpdateCanSave();
+    }
+
+    partial void OnLastNameChanged(string value)
+    {
+        UpdateValidationState();
+        UpdateCanSave();
+    }
+
     partial void OnEmailChanged(string value) => UpdateCanSave();
+
+    private void UpdateValidationState()
+    {
+        IsFirstAndLastNameEmpty = string.IsNullOrWhiteSpace(FirstName) && string.IsNullOrWhiteSpace(LastName);
+    }
 }

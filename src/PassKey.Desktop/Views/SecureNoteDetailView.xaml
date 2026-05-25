@@ -43,6 +43,11 @@
                              TextChanged="TitleBox_TextChanged"
                              AutomationProperties.Name="Titolo nota"
                              TabIndex="10" />
+                    <TextBlock x:Uid="FieldTitleError"
+                               Text="Campo obbligatorio"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                               Visibility="{Binding IsTitleEmpty, Converter={StaticResource BoolToVisibility}}" />
                 </StackPanel>
 
                 <!-- Categoria + dot colorato a destra -->

@@ -25,6 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Markdown" Version="7.1.2" />
     <!-- Override transitive SkiaSharp 2.80.3 (CVE GHSA-j7hp-h8jx-5ppr) with safe version -->
     <PackageReference Include="SkiaSharp" Version="2.88.9" />
@@ -65,11 +66,7 @@
     <PropertyGroup>
       <_BrowserHostExe>$(MSBuildProjectDirectory)\..\PassKey.BrowserHost\bin\$(Configuration)\net10.0\win-x64\PassKey.BrowserHost.exe</_BrowserHostExe>
     </PropertyGroup>
-    <Copy SourceFiles="$(_BrowserHostExe)"
-          DestinationFolder="$(OutDir)"
-          SkipUnchangedFiles="true"
-          ContinueOnError="true"
-          Condition="Exists('$(_BrowserHostExe)')" />
+    <Copy SourceFiles="$(_BrowserHostExe)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" ContinueOnError="true" Condition="Exists('$(_BrowserHostExe)')" />
   </Target>
 
 </Project>

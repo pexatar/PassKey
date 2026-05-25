@@ -111,6 +111,7 @@
                                 <ColumnDefinition Width="100" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <!-- Card type icon circle -->
@@ -127,7 +128,7 @@
                                 <TextBlock Text="{Binding Label}"
                                            TextTrimming="CharacterEllipsis"
                                            Style="{StaticResource BodyStrongTextBlockStyle}" />
-                                <TextBlock Text="{Binding CardNumber}"
+                                <TextBlock Text="{Binding MaskedCardNumber}"
                                            TextTrimming="CharacterEllipsis"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
@@ -169,6 +170,18 @@
                                     Padding="6">
                                 <FontIcon Glyph="&#xE70F;" FontSize="14" />
                             </Button>
+
+                            <!-- Delete -->
+                            <Button Grid.Column="6"
+                                    ToolTipService.ToolTip="Elimina"
+                                    Click="DeleteEntry_Click"
+                                    Tag="{Binding}"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    Opacity="0"
+                                    Padding="6">
+                                <FontIcon Glyph="&#xE74D;" FontSize="14"
+                                          Foreground="{ThemeResource StatRemovedBrush}" />
+                            </Button>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -180,6 +193,7 @@
                 Grid.Row="2"
                 Visibility="Collapsed"
                 Icon="&#xE8C7;"
+                AccentBrush="{ThemeResource CardsIconBrush}"
                 Title="Nessuna carta salvata"
                 Subtitle="Aggiungi la tua prima carta di credito per averla sempre al sicuro."
                 />
@@ -193,12 +207,5 @@
               BorderThickness="1,0,0,0">
             <ContentPresenter x:Name="DetailContent" />
         </Grid>
-
-        <!-- Save confirmation toast -->
-        <TeachingTip x:Name="SavedTip"
-                     x:Uid="CardSavedTip"
-                     IsLightDismissEnabled="True"
-                     PreferredPlacement="Bottom"
-                     Title="Salvato!" />
     </Grid>
 </UserControl>

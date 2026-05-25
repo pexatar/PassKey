@@ -55,6 +55,18 @@
                 </Button>
 
                 <Button
+                    x:Name="RestoreBackupButton"
+                    HorizontalAlignment="Stretch"
+                    Height="40"
+                    Click="RestoreBackupButton_Click"
+                    AutomationProperties.Name="Ripristina un backup esistente">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE8E5;" FontSize="16" />
+                        <TextBlock x:Uid="WelcomeRestore" Text="Ripristina backup esistente" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
+                <Button
                     x:Name="SettingsButton"
                     HorizontalAlignment="Stretch"
                     Height="40"

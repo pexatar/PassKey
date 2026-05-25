@@ -30,7 +30,11 @@ public sealed partial class IdentityDetailView : UserControl
         // Populate UI from ViewModel
         _updatingFromVm = true;
 
-        PanelTitleText.Text = vm.PanelTitle;
+        // PanelTitle on the VM (BaseDetailViewModel) is hardcoded Italian — bypass it
+        // here with a properly localised lookup so the title follows the active language.
+        PanelTitleText.Text = vm.IsNew
+            ? _resourceLoader.GetString("IdPanelTitleNew")
+            : _resourceLoader.GetString("IdPanelTitleEdit");
         LabelBox.Text = vm.Label;
 
         // Personal Data
@@ -236,7 +240,13 @@ public sealed partial class IdentityDetailView : UserControl
     {
         SaveProgress.IsActive = saving;
         SaveProgress.Visibility = saving ? Visibility.Visible : Visibility.Collapsed;
-        SaveButtonText.Text = saving ? _resourceLoader.GetString("SaveInProgress") : _resourceLoader.GetString("ButtonSave");
+        // Slash notation is required because the .resw key carries a property suffix
+        // ("ButtonSave.Text" — applied to the TextBlock via x:Uid). The bare lookup
+        // "ButtonSave" was valid before bug 9c renamed the bare key to "ButtonSave.Text"
+        // and would now throw COMException 0x80073B17 ("NamedResource non trovato").
+        SaveButtonText.Text = saving
+            ? _resourceLoader.GetString("SaveInProgress")
+            : _resourceLoader.GetString("ButtonSave/Text");
         SaveButton.IsEnabled = !saving;
     }
 

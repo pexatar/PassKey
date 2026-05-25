@@ -121,6 +121,7 @@
                      x:Uid="UpdateInfoBar"
                      Severity="Informational"
                      IsClosable="True"
+                     AutomationProperties.LiveSetting="Polite"
                      Closed="UpdateInfoBar_Closed"
                      Margin="8,4,8,0">
                 <InfoBar.Content>

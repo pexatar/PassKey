@@ -45,7 +45,6 @@
                 <controls:SecureInputBox
                     x:Name="ConfirmInput"
                     PlaceholderText="Ripeti la master password"
-                    ShowRevealButton="Collapsed"
                     MaxLength="128"
                     TabIndex="20" />
             </StackPanel>

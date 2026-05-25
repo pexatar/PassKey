@@ -169,6 +169,7 @@
                 Grid.Row="2"
                 Visibility="Collapsed"
                 Icon="&#xE70B;"
+                AccentBrush="{ThemeResource NotesIconBrush}"
                 Title="Nessuna nota"
                 Subtitle="Crea la tua prima nota sicura per salvare informazioni riservate."
                 AutomationProperties.Name="Nessuna nota. Crea la tua prima nota sicura." />
@@ -202,13 +203,6 @@
                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                        HorizontalAlignment="Center" />
         </StackPanel>
-
-        <!-- Toast conferma salvataggio -->
-        <TeachingTip x:Name="SavedTip"
-                     IsLightDismissEnabled="True"
-                     PreferredPlacement="Bottom"
-                     Title="Nota salvata!"
-                     AutomationProperties.LiveSetting="Polite" />
 
         <!-- Hidden announcer for screen reader live regions -->
         <TextBlock x:Name="A11yAnnouncer"

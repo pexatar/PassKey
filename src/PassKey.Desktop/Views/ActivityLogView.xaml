@@ -1,0 +1,105 @@
+<UserControl
+    x:Class="PassKey.Desktop.Views.ActivityLogView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:PassKey.Desktop.Controls">
+
+    <Grid Padding="24" RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header: back button + title + subtitle + export button -->
+        <Grid Grid.Row="0" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" x:Name="BackButton"
+                    VerticalAlignment="Center"
+                    Click="BackButton_Click"
+                    Style="{StaticResource SubtleButtonStyle}"
+                    ToolTipService.ToolTip="Torna alle impostazioni"
+                    AutomationProperties.Name="Torna alle impostazioni">
+                <FontIcon Glyph="&#xE72B;" FontSize="16" />
+            </Button>
+
+            <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+                <TextBlock x:Uid="ActivityPageTitle" Text="Cronologia"
+                           Style="{StaticResource TitleTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level1" />
+                <TextBlock x:Uid="ActivityPageSubtitle" Text="Attività recenti del vault"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+
+            <Button Grid.Column="2" x:Name="ExportButton"
+                    VerticalAlignment="Center"
+                    Click="ExportButton_Click"
+                    AutomationProperties.Name="Esporta cronologia in CSV">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <FontIcon Glyph="&#xE74E;" FontSize="14" />
+                    <TextBlock x:Uid="ActivityExportButton" Text="Esporta CSV" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!-- Activity list -->
+        <ListView x:Name="EntriesList" Grid.Row="1"
+                  SelectionMode="None"
+                  ShowsScrollingPlaceholders="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="4,8" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <FontIcon Grid.Column="0"
+                                  Glyph="{Binding IconGlyph}"
+                                  FontSize="16"
+                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                  VerticalAlignment="Center" />
+
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding EntityLabel}"
+                                   TextTrimming="CharacterEllipsis"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+
+                        <StackPanel Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    Spacing="6"
+                                    VerticalAlignment="Center">
+                            <FontIcon FontSize="14"
+                                      Glyph="{Binding Action, Converter={StaticResource ActionIndicator}, ConverterParameter=Glyph}"
+                                      Foreground="{Binding Action, Converter={StaticResource ActionIndicator}, ConverterParameter=Brush}" />
+                            <TextBlock Text="{Binding ActionLabel}"
+                                       TextTrimming="CharacterEllipsis"
+                                       Foreground="{Binding Action, Converter={StaticResource ActionIndicator}, ConverterParameter=Brush}" />
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="3"
+                                   Text="{Binding FormattedTime}"
+                                   VerticalAlignment="Center"
+                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <!-- Empty state -->
+        <controls:EmptyStateControl
+            x:Name="EmptyState"
+            Grid.Row="1"
+            Visibility="Collapsed"
+            Icon="&#xE81C;" />
+    </Grid>
+</UserControl>

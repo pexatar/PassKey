@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Interfaces;
 using PassKey.Core.Models;
 using PassKey.Desktop.Services;
@@ -16,6 +17,8 @@ public partial class IdentitiesListViewModel : ObservableObject, IDisposable
     private readonly IClipboardService _clipboard;
     private readonly IDialogQueueService _dialogQueue;
     private readonly IVaultRepository _repository;
+    private readonly IToastService _toast;
+    private readonly ResourceLoader _resourceLoader = new();
     private bool _disposed;
 
     private List<IdentityEntry> _allEntries = [];
@@ -50,12 +53,14 @@ public partial class IdentitiesListViewModel : ObservableObject, IDisposable
         IClipboardService clipboard,
         IDialogQueueService dialogQueue,
         IVaultRepository repository,
+        IToastService toast,
         IdentityDetailViewModel detailViewModel)
     {
         _vaultState = vaultState;
         _clipboard = clipboard;
         _dialogQueue = dialogQueue;
         _repository = repository;
+        _toast = toast;
         _detailVm = detailViewModel;
 
         _vaultState.VaultLocked += OnVaultLocked;
@@ -172,18 +177,21 @@ public partial class IdentitiesListViewModel : ObservableObject, IDisposable
     private void CopyEmail(IdentityEntry? entry)
     {
         if (entry is not null && !string.IsNullOrEmpty(entry.Email))
+        {
             _clipboard.Copy(entry.Email, CopyType.Standard);
+            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
+        }
     }
 
     [RelayCommand]
     private void CopyPhone(IdentityEntry? entry)
     {
         if (entry is not null && !string.IsNullOrEmpty(entry.Phone))
+        {
             _clipboard.Copy(entry.Phone, CopyType.Standard);
+            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
+        }
     }
-
-    /// <summary>Raised after a successful save, for the View to show a toast.</summary>
-    public event Action? SaveCompleted;
 
     public void CloseDetail()
     {
@@ -217,6 +225,7 @@ public partial class IdentitiesListViewModel : ObservableObject, IDisposable
             });
             await LoadEntriesCommand.ExecuteAsync(null);
             CloseDetail();
+            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
         }
     }
 
@@ -232,7 +241,7 @@ public partial class IdentitiesListViewModel : ObservableObject, IDisposable
         });
         await LoadEntriesCommand.ExecuteAsync(null);
         CloseDetail();
-        SaveCompleted?.Invoke();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
     }
 
     private async void OnEntryDeleted(Guid entryId)
@@ -247,5 +256,6 @@ public partial class IdentitiesListViewModel : ObservableObject, IDisposable
         });
         await LoadEntriesCommand.ExecuteAsync(null);
         CloseDetail();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
     }
 }

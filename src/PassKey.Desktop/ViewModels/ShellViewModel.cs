@@ -24,6 +24,7 @@ public partial class ShellViewModel : ObservableObject, IDisposable
     private readonly PasswordVerifierViewModel _verifierViewModel;
     private readonly SettingsViewModel _settingsViewModel;
     private readonly HelpViewModel _helpViewModel;
+    private readonly ActivityLogViewModel _activityLogViewModel;
 
     private UpdateCheckResult? _currentUpdate;
 
@@ -76,7 +77,8 @@ public partial class ShellViewModel : ObservableObject, IDisposable
         GeneratorViewModel generatorViewModel,
         PasswordVerifierViewModel verifierViewModel,
         SettingsViewModel settingsViewModel,
-        HelpViewModel helpViewModel)
+        HelpViewModel helpViewModel,
+        ActivityLogViewModel activityLogViewModel)
     {
         _vaultState               = vaultState;
         _navigation               = navigation;
@@ -91,6 +93,7 @@ public partial class ShellViewModel : ObservableObject, IDisposable
         _verifierViewModel        = verifierViewModel;
         _settingsViewModel        = settingsViewModel;
         _helpViewModel            = helpViewModel;
+        _activityLogViewModel     = activityLogViewModel;
 
         // Handle race: background check may have completed before this VM was constructed
         if (_updateService.PendingUpdate is { UpdateAvailable: true } pending)
@@ -149,6 +152,12 @@ public partial class ShellViewModel : ObservableObject, IDisposable
     public void NavigateToHelp()
     {
         CurrentPage = _helpViewModel;
+    }
+
+    /// <summary>Navigates to the activity-log ("Cronologia") page (outside indexed sidebar items).</summary>
+    public void NavigateToActivityLog()
+    {
+        CurrentPage = _activityLogViewModel;
     }
 
     // ── Vault lock ────────────────────────────────────────────────────────────

@@ -279,4 +279,63 @@ public sealed partial class CreditCardControl : UserControl
             _ => s_res.GetString("CatPersonalLabel")
         };
     }
+
+    #region Hover effect (T5.7)
+
+    // Hover highlights the card border. Prior approaches and why they failed:
+    //   1. System accent brush (blue) clashed with strong card colours (red, green, gold…).
+    //   2. Translucent white worked on dark theme but vanished against the white page
+    //      background in light theme.
+    //   3. Card-accent **lightened** worked on dark theme but stayed washed-out on
+    //      light theme (a brighter colour adjacent to a bright page → poor contrast).
+    // Current approach (theme-aware): derive the border colour from the card's own
+    // accent — **lightened** on dark theme, **darkened** on light theme. Each shift is
+    // ±90 per RGB channel (clamped). This guarantees the border always contrasts both
+    // with the card (it differs from the card's own gradient start by ~90) and with
+    // the surrounding page (it shifts toward the opposite end of the value scale from
+    // the page background).
+
+    private static readonly SolidColorBrush TransparentBorderBrush =
+        new(Microsoft.UI.Colors.Transparent);
+
+    private const int HoverShift = 90;
+
+    /// <summary>
+    /// Highlights the card border with a shade of the card's own accent — lightened
+    /// on dark theme, darkened on light theme — so the highlight stays readable on
+    /// both the card and the surrounding page in any theme.
+    /// </summary>
+    private void CardRoot_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    {
+        var (start, _) = GetGradientColors(AccentColor);
+        var isLight = ActualTheme == ElementTheme.Light;
+        var color = isLight ? Darken(start, HoverShift) : Lighten(start, HoverShift);
+        CardRoot.BorderBrush = new SolidColorBrush(color);
+    }
+
+    /// <summary>Restores the transparent border on pointer exit.</summary>
+    private void CardRoot_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        => CardRoot.BorderBrush = TransparentBorderBrush;
+
+    /// <summary>Lightens an RGB colour by clamping each channel up by <paramref name="amount"/>.</summary>
+    private static Windows.UI.Color Lighten(Windows.UI.Color c, int amount)
+    {
+        return Windows.UI.Color.FromArgb(
+            c.A,
+            (byte)Math.Min(255, c.R + amount),
+            (byte)Math.Min(255, c.G + amount),
+            (byte)Math.Min(255, c.B + amount));
+    }
+
+    /// <summary>Darkens an RGB colour by clamping each channel down by <paramref name="amount"/>.</summary>
+    private static Windows.UI.Color Darken(Windows.UI.Color c, int amount)
+    {
+        return Windows.UI.Color.FromArgb(
+            c.A,
+            (byte)Math.Max(0, c.R - amount),
+            (byte)Math.Max(0, c.G - amount),
+            (byte)Math.Max(0, c.B - amount));
+    }
+
+    #endregion
 }

@@ -1,6 +1,7 @@
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
 namespace PassKey.Desktop.Controls;
 
@@ -18,6 +19,11 @@ public sealed partial class EmptyStateControl : UserControl
     public static readonly DependencyProperty IconProperty =
         DependencyProperty.Register(nameof(Icon), typeof(string), typeof(EmptyStateControl),
             new PropertyMetadata("\uE8A5", OnIconChanged));
+
+    /// <summary>Identifies the <see cref="AccentBrush"/> dependency property.</summary>
+    public static readonly DependencyProperty AccentBrushProperty =
+        DependencyProperty.Register(nameof(AccentBrush), typeof(Brush), typeof(EmptyStateControl),
+            new PropertyMetadata(null, OnAccentBrushChanged));
 
     /// <summary>Identifies the <see cref="Title"/> dependency property.</summary>
     public static readonly DependencyProperty TitleProperty =
@@ -57,6 +63,13 @@ public sealed partial class EmptyStateControl : UserControl
     /// </summary>
     public string Icon { get => (string)GetValue(IconProperty); set => SetValue(IconProperty, value); }
 
+    /// <summary>
+    /// Gets or sets the accent brush used to tint the circular badge behind the icon and
+    /// the glyph itself. When unset, a neutral secondary-text brush is used. Each list view
+    /// passes its own section brush (Passwords, Cards, Identities, Notes).
+    /// </summary>
+    public Brush? AccentBrush { get => (Brush?)GetValue(AccentBrushProperty); set => SetValue(AccentBrushProperty, value); }
+
     /// <summary>Gets or sets the primary heading text displayed below the icon.</summary>
     public string Title { get => (string)GetValue(TitleProperty); set => SetValue(TitleProperty, value); }
 
@@ -94,6 +107,16 @@ public sealed partial class EmptyStateControl : UserControl
         // Buttons start hidden; become visible only when their text is set (see callbacks below).
         PrimaryButton.Visibility = Visibility.Collapsed;
         SecondaryButton.Visibility = Visibility.Collapsed;
+
+        // Neutral fallback tint until a section AccentBrush is assigned.
+        ApplyBadgeBrush((Brush)Application.Current.Resources["TextFillColorSecondaryBrush"]);
+    }
+
+    /// <summary>Applies the supplied brush to both the badge circle and the glyph.</summary>
+    private void ApplyBadgeBrush(Brush brush)
+    {
+        BadgeCircle.Fill = brush;
+        IconElement.Foreground = brush;
     }
 
     // ─── Property Changed Callbacks ───────────────────────────────────────────
@@ -102,6 +125,12 @@ public sealed partial class EmptyStateControl : UserControl
     {
         if (d is EmptyStateControl self)
             self.IconElement.Glyph = (string)e.NewValue;
+    }
+
+    private static void OnAccentBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is EmptyStateControl self && e.NewValue is Brush brush)
+            self.ApplyBadgeBrush(brush);
     }
 
     private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

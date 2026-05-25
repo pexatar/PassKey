@@ -7,7 +7,11 @@
     <Grid x:Name="CardRoot"
           Width="300" Height="190"
           CornerRadius="16"
-          Padding="20,16,20,16">
+          Padding="20,16,20,16"
+          BorderThickness="2"
+          BorderBrush="Transparent"
+          PointerEntered="CardRoot_PointerEntered"
+          PointerExited="CardRoot_PointerExited">
 
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">

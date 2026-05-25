@@ -390,7 +390,8 @@
 
             <!-- Expiring Cards Alert -->
             <InfoBar x:Name="ExpiringCardsAlert" IsOpen="False" Severity="Warning"
-                     IsClosable="False" Visibility="Collapsed" />
+                     IsClosable="False" Visibility="Collapsed"
+                     AutomationProperties.LiveSetting="Polite" />
 
             <!-- Recent items section -->
             <TextBlock x:Uid="DashRecentTitle" Text="Elementi recenti"
@@ -428,11 +429,17 @@
                                            TextTrimming="CharacterEllipsis" />
                             </StackPanel>
 
-                            <TextBlock Grid.Column="2"
-                                       Text="{Binding ActionLabel}"
-                                       Style="{StaticResource CaptionTextBlockStyle}"
-                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                       VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        Spacing="6"
+                                        VerticalAlignment="Center">
+                                <FontIcon FontSize="14"
+                                          Glyph="{Binding Action, Converter={StaticResource ActionIndicator}, ConverterParameter=Glyph}"
+                                          Foreground="{Binding Action, Converter={StaticResource ActionIndicator}, ConverterParameter=Brush}" />
+                                <TextBlock Text="{Binding ActionLabel}"
+                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                           Foreground="{Binding Action, Converter={StaticResource ActionIndicator}, ConverterParameter=Brush}" />
+                            </StackPanel>
 
                             <TextBlock Grid.Column="3"
                                        Text="{Binding FormattedTime}"

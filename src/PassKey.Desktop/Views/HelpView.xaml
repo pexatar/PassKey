@@ -214,6 +214,17 @@
                                TextWrapping="Wrap" Margin="0,8,0,4" />
                 </Expander>
 
+                <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                    <Expander.Header>
+                        <TextBlock x:Uid="HelpGuideBrowserExtHeader" Text="Estensione per il browser"
+                                   Style="{StaticResource BodyStrongTextBlockStyle}" />
+                    </Expander.Header>
+                    <TextBlock x:Uid="HelpGuideBrowserExtBody"
+                               Text="L'estensione per browser compila automaticamente nome utente e password nei siti web. Per installarla apri Impostazioni → Generali → Estensione per il browser: una procedura guidata ti porta agli store di Chrome/Edge o Firefox. L'estensione si collega a PassKey quando l'app è in esecuzione."
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               TextWrapping="Wrap" Margin="0,8,0,4" />
+                </Expander>
+
             </StackPanel>
 
             <Rectangle Height="1" Fill="{ThemeResource DividerStrokeColorDefaultBrush}" Margin="0,12" />

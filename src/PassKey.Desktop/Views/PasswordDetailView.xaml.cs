@@ -56,7 +56,10 @@ public sealed partial class PasswordDetailView : UserControl
 
         // Populate UI from ViewModel
         _updatingFromVm = true;
-        PanelTitleText.Text = vm.PanelTitle;
+        // PanelTitle on the VM is hardcoded Italian — bypass with a localised lookup.
+        PanelTitleText.Text = vm.IsNew
+            ? _resourceLoader.GetString("PwPanelTitleNew")
+            : _resourceLoader.GetString("PwPanelTitleEdit");
         TitleBox.Text = vm.Title;
         UsernameBox.Text = vm.Username;
         UrlBox.Text = vm.Url;
@@ -306,6 +309,9 @@ public sealed partial class PasswordDetailView : UserControl
         {
             clip.Copy(raw, CopyType.Sensitive);
         }
+
+        if (App.Services.GetService(typeof(IToastService)) is IToastService toast)
+            toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
     }
 
     private void TotpShowSecretButton_Click(object sender, RoutedEventArgs e)

@@ -183,7 +183,7 @@
   <data name="AddCard" xml:space="preserve">
     <value>+ Novo cartão</value>
   </data>
-  <data name="AddIdentity" xml:space="preserve">
+  <data name="AddIdentity.Text" xml:space="preserve">
     <value>+ Adicionar identidade</value>
   </data>
   <data name="AddNote" xml:space="preserve">
@@ -196,50 +196,53 @@
     <value>Guardar alterações</value>
   </data>
   <!-- Etiquetas de campos -->
-  <data name="FieldFirstName" xml:space="preserve">
+  <data name="FieldFirstName.Text" xml:space="preserve">
     <value>Nome próprio</value>
   </data>
-  <data name="FieldLastName" xml:space="preserve">
+  <data name="FieldLastName.Text" xml:space="preserve">
     <value>Apelido</value>
   </data>
-  <data name="FieldBirthDate" xml:space="preserve">
+  <data name="FieldFirstAndLastNameError.Text" xml:space="preserve">
+    <value>Primeiro ou último nome é obrigatório</value>
+  </data>
+  <data name="FieldBirthDate.Text" xml:space="preserve">
     <value>Data de nascimento</value>
   </data>
-  <data name="FieldEmail" xml:space="preserve">
+  <data name="FieldEmail.Text" xml:space="preserve">
     <value>Email</value>
   </data>
-  <data name="FieldPhone" xml:space="preserve">
+  <data name="FieldPhone.Text" xml:space="preserve">
     <value>Telefone</value>
   </data>
-  <data name="FieldStreet" xml:space="preserve">
+  <data name="FieldStreet.Text" xml:space="preserve">
     <value>Rua</value>
   </data>
-  <data name="FieldCity" xml:space="preserve">
+  <data name="FieldCity.Text" xml:space="preserve">
     <value>Cidade</value>
   </data>
-  <data name="FieldPostalCode" xml:space="preserve">
+  <data name="FieldPostalCode.Text" xml:space="preserve">
     <value>Código postal</value>
   </data>
-  <data name="FieldProvince" xml:space="preserve">
+  <data name="FieldProvince.Text" xml:space="preserve">
     <value>Distrito</value>
   </data>
-  <data name="FieldRegion" xml:space="preserve">
+  <data name="FieldRegion.Text" xml:space="preserve">
     <value>Região</value>
   </data>
-  <data name="FieldCountry" xml:space="preserve">
+  <data name="FieldCountry.Text" xml:space="preserve">
     <value>País</value>
   </data>
   <data name="FieldNoteContent" xml:space="preserve">
     <value>Conteúdo</value>
   </data>
   <!-- Sec&#231;&#245;es -->
-  <data name="SectionPersonalData" xml:space="preserve">
+  <data name="SectionPersonalData.Text" xml:space="preserve">
     <value>Dados pessoais</value>
   </data>
-  <data name="SectionAddress" xml:space="preserve">
+  <data name="SectionAddress.Text" xml:space="preserve">
     <value>Morada</value>
   </data>
-  <data name="SectionDocuments" xml:space="preserve">
+  <data name="SectionDocuments.Text" xml:space="preserve">
     <value>Documentos</value>
   </data>
   <data name="SectionRecentActivity" xml:space="preserve">
@@ -249,10 +252,10 @@
     <value>Detalhes do cartão</value>
   </data>
   <!-- Bot&#245;es -->
-  <data name="ButtonSave" xml:space="preserve">
+  <data name="ButtonSave.Text" xml:space="preserve">
     <value>Guardar</value>
   </data>
-  <data name="ButtonDelete" xml:space="preserve">
+  <data name="ButtonDelete.Text" xml:space="preserve">
     <value>Eliminar</value>
   </data>
   <data name="ButtonCopy" xml:space="preserve">
@@ -321,16 +324,16 @@
     <value>Conjuntos de caracteres</value>
   </data>
   <!-- Documentos -->
-  <data name="FieldIdCard" xml:space="preserve">
+  <data name="FieldIdCard.Text" xml:space="preserve">
     <value>Cartão de cidadão</value>
   </data>
-  <data name="FieldHealthCard" xml:space="preserve">
+  <data name="FieldHealthCard.Text" xml:space="preserve">
     <value>Cartão de saúde</value>
   </data>
-  <data name="FieldDrivingLicense" xml:space="preserve">
+  <data name="FieldDrivingLicense.Text" xml:space="preserve">
     <value>Carta de condução</value>
   </data>
-  <data name="FieldPassport" xml:space="preserve">
+  <data name="FieldPassport.Text" xml:space="preserve">
     <value>Passaporte</value>
   </data>
   <data name="PlaceholderSearch" xml:space="preserve">
@@ -445,6 +448,15 @@
   <data name="FieldCvv.Text" xml:space="preserve">
     <value>CVV/CVV2 *</value>
   </data>
+  <data name="FieldCardNumberError.Text" xml:space="preserve">
+    <value>Campo obrigatório</value>
+  </data>
+  <data name="FieldCardholderError.Text" xml:space="preserve">
+    <value>Campo obrigatório</value>
+  </data>
+  <data name="FieldCvvError.Text" xml:space="preserve">
+    <value>Campo obrigatório</value>
+  </data>
   <data name="FieldExpiry.Text" xml:space="preserve">
     <value>Validade *</value>
   </data>
@@ -466,6 +478,15 @@
   <data name="FieldPassword.Text" xml:space="preserve">
     <value>Palavra-passe *</value>
   </data>
+  <data name="FieldTitleError.Text" xml:space="preserve">
+    <value>Campo obrigatório</value>
+  </data>
+  <data name="FieldUsernameError.Text" xml:space="preserve">
+    <value>Campo obrigatório</value>
+  </data>
+  <data name="FieldPasswordError.Text" xml:space="preserve">
+    <value>Campo obrigatório</value>
+  </data>
   <data name="FieldPin.Text" xml:space="preserve">
     <value>PIN</value>
   </data>
@@ -486,6 +507,9 @@
   </data>
   <data name="SearchCards.PlaceholderText" xml:space="preserve">
     <value>Pesquisar cartões...</value>
+  </data>
+  <data name="SearchIdentities.PlaceholderText" xml:space="preserve">
+    <value>Pesquisar identidades...</value>
   </data>
   <data name="SearchPasswords.PlaceholderText" xml:space="preserve">
     <value>Pesquisar palavras-passe...</value>
@@ -1496,5 +1520,227 @@ Deseja ativar esta verificacao?</value>
   </data>
   <data name="DashHealthWeakLabel.Text" xml:space="preserve">
     <value>Fracas</value>
+  </data>
+  <data name="ToastSaved" xml:space="preserve">
+    <value>Alteracoes guardadas</value>
+  </data>
+  <data name="ToastDeleted" xml:space="preserve">
+    <value>Item eliminado</value>
+  </data>
+  <data name="ToastUsernameCopied" xml:space="preserve">
+    <value>Nome de utilizador copiado</value>
+  </data>
+  <data name="ToastPasswordCopied" xml:space="preserve">
+    <value>Palavra-passe copiada</value>
+  </data>
+  <data name="ToastCopied" xml:space="preserve">
+    <value>Copiado para a area de transferencia</value>
+  </data>
+  <data name="ForgotPwTitle" xml:space="preserve">
+    <value>Palavra-passe esquecida</value>
+  </data>
+  <data name="ForgotPwMessage" xml:space="preserve">
+    <value>O PassKey nunca guarda a palavra-passe principal. Por seguranca (modelo zero-knowledge) so o utilizador a conhece. Se a esqueceu, pode restaurar uma copia de seguranca .pkbak ou criar um novo cofre.</value>
+  </data>
+  <data name="ForgotPwRestore" xml:space="preserve">
+    <value>Restaurar copia de seguranca</value>
+  </data>
+  <data name="ForgotPwNewVault" xml:space="preserve">
+    <value>Criar novo cofre</value>
+  </data>
+  <data name="NewVaultWarnTitle" xml:space="preserve">
+    <value>Criar novo cofre</value>
+  </data>
+  <data name="NewVaultWarnMessage" xml:space="preserve">
+    <value>O cofre atual e todos os seus dados ficarao permanentemente inacessiveis. Operacao irreversivel. Continuar?</value>
+  </data>
+  <data name="NewVaultWarnConfirm" xml:space="preserve">
+    <value>Eliminar e continuar</value>
+  </data>
+  <data name="AutoLockCountdown" xml:space="preserve">
+    <value>O cofre sera bloqueado em {0} segundos</value>
+  </data>
+  <data name="AutoLockStayActive" xml:space="preserve">
+    <value>Manter ativo</value>
+  </data>
+  <data name="ToastAutoLockUpdated" xml:space="preserve">
+    <value>Bloqueio automatico atualizado</value>
+  </data>
+  <data name="ActivityPageTitle.Text" xml:space="preserve">
+    <value>Histórico</value>
+  </data>
+  <data name="ActivityPageSubtitle.Text" xml:space="preserve">
+    <value>Atividade recente do cofre</value>
+  </data>
+  <data name="ActivityExportButton.Text" xml:space="preserve">
+    <value>Exportar CSV</value>
+  </data>
+  <data name="ActivityEmptyTitle" xml:space="preserve">
+    <value>Nenhuma atividade</value>
+  </data>
+  <data name="ActivityEmptySubtitle" xml:space="preserve">
+    <value>As ações do cofre aparecerão aqui.</value>
+  </data>
+  <data name="ActivityColTime" xml:space="preserve">
+    <value>Data e hora</value>
+  </data>
+  <data name="ActivityColType" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="ActivityColAction" xml:space="preserve">
+    <value>Ação</value>
+  </data>
+  <data name="ActivityCsvFileType" xml:space="preserve">
+    <value>Ficheiro CSV</value>
+  </data>
+  <data name="ActivityExportSuccess" xml:space="preserve">
+    <value>Histórico exportado</value>
+  </data>
+  <data name="ActivityExportError" xml:space="preserve">
+    <value>Falha na exportação</value>
+  </data>
+  <data name="ActivityActionCreated" xml:space="preserve">
+    <value>Criado</value>
+  </data>
+  <data name="ActivityActionModified" xml:space="preserve">
+    <value>Modificado</value>
+  </data>
+  <data name="ActivityActionDeleted" xml:space="preserve">
+    <value>Eliminado</value>
+  </data>
+  <data name="ActivityActionCopied" xml:space="preserve">
+    <value>Copiado</value>
+  </data>
+  <data name="ActivityActionUnlocked" xml:space="preserve">
+    <value>Desbloqueado</value>
+  </data>
+  <data name="ActivityActionLocked" xml:space="preserve">
+    <value>Bloqueado</value>
+  </data>
+  <data name="ActivityEntityPassword" xml:space="preserve">
+    <value>Palavra-passe</value>
+  </data>
+  <data name="ActivityEntityCard" xml:space="preserve">
+    <value>Cartão</value>
+  </data>
+  <data name="ActivityEntityIdentity" xml:space="preserve">
+    <value>Identidade</value>
+  </data>
+  <data name="ActivityEntityNote" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="ActivityEntityVault" xml:space="preserve">
+    <value>Cofre</value>
+  </data>
+  <data name="SettingsActivityLogBtn.Text" xml:space="preserve">
+    <value>Histórico de atividade</value>
+  </data>
+  <data name="SettingsBrowserExtTitle.Text" xml:space="preserve">
+    <value>Extensão para o navegador</value>
+  </data>
+  <data name="SettingsBrowserExtDesc.Text" xml:space="preserve">
+    <value>Preenche automaticamente as credenciais nos sites</value>
+  </data>
+  <data name="BrowserExtDialogTitle" xml:space="preserve">
+    <value>Instalar a extensão para o navegador</value>
+  </data>
+  <data name="BrowserExtIntro" xml:space="preserve">
+    <value>A extensão PassKey preenche automaticamente nomes de utilizador e palavras-passe nos sites. Funciona enquanto o PassKey estiver em execução.</value>
+  </data>
+  <data name="BrowserExtStep1" xml:space="preserve">
+    <value>1. Abra a loja do seu navegador:</value>
+  </data>
+  <data name="BrowserExtChromeBtn" xml:space="preserve">
+    <value>Chrome / Edge</value>
+  </data>
+  <data name="BrowserExtFirefoxBtn" xml:space="preserve">
+    <value>Firefox</value>
+  </data>
+  <data name="BrowserExtStep2" xml:space="preserve">
+    <value>2. Na página da loja, clique em "Adicionar" (ou "Instalar").</value>
+  </data>
+  <data name="BrowserExtStep3" xml:space="preserve">
+    <value>3. Mantenha o PassKey em execução: a extensão liga-se automaticamente.</value>
+  </data>
+  <data name="BrowserExtClose" xml:space="preserve">
+    <value>Fechar</value>
+  </data>
+  <data name="HelpGuideBrowserExtHeader.Text" xml:space="preserve">
+    <value>Extensão para o navegador</value>
+  </data>
+  <data name="HelpGuideBrowserExtBody.Text" xml:space="preserve">
+    <value>A extensão para navegador preenche automaticamente nomes de utilizador e palavras-passe nos sites. Para instalá-la, abra Definições → Geral → Extensão para o navegador: um procedimento guiado leva-o às lojas do Chrome/Edge ou Firefox. A extensão liga-se ao PassKey enquanto a aplicação estiver em execução.</value>
+  </data>
+  <data name="SettingsClearVaultTitle.Text" xml:space="preserve">
+    <value>Esvaziar cofre</value>
+  </data>
+  <data name="SettingsClearVaultDesc.Text" xml:space="preserve">
+    <value>Elimina todas as palavras-passe, cartões, identidades e notas. Operação irreversível.</value>
+  </data>
+  <data name="SettingsClearVaultBtn.Text" xml:space="preserve">
+    <value>Esvaziar cofre</value>
+  </data>
+  <data name="ClearVaultWarnTitle" xml:space="preserve">
+    <value>Esvaziar cofre</value>
+  </data>
+  <data name="ClearVaultWarnMessage" xml:space="preserve">
+    <value>AVISO: esta operação elimina DEFINITIVAMENTE todas as palavras-passe, cartões, identidades e notas do cofre. Os metadados e a palavra-passe principal são mantidos. A operação é IRREVERSÍVEL. Deseja continuar?</value>
+  </data>
+  <data name="ClearVaultWarnContinue" xml:space="preserve">
+    <value>Continuar</value>
+  </data>
+  <data name="ClearVaultPwTitle" xml:space="preserve">
+    <value>Confirmar esvaziamento</value>
+  </data>
+  <data name="ClearVaultPwDesc" xml:space="preserve">
+    <value>Introduza a palavra-passe principal para confirmar o esvaziamento do cofre.</value>
+  </data>
+  <data name="ClearVaultPwPlaceholder" xml:space="preserve">
+    <value>Palavra-passe principal</value>
+  </data>
+  <data name="ClearVaultPwConfirm" xml:space="preserve">
+    <value>Esvaziar cofre</value>
+  </data>
+  <data name="ClearVaultPwErrEmpty" xml:space="preserve">
+    <value>Introduza a palavra-passe principal.</value>
+  </data>
+  <data name="ClearVaultErrWrong" xml:space="preserve">
+    <value>Palavra-passe principal incorreta. O cofre não foi esvaziado.</value>
+  </data>
+  <data name="ClearVaultSuccessTitle" xml:space="preserve">
+    <value>Cofre esvaziado</value>
+  </data>
+  <data name="ClearVaultSuccessMessage" xml:space="preserve">
+    <value>Todas as entradas foram eliminadas. O cofre está agora vazio.</value>
+  </data>
+  <data name="ClearVaultErrorTitle" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="WelcomeRestore.Text" xml:space="preserve">
+    <value>Restaurar uma cópia de segurança existente</value>
+  </data>
+  <data name="PwPanelTitleNew" xml:space="preserve">
+    <value>Adicionar palavra-passe</value>
+  </data>
+  <data name="PwPanelTitleEdit" xml:space="preserve">
+    <value>Editar palavra-passe</value>
+  </data>
+  <data name="CardPanelTitleNew" xml:space="preserve">
+    <value>Adicionar cartão</value>
+  </data>
+  <data name="CardPanelTitleEdit" xml:space="preserve">
+    <value>Editar cartão</value>
+  </data>
+  <data name="IdPanelTitleNew" xml:space="preserve">
+    <value>Adicionar identidade</value>
+  </data>
+  <data name="IdPanelTitleEdit" xml:space="preserve">
+    <value>Editar identidade</value>
+  </data>
+  <data name="NotePanelTitleNew" xml:space="preserve">
+    <value>Adicionar nota</value>
+  </data>
+  <data name="NotePanelTitleEdit" xml:space="preserve">
+    <value>Editar nota</value>
   </data>
 </root>

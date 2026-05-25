@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Interfaces;
 using PassKey.Core.Models;
@@ -19,6 +20,8 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
     private readonly IVaultStateService _vaultState;
     private readonly IDialogQueueService _dialogQueue;
     private readonly IVaultRepository _repository;
+    private readonly IToastService _toast;
+    private readonly ResourceLoader _resourceLoader = new();
     private bool _disposed;
 
     private List<SecureNoteEntry> _allEntries = [];
@@ -46,20 +49,19 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     public partial SecureNoteDetailViewModel? DetailViewModel { get; set; }
 
-    /// <summary>Fired after a note is saved successfully (for toast notification).</summary>
-    public event Action? SaveCompleted;
-
     private readonly SecureNoteDetailViewModel _detailVm;
 
     public SecureNotesListViewModel(
         IVaultStateService vaultState,
         IDialogQueueService dialogQueue,
         IVaultRepository repository,
+        IToastService toast,
         SecureNoteDetailViewModel detailViewModel)
     {
         _vaultState = vaultState;
         _dialogQueue = dialogQueue;
         _repository = repository;
+        _toast = toast;
         _detailVm = detailViewModel;
 
         _vaultState.VaultLocked += OnVaultLocked;
@@ -205,6 +207,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
             });
             await LoadEntriesCommand.ExecuteAsync(null);
             CloseEditor();
+            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
         }
     }
 
@@ -229,7 +232,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
             Timestamp = DateTime.UtcNow
         });
         await LoadEntriesCommand.ExecuteAsync(null);
-        SaveCompleted?.Invoke();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
     }
 
     private async void OnEntryDeleted(Guid entryId)
@@ -244,6 +247,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
         });
         await LoadEntriesCommand.ExecuteAsync(null);
         CloseEditor();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
     }
 
     // --- Static helpers ---

@@ -96,6 +96,13 @@ public sealed partial class MainWindow : Window
         // about to be shown, is always safe.
         App.Services.GetRequiredService<IDialogQueueService>().XamlRootAccessor = () => Content?.XamlRoot;
 
+        // Bind the toast service to the bottom-right InfoBar declared in MainWindow.xaml.
+        // Done here (not in the constructor) so the control is fully realised in the visual tree.
+        App.Services.GetRequiredService<IToastService>().Attach(ToastHost);
+
+        // Start inactivity monitoring (must run on the UI thread so the timer binds correctly).
+        App.Services.GetRequiredService<IAutoLockService>().Initialize();
+
         try
         {
             await _mainViewModel.InitializeAsync();
@@ -188,6 +195,25 @@ public sealed partial class MainWindow : Window
         };
 
         RootPresenter.Content = view;
+
+        // Fade-in animation for the new view (300ms)
+        if (view != null)
+        {
+            view.Opacity = 0;
+            var fadeInStoryboard = new Microsoft.UI.Xaml.Media.Animation.Storyboard();
+            var fadeInAnimation = new Microsoft.UI.Xaml.Media.Animation.DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new TimeSpan(0, 0, 0, 0, 300),
+                EasingFunction = new Microsoft.UI.Xaml.Media.Animation.QuadraticEase { EasingMode = Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseOut }
+            };
+
+            Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(fadeInAnimation, view);
+            Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(fadeInAnimation, "Opacity");
+            fadeInStoryboard.Children.Add(fadeInAnimation);
+            fadeInStoryboard.Begin();
+        }
     }
 
     private static LoginView CreateLoginView(LoginViewModel vm)

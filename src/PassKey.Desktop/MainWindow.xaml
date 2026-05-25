@@ -5,7 +5,25 @@
     xmlns:tb="using:H.NotifyIcon"
     Title="PassKey">
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ContentPresenter x:Name="RootPresenter" />
+        <ContentPresenter x:Name="RootPresenter">
+            <ContentPresenter.ContentTransitions>
+                <TransitionCollection>
+                    <ContentThemeTransition />
+                </TransitionCollection>
+            </ContentPresenter.ContentTransitions>
+        </ContentPresenter>
+
+        <!-- Toast host: a single shared InfoBar driven by IToastService. Anchored
+             bottom-right; collapses to zero size when closed so it never blocks content. -->
+        <InfoBar
+            x:Name="ToastHost"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,24,24"
+            MaxWidth="400"
+            AutomationProperties.LiveSetting="Polite"
+            IsOpen="False" />
+
         <tb:TaskbarIcon
             x:Name="TrayIcon"
             ToolTipText="PassKey">

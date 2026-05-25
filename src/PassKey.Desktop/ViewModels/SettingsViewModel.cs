@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
 using Microsoft.UI.Xaml;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Services;
 using PassKey.Desktop.Services;
 
@@ -29,6 +30,8 @@ public partial class SettingsViewModel : ObservableObject
     private readonly IMergeService _merge;
     private readonly IImportOrchestrator _importOrchestrator;
     private readonly IUpdateService _updateService;
+    private readonly IToastService _toast;
+    private readonly ResourceLoader _resourceLoader = new();
     private bool _initializing;
 
     private static readonly int[] AutoLockValues = [30, 60, 300, 600, 0];
@@ -88,7 +91,8 @@ public partial class SettingsViewModel : ObservableObject
         IFilePickerService filePicker,
         IMergeService merge,
         IImportOrchestrator importOrchestrator,
-        IUpdateService updateService)
+        IUpdateService updateService,
+        IToastService toast)
     {
         _settings = settings;
         _vaultState = vaultState;
@@ -98,6 +102,7 @@ public partial class SettingsViewModel : ObservableObject
         _merge = merge;
         _importOrchestrator = importOrchestrator;
         _updateService = updateService;
+        _toast = toast;
     }
 
     public void Initialize()
@@ -218,6 +223,10 @@ public partial class SettingsViewModel : ObservableObject
         {
             _settings.AutoLockSeconds = AutoLockValues[value];
             _settings.Save();
+
+            // Explicit confirmation that the change registered — the auto-lock effect
+            // itself is otherwise invisible until the timeout elapses.
+            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastAutoLockUpdated"));
         }
     }
 
@@ -280,6 +289,38 @@ public partial class SettingsViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// Verifies the master password and, if correct, removes every entry (passwords, cards,
+    /// identities, secure notes) from the vault while preserving its metadata and master
+    /// password. Irreversible. Returns <see langword="false"/> if the password is wrong.
+    /// </summary>
+    /// <param name="password">The master password re-entered by the user for confirmation.</param>
+    /// <returns><see langword="true"/> on success; <see langword="false"/> if verification failed.</returns>
+    public async Task<bool> PerformClearVaultAsync(string password)
+    {
+        var chars = password.ToCharArray();
+        try
+        {
+            var verified = await Task.Run(async () =>
+                await _vaultState.VerifyMasterPasswordAsync(new ReadOnlyMemory<char>(chars)));
+            if (!verified) return false;
+
+            var vault = _vaultState.CurrentVault;
+            if (vault is null) return false;
+
+            vault.Passwords.Clear();
+            vault.CreditCards.Clear();
+            vault.Identities.Clear();
+            vault.SecureNotes.Clear();
+            await _vaultState.SaveVaultAsync();
+            return true;
+        }
+        finally
+        {
+            Array.Clear(chars);
+        }
+    }
+
     [RelayCommand]
     public async Task BackupVaultAsync()
     {
@@ -292,8 +333,10 @@ public partial class SettingsViewModel : ObservableObject
             var (password, confirmed) = await BackupPasswordRequested.Invoke();
             if (!confirmed) return;
 
-            // 2. Pick save location
-            var path = await _filePicker.PickSaveFileAsync("PassKey_Backup", ".pkbak", "PassKey Backup");
+            // 2. Pick save location — suggest a date/time-stamped name so multiple backups
+            //    sort chronologically and never silently overwrite one another.
+            var suggestedName = $"PassKey_Backup_{DateTime.Now:yyyyMMdd_HHmm}";
+            var path = await _filePicker.PickSaveFileAsync(suggestedName, ".pkbak", "PassKey Backup");
             if (path is null) return;
 
             // 3. Create encrypted backup blob (KDF is slow → Task.Run)

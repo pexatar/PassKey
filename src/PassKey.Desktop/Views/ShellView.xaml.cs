@@ -66,6 +66,7 @@ public sealed partial class ShellView : UserControl
             PasswordVerifierViewModel vm => SetVm(new PasswordVerifierView(), vm),
             SettingsViewModel vm => SetVm(new SettingsView(), vm),
             HelpViewModel vm => SetVm(new HelpView(), vm),
+            ActivityLogViewModel vm => SetVm(new ActivityLogView(), vm),
             _ => null
         };
 
@@ -113,6 +114,18 @@ public sealed partial class ShellView : UserControl
         return v;
     }
     private static HelpView SetVm(HelpView v, HelpViewModel vm) { v.SetViewModel(vm); return v; }
+    private ActivityLogView SetVm(ActivityLogView v, ActivityLogViewModel vm)
+    {
+        v.BackRequested += OnActivityLogBackRequested;
+        v.SetViewModel(vm);
+        return v;
+    }
+
+    private void OnActivityLogBackRequested()
+    {
+        _viewModel?.NavigateToSettings();
+        NavView.SelectedItem = NavView.SettingsItem;
+    }
 
     private void OnVerifierVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -129,6 +142,7 @@ public sealed partial class ShellView : UserControl
     private SettingsView SetVm(SettingsView v, SettingsViewModel vm)
     {
         v.NavigateToHelpRequested += OnSettingsNavigateToHelp;
+        v.NavigateToActivityLogRequested += OnSettingsNavigateToActivityLog;
         v.SetViewModel(vm);
         return v;
     }
@@ -137,6 +151,13 @@ public sealed partial class ShellView : UserControl
     {
         _viewModel?.NavigateToHelp();
         NavView.SelectedItem = NavItemHelp;
+    }
+
+    private void OnSettingsNavigateToActivityLog()
+    {
+        _viewModel?.NavigateToActivityLog();
+        // The activity-log viewer has no sidebar entry; clear the selection.
+        NavView.SelectedItem = null;
     }
 
     private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)

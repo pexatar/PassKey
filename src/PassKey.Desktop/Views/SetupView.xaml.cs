@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -13,6 +14,10 @@ namespace PassKey.Desktop.Views;
 public sealed partial class SetupView : UserControl
 {
     private SetupViewModel? _viewModel;
+    private readonly ResourceLoader _resourceLoader = new();
+
+    /// <summary>Localized default caption of the create button, captured after x:Uid is applied.</summary>
+    private readonly string _createButtonDefaultText;
 
     private static Brush GetStrengthBrush(int score)
     {
@@ -33,6 +38,9 @@ public sealed partial class SetupView : UserControl
     public SetupView()
     {
         InitializeComponent();
+        // Capture the localized caption now (x:Uid has already been applied by
+        // InitializeComponent) so the creating state can restore it later.
+        _createButtonDefaultText = CreateButtonText.Text;
         PasswordInput.PasswordChanged += OnPasswordChanged;
         ConfirmInput.PasswordChanged += OnConfirmChanged;
     }
@@ -155,7 +163,9 @@ public sealed partial class SetupView : UserControl
     {
         CreateProgress.IsActive = creating;
         CreateProgress.Visibility = creating ? Visibility.Visible : Visibility.Collapsed;
-        CreateButtonText.Text = creating ? "Creazione in corso..." : "Crea Vault";
+        CreateButtonText.Text = creating
+            ? _resourceLoader.GetString("SetupCreating")
+            : _createButtonDefaultText;
         CreateButton.IsEnabled = !creating;
         PasswordInput.IsEnabled = !creating;
         ConfirmInput.IsEnabled = !creating;

@@ -249,7 +249,11 @@ public sealed partial class SecureNoteDetailView : UserControl
         SaveProgress.IsActive = saving;
         SaveProgress.Visibility = saving ? Visibility.Visible : Visibility.Collapsed;
         var saveLoader = new ResourceLoader();
-        SaveButtonText.Text = saving ? saveLoader.GetString("SaveInProgress") : saveLoader.GetString("ButtonSave");
+        // Slash notation: the .resw key is "ButtonSave.Text" (renamed by bug 9c).
+        // A bare "ButtonSave" lookup now throws COMException 0x80073B17.
+        SaveButtonText.Text = saving
+            ? saveLoader.GetString("SaveInProgress")
+            : saveLoader.GetString("ButtonSave/Text");
         SaveButton.IsEnabled = !saving;
         Announce(saving ? "Salvataggio in corso..." : "Salva completato");
     }

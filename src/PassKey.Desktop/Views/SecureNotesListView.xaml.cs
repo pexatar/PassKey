@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Models;
-using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -29,11 +28,13 @@ public sealed partial class SecureNotesListView : UserControl
 
     public async void SetViewModel(SecureNotesListViewModel vm)
     {
+        // Drop any handler attached to a previous VM to avoid subscription leaks.
+        if (_viewModel is not null) _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
         _viewModel = vm;
         DataContext = vm;
 
         vm.PropertyChanged += OnViewModelPropertyChanged;
-        vm.SaveCompleted += ShowSavedToast;
 
         BuildCategoryFilter();
 
@@ -46,6 +47,12 @@ public sealed partial class SecureNotesListView : UserControl
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();
         UpdateEmptyState();
+
+        // Sync the editor panel from VM state — see CreditCardsListView for the full
+        // rationale. Without this, navigating away with the editor open and coming
+        // back leaves the UI frozen.
+        UpdateEditorPanel();
+        UpdateEditorContent();
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -308,10 +315,6 @@ public sealed partial class SecureNotesListView : UserControl
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetItemStatus(
             args.ItemContainer, entry.IsPinned ? "Fissata" : "");
     }
-
-    // --- Toast conferma salvataggio ---
-
-    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip, () => Announce("Nota salvata."));
 
     // --- Helpers ---
 

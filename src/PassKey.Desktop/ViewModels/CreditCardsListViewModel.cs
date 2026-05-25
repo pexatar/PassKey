@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Interfaces;
 using PassKey.Core.Models;
@@ -18,6 +19,8 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
     private readonly IClipboardService _clipboard;
     private readonly IDialogQueueService _dialogQueue;
     private readonly IVaultRepository _repository;
+    private readonly IToastService _toast;
+    private readonly ResourceLoader _resourceLoader = new();
     private bool _disposed;
 
     private List<CreditCardEntry> _allEntries = [];
@@ -58,12 +61,14 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
         IClipboardService clipboard,
         IDialogQueueService dialogQueue,
         IVaultRepository repository,
+        IToastService toast,
         CreditCardDetailViewModel detailViewModel)
     {
         _vaultState = vaultState;
         _clipboard = clipboard;
         _dialogQueue = dialogQueue;
         _repository = repository;
+        _toast = toast;
         _detailVm = detailViewModel;
 
         _vaultState.VaultLocked += OnVaultLocked;
@@ -180,13 +185,10 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
     {
         if (entry is not null && !string.IsNullOrEmpty(entry.CardNumber))
         {
-            var masked = CardTypeDetector.MaskCardNumber(entry.CardNumber, entry.CardType);
             _clipboard.Copy(entry.CardNumber, CopyType.Sensitive);
+            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
         }
     }
-
-    /// <summary>Raised after a successful save, for the View to show a toast.</summary>
-    public event Action? SaveCompleted;
 
     public void CloseDetail()
     {
@@ -195,21 +197,23 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private async Task DeleteSelectedAsync()
+    private async Task DeleteSelectedAsync(CreditCardEntry? entry)
     {
-        if (SelectedEntry is null) return;
+        // entry != null → quick-delete from a list row; entry == null → keyboard Delete on the selection.
+        var target = entry ?? SelectedEntry;
+        if (target is null) return;
 
         var confirmed = await _dialogQueue.ConfirmAsync(
             title: "Elimina carta",
-            content: $"Eliminare \"{SelectedEntry.Label}\"?\nQuesta azione è irreversibile.",
+            content: $"Eliminare \"{target.Label}\"?\nQuesta azione è irreversibile.",
             primaryButtonText: "Elimina",
             closeButtonText: "Annulla");
 
         if (confirmed)
         {
             var vault = _vaultState.CurrentVault;
-            var entryId = SelectedEntry.Id;
-            vault?.CreditCards.Remove(SelectedEntry);
+            var entryId = target.Id;
+            vault?.CreditCards.Remove(target);
             await _vaultState.SaveVaultAsync();
             await _repository.LogActivityAsync(new ActivityLogEntry
             {
@@ -220,6 +224,7 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
             });
             await LoadEntriesCommand.ExecuteAsync(null);
             CloseDetail();
+            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
         }
     }
 
@@ -235,7 +240,7 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
         });
         await LoadEntriesCommand.ExecuteAsync(null);
         CloseDetail();
-        SaveCompleted?.Invoke();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
     }
 
     private async void OnEntryDeleted(Guid entryId)
@@ -250,5 +255,6 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
         });
         await LoadEntriesCommand.ExecuteAsync(null);
         CloseDetail();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
     }
 }

@@ -61,6 +61,11 @@
                                      TextChanged="LastNameBox_TextChanged"
                                      AutomationProperties.Name="Cognome"
                                      TabIndex="30" />
+                            <TextBlock x:Uid="FieldFirstAndLastNameError"
+                                       Text="Nome o Cognome è obbligatorio"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                       Visibility="{Binding IsFirstAndLastNameEmpty, Converter={StaticResource BoolToVisibility}}" />
                         </StackPanel>
 
                         <!-- Birth Date (string field — SC-02 safe) -->

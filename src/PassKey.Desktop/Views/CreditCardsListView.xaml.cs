@@ -1,12 +1,13 @@
+using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Models;
 using PassKey.Core.Services;
 using PassKey.Desktop.Controls;
-using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -26,6 +27,10 @@ public sealed partial class CreditCardsListView : UserControl
 
     public async void SetViewModel(CreditCardsListViewModel vm)
     {
+        // Drop any handler attached to a previous VM to avoid subscription leaks if
+        // SetViewModel is ever called twice on the same view instance.
+        if (_viewModel is not null) _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
         _viewModel = vm;
         DataContext = vm;
 
@@ -33,13 +38,22 @@ public sealed partial class CreditCardsListView : UserControl
         EmptyState.Title = _resourceLoader.GetString("EmptyCardsTitle");
         EmptyState.Subtitle = _resourceLoader.GetString("EmptyCardsSubtitle");
         vm.PropertyChanged += OnViewModelPropertyChanged;
-        vm.SaveCompleted += ShowSavedToast;
 
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateCardRepeater();
         UpdateListView();
         UpdateEmptyState();
         UpdateViewToggle();
+
+        // Sync the detail panel from VM state. ShellView recreates this view on every
+        // navigation, but the CreditCardsListViewModel persists — so a detail panel
+        // left open before navigating away survives in the VM. Without an explicit
+        // sync the new view shows no detail panel, and subsequent Edit clicks become
+        // silent no-ops (IsDetailOpen is already true → PropertyChanged doesn't fire
+        // → UpdateDetailPanel/UpdateDetailContent are never called) — the UI looks
+        // frozen. Calling them once here restores the user's in-progress edit.
+        UpdateDetailPanel();
+        UpdateDetailContent();
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -153,7 +167,66 @@ public sealed partial class CreditCardsListView : UserControl
             // Prevent duplicate handlers on element recycling
             cardControl.Tapped -= CardControl_Tapped;
             cardControl.Tapped += CardControl_Tapped;
+
+            // Fade-in: the ItemsRepeater has no native entrance transition (unlike the
+            // ListView, which gets one for free). Animate the prepared element so the
+            // card view matches the list view's appearance behaviour.
+            AnimateFadeIn(cardControl);
         }
+    }
+
+    /// <summary>
+    /// Runs a short opacity fade-in on a freshly prepared card element so the card view
+    /// gains the same entrance feel the ListView provides natively.
+    /// </summary>
+    /// <remarks>
+    /// Both an XAML Storyboard and a Composition-layer animation failed when started
+    /// directly inside <c>ElementPrepared</c> — the element is not yet attached to the
+    /// live visual tree at that point, so the animation silently no-ops and the user
+    /// sees the cards appear instantly at full opacity.
+    /// <para>The reliable pattern:</para>
+    /// <list type="number">
+    ///   <item>Set <c>Opacity = 0</c> immediately so the first paint is invisible.</item>
+    ///   <item>Defer the actual animation start to the <c>Loaded</c> event (or fire it
+    ///   right away if the element is recycled and already loaded).</item>
+    /// </list>
+    /// At <c>Loaded</c> time the element is in the tree and a Storyboard targeting its
+    /// <c>Opacity</c> works as expected.
+    /// </remarks>
+    private static void AnimateFadeIn(FrameworkElement element)
+    {
+        element.Opacity = 0;
+
+        if (element.IsLoaded)
+        {
+            StartFadeStoryboard(element);
+        }
+        else
+        {
+            void OnLoaded(object sender, RoutedEventArgs e)
+            {
+                element.Loaded -= OnLoaded;
+                StartFadeStoryboard(element);
+            }
+            element.Loaded += OnLoaded;
+        }
+    }
+
+    private static void StartFadeStoryboard(UIElement element)
+    {
+        var fade = new DoubleAnimation
+        {
+            From = 0,
+            To = 1,
+            Duration = new Duration(TimeSpan.FromMilliseconds(300)),
+            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+        };
+        Storyboard.SetTarget(fade, element);
+        Storyboard.SetTargetProperty(fade, "Opacity");
+
+        var storyboard = new Storyboard();
+        storyboard.Children.Add(fade);
+        storyboard.Begin();
     }
 
     private void CardControl_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
@@ -207,9 +280,11 @@ public sealed partial class CreditCardsListView : UserControl
             _viewModel?.EditEntryCommand.Execute(entry);
     }
 
-    // --- Toast ---
-
-    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip);
+    private void DeleteEntry_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is CreditCardEntry entry)
+            _ = _viewModel?.DeleteSelectedCommand.ExecuteAsync(entry);
+    }
 
     // Hover effects — show/hide action buttons
     private void Row_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)

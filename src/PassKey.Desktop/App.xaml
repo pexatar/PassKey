@@ -15,6 +15,7 @@
             <converters:InverseBoolConverter x:Key="InverseBool" />
             <converters:BooleanToVisibilityConverter x:Key="IsNotNullToVisibility" />
             <converters:DateFormatConverter x:Key="DateFormatConverter" />
+            <converters:ActionIndicatorConverter x:Key="ActionIndicator" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

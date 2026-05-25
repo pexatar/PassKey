@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Interfaces;
 using PassKey.Core.Models;
 using PassKey.Desktop.Services;
@@ -16,6 +17,8 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
     private readonly IClipboardService _clipboard;
     private readonly IDialogQueueService _dialogQueue;
     private readonly IVaultRepository _repository;
+    private readonly IToastService _toast;
+    private readonly ResourceLoader _resourceLoader = new();
     private bool _disposed;
 
     private List<PasswordEntry> _allEntries = [];
@@ -52,12 +55,14 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
         IClipboardService clipboard,
         IDialogQueueService dialogQueue,
         IVaultRepository repository,
+        IToastService toast,
         PasswordDetailViewModel detailViewModel)
     {
         _vaultState = vaultState;
         _clipboard = clipboard;
         _dialogQueue = dialogQueue;
         _repository = repository;
+        _toast = toast;
         _detailVm = detailViewModel;
 
         // Hygiene: clear in-memory entries when the vault is locked so we never
@@ -168,18 +173,21 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
     private void CopyUsername(PasswordEntry? entry)
     {
         if (entry is not null && !string.IsNullOrEmpty(entry.Username))
+        {
             _clipboard.Copy(entry.Username, CopyType.Standard);
+            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastUsernameCopied"));
+        }
     }
 
     [RelayCommand]
     private void CopyPassword(PasswordEntry? entry)
     {
         if (entry is not null && !string.IsNullOrEmpty(entry.Password))
+        {
             _clipboard.Copy(entry.Password, CopyType.Sensitive);
+            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastPasswordCopied"));
+        }
     }
-
-    /// <summary>Raised after a successful save, for the View to show a toast.</summary>
-    public event Action? SaveCompleted;
 
     public void CloseDetail()
     {
@@ -188,21 +196,23 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
     }
 
     [RelayCommand]
-    private async Task DeleteSelectedAsync()
+    private async Task DeleteSelectedAsync(PasswordEntry? entry)
     {
-        if (SelectedEntry is null) return;
+        // entry != null → quick-delete from a list row; entry == null → keyboard Delete on the selection.
+        var target = entry ?? SelectedEntry;
+        if (target is null) return;
 
         var confirmed = await _dialogQueue.ConfirmAsync(
             title: "Elimina password",
-            content: $"Eliminare \"{SelectedEntry.Title}\"?\nQuesta azione è irreversibile.",
+            content: $"Eliminare \"{target.Title}\"?\nQuesta azione è irreversibile.",
             primaryButtonText: "Elimina",
             closeButtonText: "Annulla");
 
         if (confirmed)
         {
             var vault = _vaultState.CurrentVault;
-            var entryId = SelectedEntry.Id;
-            vault?.Passwords.Remove(SelectedEntry);
+            var entryId = target.Id;
+            vault?.Passwords.Remove(target);
             await _vaultState.SaveVaultAsync();
             await _repository.LogActivityAsync(new ActivityLogEntry
             {
@@ -213,6 +223,7 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
             });
             await LoadEntriesCommand.ExecuteAsync(null);
             CloseDetail();
+            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
         }
     }
 
@@ -228,7 +239,7 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
         });
         await LoadEntriesCommand.ExecuteAsync(null);
         CloseDetail();
-        SaveCompleted?.Invoke();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
     }
 
     private async void OnEntryDeleted(Guid entryId)
@@ -243,5 +254,6 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
         });
         await LoadEntriesCommand.ExecuteAsync(null);
         CloseDetail();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
     }
 }

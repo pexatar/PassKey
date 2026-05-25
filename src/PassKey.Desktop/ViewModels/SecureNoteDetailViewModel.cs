@@ -50,6 +50,11 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
     [ObservableProperty]
     public partial bool HasUnsavedChanges { get; set; }
 
+    // ── Inline validation (T5.6) ───────────────────────────────────────────────
+
+    [ObservableProperty]
+    public partial bool IsTitleEmpty { get; set; }
+
     /// <summary>Raised when <see cref="IsPinned"/> is toggled (instant-save, no Save button needed).</summary>
     public Action? PinToggled { get; set; }
 
@@ -85,6 +90,7 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
         _originalContent = string.Empty;
         _originalCategory = NoteCategory.General;
         _originalIsPinned = false;
+        IsTitleEmpty = true;
     }
 
     protected override void LoadFromEntry(SecureNoteEntry entry)
@@ -146,6 +152,7 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
 
     partial void OnTitleChanged(string value)
     {
+        IsTitleEmpty = string.IsNullOrWhiteSpace(value);
         UpdateCanSave();
         UpdateHasUnsavedChanges();
     }

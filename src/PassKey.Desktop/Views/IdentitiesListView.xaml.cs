@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
-using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -27,11 +26,13 @@ public sealed partial class IdentitiesListView : UserControl
 
     public async void SetViewModel(IdentitiesListViewModel vm)
     {
+        // Drop any handler attached to a previous VM to avoid subscription leaks.
+        if (_viewModel is not null) _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
         _viewModel = vm;
         DataContext = vm;
 
         vm.PropertyChanged += OnViewModelPropertyChanged;
-        vm.SaveCompleted += ShowSavedToast;
 
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
         EmptyState.Title = _resourceLoader.GetString("EmptyIdentitiesTitle");
@@ -39,6 +40,12 @@ public sealed partial class IdentitiesListView : UserControl
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();
         UpdateEmptyState();
+
+        // Sync the detail panel from VM state — see CreditCardsListView for the full
+        // rationale. Without this, navigating away with a detail open and coming back
+        // leaves the UI frozen.
+        UpdateDetailPanel();
+        UpdateDetailContent();
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -180,9 +187,6 @@ public sealed partial class IdentitiesListView : UserControl
             Application.Current.Resources.TryGetValue("CardStrokeColorDefaultBrush", out var brush))
             card.BorderBrush = (Brush)brush;
     }
-
-    // Save confirmation toast
-    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip);
 
     // ── Formatters ────────────────────────────────────────────────────────────
 
