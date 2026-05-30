@@ -54,6 +54,14 @@ public sealed partial class IdentitiesListView : UserControl
         {
             case nameof(IdentitiesListViewModel.IsDetailOpen):
                 UpdateDetailPanel();
+                // When the detail panel closes after an in-place edit, the edited entry is
+                // the same object reference the GridView already holds. The GridView recycles
+                // its container without re-running ContainerContentChanging, so the computed
+                // fields (avatar initial, full name, formatted phone) keep their stale values
+                // until the page is revisited. Rebinding ItemsSource forces a full container
+                // regeneration so the edited card reflects the change immediately.
+                if (_viewModel?.IsDetailOpen == false)
+                    RefreshListContainers();
                 break;
             case nameof(IdentitiesListViewModel.IsEmpty):
                 UpdateEmptyState();
@@ -66,6 +74,18 @@ public sealed partial class IdentitiesListView : UserControl
 
     private void UpdateList()
     {
+        IdentityList.ItemsSource = _viewModel?.Entries;
+    }
+
+    /// <summary>
+    /// Forces the GridView to regenerate every container by rebinding ItemsSource. Needed
+    /// after an in-place edit because the identity cards populate their computed fields
+    /// (avatar, full name, formatted phone) via ContainerContentChanging, which the
+    /// GridView does not re-run when it recycles a container for the same object reference.
+    /// </summary>
+    private void RefreshListContainers()
+    {
+        IdentityList.ItemsSource = null;
         IdentityList.ItemsSource = _viewModel?.Entries;
     }
 
