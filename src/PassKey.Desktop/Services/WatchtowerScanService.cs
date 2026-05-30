@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.UI.Dispatching;
 using PassKey.Core.Models;
 using PassKey.Core.Services;
@@ -11,9 +12,11 @@ namespace PassKey.Desktop.Services;
 /// <see cref="WatchtowerResult"/> kept in <see cref="LastResult"/>.
 /// </summary>
 /// <remarks>
-/// <para><b>Throttling.</b> HIBP's free tier has no hard rate limit but the courtesy
-/// guidance is "no more than ~10 req/s". We stay conservative at 5 req/s (one call
-/// every 200 ms).</para>
+/// <para><b>Concurrency.</b> HIBP checks are network-bound, so they run with a bounded
+/// degree of parallelism (<see cref="HibpConcurrency"/>) instead of one-at-a-time with a
+/// courtesy delay — the old sequential path made a 1000-password vault take ~6 minutes.
+/// The HIBP "range" (k-anonymity) endpoint is CDN-backed and built for volume, so a small
+/// fixed concurrency is safe and well-behaved.</para>
 /// <para><b>Caching.</b> The result is cached for 24 hours; calls within that window
 /// return the cached value unless the caller passes <c>forceRefresh: true</c>. The
 /// <see cref="ISettingsService.LastHibpScanUtc"/> field persists the cache anchor
@@ -25,7 +28,9 @@ namespace PassKey.Desktop.Services;
 public sealed class WatchtowerScanService : IWatchtowerScanService
 {
     private static readonly TimeSpan CacheTtl = TimeSpan.FromHours(24);
-    private static readonly TimeSpan HibpThrottle = TimeSpan.FromMilliseconds(200); // 5 req/s
+
+    /// <summary>Maximum number of concurrent HIBP requests during a scan.</summary>
+    private const int HibpConcurrency = 8;
 
     private readonly IVaultStateService _vaultState;
     private readonly IPasswordStrengthAnalyzer _strengthAnalyzer;
@@ -36,7 +41,7 @@ public sealed class WatchtowerScanService : IWatchtowerScanService
     public bool IsScanning { get; private set; }
     public WatchtowerResult? LastResult { get; private set; }
 
-    public event Action<double>? Progress;
+    public event Action<int, int>? Progress;
     public event Action<WatchtowerResult?>? Completed;
 
     public WatchtowerScanService(
@@ -106,20 +111,31 @@ public sealed class WatchtowerScanService : IWatchtowerScanService
                                  .SelectMany(kv => kv.Value)
                                  .ToHashSet();
 
-        var compromised = new List<WatchtowerIssue>();
-        var weak = new List<WatchtowerIssue>();
-        var duplicates = new List<WatchtowerIssue>();
-        int totalScore = 0, weakCount = 0;
+        var compromised = new ConcurrentBag<WatchtowerIssue>();
+        var weak = new ConcurrentBag<WatchtowerIssue>();
+        var duplicates = new ConcurrentBag<WatchtowerIssue>();
+        int totalScore = 0, weakCount = 0, scanned = 0;
 
-        for (int i = 0; i < total; i++)
+        // HIBP checks are network-bound: run them with bounded concurrency instead of
+        // sequentially with a courtesy delay. When HIBP is disabled the work is purely
+        // local (cheap strength + duplicate pass), so a single worker is enough.
+        var options = new ParallelOptions
         {
-            ct.ThrowIfCancellationRequested();
-            var p = passwords[i];
+            MaxDegreeOfParallelism = hibpEnabled ? HibpConcurrency : 1,
+            CancellationToken = ct
+        };
 
+        await Parallel.ForEachAsync(passwords, options, async (p, token) =>
+        {
+            // Local strength score — computed synchronously before any await so the Span
+            // input never has to cross the await boundary.
             var strength = _strengthAnalyzer.Analyze(p.Password.AsSpan());
-            totalScore += strength.Score;
-            bool isWeak = strength.Score < 40;
-            if (isWeak) weakCount++;
+            int score = strength.Score;
+            string label = strength.Label;
+
+            Interlocked.Add(ref totalScore, score);
+            bool isWeak = score < 40;
+            if (isWeak) Interlocked.Increment(ref weakCount);
             bool isDup = duplicateIds.Contains(p.Id);
 
             int breachCount = 0;
@@ -127,7 +143,7 @@ public sealed class WatchtowerScanService : IWatchtowerScanService
             {
                 try
                 {
-                    breachCount = await _hibp.CheckPasswordAsync(p.Password, ct).ConfigureAwait(false);
+                    breachCount = await _hibp.CheckPasswordAsync(p.Password, token).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException) { throw; }
                 catch (Exception ex)
@@ -137,16 +153,14 @@ public sealed class WatchtowerScanService : IWatchtowerScanService
                     System.Diagnostics.Debug.WriteLine(
                         $"[Watchtower] HIBP check failed for entry {p.Id}: {ex.GetType().Name}: {ex.Message}");
                 }
-                // Courtesy throttle between successive HIBP calls — only when we actually called.
-                if (i < total - 1) await Task.Delay(HibpThrottle, ct).ConfigureAwait(false);
             }
 
             var issue = new WatchtowerIssue(
                 EntryId: p.Id,
                 Title: p.Title,
                 Username: p.Username,
-                StrengthScore: strength.Score,
-                StrengthLabel: strength.Label,
+                StrengthScore: score,
+                StrengthLabel: label,
                 BreachCount: breachCount,
                 IsDuplicate: isDup);
 
@@ -154,8 +168,10 @@ public sealed class WatchtowerScanService : IWatchtowerScanService
             if (isWeak) weak.Add(issue);
             if (isDup) duplicates.Add(issue);
 
-            RaiseProgress((double)(i + 1) / Math.Max(1, total));
-        }
+            // Report live progress (X of total) as each entry completes — order-independent.
+            var done = Interlocked.Increment(ref scanned);
+            RaiseProgress(done, total);
+        }).ConfigureAwait(false);
 
         var avg = total > 0 ? totalScore / total : 0;
         return new WatchtowerResult(
@@ -165,15 +181,15 @@ public sealed class WatchtowerScanService : IWatchtowerScanService
             DuplicateCount: duplicates.Count,
             HealthScore: avg,
             ScannedUtc: DateTime.UtcNow,
-            Compromised: compromised,
-            Weak: weak,
-            Duplicates: duplicates);
+            Compromised: compromised.ToList(),
+            Weak: weak.ToList(),
+            Duplicates: duplicates.ToList());
     }
 
-    private void RaiseProgress(double pct)
+    private void RaiseProgress(int scanned, int total)
     {
-        if (_uiDispatcher is null) { Progress?.Invoke(pct); return; }
-        _uiDispatcher.TryEnqueue(() => Progress?.Invoke(pct));
+        if (_uiDispatcher is null) { Progress?.Invoke(scanned, total); return; }
+        _uiDispatcher.TryEnqueue(() => Progress?.Invoke(scanned, total));
     }
 
     private void RaiseCompleted(WatchtowerResult? result)

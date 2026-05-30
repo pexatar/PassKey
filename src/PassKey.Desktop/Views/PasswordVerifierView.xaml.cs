@@ -72,8 +72,10 @@ public sealed partial class PasswordVerifierView : UserControl
                 RebuildIssueList(DuplicateGroupsList, _viewModel.DuplicateEntries);
                 break;
             case nameof(PasswordVerifierViewModel.IsAuditLoading):
-                AuditLoadingRing.IsActive = _viewModel!.IsAuditLoading;
-                AuditLoadingRing.Visibility = _viewModel.IsAuditLoading ? Visibility.Visible : Visibility.Collapsed;
+                UpdateAuditLoadingUI();
+                break;
+            case nameof(PasswordVerifierViewModel.AuditProgress):
+                UpdateAuditProgressUI();
                 break;
             case nameof(PasswordVerifierViewModel.HasAuditResults):
                 var hasPasswords = _viewModel!.TotalPasswords > 0;
@@ -312,9 +314,43 @@ public sealed partial class PasswordVerifierView : UserControl
     private void UpdateVaultScoreUI()
     {
         if (_viewModel is null) return;
+        // While a scan is running the score ring is repurposed as a live progress ring
+        // (see UpdateAuditProgressUI); don't overwrite it with the not-yet-final score.
+        if (_viewModel.IsAuditLoading) return;
         VaultScoreRing.Value = _viewModel.VaultScore;
         VaultScoreText.Text = _viewModel.VaultScore.ToString();
         VaultScoreLabelText.Text = GetLocalizedLabel(_viewModel.VaultScoreLabel);
+    }
+
+    /// <summary>
+    /// Toggles between the live-progress presentation (during a scan) and the final score
+    /// (once it completes). The separate indeterminate spinner is no longer used: the score
+    /// ring itself doubles as a determinate progress ring so the user sees the count climb.
+    /// </summary>
+    private void UpdateAuditLoadingUI()
+    {
+        if (_viewModel is null) return;
+
+        AuditLoadingRing.IsActive = false;
+        AuditLoadingRing.Visibility = Visibility.Collapsed;
+
+        if (_viewModel.IsAuditLoading)
+            UpdateAuditProgressUI();
+        else
+            UpdateVaultScoreUI();
+    }
+
+    /// <summary>
+    /// Drives the score ring as a determinate progress indicator during a scan: the arc
+    /// grows with the percentage and the centre shows the live "X / N" count, so the user
+    /// always sees tangible forward motion instead of a frozen "0".
+    /// </summary>
+    private void UpdateAuditProgressUI()
+    {
+        if (_viewModel is null || !_viewModel.IsAuditLoading) return;
+        VaultScoreRing.Value = _viewModel.AuditProgress;          // 0..100
+        VaultScoreText.Text = _viewModel.ScannedCount.ToString();
+        VaultScoreLabelText.Text = $"/ {_viewModel.TotalToScan}";
     }
 
 
