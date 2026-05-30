@@ -161,6 +161,108 @@ public class OnePuxImporterTests
     }
 
     [Fact]
+    public void ParseOnePux_EmailAsObject_DoesNotCrashAndMapsEmail()
+    {
+        // FU7a: current 1Password exports store the email as an object
+        // { "email_address": ..., "provider": null } instead of a plain string. The legacy
+        // string deserialiser threw, aborting the ENTIRE import (every recent export has
+        // this in its default Starter Kit identity). Must now parse cleanly.
+        var json = """
+        {
+          "accounts": [{
+            "vaults": [{
+              "items": [{
+                "overview": { "title": "Sei tu" },
+                "details": {
+                  "sections": [{
+                    "fields": [
+                      { "id": "firstname", "title": "Nome", "value": { "string": "Mario" } },
+                      { "id": "email", "title": "Indirizzo e-mail", "value": { "email": { "email_address": "mario@esempio.it", "provider": null } } }
+                    ]
+                  }]
+                }
+              }]
+            }]
+          }]
+        }
+        """;
+
+        var vault = _importer.ParseOnePux(json);
+
+        Assert.Single(vault.Identities);
+        Assert.Equal("Mario", vault.Identities[0].FirstName);
+        Assert.Equal("mario@esempio.it", vault.Identities[0].Email);
+    }
+
+    [Fact]
+    public void ParseOnePux_LocalizedIdentityTitlesMappedViaStableId()
+    {
+        // FU7b: a non-English 1Password export has localized titles ("Nome", "Cognome")
+        // but stable, language-independent ids ("firstname", "lastname"). Mapping must
+        // follow the id, not the title.
+        var json = """
+        {
+          "accounts": [{
+            "vaults": [{
+              "items": [{
+                "overview": { "title": "Identita IT" },
+                "details": {
+                  "sections": [{
+                    "fields": [
+                      { "id": "firstname", "title": "Nome", "value": { "string": "Giuseppe" } },
+                      { "id": "lastname", "title": "Cognome", "value": { "string": "Verdi" } }
+                    ]
+                  }]
+                }
+              }]
+            }]
+          }]
+        }
+        """;
+
+        var vault = _importer.ParseOnePux(json);
+
+        Assert.Single(vault.Identities);
+        Assert.Equal("Giuseppe", vault.Identities[0].FirstName);
+        Assert.Equal("Verdi", vault.Identities[0].LastName);
+    }
+
+    [Fact]
+    public void ParseOnePux_LocalizedCreditCardMappedViaStableId()
+    {
+        // FU7b for cards: italian titles ("Titolare", "Numero", "Codice di verifica")
+        // carry no English keywords; the stable ids (cardholder, ccnum, cvv) drive mapping.
+        var json = """
+        {
+          "accounts": [{
+            "vaults": [{
+              "items": [{
+                "overview": { "title": "Carta IT" },
+                "details": {
+                  "sections": [{
+                    "fields": [
+                      { "id": "cardholder", "title": "Titolare", "value": { "string": "Mario Rossi" } },
+                      { "id": "ccnum", "title": "Numero", "value": { "creditCardNumber": "4111111111111111" } },
+                      { "id": "cvv", "title": "Codice di verifica", "value": { "concealed": "123" } }
+                    ]
+                  }]
+                }
+              }]
+            }]
+          }]
+        }
+        """;
+
+        var vault = _importer.ParseOnePux(json);
+
+        Assert.Single(vault.CreditCards);
+        var card = vault.CreditCards[0];
+        Assert.Equal("Mario Rossi", card.CardholderName);
+        Assert.Equal("4111111111111111", card.CardNumber);
+        Assert.Equal("123", card.Cvv);
+    }
+
+    [Fact]
     public void ParseOnePux_MultipleVaults_AllProcessed()
     {
         var json = """

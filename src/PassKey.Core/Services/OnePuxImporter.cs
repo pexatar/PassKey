@@ -46,6 +46,20 @@ public sealed class OnePuxImporter : IOnePuxImporter
 
     private void MapItem(Vault vault, OnePuxItem item)
     {
+        try
+        {
+            MapItemCore(vault, item);
+        }
+        catch
+        {
+            // Defence-in-depth (FU7): a single malformed item must not abort the whole
+            // import. The email-object crash is prevented upstream by OnePuxEmailConverter;
+            // this guard covers any other unexpected per-item mapping failure.
+        }
+    }
+
+    private void MapItemCore(Vault vault, OnePuxItem item)
+    {
         var title = item.Overview?.Title ?? string.Empty;
         var notes = item.Details?.NotesPlain ?? string.Empty;
         var url = GetPrimaryUrl(item.Overview);
@@ -193,6 +207,7 @@ public sealed class OnePuxImporter : IOnePuxImporter
     {
         return sections.Any(s => s.Fields?.Any(f =>
             f.Value?.CreditCardNumber is not null ||
+            string.Equals(f.Id, "ccnum", StringComparison.OrdinalIgnoreCase) ||
             f.Title?.Contains("card", StringComparison.OrdinalIgnoreCase) == true) == true);
     }
 
@@ -214,29 +229,35 @@ public sealed class OnePuxImporter : IOnePuxImporter
             if (section.Fields is null) continue;
             foreach (var field in section.Fields)
             {
+                // Prefer the stable, language-independent field id; fall back to the
+                // localized title for older exports / tests that lack ids (FU7b).
+                var id = field.Id?.Trim().ToLowerInvariant() ?? string.Empty;
                 var fieldTitle = field.Title?.ToLowerInvariant() ?? string.Empty;
                 var val = field.Value;
 
-                if (val?.CreditCardNumber is not null)
+                if (val?.CreditCardNumber is not null || id == "ccnum")
                 {
-                    entry.CardNumber = val.CreditCardNumber;
+                    entry.CardNumber = val?.CreditCardNumber ?? val?.String ?? string.Empty;
                     entry.CardType = CardTypeDetector.Detect(entry.CardNumber);
                 }
-                else if (fieldTitle.Contains("cardholder") || fieldTitle.Contains("holder") || fieldTitle.Contains("name"))
+                else if (id == "cardholder" || fieldTitle.Contains("cardholder") || fieldTitle.Contains("holder") || fieldTitle.Contains("name"))
                 {
                     entry.CardholderName = val?.String ?? string.Empty;
                 }
-                else if (fieldTitle.Contains("cvv") || fieldTitle.Contains("verification"))
+                else if (id == "cvv" || fieldTitle.Contains("cvv") || fieldTitle.Contains("verification"))
                 {
                     entry.Cvv = val?.Concealed ?? val?.String ?? string.Empty;
                 }
-                else if (val?.MonthYear is int monthYear and > 0)
+                else if (val?.MonthYear is int monthYear and > 0 || id == "expiry")
                 {
                     // MonthYear format: YYYYMM
-                    entry.ExpiryYear = monthYear / 100;
-                    entry.ExpiryMonth = monthYear % 100;
+                    if (val?.MonthYear is int my and > 0)
+                    {
+                        entry.ExpiryYear = my / 100;
+                        entry.ExpiryMonth = my % 100;
+                    }
                 }
-                else if (fieldTitle.Contains("pin"))
+                else if (id == "pin" || fieldTitle.Contains("pin"))
                 {
                     entry.Pin = val?.Concealed ?? val?.String ?? string.Empty;
                 }
@@ -250,9 +271,11 @@ public sealed class OnePuxImporter : IOnePuxImporter
     {
         return sections.Any(s => s.Fields?.Any(f =>
         {
+            var id = f.Id?.Trim().ToLowerInvariant() ?? string.Empty;
             var t = f.Title?.ToLowerInvariant() ?? string.Empty;
-            return t.Contains("first name") || t.Contains("last name") ||
-                   t.Contains("address") || f.Value?.Address is not null;
+            return id is "firstname" or "lastname"
+                   || t.Contains("first name") || t.Contains("last name")
+                   || t.Contains("address") || f.Value?.Address is not null;
         }) == true);
     }
 
@@ -272,6 +295,9 @@ public sealed class OnePuxImporter : IOnePuxImporter
             if (section.Fields is null) continue;
             foreach (var field in section.Fields)
             {
+                // Prefer the stable, language-independent field id; fall back to the
+                // localized title for older exports / tests that lack ids (FU7b).
+                var id = field.Id?.Trim().ToLowerInvariant() ?? string.Empty;
                 var fieldTitle = field.Title?.ToLowerInvariant() ?? string.Empty;
                 var val = field.Value;
 
@@ -283,16 +309,25 @@ public sealed class OnePuxImporter : IOnePuxImporter
                     entry.PostalCode = addr.Zip ?? string.Empty;
                     entry.Country = addr.Country ?? string.Empty;
                 }
-                else if (fieldTitle.Contains("first name"))
+                else if (id == "firstname" || fieldTitle.Contains("first name"))
                     entry.FirstName = val?.String ?? string.Empty;
-                else if (fieldTitle.Contains("last name"))
+                else if (id == "lastname" || fieldTitle.Contains("last name"))
                     entry.LastName = val?.String ?? string.Empty;
-                else if (fieldTitle.Contains("email") || val?.Email is not null)
+                else if (id == "email" || fieldTitle.Contains("email") || val?.Email is not null)
                     entry.Email = val?.Email ?? val?.String ?? string.Empty;
-                else if (fieldTitle.Contains("phone") || val?.Phone is not null)
-                    entry.Phone = val?.Phone ?? val?.String ?? string.Empty;
-                else if (val?.Date is { } date)
-                    entry.BirthDate = $"{date.Year:D4}-{date.Month:D2}-{date.Day:D2}";
+                else if (id is "defphone" or "cellphone" or "homephone" or "busphone"
+                         || fieldTitle.Contains("phone") || val?.Phone is not null)
+                {
+                    // Several phone fields exist (default/cell/home/business); keep the
+                    // first non-empty one instead of letting a later empty field clear it.
+                    var phone = val?.Phone ?? val?.String ?? string.Empty;
+                    if (!string.IsNullOrEmpty(phone)) entry.Phone = phone;
+                }
+                else if (id == "birthdate" || val?.Date is not null)
+                {
+                    if (val?.Date is { } date)
+                        entry.BirthDate = $"{date.Year:D4}-{date.Month:D2}-{date.Day:D2}";
+                }
             }
         }
 

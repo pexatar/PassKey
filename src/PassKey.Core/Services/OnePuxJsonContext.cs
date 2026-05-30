@@ -1,6 +1,52 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace PassKey.Core.Services;
+
+/// <summary>
+/// Tolerates both shapes of the 1Password 1pux <c>email</c> field value (FU7a):
+/// the legacy plain string (<c>"email": "user@host"</c>) and the current object form
+/// (<c>"email": { "email_address": "user@host", "provider": null }</c>). The default
+/// <see cref="string"/> deserialiser throws on the object form, which aborts the entire
+/// import — every recent 1Password export contains the object form in its default
+/// "Starter Kit" identity, so without this converter 1PUX import is broken out of the box.
+/// </summary>
+public sealed class OnePuxEmailConverter : JsonConverter<string?>
+{
+    public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        switch (reader.TokenType)
+        {
+            case JsonTokenType.Null:
+                return null;
+
+            case JsonTokenType.String:
+                return reader.GetString();
+
+            case JsonTokenType.StartObject:
+                string? email = null;
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                {
+                    if (reader.TokenType != JsonTokenType.PropertyName) continue;
+                    var prop = reader.GetString();
+                    reader.Read();
+                    if (string.Equals(prop, "email_address", StringComparison.OrdinalIgnoreCase)
+                        && reader.TokenType == JsonTokenType.String)
+                        email = reader.GetString();
+                    else
+                        reader.Skip();
+                }
+                return email;
+
+            default:
+                reader.Skip();
+                return null;
+        }
+    }
+
+    public override void Write(Utf8JsonWriter writer, string? value, JsonSerializerOptions options)
+        => writer.WriteStringValue(value);
+}
 
 // --- 1Password 1PUX Export DTOs ---
 
@@ -62,6 +108,13 @@ public sealed class OnePuxSection
 
 public sealed class OnePuxSectionField
 {
+    /// <summary>
+    /// Language-independent, stable field identifier (e.g. "firstname", "lastname",
+    /// "email", "ccnum", "cvv"). Preferred over <see cref="Title"/> for mapping because
+    /// the title is localized in the user's 1Password language (FU7b).
+    /// </summary>
+    public string? Id { get; set; }
+
     public string? Title { get; set; }
     public OnePuxFieldValue? Value { get; set; }
 }
@@ -74,7 +127,10 @@ public sealed class OnePuxFieldValue
     public string? CreditCardType { get; set; }
     public int? MonthYear { get; set; }
     public string? Phone { get; set; }
+
+    [JsonConverter(typeof(OnePuxEmailConverter))]
     public string? Email { get; set; }
+
     public string? Concealed { get; set; }
     public OnePuxAddress? Address { get; set; }
     public OnePuxDate? Date { get; set; }
