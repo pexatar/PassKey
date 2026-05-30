@@ -72,6 +72,14 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     [ObservableProperty]
     public partial bool IsFirstAndLastNameEmpty { get; set; }
 
+    /// <summary>
+    /// True when an email has been entered but its format is not plausible. Drives a
+    /// non-blocking inline warning (FU1) — the email is optional, so this never affects
+    /// <see cref="BaseDetailViewModel{T}.CanSave"/>; it only nudges the user to double-check.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsEmailFormatSuspect { get; set; }
+
     public IdentityDetailViewModel(
         IVaultStateService vaultState,
         IDialogQueueService dialogQueue)
@@ -115,6 +123,7 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
         PassportNumber = string.Empty;
         Notes = string.Empty;
         IsFirstAndLastNameEmpty = true;
+        IsEmailFormatSuspect = false;
     }
 
     protected override void LoadFromEntry(IdentityEntry entry)
@@ -203,10 +212,37 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
         UpdateCanSave();
     }
 
-    partial void OnEmailChanged(string value) => UpdateCanSave();
+    partial void OnEmailChanged(string value)
+    {
+        // Non-blocking format check (FU1): warn only when something is typed and it
+        // doesn't look like an email. Does NOT gate saving — email is optional.
+        IsEmailFormatSuspect = !string.IsNullOrWhiteSpace(value) && !IsPlausibleEmail(value);
+        UpdateCanSave();
+    }
 
     private void UpdateValidationState()
     {
         IsFirstAndLastNameEmpty = string.IsNullOrWhiteSpace(FirstName) && string.IsNullOrWhiteSpace(LastName);
+    }
+
+    /// <summary>
+    /// Lenient plausibility check for an email address — deliberately NOT a strict
+    /// RFC 5322 validator. Requires exactly one '@' (neither first nor last char) and a
+    /// domain part containing a dot that is neither the first nor the last character.
+    /// Rejects the common typos "user", "user.com", "user@host", "user@host." while
+    /// accepting ordinary addresses like "mario@esempio.it".
+    /// </summary>
+    private static bool IsPlausibleEmail(string email)
+    {
+        email = email.Trim();
+
+        int at = email.IndexOf('@');
+        if (at <= 0) return false;                       // no '@', or '@' is the first char
+        if (at != email.LastIndexOf('@')) return false;  // more than one '@'
+        if (at == email.Length - 1) return false;        // nothing after '@'
+
+        var domain = email[(at + 1)..];
+        int dot = domain.IndexOf('.');
+        return dot > 0 && dot < domain.Length - 1;        // dot present, not first/last
     }
 }

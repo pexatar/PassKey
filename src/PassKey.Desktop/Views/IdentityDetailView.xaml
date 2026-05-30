@@ -87,6 +87,12 @@
                                      TextChanged="EmailBox_TextChanged"
                                      AutomationProperties.Name="Email"
                                      TabIndex="50" />
+                            <TextBlock x:Uid="FieldEmailFormatWarning"
+                                       Text="Il formato email non sembra valido"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding IsEmailFormatSuspect, Converter={StaticResource BoolToVisibility}}" />
                         </StackPanel>
 
                         <!-- Phone -->

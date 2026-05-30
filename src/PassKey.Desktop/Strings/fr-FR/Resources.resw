@@ -1745,4 +1745,7 @@ Voulez-vous activer cette verification ?</value>
   <data name="NotePanelTitleEdit" xml:space="preserve">
     <value>Modifier la note</value>
   </data>
+  <data name="FieldEmailFormatWarning.Text" xml:space="preserve">
+    <value>Le format de l&apos;e-mail ne semble pas valide</value>
+  </data>
 </root>

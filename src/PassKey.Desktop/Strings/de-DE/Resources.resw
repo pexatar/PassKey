@@ -1743,4 +1743,7 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="NotePanelTitleEdit" xml:space="preserve">
     <value>Notiz bearbeiten</value>
   </data>
+  <data name="FieldEmailFormatWarning.Text" xml:space="preserve">
+    <value>Das E-Mail-Format scheint ungültig zu sein</value>
+  </data>
 </root>

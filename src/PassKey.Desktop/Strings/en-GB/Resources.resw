@@ -1733,4 +1733,7 @@ Do you want to enable this check?</value>
   <data name="NotePanelTitleEdit" xml:space="preserve">
     <value>Edit note</value>
   </data>
+  <data name="FieldEmailFormatWarning.Text" xml:space="preserve">
+    <value>The email format doesn&apos;t look valid</value>
+  </data>
 </root>
