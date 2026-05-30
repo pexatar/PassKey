@@ -20,6 +20,9 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     public partial string FirstName { get; set; } = string.Empty;
 
     [ObservableProperty]
+    public partial string MiddleName { get; set; } = string.Empty;
+
+    [ObservableProperty]
     public partial string LastName { get; set; } = string.Empty;
 
     [ObservableProperty]
@@ -30,6 +33,12 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
 
     [ObservableProperty]
     public partial string Phone { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string Company { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string Username { get; set; } = string.Empty;
 
     // Address
     [ObservableProperty]
@@ -107,10 +116,13 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     {
         Label = string.Empty;
         FirstName = string.Empty;
+        MiddleName = string.Empty;
         LastName = string.Empty;
         BirthDate = string.Empty;
         Email = string.Empty;
         Phone = string.Empty;
+        Company = string.Empty;
+        Username = string.Empty;
         Street = string.Empty;
         City = string.Empty;
         Province = string.Empty;
@@ -130,10 +142,13 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     {
         Label = entry.Label;
         FirstName = entry.FirstName;
+        MiddleName = entry.MiddleName;
         LastName = entry.LastName;
         BirthDate = entry.BirthDate;
         Email = entry.Email;
         Phone = entry.Phone;
+        Company = entry.Company;
+        Username = entry.Username;
 
         Street = entry.Street;
         City = entry.City;
@@ -154,10 +169,13 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     {
         Label = Label.Trim(),
         FirstName = FirstName.Trim(),
+        MiddleName = MiddleName.Trim(),
         LastName = LastName.Trim(),
         BirthDate = BirthDate.Trim(),
         Email = Email.Trim(),
         Phone = Phone.Trim(),
+        Company = Company.Trim(),
+        Username = Username.Trim(),
         Street = Street.Trim(),
         City = City.Trim(),
         Province = Province.Trim(),
@@ -175,10 +193,13 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     {
         entry.Label = Label.Trim();
         entry.FirstName = FirstName.Trim();
+        entry.MiddleName = MiddleName.Trim();
         entry.LastName = LastName.Trim();
         entry.BirthDate = BirthDate.Trim();
         entry.Email = Email.Trim();
         entry.Phone = Phone.Trim();
+        entry.Company = Company.Trim();
+        entry.Username = Username.Trim();
         entry.Street = Street.Trim();
         entry.City = City.Trim();
         entry.Province = Province.Trim();

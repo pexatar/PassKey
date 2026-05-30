@@ -39,10 +39,13 @@ public sealed partial class IdentityDetailView : UserControl
 
         // Personal Data
         FirstNameBox.Text = vm.FirstName;
+        MiddleNameBox.Text = vm.MiddleName;
         LastNameBox.Text = vm.LastName;
         BirthDateBox.Text = vm.BirthDate;
         EmailBox.Text = vm.Email;
         PhoneBox.Text = FormatPhone(vm.Phone);
+        CompanyBox.Text = vm.Company;
+        UsernameBox.Text = vm.Username;
 
         // Address
         StreetBox.Text = vm.Street;
@@ -139,6 +142,21 @@ public sealed partial class IdentityDetailView : UserControl
     private void EmailBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         if (!_updatingFromVm && _viewModel is not null) _viewModel.Email = EmailBox.Text;
+    }
+
+    private void MiddleNameBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (!_updatingFromVm && _viewModel is not null) _viewModel.MiddleName = MiddleNameBox.Text;
+    }
+
+    private void CompanyBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (!_updatingFromVm && _viewModel is not null) _viewModel.Company = CompanyBox.Text;
+    }
+
+    private void UsernameBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (!_updatingFromVm && _viewModel is not null) _viewModel.Username = UsernameBox.Text;
     }
 
     private void PhoneBox_TextChanged(object sender, TextChangedEventArgs e)

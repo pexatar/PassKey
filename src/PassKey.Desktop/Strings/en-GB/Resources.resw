@@ -1736,4 +1736,13 @@ Do you want to enable this check?</value>
   <data name="FieldEmailFormatWarning.Text" xml:space="preserve">
     <value>The email format doesn&apos;t look valid</value>
   </data>
+  <data name="FieldMiddleName.Text" xml:space="preserve">
+    <value>Middle name</value>
+  </data>
+  <data name="FieldCompany.Text" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="FieldIdentityUsername.Text" xml:space="preserve">
+    <value>Username</value>
+  </data>
 </root>

@@ -16,6 +16,9 @@ public sealed class IdentityEntry : IVaultEntry
     /// <summary>Gets or sets the person's first name.</summary>
     public string FirstName { get; set; } = string.Empty;
 
+    /// <summary>Gets or sets the person's middle name (FU5).</summary>
+    public string MiddleName { get; set; } = string.Empty;
+
     /// <summary>Gets or sets the person's last name (surname).</summary>
     public string LastName { get; set; } = string.Empty;
 
@@ -27,6 +30,12 @@ public sealed class IdentityEntry : IVaultEntry
 
     /// <summary>Gets or sets the primary phone number (including country code if applicable).</summary>
     public string Phone { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets the company / organisation name (FU5).</summary>
+    public string Company { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets a generic username associated with this identity (FU5).</summary>
+    public string Username { get; set; } = string.Empty;
 
     /// <summary>Gets or sets the street address (number and street name).</summary>
     public string Street { get; set; } = string.Empty;

@@ -1746,4 +1746,13 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="FieldEmailFormatWarning.Text" xml:space="preserve">
     <value>Das E-Mail-Format scheint ungültig zu sein</value>
   </data>
+  <data name="FieldMiddleName.Text" xml:space="preserve">
+    <value>Zweiter Vorname</value>
+  </data>
+  <data name="FieldCompany.Text" xml:space="preserve">
+    <value>Firma</value>
+  </data>
+  <data name="FieldIdentityUsername.Text" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
 </root>

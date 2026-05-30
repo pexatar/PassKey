@@ -1748,4 +1748,13 @@ Voulez-vous activer cette verification ?</value>
   <data name="FieldEmailFormatWarning.Text" xml:space="preserve">
     <value>Le format de l&apos;e-mail ne semble pas valide</value>
   </data>
+  <data name="FieldMiddleName.Text" xml:space="preserve">
+    <value>Deuxième prénom</value>
+  </data>
+  <data name="FieldCompany.Text" xml:space="preserve">
+    <value>Entreprise</value>
+  </data>
+  <data name="FieldIdentityUsername.Text" xml:space="preserve">
+    <value>Nom d&apos;utilisateur</value>
+  </data>
 </root>

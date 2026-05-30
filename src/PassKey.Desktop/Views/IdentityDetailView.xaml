@@ -53,6 +53,15 @@
                                      TabIndex="20" />
                         </StackPanel>
 
+                        <!-- Middle Name (FU5) -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldMiddleName" Text="Secondo nome" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="MiddleNameBox"
+                                     TextChanged="MiddleNameBox_TextChanged"
+                                     AutomationProperties.Name="Secondo nome"
+                                     TabIndex="25" />
+                        </StackPanel>
+
                         <!-- Last Name -->
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldLastName" Text="Cognome *" Style="{StaticResource CaptionTextBlockStyle}" />
@@ -104,6 +113,24 @@
                                      TextChanged="PhoneBox_TextChanged"
                                      AutomationProperties.Name="Telefono"
                                      TabIndex="60" />
+                        </StackPanel>
+
+                        <!-- Company (FU5) -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldCompany" Text="Azienda" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="CompanyBox"
+                                     TextChanged="CompanyBox_TextChanged"
+                                     AutomationProperties.Name="Azienda"
+                                     TabIndex="62" />
+                        </StackPanel>
+
+                        <!-- Username (FU5) -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldIdentityUsername" Text="Nome utente" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="UsernameBox"
+                                     TextChanged="UsernameBox_TextChanged"
+                                     AutomationProperties.Name="Nome utente"
+                                     TabIndex="64" />
                         </StackPanel>
                     </StackPanel>
                 </Expander>

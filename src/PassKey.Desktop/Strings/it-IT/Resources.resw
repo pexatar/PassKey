@@ -1749,4 +1749,13 @@ Vuoi attivare questa verifica?</value>
   <data name="FieldEmailFormatWarning.Text" xml:space="preserve">
     <value>Il formato email non sembra valido</value>
   </data>
+  <data name="FieldMiddleName.Text" xml:space="preserve">
+    <value>Secondo nome</value>
+  </data>
+  <data name="FieldCompany.Text" xml:space="preserve">
+    <value>Azienda</value>
+  </data>
+  <data name="FieldIdentityUsername.Text" xml:space="preserve">
+    <value>Nome utente</value>
+  </data>
 </root>
