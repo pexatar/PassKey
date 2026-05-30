@@ -13,7 +13,7 @@
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer Padding="24">
+    <ScrollViewer x:Name="RootScroller" Padding="24">
         <StackPanel Spacing="4" MaxWidth="800" HorizontalAlignment="Left">
 
             <!-- Header -->

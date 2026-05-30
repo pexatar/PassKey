@@ -14,6 +14,13 @@ public sealed partial class ShellView : UserControl
     private ShellViewModel? _viewModel;
 
     /// <summary>
+    /// Vertical scroll offset of the Settings page captured when navigating to the
+    /// activity-log viewer, restored when the user comes back (FU8). The Settings page
+    /// is recreated on every navigation, so the offset cannot live on the view itself.
+    /// </summary>
+    private double _settingsScrollOffset;
+
+    /// <summary>
     /// Exposes the current ViewModel for {x:Bind} expressions in ShellView.xaml.
     /// Must be a public property (x:Bind does not work with private fields).
     /// </summary>
@@ -125,6 +132,11 @@ public sealed partial class ShellView : UserControl
     {
         _viewModel?.NavigateToSettings();
         NavView.SelectedItem = NavView.SettingsItem;
+
+        // Restore the scroll position captured when we left Settings (FU8). After
+        // NavigateToSettings the new SettingsView is already hosted in ShellContent.
+        if (ShellContent.Content is SettingsView sv)
+            sv.RestoreScrollOffset(_settingsScrollOffset);
     }
 
     private void OnVerifierVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -155,6 +167,10 @@ public sealed partial class ShellView : UserControl
 
     private void OnSettingsNavigateToActivityLog()
     {
+        // Capture the Settings scroll position so we can restore it on the way back (FU8).
+        if (ShellContent.Content is SettingsView sv)
+            _settingsScrollOffset = sv.GetScrollOffset();
+
         _viewModel?.NavigateToActivityLog();
         // The activity-log viewer has no sidebar entry; clear the selection.
         NavView.SelectedItem = null;

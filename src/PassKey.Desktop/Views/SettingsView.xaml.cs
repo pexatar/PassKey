@@ -28,6 +28,39 @@ public sealed partial class SettingsView : UserControl
         InitializeComponent();
     }
 
+    /// <summary>
+    /// Returns the current vertical scroll offset so the shell can capture it before
+    /// navigating to the activity-log viewer and restore it on the way back (FU8).
+    /// </summary>
+    public double GetScrollOffset() => RootScroller.VerticalOffset;
+
+    /// <summary>
+    /// Restores a previously captured vertical scroll offset (FU8). Deferred via the
+    /// dispatcher (and the Loaded event when needed) because a freshly-created view has
+    /// not completed its layout pass yet — an immediate ChangeView would be clamped to
+    /// zero since the ScrollViewer's extent is not known at that point.
+    /// </summary>
+    public void RestoreScrollOffset(double offset)
+    {
+        if (offset <= 0) return;
+
+        void Apply() => RootScroller.ChangeView(null, offset, null, disableAnimation: true);
+
+        if (IsLoaded)
+        {
+            DispatcherQueue.TryEnqueue(Apply);
+        }
+        else
+        {
+            void OnLoaded(object sender, RoutedEventArgs e)
+            {
+                Loaded -= OnLoaded;
+                DispatcherQueue.TryEnqueue(Apply);
+            }
+            Loaded += OnLoaded;
+        }
+    }
+
     public void SetViewModel(SettingsViewModel vm)
     {
         _viewModel = vm;
