@@ -121,10 +121,13 @@ public sealed partial class PasswordsListView : UserControl
 
     // --- Add ---
 
-    private void AddButton_Click(object sender, RoutedEventArgs e)
-    {
-        _viewModel?.AddNewCommand.Execute(null);
-    }
+    private void AddButton_Click(object sender, RoutedEventArgs e) => InvokeAddNew();
+
+    /// <summary>
+    /// Opens the "new item" editor. Public so the Ctrl+N accelerator handled by
+    /// <see cref="ShellView"/> can route the shortcut to whichever list page is shown.
+    /// </summary>
+    public void InvokeAddNew() => _viewModel?.AddNewCommand.Execute(null);
 
     // --- Item click ---
 

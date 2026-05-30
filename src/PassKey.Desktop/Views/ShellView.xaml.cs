@@ -237,7 +237,16 @@ public sealed partial class ShellView : UserControl
 
     private void NewItem_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
-        // Phases 5-10: Create new item based on current page
+        // Ctrl+N creates a new item on the four list pages that support it. Other pages
+        // (Dashboard, Generator, Verifier, Settings, Help, Activity Log) have nothing to
+        // create, so the shortcut is a no-op there.
+        switch (ShellContent.Content)
+        {
+            case PasswordsListView v: v.InvokeAddNew(); break;
+            case CreditCardsListView v: v.InvokeAddNew(); break;
+            case IdentitiesListView v: v.InvokeAddNew(); break;
+            case SecureNotesListView v: v.InvokeAddNew(); break;
+        }
         args.Handled = true;
     }
 
