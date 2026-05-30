@@ -144,6 +144,55 @@ public class BitwardenImporterTests
     }
 
     [Fact]
+    public void ParseBitwarden_IdentityItem_MapsAllExtendedFields()
+    {
+        // FU4: the DTO previously dropped middleName, company, username, ssn,
+        // passportNumber, licenseNumber and address3 on import — they must now be mapped.
+        var json = """
+        {
+          "items": [{
+            "type": 4,
+            "name": "Full Identity",
+            "identity": {
+              "title": "Mr",
+              "firstName": "Joseph",
+              "middleName": "Q",
+              "lastName": "Public",
+              "company": "Acme Srl",
+              "username": "jpublic",
+              "ssn": "JHSROS92H10H264C",
+              "passportNumber": "AA1234BB",
+              "licenseNumber": "CC1234DD",
+              "email": "j@acme.it",
+              "phone": "+39000",
+              "address1": "Via Roma 1",
+              "address2": "Scala B",
+              "address3": "Interno 3",
+              "city": "Roma",
+              "state": "Lazio",
+              "postalCode": "00100",
+              "country": "Italia"
+            }
+          }]
+        }
+        """;
+
+        var vault = _importer.ParseBitwarden(json);
+
+        Assert.Single(vault.Identities);
+        var id = vault.Identities[0];
+        Assert.Equal("Q", id.MiddleName);
+        Assert.Equal("Acme Srl", id.Company);
+        Assert.Equal("jpublic", id.Username);
+        // ssn -> codice fiscale / tessera sanitaria for Italian users
+        Assert.Equal("JHSROS92H10H264C", id.HealthCardNumber);
+        Assert.Equal("AA1234BB", id.PassportNumber);
+        Assert.Equal("CC1234DD", id.DrivingLicenseNumber);
+        // address1 + address2 + address3 combined
+        Assert.Equal("Via Roma 1, Scala B, Interno 3", id.Street);
+    }
+
+    [Fact]
     public void ParseBitwarden_SecureNoteItem_MapsToSecureNoteEntry()
     {
         var json = """
