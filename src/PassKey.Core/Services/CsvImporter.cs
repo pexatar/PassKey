@@ -50,11 +50,16 @@ public sealed class CsvImporter : ICsvImporter
                 ModifiedAt = DateTime.UtcNow
             };
 
-            // Skip rows with no meaningful data
+            // Skip rows with no meaningful data (judged on the raw imported fields).
             if (string.IsNullOrWhiteSpace(entry.Title) &&
                 string.IsNullOrWhiteSpace(entry.Username) &&
                 string.IsNullOrWhiteSpace(entry.Password))
                 continue;
+
+            // FU6a: exporters like Firefox omit a title column and identify logins only
+            // by URL. Fall back to the URL host so the surviving entry isn't anonymous.
+            if (string.IsNullOrWhiteSpace(entry.Title))
+                entry.Title = DeriveTitleFromUrl(entry.Url);
 
             vault.Passwords.Add(entry);
         }
@@ -71,19 +76,24 @@ public sealed class CsvImporter : ICsvImporter
 
         for (int i = 0; i < headers.Count; i++)
         {
-            var header = headers[i].Trim().ToLowerInvariant();
+            // Normalize first so that aliases differing only by separators/case match:
+            // "Login Name", "login_name" and "login name" all collapse to "login name".
+            var header = NormalizeHeader(headers[i]);
             switch (header)
             {
-                case "title" or "name" or "service" or "login_name":
+                // "account" is KeePass's title column; "login name" is now treated as a
+                // username (it is KeePass's username field), not a title.
+                case "title" or "name" or "service" or "account":
                     map.TryAdd(ColumnType.Title, i);
                     break;
-                case "username" or "email" or "login" or "user" or "login_username":
+                case "username" or "email" or "login" or "user" or "user name"
+                    or "login username" or "login name":
                     map.TryAdd(ColumnType.Username, i);
                     break;
-                case "password" or "pass" or "login_password":
+                case "password" or "pass" or "login password":
                     map.TryAdd(ColumnType.Password, i);
                     break;
-                case "url" or "uri" or "website" or "login_uri":
+                case "url" or "uri" or "website" or "web site" or "login uri":
                     map.TryAdd(ColumnType.Url, i);
                     break;
                 case "notes" or "note" or "comment" or "comments" or "extra":
@@ -94,6 +104,18 @@ public sealed class CsvImporter : ICsvImporter
         }
 
         return map;
+    }
+
+    /// <summary>
+    /// Normalizes a CSV header for alias matching: lowercased, trimmed, underscores
+    /// treated as spaces, and runs of whitespace collapsed to a single space. This lets
+    /// a single alias list cover exporters that write "login_name", "Login Name" or
+    /// "login name" interchangeably (FU6b).
+    /// </summary>
+    private static string NormalizeHeader(string header)
+    {
+        var lowered = header.Trim().ToLowerInvariant().Replace('_', ' ');
+        return string.Join(' ', lowered.Split(' ', StringSplitOptions.RemoveEmptyEntries));
     }
 
     private static string GetField(List<string> fields, Dictionary<ColumnType, int> map, ColumnType type)
@@ -116,6 +138,23 @@ public sealed class CsvImporter : ICsvImporter
                 return i;
         }
         return -1;
+    }
+
+    /// <summary>
+    /// Derives a display title from a URL when the CSV has no usable title column
+    /// (FU6a). Returns the host part of an absolute URL (e.g. "accounts.google.com"
+    /// from "https://accounts.google.com/"), or the raw URL when it cannot be parsed
+    /// as an absolute URI, or an empty string when no URL is available.
+    /// </summary>
+    internal static string DeriveTitleFromUrl(string url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return string.Empty;
+
+        var trimmed = url.Trim();
+        if (Uri.TryCreate(trimmed, UriKind.Absolute, out var uri) && !string.IsNullOrEmpty(uri.Host))
+            return uri.Host;
+
+        return trimmed;
     }
 
     /// <summary>

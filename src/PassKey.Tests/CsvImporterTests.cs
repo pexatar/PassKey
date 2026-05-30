@@ -137,4 +137,54 @@ public class CsvImporterTests
         Assert.Single(vault.Passwords);
         Assert.Equal("My singular note", vault.Passwords[0].Notes);
     }
+
+    [Fact]
+    public void ParseCsv_FirefoxFormat_TitleFallsBackToUrlHost()
+    {
+        // FU6a: Firefox exports have no title/name column — logins are identified by URL
+        // only. The importer must fall back to the URL host so entries aren't anonymous.
+        var csv =
+            "url,username,password,httpRealm,formActionOrigin,guid,timeCreated,timeLastUsed,timePasswordChanged\n" +
+            "https://accounts.google.com/,me@gmail.com,secret,,,{guid},1,2,3";
+
+        var vault = _importer.ParseCsv(csv);
+
+        Assert.Single(vault.Passwords);
+        Assert.Equal("accounts.google.com", vault.Passwords[0].Title);
+        Assert.Equal("me@gmail.com", vault.Passwords[0].Username);
+        Assert.Equal("secret", vault.Passwords[0].Password);
+    }
+
+    [Fact]
+    public void ParseCsv_KeePassFormat_SpacedHeadersMapped()
+    {
+        // FU6b: KeePass CSV uses spaced headers ("Account", "Login Name", "Web Site")
+        // that the legacy exact-match mapper ignored, importing entries almost empty.
+        var csv =
+            "\"Account\",\"Login Name\",\"Password\",\"Web Site\",\"Comments\"\n" +
+            "\"My Bank\",\"johndoe\",\"hunter2\",\"https://bank.example\",\"a note\"";
+
+        var vault = _importer.ParseCsv(csv);
+
+        Assert.Single(vault.Passwords);
+        var pw = vault.Passwords[0];
+        Assert.Equal("My Bank", pw.Title);
+        Assert.Equal("johndoe", pw.Username);
+        Assert.Equal("hunter2", pw.Password);
+        Assert.Equal("https://bank.example", pw.Url);
+        Assert.Equal("a note", pw.Notes);
+    }
+
+    [Fact]
+    public void ParseCsv_TitlelessRowWithoutUrl_StaysEmptyTitle()
+    {
+        // A surviving row (has credentials) but neither title nor URL: title stays empty,
+        // no spurious fallback.
+        var csv = "url,username,password\n,user,pass";
+        var vault = _importer.ParseCsv(csv);
+
+        Assert.Single(vault.Passwords);
+        Assert.Equal(string.Empty, vault.Passwords[0].Title);
+        Assert.Equal("user", vault.Passwords[0].Username);
+    }
 }
