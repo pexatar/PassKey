@@ -855,7 +855,7 @@
     <value>Skipped (duplicates): {0}</value>
   </data>
   <data name="ImportFormatCsv" xml:space="preserve">
-    <value>Generic CSV</value>
+    <value>Generic CSV (.csv)</value>
   </data>
   <data name="RestoreWarningCancel" xml:space="preserve">
     <value>Cancel</value>
@@ -912,7 +912,7 @@
     <value>KeePass master password</value>
   </data>
   <data name="ImportFormatKdbx" xml:space="preserve">
-    <value>KeePass (.kdbx)</value>
+    <value>KeePass 2.x (.kdbx)</value>
   </data>
   <data name="RestorePwPlaceholder" xml:space="preserve">
     <value>Backup password</value>
@@ -936,7 +936,7 @@
     <value>The file is not a valid PassKey backup.</value>
   </data>
   <data name="ImportFormatBitwarden" xml:space="preserve">
-    <value>Bitwarden (JSON)</value>
+    <value>Bitwarden (.json / .zip)</value>
   </data>
   <data name="ImportMergeKeepBoth" xml:space="preserve">
     <value>Keep both</value>
@@ -1077,7 +1077,7 @@
     <value>How do I import passwords from another manager?</value>
   </data>
   <data name="HelpFaq4Answer" xml:space="preserve">
-    <value>Go to Settings and scroll to the Backup &amp; Import section. Click 'Import data' and select the source format: generic CSV (compatible with most managers), Bitwarden JSON, 1Password (.1pux) and KeePass (.kdbx). PassKey shows a summary of detected items before final confirmation.</value>
+    <value>Go to Settings, Backup and import section, and click &apos;Import data&apos;, then choose the source format. Supported formats: generic CSV (.csv), compatible with most managers and with Chrome, Firefox and NordPass exports; Bitwarden, either as an unencrypted .json or as a .zip with attachments (PassKey extracts the data automatically); 1Password (.1pux); and KeePass 2.x (.kdbx), for which the database password is requested. Encrypted Bitwarden exports cannot be imported (re-export them unencrypted), nor can KeePass 1.x databases (.kdb), an older format you must first convert to .kdbx with KeePass 2.x. Before the final confirmation PassKey always shows a summary of the detected items.</value>
   </data>
   <data name="HelpAboutTitle" xml:space="preserve">
     <value>About</value>

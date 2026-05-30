@@ -26,6 +26,13 @@ public sealed class BitwardenImporter : IBitwardenImporter
         var vault = new Vault();
         var export = JsonSerializer.Deserialize(jsonContent, BitwardenJsonContext.Default.BitwardenExport);
 
+        // FU3: an encrypted export has no plaintext items — surface a clear message
+        // instead of silently importing an empty vault.
+        if (export?.Encrypted == true)
+            throw new ImportFileException(
+                "Questo file Bitwarden è cifrato e non può essere importato. " +
+                "Esporta i dati in formato non cifrato (.json) da Bitwarden e riprova.");
+
         if (export?.Items is null) return vault;
 
         foreach (var item in export.Items)

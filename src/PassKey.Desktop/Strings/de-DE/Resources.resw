@@ -865,7 +865,7 @@
     <value>Uebersprungen (Duplikate): {0}</value>
   </data>
   <data name="ImportFormatCsv" xml:space="preserve">
-    <value>Generisches CSV</value>
+    <value>Generisches CSV (.csv)</value>
   </data>
   <data name="RestoreWarningCancel" xml:space="preserve">
     <value>Abbrechen</value>
@@ -922,7 +922,7 @@
     <value>KeePass-Masterpasswort</value>
   </data>
   <data name="ImportFormatKdbx" xml:space="preserve">
-    <value>KeePass (.kdbx)</value>
+    <value>KeePass 2.x (.kdbx)</value>
   </data>
   <data name="RestorePwPlaceholder" xml:space="preserve">
     <value>Backup-Passwort</value>
@@ -946,7 +946,7 @@
     <value>Die Datei ist kein gueltiges PassKey-Backup.</value>
   </data>
   <data name="ImportFormatBitwarden" xml:space="preserve">
-    <value>Bitwarden (JSON)</value>
+    <value>Bitwarden (.json / .zip)</value>
   </data>
   <data name="ImportMergeKeepBoth" xml:space="preserve">
     <value>Beide behalten</value>
@@ -1087,7 +1087,7 @@
     <value>Wie importiere ich Passwörter aus einem anderen Manager?</value>
   </data>
   <data name="HelpFaq4Answer" xml:space="preserve">
-    <value>Gehen Sie zu Einstellungen und scrollen Sie zum Bereich Sicherung und Import. Klicken Sie auf 'Daten importieren' und wählen Sie das Quellformat: generisches CSV, Bitwarden JSON, 1Password (.1pux) und KeePass (.kdbx). PassKey zeigt eine Zusammenfassung der erkannten Einträge vor der endgültigen Bestätigung.</value>
+    <value>Öffnen Sie Einstellungen, Bereich Sicherung und Import, und klicken Sie auf &apos;Daten importieren&apos;, dann wählen Sie das Quellformat. Unterstützte Formate: generisches CSV (.csv), kompatibel mit den meisten Managern sowie mit Exporten aus Chrome, Firefox und NordPass; Bitwarden, entweder als unverschlüsselte .json oder als .zip mit Anhängen (PassKey extrahiert die Daten automatisch); 1Password (.1pux); und KeePass 2.x (.kdbx), wofür das Datenbankkennwort abgefragt wird. Verschlüsselte Bitwarden-Exporte können nicht importiert werden (exportieren Sie sie unverschlüsselt), ebenso wenig KeePass-1.x-Datenbanken (.kdb), ein älteres Format, das Sie zuerst mit KeePass 2.x in .kdbx konvertieren müssen. Vor der endgültigen Bestätigung zeigt PassKey stets eine Zusammenfassung der erkannten Elemente.</value>
   </data>
   <data name="HelpAboutTitle" xml:space="preserve">
     <value>Über</value>

@@ -867,7 +867,7 @@
     <value>Omitidos (duplicados): {0}</value>
   </data>
   <data name="ImportFormatCsv" xml:space="preserve">
-    <value>CSV generico</value>
+    <value>CSV generico (.csv)</value>
   </data>
   <data name="RestoreWarningCancel" xml:space="preserve">
     <value>Cancelar</value>
@@ -924,7 +924,7 @@
     <value>Contrasena maestra KeePass</value>
   </data>
   <data name="ImportFormatKdbx" xml:space="preserve">
-    <value>KeePass (.kdbx)</value>
+    <value>KeePass 2.x (.kdbx)</value>
   </data>
   <data name="RestorePwPlaceholder" xml:space="preserve">
     <value>Contrasena de respaldo</value>
@@ -948,7 +948,7 @@
     <value>El archivo no es un respaldo PassKey valido.</value>
   </data>
   <data name="ImportFormatBitwarden" xml:space="preserve">
-    <value>Bitwarden (JSON)</value>
+    <value>Bitwarden (.json / .zip)</value>
   </data>
   <data name="ImportMergeKeepBoth" xml:space="preserve">
     <value>Mantener ambos</value>
@@ -1089,7 +1089,7 @@
     <value>¿Cómo importo contraseñas desde otro gestor?</value>
   </data>
   <data name="HelpFaq4Answer" xml:space="preserve">
-    <value>Vaya a Configuración y desplácese hasta la sección Copia de seguridad e importación. Haga clic en 'Importar datos' y seleccione el formato de origen: CSV genérico, Bitwarden JSON, 1Password (.1pux) y KeePass (.kdbx). PassKey muestra un resumen de los elementos detectados antes de la confirmación final.</value>
+    <value>Ve a Configuración, sección Copia de seguridad e importación, y haz clic en &apos;Importar datos&apos;, luego elige el formato de origen. Formatos compatibles: CSV genérico (.csv), compatible con la mayoría de los gestores y con las exportaciones de Chrome, Firefox y NordPass; Bitwarden, como .json sin cifrar o como .zip con adjuntos (PassKey extrae los datos automáticamente); 1Password (.1pux); y KeePass 2.x (.kdbx), para el que se solicita la contraseña de la base de datos. No se pueden importar las exportaciones de Bitwarden cifradas (vuelve a exportarlas sin cifrar) ni las bases de datos de KeePass 1.x (.kdb), un formato más antiguo que debes convertir primero a .kdbx con KeePass 2.x. Antes de la confirmación final, PassKey siempre muestra un resumen de los elementos detectados.</value>
   </data>
   <data name="HelpAboutTitle" xml:space="preserve">
     <value>Acerca de</value>

@@ -865,7 +865,7 @@
     <value>Pulados (duplicatas): {0}</value>
   </data>
   <data name="ImportFormatCsv" xml:space="preserve">
-    <value>CSV generico</value>
+    <value>CSV generico (.csv)</value>
   </data>
   <data name="RestoreWarningCancel" xml:space="preserve">
     <value>Cancelar</value>
@@ -922,7 +922,7 @@
     <value>Senha mestre KeePass</value>
   </data>
   <data name="ImportFormatKdbx" xml:space="preserve">
-    <value>KeePass (.kdbx)</value>
+    <value>KeePass 2.x (.kdbx)</value>
   </data>
   <data name="RestorePwPlaceholder" xml:space="preserve">
     <value>Senha de backup</value>
@@ -946,7 +946,7 @@
     <value>O arquivo nao e um backup PassKey valido.</value>
   </data>
   <data name="ImportFormatBitwarden" xml:space="preserve">
-    <value>Bitwarden (JSON)</value>
+    <value>Bitwarden (.json / .zip)</value>
   </data>
   <data name="ImportMergeKeepBoth" xml:space="preserve">
     <value>Manter ambos</value>
@@ -1087,7 +1087,7 @@
     <value>Como importo palavras-passe de outro gestor?</value>
   </data>
   <data name="HelpFaq4Answer" xml:space="preserve">
-    <value>Vá a Definições e desloque-se para a secção Cópia de segurança e importação. Clique em 'Importar dados' e selecione o formato de origem: CSV genérico, Bitwarden JSON, 1Password (.1pux) e KeePass (.kdbx). O PassKey mostra um resumo dos itens detetados antes da confirmação final.</value>
+    <value>Vai a Definições, secção Cópia de segurança e importação, e clica em &apos;Importar dados&apos;, depois escolhe o formato de origem. Formatos suportados: CSV genérico (.csv), compatível com a maioria dos gestores e com as exportações do Chrome, Firefox e NordPass; Bitwarden, como .json não cifrado ou como .zip com anexos (o PassKey extrai os dados automaticamente); 1Password (.1pux); e KeePass 2.x (.kdbx), para o qual é pedida a palavra-passe da base de dados. Não é possível importar exportações do Bitwarden cifradas (volta a exportá-las sem cifragem) nem bases de dados do KeePass 1.x (.kdb), um formato mais antigo que deves primeiro converter para .kdbx com o KeePass 2.x. Antes da confirmação final, o PassKey mostra sempre um resumo dos elementos detetados.</value>
   </data>
   <data name="HelpAboutTitle" xml:space="preserve">
     <value>Sobre</value>

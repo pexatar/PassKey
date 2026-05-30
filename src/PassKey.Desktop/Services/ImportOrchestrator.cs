@@ -70,11 +70,48 @@ public sealed class ImportOrchestrator : IImportOrchestrator
 
     /// <summary>
     /// Reads a Bitwarden JSON export file and delegates parsing to <see cref="IBitwardenImporter.ParseBitwarden"/>.
+    /// A Bitwarden "export with attachments" is a ZIP wrapping a plaintext <c>data.json</c>
+    /// (plus an <c>attachments/</c> folder PassKey doesn't handle); such files are unwrapped
+    /// transparently so they import like a plain JSON export (FU3).
     /// </summary>
     private async Task<Vault> ParseBitwardenAsync(string filePath)
     {
-        var content = await File.ReadAllTextAsync(filePath);
+        var content = IsZipFile(filePath)
+            ? await ExtractBitwardenDataJsonAsync(filePath)
+            : await File.ReadAllTextAsync(filePath);
+
         return _bitwardenImporter.ParseBitwarden(content);
+    }
+
+    /// <summary>Returns true if the file begins with the ZIP local-file-header magic "PK".</summary>
+    private static bool IsZipFile(string filePath)
+    {
+        try
+        {
+            using var fs = File.OpenRead(filePath);
+            return fs.ReadByte() == 0x50 && fs.ReadByte() == 0x4B; // 'P','K'
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Extracts the <c>data.json</c> entry from a Bitwarden ZIP export. Throws an
+    /// <see cref="ImportFileException"/> with a user-facing message if it is absent.
+    /// </summary>
+    private static async Task<string> ExtractBitwardenDataJsonAsync(string filePath)
+    {
+        await using var stream = File.OpenRead(filePath);
+        using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+
+        var entry = archive.GetEntry("data.json")
+            ?? throw new ImportFileException(
+                "Il file ZIP di Bitwarden non contiene 'data.json'. Esporta nuovamente i dati da Bitwarden e riprova.");
+
+        using var reader = new StreamReader(entry.Open());
+        return await reader.ReadToEndAsync();
     }
 
     /// <summary>
@@ -113,22 +150,61 @@ public sealed class ImportOrchestrator : IImportOrchestrator
     {
         return Task.Run(() =>
         {
+            // FU3: a KeePass 1.x database (.kdb) shares the first four signature bytes with
+            // KDBX but differs on the 5th (0x65 vs 0x67). KeePassLib cannot read it, so give
+            // a clear, actionable message instead of an opaque library exception.
+            if (IsKeePass1File(filePath))
+                throw new ImportFileException(
+                    "Questo è un database KeePass 1.x (.kdb), non supportato. Aprilo in KeePass 2.x e " +
+                    "salvalo (o esportalo) in formato .kdbx, poi riprova.");
+
             var ioConnInfo = new IOConnectionInfo { Path = filePath };
             var compositeKey = new CompositeKey();
             compositeKey.AddUserKey(new KcpPassword(password));
 
             var db = new PwDatabase();
-            db.Open(ioConnInfo, compositeKey, null);
-
             try
             {
+                db.Open(ioConnInfo, compositeKey, null);
                 return MapKdbxToVault(db);
+            }
+            catch (ImportFileException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+                // Wrong password or a file that isn't a valid KDBX 2.x database.
+                throw new ImportFileException(
+                    "Impossibile aprire il database KeePass. Verifica che la password sia corretta e " +
+                    "che il file sia un .kdbx valido (KeePass 2.x).");
             }
             finally
             {
-                db.Close();
+                try { db.Close(); } catch { /* never opened, or already closed */ }
             }
         });
+    }
+
+    /// <summary>
+    /// Detects the legacy KeePass 1.x (.kdb) file format by its 8-byte signature
+    /// <c>03 D9 A2 9A 65 FB 4B B5</c> — identical to KDBX except the 5th byte is 0x65
+    /// (KDBX uses 0x67).
+    /// </summary>
+    private static bool IsKeePass1File(string filePath)
+    {
+        try
+        {
+            Span<byte> sig = stackalloc byte[8];
+            using var fs = File.OpenRead(filePath);
+            if (fs.Read(sig) < 8) return false;
+            return sig[0] == 0x03 && sig[1] == 0xD9 && sig[2] == 0xA2 && sig[3] == 0x9A
+                && sig[4] == 0x65 && sig[5] == 0xFB && sig[6] == 0x4B && sig[7] == 0xB5;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     /// <summary>

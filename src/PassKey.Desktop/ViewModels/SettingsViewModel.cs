@@ -441,17 +441,7 @@ public partial class SettingsViewModel : ObservableObject
             var (format, formatConfirmed) = await ImportFormatRequested.Invoke();
             if (!formatConfirmed) return;
 
-            // 2. For KDBX, ask for password
-            string? importPassword = null;
-            if (format == ImportFormat.Kdbx)
-            {
-                if (ImportPasswordRequested is null) return;
-                var (pw, pwConfirmed) = await ImportPasswordRequested.Invoke(format);
-                if (!pwConfirmed) return;
-                importPassword = pw;
-            }
-
-            // 3. Pick file
+            // 2. Pick file
             var extension = format switch
             {
                 ImportFormat.Csv => ".csv",
@@ -468,8 +458,31 @@ public partial class SettingsViewModel : ObservableObject
                 ImportFormat.Bitwarden => "Bitwarden JSON",
                 _ => "All Files"
             };
-            var path = await _filePicker.PickOpenFileAsync(extension, description);
+            // Multi-extension filters (FU3):
+            //  • Bitwarden exports as plain .json or a .zip with attachments — accept both
+            //    so the ZIP can be unwrapped on import.
+            //  • KeePass: also allow .kdb so a legacy KeePass 1.x file is selectable and the
+            //    importer can show the dedicated "convert to .kdbx" message instead of the
+            //    file being invisible in the picker.
+            var path = format switch
+            {
+                ImportFormat.Bitwarden => await _filePicker.PickOpenFileAsync(new[] { ".json", ".zip" }, "Bitwarden (JSON o ZIP)"),
+                ImportFormat.Kdbx => await _filePicker.PickOpenFileAsync(new[] { ".kdbx", ".kdb" }, "KeePass (.kdbx / .kdb)"),
+                _ => await _filePicker.PickOpenFileAsync(extension, description)
+            };
             if (path is null) return;
+
+            // 3. For KDBX, ask for the database password — AFTER the file is chosen, so the
+            //    prompt refers to a file the user has actually selected (FU3 UX), and a
+            //    cancelled picker doesn't waste a password entry.
+            string? importPassword = null;
+            if (format == ImportFormat.Kdbx)
+            {
+                if (ImportPasswordRequested is null) return;
+                var (pw, pwConfirmed) = await ImportPasswordRequested.Invoke(format);
+                if (!pwConfirmed) return;
+                importPassword = pw;
+            }
 
             // 4. Parse file
             var importedVault = await _importOrchestrator.ParseFileAsync(path, format, importPassword);

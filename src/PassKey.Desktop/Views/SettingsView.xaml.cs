@@ -727,6 +727,11 @@ public sealed partial class SettingsView : UserControl
             XamlRoot = XamlRoot
         };
 
+        // FU3 UX: a KDBX cannot be opened without a password, so keep "OK" disabled until
+        // the user types something instead of letting them proceed with an empty password.
+        dialog.IsPrimaryButtonEnabled = false;
+        pwBox.PasswordChanged += (_, pw) => dialog.IsPrimaryButtonEnabled = !string.IsNullOrEmpty(pw);
+
         var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         return result == ContentDialogResult.Primary
             ? (pwBox.Password, true)

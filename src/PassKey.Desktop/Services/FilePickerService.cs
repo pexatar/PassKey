@@ -39,11 +39,16 @@ public sealed class FilePickerService : IFilePickerService
     /// <returns>
     /// The absolute path of the selected file, or null if the dialog was cancelled.
     /// </returns>
-    public async Task<string?> PickOpenFileAsync(string extension, string extensionDescription)
+    public Task<string?> PickOpenFileAsync(string extension, string extensionDescription)
+        => PickOpenFileAsync([extension], extensionDescription);
+
+    /// <inheritdoc />
+    public async Task<string?> PickOpenFileAsync(IReadOnlyList<string> extensions, string extensionDescription)
     {
         var picker = new FileOpenPicker();
         InitializePicker(picker);
-        picker.FileTypeFilter.Add(extension);
+        foreach (var extension in extensions)
+            picker.FileTypeFilter.Add(extension);
 
         var file = await picker.PickSingleFileAsync();
         return file?.Path;

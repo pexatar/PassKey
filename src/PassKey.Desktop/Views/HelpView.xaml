@@ -293,7 +293,7 @@
                                    Style="{StaticResource BodyStrongTextBlockStyle}" />
                     </Expander.Header>
                     <TextBlock x:Uid="HelpFaq4Answer"
-                               Text="Vai in Impostazioni e scorri alla sezione Backup e importazione. Fai clic su 'Importa dati' e seleziona il formato sorgente: CSV generico (compatibile con la maggior parte dei gestori), Bitwarden JSON, 1Password (.1pux) e KeePass (.kdbx). PassKey mostra un riepilogo degli elementi rilevati prima della conferma definitiva."
+                               Text="Vai in Impostazioni, sezione Backup e importazione, e fai clic su 'Importa dati', poi scegli il formato sorgente. Sono supportati: CSV generico (.csv), compatibile con la maggior parte dei gestori e con gli export di Chrome, Firefox e NordPass; Bitwarden, sia come .json non cifrato sia come .zip con allegati (PassKey ne estrae automaticamente i dati); 1Password (.1pux); e KeePass 2.x (.kdbx), per il quale viene richiesta la password del database. Non sono importabili gli export Bitwarden cifrati (riesportali in formato non cifrato) né i database KeePass 1.x (.kdb), un formato più vecchio che va prima convertito in .kdbx con KeePass 2.x. Prima della conferma definitiva PassKey mostra sempre un riepilogo degli elementi rilevati."
                                Style="{StaticResource BodyTextBlockStyle}"
                                TextWrapping="Wrap"
                                Margin="0,8,0,4" />

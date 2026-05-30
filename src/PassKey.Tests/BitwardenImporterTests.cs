@@ -7,6 +7,46 @@ public class BitwardenImporterTests
     private readonly BitwardenImporter _importer = new();
 
     [Fact]
+    public void ParseBitwarden_EncryptedExport_ThrowsImportFileException()
+    {
+        // FU3: an encrypted Bitwarden export carries "encrypted": true and no plaintext
+        // items. It must raise a clear ImportFileException, not silently return an empty
+        // vault.
+        var json = """
+        {
+          "encrypted": true,
+          "passwordProtected": true,
+          "salt": "AiRlaTQEUwdu32IgAQ7wZA==",
+          "kdfType": 0,
+          "kdfIterations": 600000,
+          "data": "2.76nphWCd+C3AzRNx+hpTRw==|RPj5GQEHwakg..."
+        }
+        """;
+
+        var ex = Assert.Throws<ImportFileException>(() => _importer.ParseBitwarden(json));
+        Assert.Contains("cifrato", ex.Message);
+    }
+
+    [Fact]
+    public void ParseBitwarden_PlaintextExport_NotTreatedAsEncrypted()
+    {
+        // A normal plaintext export sets "encrypted": false and must import normally.
+        var json = """
+        {
+          "encrypted": false,
+          "items": [{
+            "type": 1,
+            "name": "GitHub",
+            "login": { "username": "u", "password": "p" }
+          }]
+        }
+        """;
+
+        var vault = _importer.ParseBitwarden(json);
+        Assert.Single(vault.Passwords);
+    }
+
+    [Fact]
     public void ParseBitwarden_LoginItem_MapsToPasswordEntry()
     {
         var json = """

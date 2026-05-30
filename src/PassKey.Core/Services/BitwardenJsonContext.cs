@@ -6,6 +6,15 @@ namespace PassKey.Core.Services;
 
 public sealed class BitwardenExport
 {
+    /// <summary>True for an encrypted Bitwarden export (account-restricted or
+    /// password-protected). Such files have no plaintext <see cref="Items"/> and cannot
+    /// be imported — detected so the user gets a clear message (FU3).</summary>
+    public bool Encrypted { get; set; }
+
+    /// <summary>True when the encrypted export is protected by a file password (as
+    /// opposed to the account key). Informational companion to <see cref="Encrypted"/>.</summary>
+    public bool PasswordProtected { get; set; }
+
     public BitwardenItem[]? Items { get; set; }
 }
 
