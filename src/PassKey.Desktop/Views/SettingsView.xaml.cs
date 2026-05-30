@@ -86,11 +86,28 @@ public sealed partial class SettingsView : UserControl
 
         _updatingFromVm = false;
 
-        // Subscribe to VM changes
+        // Subscribe VM -> View events. The SettingsViewModel is a persistent singleton in
+        // ShellViewModel while this view is recreated on every navigation. If these handlers
+        // were never detached, each return to the Settings page would stack another set on
+        // the same VM, and VM-raised dialogs (master-password prompt, import format, merge
+        // strategy, …) would fire once per accumulated handler — the "dialogs multiply" bug
+        // (FU9). We detach on Unloaded so a discarded view releases its handlers; the
+        // defensive unsubscribe first guards against a repeated SetViewModel on the same view.
+        UnsubscribeVmEvents(vm);
+        SubscribeVmEvents(vm);
+        Unloaded += OnUnloaded;
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        Unloaded -= OnUnloaded;
+        if (_viewModel is not null) UnsubscribeVmEvents(_viewModel);
+    }
+
+    private void SubscribeVmEvents(SettingsViewModel vm)
+    {
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.ThemeChangeRequested += OnThemeChangeRequested;
-
-        // Backup/Restore/Import event subscriptions
         vm.BackupPasswordRequested += OnBackupPasswordRequested;
         vm.RestoreWarningRequested += OnRestoreWarningRequested;
         vm.RestorePasswordRequested += OnRestorePasswordRequested;
@@ -101,6 +118,22 @@ public sealed partial class SettingsView : UserControl
         vm.BackupCompleted += OnBackupCompleted;
         vm.RestoreCompleted += OnRestoreCompleted;
         vm.OperationError += OnOperationError;
+    }
+
+    private void UnsubscribeVmEvents(SettingsViewModel vm)
+    {
+        vm.PropertyChanged -= OnViewModelPropertyChanged;
+        vm.ThemeChangeRequested -= OnThemeChangeRequested;
+        vm.BackupPasswordRequested -= OnBackupPasswordRequested;
+        vm.RestoreWarningRequested -= OnRestoreWarningRequested;
+        vm.RestorePasswordRequested -= OnRestorePasswordRequested;
+        vm.ImportFormatRequested -= OnImportFormatRequested;
+        vm.ImportPasswordRequested -= OnImportPasswordRequested;
+        vm.MergeStrategyRequested -= OnMergeStrategyRequested;
+        vm.ImportCompleted -= OnImportCompleted;
+        vm.BackupCompleted -= OnBackupCompleted;
+        vm.RestoreCompleted -= OnRestoreCompleted;
+        vm.OperationError -= OnOperationError;
     }
 
     private void OnThemeChangeRequested(ElementTheme theme)
