@@ -184,7 +184,7 @@
     <value>+ Nuova carta</value>
   </data>
   <data name="AddIdentity.Text" xml:space="preserve">
-    <value>+ Aggiungi identità</value>
+    <value>Aggiungi identità</value>
   </data>
   <data name="AddNote" xml:space="preserve">
     <value>+ Nuova nota</value>
