@@ -419,10 +419,10 @@
     <value>Weiter</value>
   </data>
   <data name="AddCardLabel.Text" xml:space="preserve">
-    <value>Neue Karte</value>
+    <value>Karte hinzufügen</value>
   </data>
   <data name="AddPasswordLabel.Text" xml:space="preserve">
-    <value>Neues Passwort</value>
+    <value>Passwort hinzufügen</value>
   </data>
   <data name="ButtonCancel.Content" xml:space="preserve">
     <value>Abbrechen</value>
@@ -1756,7 +1756,7 @@ Moechten Sie diese Pruefung aktivieren?</value>
     <value>Benutzername</value>
   </data>
   <data name="ButtonAddNote.Text" xml:space="preserve">
-    <value>Hinzufügen</value>
+    <value>Notiz hinzufügen</value>
   </data>
   <data name="EmptyEditorHint.Text" xml:space="preserve">
     <value>Wählen Sie eine Notiz aus oder erstellen Sie eine neue</value>

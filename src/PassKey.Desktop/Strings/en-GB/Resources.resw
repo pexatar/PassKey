@@ -414,7 +414,7 @@
     <value>Search passwords...</value>
   </data>
   <data name="AddPasswordLabel.Text" xml:space="preserve">
-    <value>New password</value>
+    <value>Add password</value>
   </data>
   <data name="SortTitle.Content" xml:space="preserve">
     <value>Title</value>
@@ -481,7 +481,7 @@
     <value>Search identities...</value>
   </data>
   <data name="AddCardLabel.Text" xml:space="preserve">
-    <value>New card</value>
+    <value>Add card</value>
   </data>
   <data name="SortLabel.Content" xml:space="preserve">
     <value>Label</value>
@@ -1746,7 +1746,7 @@ Do you want to enable this check?</value>
     <value>Username</value>
   </data>
   <data name="ButtonAddNote.Text" xml:space="preserve">
-    <value>Add</value>
+    <value>Add note</value>
   </data>
   <data name="EmptyEditorHint.Text" xml:space="preserve">
     <value>Select a note or create a new one</value>

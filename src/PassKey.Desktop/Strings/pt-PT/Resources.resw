@@ -419,10 +419,10 @@
     <value>Continuar</value>
   </data>
   <data name="AddCardLabel.Text" xml:space="preserve">
-    <value>Novo cartão</value>
+    <value>Adicionar cartão</value>
   </data>
   <data name="AddPasswordLabel.Text" xml:space="preserve">
-    <value>Nova palavra-passe</value>
+    <value>Adicionar palavra-passe</value>
   </data>
   <data name="ButtonCancel.Content" xml:space="preserve">
     <value>Cancelar</value>
@@ -1756,7 +1756,7 @@ Deseja ativar esta verificacao?</value>
     <value>Nome de utilizador</value>
   </data>
   <data name="ButtonAddNote.Text" xml:space="preserve">
-    <value>Adicionar</value>
+    <value>Adicionar nota</value>
   </data>
   <data name="EmptyEditorHint.Text" xml:space="preserve">
     <value>Selecione uma nota ou crie uma nova</value>

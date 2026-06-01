@@ -426,7 +426,7 @@
     <value>Buscar contraseñas...</value>
   </data>
   <data name="AddPasswordLabel.Text" xml:space="preserve">
-    <value>Nueva contraseña</value>
+    <value>Añadir contraseña</value>
   </data>
   <data name="SortTitle.Content" xml:space="preserve">
     <value>Título</value>
@@ -493,7 +493,7 @@
     <value>Buscar identidades...</value>
   </data>
   <data name="AddCardLabel.Text" xml:space="preserve">
-    <value>Nueva tarjeta</value>
+    <value>Añadir tarjeta</value>
   </data>
   <data name="SortLabel.Content" xml:space="preserve">
     <value>Etiqueta</value>
@@ -1759,7 +1759,7 @@ Deseas activar esta verificacion?</value>
     <value>Nombre de usuario</value>
   </data>
   <data name="ButtonAddNote.Text" xml:space="preserve">
-    <value>Añadir</value>
+    <value>Añadir nota</value>
   </data>
   <data name="EmptyEditorHint.Text" xml:space="preserve">
     <value>Selecciona una nota o crea una nueva</value>

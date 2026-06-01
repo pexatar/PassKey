@@ -140,6 +140,7 @@
                 <ColumnDefinition Width="Auto" />  <!-- Elimina -->
                 <ColumnDefinition Width="Auto" />  <!-- Pin -->
                 <ColumnDefinition Width="*" />     <!-- Spacer -->
+                <ColumnDefinition Width="Auto" />  <!-- Annulla -->
                 <ColumnDefinition Width="Auto" />  <!-- Salva -->
             </Grid.ColumnDefinitions>
 
@@ -169,9 +170,17 @@
                 </StackPanel>
             </ToggleButton>
 
+            <!-- Annulla -->
+            <Button x:Uid="ButtonCancel"
+                    Grid.Column="3"
+                    Content="Annulla"
+                    Click="CancelButton_Click"
+                    AutomationProperties.Name="Annulla"
+                    TabIndex="48" />
+
             <!-- Salva -->
             <Button x:Name="SaveButton"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Style="{StaticResource AccentButtonStyle}"
                     IsEnabled="False"
                     Click="SaveButton_Click"

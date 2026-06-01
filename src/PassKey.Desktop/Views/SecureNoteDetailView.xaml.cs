@@ -247,6 +247,12 @@ public sealed partial class SecureNoteDetailView : UserControl
             await _viewModel.DeleteCommand.ExecuteAsync(null);
     }
 
+    private void CancelButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Cancelled is wired to CloseEditor by SecureNotesListViewModel.
+        _viewModel?.Cancelled?.Invoke();
+    }
+
     private void UpdateSavingState(bool saving)
     {
         SaveProgress.IsActive = saving;

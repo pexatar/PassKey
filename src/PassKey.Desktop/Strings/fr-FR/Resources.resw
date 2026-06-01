@@ -426,7 +426,7 @@
     <value>Rechercher...</value>
   </data>
   <data name="AddPasswordLabel.Text" xml:space="preserve">
-    <value>Nouveau mot de passe</value>
+    <value>Ajouter un mot de passe</value>
   </data>
   <data name="SortTitle.Content" xml:space="preserve">
     <value>Titre</value>
@@ -493,7 +493,7 @@
     <value>Rechercher des identités...</value>
   </data>
   <data name="AddCardLabel.Text" xml:space="preserve">
-    <value>Nouvelle carte</value>
+    <value>Ajouter une carte</value>
   </data>
   <data name="SortLabel.Content" xml:space="preserve">
     <value>Libellé</value>
@@ -1758,7 +1758,7 @@ Voulez-vous activer cette verification ?</value>
     <value>Nom d&apos;utilisateur</value>
   </data>
   <data name="ButtonAddNote.Text" xml:space="preserve">
-    <value>Ajouter</value>
+    <value>Ajouter une note</value>
   </data>
   <data name="EmptyEditorHint.Text" xml:space="preserve">
     <value>Sélectionnez une note ou créez-en une nouvelle</value>
