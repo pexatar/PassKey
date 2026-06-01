@@ -1913,4 +1913,34 @@ Voulez-vous activer cette verification ?</value>
   <data name="NoteFilterTooltip" xml:space="preserve">
     <value>Filtrer par catégorie</value>
   </data>
+  <data name="CrackTimeInstant" xml:space="preserve">
+    <value>Instantané</value>
+  </data>
+  <data name="CrackTimeSeconds" xml:space="preserve">
+    <value>Quelques secondes</value>
+  </data>
+  <data name="CrackTimeCenturies" xml:space="preserve">
+    <value>Des siècles</value>
+  </data>
+  <data name="CrackTimeMillennia" xml:space="preserve">
+    <value>Des millénaires</value>
+  </data>
+  <data name="CrackTimeMinutes" xml:space="preserve">
+    <value>{0} minutes</value>
+  </data>
+  <data name="CrackTimeHours" xml:space="preserve">
+    <value>{0} heures</value>
+  </data>
+  <data name="CrackTimeDays" xml:space="preserve">
+    <value>{0} jours</value>
+  </data>
+  <data name="CrackTimeYears" xml:space="preserve">
+    <value>{0} ans</value>
+  </data>
+  <data name="GeneratorPwGenerated" xml:space="preserve">
+    <value>Nouveau mot de passe généré</value>
+  </data>
+  <data name="GeneratorPwCopied" xml:space="preserve">
+    <value>Mot de passe copié dans le presse-papiers</value>
+  </data>
 </root>

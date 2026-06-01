@@ -1901,4 +1901,34 @@ Do you want to enable this check?</value>
   <data name="NoteFilterTooltip" xml:space="preserve">
     <value>Filter by category</value>
   </data>
+  <data name="CrackTimeInstant" xml:space="preserve">
+    <value>Instant</value>
+  </data>
+  <data name="CrackTimeSeconds" xml:space="preserve">
+    <value>A few seconds</value>
+  </data>
+  <data name="CrackTimeCenturies" xml:space="preserve">
+    <value>Centuries</value>
+  </data>
+  <data name="CrackTimeMillennia" xml:space="preserve">
+    <value>Millennia</value>
+  </data>
+  <data name="CrackTimeMinutes" xml:space="preserve">
+    <value>{0} minutes</value>
+  </data>
+  <data name="CrackTimeHours" xml:space="preserve">
+    <value>{0} hours</value>
+  </data>
+  <data name="CrackTimeDays" xml:space="preserve">
+    <value>{0} days</value>
+  </data>
+  <data name="CrackTimeYears" xml:space="preserve">
+    <value>{0} years</value>
+  </data>
+  <data name="GeneratorPwGenerated" xml:space="preserve">
+    <value>New password generated</value>
+  </data>
+  <data name="GeneratorPwCopied" xml:space="preserve">
+    <value>Password copied to clipboard</value>
+  </data>
 </root>

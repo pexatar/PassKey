@@ -1914,4 +1914,34 @@ Vuoi attivare questa verifica?</value>
   <data name="NoteFilterTooltip" xml:space="preserve">
     <value>Filtra per categoria</value>
   </data>
+  <data name="CrackTimeInstant" xml:space="preserve">
+    <value>Istantaneo</value>
+  </data>
+  <data name="CrackTimeSeconds" xml:space="preserve">
+    <value>Pochi secondi</value>
+  </data>
+  <data name="CrackTimeCenturies" xml:space="preserve">
+    <value>Secoli</value>
+  </data>
+  <data name="CrackTimeMillennia" xml:space="preserve">
+    <value>Millenni</value>
+  </data>
+  <data name="CrackTimeMinutes" xml:space="preserve">
+    <value>{0} minuti</value>
+  </data>
+  <data name="CrackTimeHours" xml:space="preserve">
+    <value>{0} ore</value>
+  </data>
+  <data name="CrackTimeDays" xml:space="preserve">
+    <value>{0} giorni</value>
+  </data>
+  <data name="CrackTimeYears" xml:space="preserve">
+    <value>{0} anni</value>
+  </data>
+  <data name="GeneratorPwGenerated" xml:space="preserve">
+    <value>Nuova password generata</value>
+  </data>
+  <data name="GeneratorPwCopied" xml:space="preserve">
+    <value>Password copiata negli appunti</value>
+  </data>
 </root>

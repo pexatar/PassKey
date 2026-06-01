@@ -1911,4 +1911,34 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="NoteFilterTooltip" xml:space="preserve">
     <value>Nach Kategorie filtern</value>
   </data>
+  <data name="CrackTimeInstant" xml:space="preserve">
+    <value>Sofort</value>
+  </data>
+  <data name="CrackTimeSeconds" xml:space="preserve">
+    <value>Wenige Sekunden</value>
+  </data>
+  <data name="CrackTimeCenturies" xml:space="preserve">
+    <value>Jahrhunderte</value>
+  </data>
+  <data name="CrackTimeMillennia" xml:space="preserve">
+    <value>Jahrtausende</value>
+  </data>
+  <data name="CrackTimeMinutes" xml:space="preserve">
+    <value>{0} Minuten</value>
+  </data>
+  <data name="CrackTimeHours" xml:space="preserve">
+    <value>{0} Stunden</value>
+  </data>
+  <data name="CrackTimeDays" xml:space="preserve">
+    <value>{0} Tage</value>
+  </data>
+  <data name="CrackTimeYears" xml:space="preserve">
+    <value>{0} Jahre</value>
+  </data>
+  <data name="GeneratorPwGenerated" xml:space="preserve">
+    <value>Neues Passwort generiert</value>
+  </data>
+  <data name="GeneratorPwCopied" xml:space="preserve">
+    <value>Passwort in die Zwischenablage kopiert</value>
+  </data>
 </root>

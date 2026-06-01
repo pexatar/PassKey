@@ -25,6 +25,8 @@ public sealed partial class GeneratorView : UserControl
 {
     private GeneratorViewModel? _viewModel;
     private bool _updatingFromVm;
+    // Shared loader (also used by the static crack-time helpers).
+    private static readonly ResourceLoader s_res = new();
 
     public GeneratorView()
     {
@@ -59,7 +61,7 @@ public sealed partial class GeneratorView : UserControl
         {
             case nameof(GeneratorViewModel.GeneratedPassword):
                 UpdatePasswordDisplay(_viewModel?.GeneratedPassword ?? string.Empty);
-                Announce("Nuova password generata");
+                Announce(s_res.GetString("GeneratorPwGenerated"));
                 break;
 
             case nameof(GeneratorViewModel.StrengthResult):
@@ -295,7 +297,7 @@ public sealed partial class GeneratorView : UserControl
     private async void ShowCopyFeedback()
     {
         CopyIcon.Glyph = "\uE73E"; // Checkmark
-        Announce("Password copiata negli appunti");
+        Announce(s_res.GetString("GeneratorPwCopied"));
 
         await Task.Delay(2000);
 
@@ -364,10 +366,10 @@ public sealed partial class GeneratorView : UserControl
 
     private static string GetCrackTimeLabel(string time) => time switch
     {
-        "instant" => "Istantaneo",
-        "seconds" => "Pochi secondi",
-        "centuries" => "Secoli",
-        "millennia" => "Millenni",
+        "instant" => s_res.GetString("CrackTimeInstant"),
+        "seconds" => s_res.GetString("CrackTimeSeconds"),
+        "centuries" => s_res.GetString("CrackTimeCenturies"),
+        "millennia" => s_res.GetString("CrackTimeMillennia"),
         _ => LocalizeCrackTimeString(time)
     };
 
@@ -381,10 +383,10 @@ public sealed partial class GeneratorView : UserControl
 
         return unit switch
         {
-            "minutes" or "minute" => $"{number} minuti",
-            "hours" or "hour" => $"{number} ore",
-            "days" or "day" => $"{number} giorni",
-            "years" or "year" => $"{number} anni",
+            "minutes" or "minute" => string.Format(s_res.GetString("CrackTimeMinutes"), number),
+            "hours" or "hour" => string.Format(s_res.GetString("CrackTimeHours"), number),
+            "days" or "day" => string.Format(s_res.GetString("CrackTimeDays"), number),
+            "years" or "year" => string.Format(s_res.GetString("CrackTimeYears"), number),
             _ => time
         };
     }
