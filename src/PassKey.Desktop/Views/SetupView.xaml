@@ -34,6 +34,7 @@
                 <TextBlock x:Uid="SetupPasswordLabel" Text="Password *" Style="{StaticResource CaptionTextBlockStyle}" />
                 <controls:SecureInputBox
                     x:Name="PasswordInput"
+                    x:Uid="SetupPasswordPlaceholder"
                     PlaceholderText="Inserisci la master password"
                     MaxLength="128"
                     TabIndex="10" />
@@ -44,6 +45,7 @@
                 <TextBlock x:Uid="SetupConfirmLabel" Text="Conferma password *" Style="{StaticResource CaptionTextBlockStyle}" />
                 <controls:SecureInputBox
                     x:Name="ConfirmInput"
+                    x:Uid="SetupConfirmPlaceholder"
                     PlaceholderText="Ripeti la master password"
                     MaxLength="128"
                     TabIndex="20" />

@@ -273,6 +273,7 @@
                 <StackPanel Spacing="6">
                     <TextBlock x:Uid="FieldNotes" Text="Note" Style="{StaticResource CaptionTextBlockStyle}" />
                     <TextBox x:Name="NotesBox"
+                             x:Uid="PlaceholderNotes"
                              AcceptsReturn="True"
                              TextWrapping="Wrap"
                              MinHeight="144"
@@ -285,7 +286,7 @@
                 </StackPanel>
 
                 <!-- Required field legend -->
-                <TextBlock x:Uid="RequiredFieldLegend" Text="* Campo obbligatorio (Nome o Cognome)"
+                <TextBlock x:Uid="RequiredFieldLegendIdentity" Text="* Campo obbligatorio (Nome o Cognome)"
                            Style="{StaticResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>

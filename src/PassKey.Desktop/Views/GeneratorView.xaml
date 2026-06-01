@@ -220,7 +220,7 @@
             <!-- Escludi caratteri ambigui -->
             <Grid ColumnDefinitions="*,Auto" Margin="0,4">
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Escludi caratteri ambigui"
+                    <TextBlock x:Uid="GeneratorExcludeAmbiguous" Text="Escludi caratteri ambigui"
                                Style="{StaticResource BodyStrongTextBlockStyle}" />
                     <TextBlock x:Uid="GenExcludeAmbiguousDesc"
                                Style="{StaticResource CaptionTextBlockStyle}"

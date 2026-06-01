@@ -308,10 +308,10 @@
     <value>Versione</value>
   </data>
   <!-- Titoli pagina -->
-  <data name="PageIdentities" xml:space="preserve">
+  <data name="PageIdentities.Text" xml:space="preserve">
     <value>Identità</value>
   </data>
-  <data name="PageNotes" xml:space="preserve">
+  <data name="PageNotes.Text" xml:space="preserve">
     <value>Note Sicure</value>
   </data>
   <data name="PageDashboard" xml:space="preserve">
@@ -1025,127 +1025,127 @@
     <value>Salvato!</value>
   </data>
   <!-- Help page & Settings additions -->
-  <data name="PageHelp" xml:space="preserve">
+  <data name="PageHelp.Text" xml:space="preserve">
     <value>Guida</value>
   </data>
-  <data name="HelpShortcutsTitle" xml:space="preserve">
+  <data name="HelpShortcutsTitle.Text" xml:space="preserve">
     <value>Scorciatoie da tastiera</value>
   </data>
-  <data name="HelpShortcutsNavTitle" xml:space="preserve">
+  <data name="HelpShortcutsNavTitle.Text" xml:space="preserve">
     <value>Navigazione</value>
   </data>
-  <data name="HelpShortcutNav18" xml:space="preserve">
+  <data name="HelpShortcutNav18.Text" xml:space="preserve">
     <value>Naviga tra le sezioni (Dashboard, Password, Carte&#8230;, Impostazioni)</value>
   </data>
-  <data name="HelpShortcutSearch" xml:space="preserve">
+  <data name="HelpShortcutSearch.Text" xml:space="preserve">
     <value>Cerca (nella Dashboard)</value>
   </data>
-  <data name="HelpShortcutLock" xml:space="preserve">
+  <data name="HelpShortcutLock.Text" xml:space="preserve">
     <value>Blocca vault</value>
   </data>
-    <data name="HelpShortcutHelp" xml:space="preserve">
+    <data name="HelpShortcutHelp.Text" xml:space="preserve">
     <value>Apri Guida</value>
   </data>
-  <data name="HelpShortcutsActionsTitle" xml:space="preserve">
+  <data name="HelpShortcutsActionsTitle.Text" xml:space="preserve">
     <value>Azioni</value>
   </data>
-  <data name="HelpShortcutNew" xml:space="preserve">
+  <data name="HelpShortcutNew.Text" xml:space="preserve">
     <value>Nuovo elemento</value>
   </data>
-  <data name="HelpShortcutEdit" xml:space="preserve">
+  <data name="HelpShortcutEdit.Text" xml:space="preserve">
     <value>Modifica elemento selezionato</value>
   </data>
-  <data name="HelpShortcutDelKey" xml:space="preserve">
+  <data name="HelpShortcutDelKey.Text" xml:space="preserve">
     <value>Canc</value>
   </data>
-  <data name="HelpShortcutDelete" xml:space="preserve">
+  <data name="HelpShortcutDelete.Text" xml:space="preserve">
     <value>Elimina elemento selezionato</value>
   </data>
-  <data name="HelpShortcutEsc" xml:space="preserve">
+  <data name="HelpShortcutEsc.Text" xml:space="preserve">
     <value>Annulla / Torna indietro</value>
   </data>
-  <data name="HelpFaqTitle" xml:space="preserve">
+  <data name="HelpFaqTitle.Text" xml:space="preserve">
     <value>Domande frequenti</value>
   </data>
-  <data name="HelpFaq1Question" xml:space="preserve">
+  <data name="HelpFaq1Question.Text" xml:space="preserve">
     <value>Come modifico la master password?</value>
   </data>
-  <data name="HelpFaq1Answer" xml:space="preserve">
+  <data name="HelpFaq1Answer.Text" xml:space="preserve">
     <value>Vai in Impostazioni e scorri alla sezione Sicurezza. Fai clic su 'Cambia master password': ti verrà chiesta la password attuale (per confermare la tua identità) e poi la nuova password due volte. La nuova master password viene applicata immediatamente.</value>
   </data>
-  <data name="HelpFaq2Question" xml:space="preserve">
+  <data name="HelpFaq2Question.Text" xml:space="preserve">
     <value>Come creo un backup del vault?</value>
   </data>
-  <data name="HelpFaq2Answer" xml:space="preserve">
+  <data name="HelpFaq2Answer.Text" xml:space="preserve">
     <value>Vai in Impostazioni e scorri alla sezione Backup e importazione. Fai clic su 'Crea backup': viene generato un file cifrato con la tua master password. Conservalo in un luogo sicuro. Per ripristinare, usa 'Ripristina backup' nella stessa sezione e inserisci la master password con cui il backup è stato creato.</value>
   </data>
-  <data name="HelpFaq3Question" xml:space="preserve">
+  <data name="HelpFaq3Question.Text" xml:space="preserve">
     <value>Dove sono salvati i dati?</value>
   </data>
-  <data name="HelpFaq3Answer" xml:space="preserve">
+  <data name="HelpFaq3Answer.Text" xml:space="preserve">
     <value>Tutti i dati di PassKey sono salvati esclusivamente sul tuo dispositivo, in un database SQLite cifrato con AES-GCM 256 bit. Nessuna informazione viene trasmessa su Internet o a server esterni. Il percorso del file è indicato qui sotto — puoi selezionarlo e aprire la cartella direttamente da Esplora file.</value>
   </data>
-  <data name="HelpFaq4Question" xml:space="preserve">
+  <data name="HelpFaq4Question.Text" xml:space="preserve">
     <value>Come importo password da un altro gestore?</value>
   </data>
-  <data name="HelpFaq4Answer" xml:space="preserve">
+  <data name="HelpFaq4Answer.Text" xml:space="preserve">
     <value>Vai in Impostazioni, sezione Backup e importazione, e fai clic su &apos;Importa dati&apos;, poi scegli il formato sorgente. Sono supportati: CSV generico (.csv), compatibile con la maggior parte dei gestori e con gli export di Chrome, Firefox e NordPass; Bitwarden, sia come .json non cifrato sia come .zip con allegati (PassKey ne estrae automaticamente i dati); 1Password (.1pux); e KeePass 2.x (.kdbx), per il quale viene richiesta la password del database. Non sono importabili gli export Bitwarden cifrati (riesportali in formato non cifrato) né i database KeePass 1.x (.kdb), un formato più vecchio che va prima convertito in .kdbx con KeePass 2.x. Prima della conferma definitiva PassKey mostra sempre un riepilogo degli elementi rilevati.</value>
   </data>
-  <data name="HelpAboutTitle" xml:space="preserve">
+  <data name="HelpAboutTitle.Text" xml:space="preserve">
     <value>Informazioni</value>
   </data>
-  <data name="HelpAboutDesc" xml:space="preserve">
+  <data name="HelpAboutDesc.Text" xml:space="preserve">
     <value>Password manager sicuro per Windows</value>
   </data>
-  <data name="HelpGuideSectionTitle" xml:space="preserve">
+  <data name="HelpGuideSectionTitle.Text" xml:space="preserve">
     <value>Guida all'uso</value>
   </data>
-  <data name="HelpGuideDashboardHeader" xml:space="preserve">
+  <data name="HelpGuideDashboardHeader.Text" xml:space="preserve">
     <value>Dashboard</value>
   </data>
-  <data name="HelpGuideDashboardBody" xml:space="preserve">
+  <data name="HelpGuideDashboardBody.Text" xml:space="preserve">
     <value>La Dashboard è la schermata principale di PassKey. Mostra un riepilogo degli elementi salvati suddivisi per tipo (password, carte, identità, note), le statistiche del vault e gli elementi modificati di recente. Usa la barra di ricerca (Ctrl+F) per trovare rapidamente qualsiasi elemento tra tutte le categorie.</value>
   </data>
-  <data name="HelpGuidePasswordsHeader" xml:space="preserve">
+  <data name="HelpGuidePasswordsHeader.Text" xml:space="preserve">
     <value>Password</value>
   </data>
-  <data name="HelpGuidePasswordsBody" xml:space="preserve">
+  <data name="HelpGuidePasswordsBody.Text" xml:space="preserve">
     <value>Visualizza e gestisce tutte le password salvate nel vault. Fai clic su una voce per aprire il pannello di dettaglio: da lì puoi copiare il nome utente o la password con un clic, visualizzare l'URL associato, modificare i campi con il pulsante Modifica o eliminare la voce con conferma.</value>
   </data>
-  <data name="HelpGuideCardsHeader" xml:space="preserve">
+  <data name="HelpGuideCardsHeader.Text" xml:space="preserve">
     <value>Carte di credito</value>
   </data>
-  <data name="HelpGuideCardsBody" xml:space="preserve">
+  <data name="HelpGuideCardsBody.Text" xml:space="preserve">
     <value>Gestisce le carte di credito salvate nel vault. Numero di carta, titolare, data di scadenza e CVV sono conservati in modo completamente cifrato. Nel pannello di dettaglio puoi copiare il numero di carta con un clic e tener premuto il pulsante CVV per rivelarlo. Il colore della carta è personalizzabile.</value>
   </data>
-  <data name="HelpGuideIdentitiesHeader" xml:space="preserve">
+  <data name="HelpGuideIdentitiesHeader.Text" xml:space="preserve">
     <value>Identità</value>
   </data>
-  <data name="HelpGuideIdentitiesBody" xml:space="preserve">
+  <data name="HelpGuideIdentitiesBody.Text" xml:space="preserve">
     <value>Archivia documenti e informazioni di identità personale: nome e cognome, indirizzo, tipo e numero di documento, codice fiscale, data di nascita, numero di telefono e indirizzo e-mail. Utile per copiare rapidamente i singoli campi quando si compilano moduli senza dover cercare i documenti fisici.</value>
   </data>
-  <data name="HelpGuideNotesHeader" xml:space="preserve">
+  <data name="HelpGuideNotesHeader.Text" xml:space="preserve">
     <value>Note sicure</value>
   </data>
-  <data name="HelpGuideNotesBody" xml:space="preserve">
+  <data name="HelpGuideNotesBody.Text" xml:space="preserve">
     <value>Conserva informazioni sensibili sotto forma di note testuali libere, cifrate come tutti gli altri elementi del vault. Ogni nota ha un titolo, un colore identificativo personalizzabile e un campo testo a lunghezza libera. Ideale per PIN, codici di accesso, domande di sicurezza o qualsiasi dato che non rientra nelle altre categorie.</value>
   </data>
-  <data name="HelpGuideGeneratorHeader" xml:space="preserve">
+  <data name="HelpGuideGeneratorHeader.Text" xml:space="preserve">
     <value>Generatore</value>
   </data>
-  <data name="HelpGuideGeneratorBody" xml:space="preserve">
+  <data name="HelpGuideGeneratorBody.Text" xml:space="preserve">
     <value>Genera password casuali e crittograficamente sicure. Configura la lunghezza e i set di caratteri da includere (lettere maiuscole, minuscole, cifre e simboli). La forza della password è indicata in tempo reale. Copia il risultato negli appunti con un clic.</value>
   </data>
-  <data name="HelpGuideVerifierHeader" xml:space="preserve">
+  <data name="HelpGuideVerifierHeader.Text" xml:space="preserve">
     <value>Verifica password</value>
   </data>
-  <data name="HelpGuideVerifierBody" xml:space="preserve">
+  <data name="HelpGuideVerifierBody.Text" xml:space="preserve">
     <value>Analizza la sicurezza di una password senza salvarla nel vault. Mostra un punteggio da 0 a 4 stelle, una stima del tempo necessario per violarla con un attacco brute-force e un'indicazione se risulta compromessa in database pubblici di violazioni. Utile per verificare le password già in uso.</value>
   </data>
-  <data name="HelpGuideSettingsHeader" xml:space="preserve">
+  <data name="HelpGuideSettingsHeader.Text" xml:space="preserve">
     <value>Impostazioni</value>
   </data>
-  <data name="HelpGuideSettingsBody" xml:space="preserve">
+  <data name="HelpGuideSettingsBody.Text" xml:space="preserve">
     <value>Centralizza tutte le opzioni di configurazione: lingua dell'interfaccia, master password, timeout di blocco automatico, backup e ripristino del vault, e importazione da altri gestori di password (CSV, Bitwarden, 1Password, KeePass).</value>
   </data>
   <!-- Note Sicure -->
@@ -1757,5 +1757,38 @@ Vuoi attivare questa verifica?</value>
   </data>
   <data name="FieldIdentityUsername.Text" xml:space="preserve">
     <value>Nome utente</value>
+  </data>
+  <data name="ButtonAddNote.Text" xml:space="preserve">
+    <value>Aggiungi</value>
+  </data>
+  <data name="EmptyEditorHint.Text" xml:space="preserve">
+    <value>Seleziona una nota o creane una nuova</value>
+  </data>
+  <data name="PlaceholderNotes.PlaceholderText" xml:space="preserve">
+    <value>Note aggiuntive...</value>
+  </data>
+  <data name="PwDetailPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="SetupPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Inserisci la master password</value>
+  </data>
+  <data name="SetupConfirmPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Ripeti la master password</value>
+  </data>
+  <data name="VerifierPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Digita una password per verificarla...</value>
+  </data>
+  <data name="VerifierOfflineNote.Text" xml:space="preserve">
+    <value>La verifica avviene interamente offline, nessun dato viene inviato.</value>
+  </data>
+  <data name="GeneratorExcludeAmbiguous.Text" xml:space="preserve">
+    <value>Escludi caratteri ambigui</value>
+  </data>
+  <data name="TotpSecretReadout.Header" xml:space="preserve">
+    <value>Chiave Base32</value>
+  </data>
+  <data name="RequiredFieldLegendIdentity.Text" xml:space="preserve">
+    <value>* Campo obbligatorio (Nome o Cognome)</value>
   </data>
 </root>

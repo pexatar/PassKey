@@ -308,10 +308,10 @@
     <value>Versão</value>
   </data>
   <!-- T&#237;tulos de p&#225;gina -->
-  <data name="PageIdentities" xml:space="preserve">
+  <data name="PageIdentities.Text" xml:space="preserve">
     <value>Identidades</value>
   </data>
-  <data name="PageNotes" xml:space="preserve">
+  <data name="PageNotes.Text" xml:space="preserve">
     <value>Notas seguras</value>
   </data>
   <data name="PageDashboard" xml:space="preserve">
@@ -1023,127 +1023,127 @@
     <value>Guardado!</value>
   </data>
   <!-- Help page & Settings additions -->
-  <data name="PageHelp" xml:space="preserve">
+  <data name="PageHelp.Text" xml:space="preserve">
     <value>Ajuda</value>
   </data>
-  <data name="HelpShortcutsTitle" xml:space="preserve">
+  <data name="HelpShortcutsTitle.Text" xml:space="preserve">
     <value>Atalhos de teclado</value>
   </data>
-  <data name="HelpShortcutsNavTitle" xml:space="preserve">
+  <data name="HelpShortcutsNavTitle.Text" xml:space="preserve">
     <value>Navegação</value>
   </data>
-  <data name="HelpShortcutNav18" xml:space="preserve">
+  <data name="HelpShortcutNav18.Text" xml:space="preserve">
     <value>Navegar entre sec&#231;&#245;es (Dashboard, Palavras-passe, Cart&#245;es&#8230;, Defini&#231;&#245;es)</value>
   </data>
-  <data name="HelpShortcutSearch" xml:space="preserve">
+  <data name="HelpShortcutSearch.Text" xml:space="preserve">
     <value>Pesquisar (no Dashboard)</value>
   </data>
-  <data name="HelpShortcutLock" xml:space="preserve">
+  <data name="HelpShortcutLock.Text" xml:space="preserve">
     <value>Bloquear cofre</value>
   </data>
-    <data name="HelpShortcutHelp" xml:space="preserve">
+    <data name="HelpShortcutHelp.Text" xml:space="preserve">
     <value>Abrir ajuda</value>
   </data>
-  <data name="HelpShortcutsActionsTitle" xml:space="preserve">
+  <data name="HelpShortcutsActionsTitle.Text" xml:space="preserve">
     <value>Ações</value>
   </data>
-  <data name="HelpShortcutNew" xml:space="preserve">
+  <data name="HelpShortcutNew.Text" xml:space="preserve">
     <value>Novo elemento</value>
   </data>
-  <data name="HelpShortcutEdit" xml:space="preserve">
+  <data name="HelpShortcutEdit.Text" xml:space="preserve">
     <value>Editar elemento selecionado</value>
   </data>
-  <data name="HelpShortcutDelKey" xml:space="preserve">
+  <data name="HelpShortcutDelKey.Text" xml:space="preserve">
     <value>Del</value>
   </data>
-  <data name="HelpShortcutDelete" xml:space="preserve">
+  <data name="HelpShortcutDelete.Text" xml:space="preserve">
     <value>Eliminar elemento selecionado</value>
   </data>
-  <data name="HelpShortcutEsc" xml:space="preserve">
+  <data name="HelpShortcutEsc.Text" xml:space="preserve">
     <value>Cancelar / Voltar</value>
   </data>
-  <data name="HelpFaqTitle" xml:space="preserve">
+  <data name="HelpFaqTitle.Text" xml:space="preserve">
     <value>Perguntas frequentes</value>
   </data>
-  <data name="HelpFaq1Question" xml:space="preserve">
+  <data name="HelpFaq1Question.Text" xml:space="preserve">
     <value>Como altero a palavra-passe mestra?</value>
   </data>
-  <data name="HelpFaq1Answer" xml:space="preserve">
+  <data name="HelpFaq1Answer.Text" xml:space="preserve">
     <value>Vá a Definições e desloque-se para a secção Segurança. Clique em 'Alterar palavra-passe mestra': ser-lhe-á pedida a palavra-passe atual (para confirmar a sua identidade) e depois a nova palavra-passe duas vezes. A nova palavra-passe mestra é aplicada imediatamente.</value>
   </data>
-  <data name="HelpFaq2Question" xml:space="preserve">
+  <data name="HelpFaq2Question.Text" xml:space="preserve">
     <value>Como crio uma cópia de segurança do cofre?</value>
   </data>
-  <data name="HelpFaq2Answer" xml:space="preserve">
+  <data name="HelpFaq2Answer.Text" xml:space="preserve">
     <value>Vá a Definições e desloque-se para a secção Cópia de segurança e importação. Clique em 'Criar cópia de segurança': é gerado um ficheiro cifrado com a sua palavra-passe mestra. Guarde-o num local seguro. Para restaurar, utilize 'Restaurar cópia de segurança' na mesma secção e introduza a palavra-passe mestra utilizada na criação.</value>
   </data>
-  <data name="HelpFaq3Question" xml:space="preserve">
+  <data name="HelpFaq3Question.Text" xml:space="preserve">
     <value>Onde são guardados os meus dados?</value>
   </data>
-  <data name="HelpFaq3Answer" xml:space="preserve">
+  <data name="HelpFaq3Answer.Text" xml:space="preserve">
     <value>Todos os dados do PassKey são armazenados exclusivamente no seu dispositivo, numa base de dados SQLite cifrada com AES-GCM de 256 bits. Nenhuma informação é transmitida pela Internet ou para servidores externos. O caminho do ficheiro é indicado abaixo.</value>
   </data>
-  <data name="HelpFaq4Question" xml:space="preserve">
+  <data name="HelpFaq4Question.Text" xml:space="preserve">
     <value>Como importo palavras-passe de outro gestor?</value>
   </data>
-  <data name="HelpFaq4Answer" xml:space="preserve">
+  <data name="HelpFaq4Answer.Text" xml:space="preserve">
     <value>Vai a Definições, secção Cópia de segurança e importação, e clica em &apos;Importar dados&apos;, depois escolhe o formato de origem. Formatos suportados: CSV genérico (.csv), compatível com a maioria dos gestores e com as exportações do Chrome, Firefox e NordPass; Bitwarden, como .json não cifrado ou como .zip com anexos (o PassKey extrai os dados automaticamente); 1Password (.1pux); e KeePass 2.x (.kdbx), para o qual é pedida a palavra-passe da base de dados. Não é possível importar exportações do Bitwarden cifradas (volta a exportá-las sem cifragem) nem bases de dados do KeePass 1.x (.kdb), um formato mais antigo que deves primeiro converter para .kdbx com o KeePass 2.x. Antes da confirmação final, o PassKey mostra sempre um resumo dos elementos detetados.</value>
   </data>
-  <data name="HelpAboutTitle" xml:space="preserve">
+  <data name="HelpAboutTitle.Text" xml:space="preserve">
     <value>Sobre</value>
   </data>
-  <data name="HelpAboutDesc" xml:space="preserve">
+  <data name="HelpAboutDesc.Text" xml:space="preserve">
     <value>Gestor de palavras-passe seguro para Windows</value>
   </data>
-  <data name="HelpGuideSectionTitle" xml:space="preserve">
+  <data name="HelpGuideSectionTitle.Text" xml:space="preserve">
     <value>Guia de utilização</value>
   </data>
-  <data name="HelpGuideDashboardHeader" xml:space="preserve">
+  <data name="HelpGuideDashboardHeader.Text" xml:space="preserve">
     <value>Dashboard</value>
   </data>
-  <data name="HelpGuideDashboardBody" xml:space="preserve">
+  <data name="HelpGuideDashboardBody.Text" xml:space="preserve">
     <value>O Dashboard é o ecrã principal do PassKey. Mostra um resumo dos itens guardados por tipo (palavras-passe, cartões, identidades, notas), estatísticas do cofre e os itens modificados recentemente. Utilize a barra de pesquisa (Ctrl+F) para encontrar rapidamente qualquer item em todas as categorias.</value>
   </data>
-  <data name="HelpGuidePasswordsHeader" xml:space="preserve">
+  <data name="HelpGuidePasswordsHeader.Text" xml:space="preserve">
     <value>Palavras-passe</value>
   </data>
-  <data name="HelpGuidePasswordsBody" xml:space="preserve">
+  <data name="HelpGuidePasswordsBody.Text" xml:space="preserve">
     <value>Visualize e gira todas as palavras-passe guardadas no cofre. Clique numa entrada para abrir o painel de detalhes: pode copiar o nome de utilizador ou a palavra-passe com um clique, ver o URL associado, editar os campos com o botão Editar ou eliminar a entrada com confirmação.</value>
   </data>
-  <data name="HelpGuideCardsHeader" xml:space="preserve">
+  <data name="HelpGuideCardsHeader.Text" xml:space="preserve">
     <value>Cartões de crédito</value>
   </data>
-  <data name="HelpGuideCardsBody" xml:space="preserve">
+  <data name="HelpGuideCardsBody.Text" xml:space="preserve">
     <value>Gira os cartões de crédito guardados no cofre. O número do cartão, titular, data de validade e CVV são armazenados completamente cifrados. No painel de detalhes pode copiar o número do cartão com um clique e manter premido o botão CVV para o revelar. A cor do cartão é personalizável.</value>
   </data>
-  <data name="HelpGuideIdentitiesHeader" xml:space="preserve">
+  <data name="HelpGuideIdentitiesHeader.Text" xml:space="preserve">
     <value>Identidades</value>
   </data>
-  <data name="HelpGuideIdentitiesBody" xml:space="preserve">
+  <data name="HelpGuideIdentitiesBody.Text" xml:space="preserve">
     <value>Armazene documentos de identidade e informações pessoais: nome e apelido, morada, tipo e número de documento, número de identificação fiscal, data de nascimento, telefone e e-mail. Útil para copiar rapidamente campos individuais ao preencher formulários sem procurar documentos físicos.</value>
   </data>
-  <data name="HelpGuideNotesHeader" xml:space="preserve">
+  <data name="HelpGuideNotesHeader.Text" xml:space="preserve">
     <value>Notas seguras</value>
   </data>
-  <data name="HelpGuideNotesBody" xml:space="preserve">
+  <data name="HelpGuideNotesBody.Text" xml:space="preserve">
     <value>Conserve informações sensíveis como notas de texto livre, cifradas como todos os outros itens do cofre. Cada nota tem um título, uma cor personalizável e um campo de texto de comprimento livre. Ideal para PINs, códigos de acesso, perguntas de segurança ou quaisquer dados que não se enquadrem noutras categorias.</value>
   </data>
-  <data name="HelpGuideGeneratorHeader" xml:space="preserve">
+  <data name="HelpGuideGeneratorHeader.Text" xml:space="preserve">
     <value>Gerador</value>
   </data>
-  <data name="HelpGuideGeneratorBody" xml:space="preserve">
+  <data name="HelpGuideGeneratorBody.Text" xml:space="preserve">
     <value>Gere palavras-passe aleatórias e criptograficamente seguras. Configure o comprimento e os conjuntos de caracteres a incluir (maiúsculas, minúsculas, dígitos e símbolos). A força da palavra-passe é mostrada em tempo real. Copie o resultado para a área de transferência com um clique.</value>
   </data>
-  <data name="HelpGuideVerifierHeader" xml:space="preserve">
+  <data name="HelpGuideVerifierHeader.Text" xml:space="preserve">
     <value>Verificador de palavras-passe</value>
   </data>
-  <data name="HelpGuideVerifierBody" xml:space="preserve">
+  <data name="HelpGuideVerifierBody.Text" xml:space="preserve">
     <value>Analise a segurança de uma palavra-passe sem a guardar no cofre. Mostra uma pontuação de 0 a 4 estrelas, uma estimativa do tempo necessário para a violar por força bruta e se aparece em bases de dados públicas de violações. Útil para verificar palavras-passe já em uso.</value>
   </data>
-  <data name="HelpGuideSettingsHeader" xml:space="preserve">
+  <data name="HelpGuideSettingsHeader.Text" xml:space="preserve">
     <value>Definições</value>
   </data>
-  <data name="HelpGuideSettingsBody" xml:space="preserve">
+  <data name="HelpGuideSettingsBody.Text" xml:space="preserve">
     <value>Centraliza todas as opções de configuração: idioma da interface, palavra-passe mestra, tempo limite de bloqueio automático, cópia de segurança e restauro do cofre, e importação de outros gestores de palavras-passe (CSV, Bitwarden, 1Password, KeePass).</value>
   </data>
   <!-- Notas seguras -->
@@ -1754,5 +1754,38 @@ Deseja ativar esta verificacao?</value>
   </data>
   <data name="FieldIdentityUsername.Text" xml:space="preserve">
     <value>Nome de utilizador</value>
+  </data>
+  <data name="ButtonAddNote.Text" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
+  <data name="EmptyEditorHint.Text" xml:space="preserve">
+    <value>Selecione uma nota ou crie uma nova</value>
+  </data>
+  <data name="PlaceholderNotes.PlaceholderText" xml:space="preserve">
+    <value>Notas adicionais...</value>
+  </data>
+  <data name="PwDetailPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Palavra-passe</value>
+  </data>
+  <data name="SetupPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Introduza a palavra-passe mestra</value>
+  </data>
+  <data name="SetupConfirmPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Repita a palavra-passe mestra</value>
+  </data>
+  <data name="VerifierPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Escreva uma palavra-passe para verificá-la...</value>
+  </data>
+  <data name="VerifierOfflineNote.Text" xml:space="preserve">
+    <value>A verificação é feita totalmente offline; nenhum dado é enviado.</value>
+  </data>
+  <data name="GeneratorExcludeAmbiguous.Text" xml:space="preserve">
+    <value>Excluir caracteres ambíguos</value>
+  </data>
+  <data name="TotpSecretReadout.Header" xml:space="preserve">
+    <value>Chave Base32</value>
+  </data>
+  <data name="RequiredFieldLegendIdentity.Text" xml:space="preserve">
+    <value>* Campo obrigatório (nome ou apelido)</value>
   </data>
 </root>
