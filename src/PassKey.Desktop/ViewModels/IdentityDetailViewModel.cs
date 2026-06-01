@@ -100,7 +100,6 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
 
     protected override string GetPanelTitleForNew() => "Aggiungi identità";
     protected override string GetPanelTitleForEdit() => "Modifica identità";
-    protected override string GetDeleteDialogTitle() => "Elimina identità";
 
     protected override string GetDeleteDisplayName(IdentityEntry entry)
     {

@@ -187,10 +187,10 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
         if (SelectedEntry is null) return;
 
         var confirmed = await _dialogQueue.ConfirmAsync(
-            title: "Elimina nota",
-            content: $"Eliminare \"{SelectedEntry.Title}\"?\nQuesta azione è irreversibile.",
-            primaryButtonText: "Elimina",
-            closeButtonText: "Annulla");
+            title: string.Format(_resourceLoader.GetString("DeleteConfirmTitle"), SelectedEntry.Title),
+            content: string.Format(_resourceLoader.GetString("DeleteConfirmMessage"), SelectedEntry.Title),
+            primaryButtonText: _resourceLoader.GetString("DeleteButton"),
+            closeButtonText: _resourceLoader.GetString("CancelButton"));
 
         if (confirmed)
         {

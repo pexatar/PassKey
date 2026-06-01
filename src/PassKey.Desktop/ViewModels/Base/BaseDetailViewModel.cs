@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
 using PassKey.Desktop.Services;
 
@@ -33,6 +34,9 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
 
     /// <summary>Dialog queue used to serialize <see cref="Microsoft.UI.Xaml.Controls.ContentDialog"/> instances.</summary>
     protected readonly IDialogQueueService DialogQueue;
+
+    /// <summary>Localized string resources for the shared delete-confirmation dialog.</summary>
+    private readonly ResourceLoader _res = new();
 
     /// <summary>The entry currently being edited, or <see langword="null"/> when creating a new entry.</summary>
     protected TEntry? EditingEntry;
@@ -96,21 +100,8 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     /// <summary>Localised panel title used when editing an existing entry (e.g., "Modifica password").</summary>
     protected abstract string GetPanelTitleForEdit();
 
-    /// <summary>Localised title shown in the delete-confirmation dialog (e.g., "Elimina password").</summary>
-    protected abstract string GetDeleteDialogTitle();
-
-    /// <summary>Best-effort display name used inside the delete-confirmation dialog body for the supplied entry.</summary>
+    /// <summary>Best-effort display name shown inside the delete-confirmation dialog for the supplied entry.</summary>
     protected abstract string GetDeleteDisplayName(TEntry entry);
-
-    /// <summary>Localised body template for the delete dialog. Default mirrors the original copy across all four VMs.</summary>
-    protected virtual string GetDeleteDialogContent(string displayName)
-        => $"Eliminare \"{displayName}\"?\nQuesta azione è irreversibile.";
-
-    /// <summary>Localised primary-button text on the delete dialog.</summary>
-    protected virtual string GetDeletePrimaryButtonText() => "Elimina";
-
-    /// <summary>Localised close-button text on the delete dialog.</summary>
-    protected virtual string GetDeleteCloseButtonText() => "Annulla";
 
     /// <summary>Hook invoked after a successful save of a new entry (default: no-op).
     /// Subclasses can override to transition the panel state in-place (e.g., notes editor).</summary>
@@ -193,11 +184,12 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     {
         if (EditingEntry is null || _isNew) return;
 
+        var displayName = GetDeleteDisplayName(EditingEntry);
         var confirmed = await DialogQueue.ConfirmAsync(
-            title: GetDeleteDialogTitle(),
-            content: GetDeleteDialogContent(GetDeleteDisplayName(EditingEntry)),
-            primaryButtonText: GetDeletePrimaryButtonText(),
-            closeButtonText: GetDeleteCloseButtonText());
+            title: string.Format(_res.GetString("DeleteConfirmTitle"), displayName),
+            content: string.Format(_res.GetString("DeleteConfirmMessage"), displayName),
+            primaryButtonText: _res.GetString("DeleteButton"),
+            closeButtonText: _res.GetString("CancelButton"));
 
         if (confirmed)
         {

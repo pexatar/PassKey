@@ -203,10 +203,10 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
         if (target is null) return;
 
         var confirmed = await _dialogQueue.ConfirmAsync(
-            title: "Elimina password",
-            content: $"Eliminare \"{target.Title}\"?\nQuesta azione è irreversibile.",
-            primaryButtonText: "Elimina",
-            closeButtonText: "Annulla");
+            title: string.Format(_resourceLoader.GetString("DeleteConfirmTitle"), target.Title),
+            content: string.Format(_resourceLoader.GetString("DeleteConfirmMessage"), target.Title),
+            primaryButtonText: _resourceLoader.GetString("DeleteButton"),
+            closeButtonText: _resourceLoader.GetString("CancelButton"));
 
         if (confirmed)
         {

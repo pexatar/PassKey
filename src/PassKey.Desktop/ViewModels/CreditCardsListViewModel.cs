@@ -204,10 +204,10 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
         if (target is null) return;
 
         var confirmed = await _dialogQueue.ConfirmAsync(
-            title: "Elimina carta",
-            content: $"Eliminare \"{target.Label}\"?\nQuesta azione è irreversibile.",
-            primaryButtonText: "Elimina",
-            closeButtonText: "Annulla");
+            title: string.Format(_resourceLoader.GetString("DeleteConfirmTitle"), target.Label),
+            content: string.Format(_resourceLoader.GetString("DeleteConfirmMessage"), target.Label),
+            primaryButtonText: _resourceLoader.GetString("DeleteButton"),
+            closeButtonText: _resourceLoader.GetString("CancelButton"));
 
         if (confirmed)
         {

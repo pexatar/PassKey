@@ -205,10 +205,10 @@ public partial class IdentitiesListViewModel : ObservableObject, IDisposable
         if (SelectedEntry is null) return;
 
         var confirmed = await _dialogQueue.ConfirmAsync(
-            title: "Elimina identità",
-            content: $"Eliminare \"{SelectedEntry.Label}\"?\nQuesta azione è irreversibile.",
-            primaryButtonText: "Elimina",
-            closeButtonText: "Annulla");
+            title: string.Format(_resourceLoader.GetString("DeleteConfirmTitle"), SelectedEntry.Label),
+            content: string.Format(_resourceLoader.GetString("DeleteConfirmMessage"), SelectedEntry.Label),
+            primaryButtonText: _resourceLoader.GetString("DeleteButton"),
+            closeButtonText: _resourceLoader.GetString("CancelButton"));
 
         if (confirmed)
         {
