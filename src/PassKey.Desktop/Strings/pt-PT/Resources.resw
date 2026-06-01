@@ -1947,4 +1947,43 @@ Deseja ativar esta verificacao?</value>
   <data name="CrackTimeTrillionYears" xml:space="preserve">
     <value>mais de um bilião de anos</value>
   </data>
+  <data name="VerifierCompromisedFmt" xml:space="preserve">
+    <value>Palavras-passe comprometidas ({0})</value>
+  </data>
+  <data name="VerifierWeakFmt" xml:space="preserve">
+    <value>Palavras-passe fracas ({0})</value>
+  </data>
+  <data name="VerifierDuplicateFmt" xml:space="preserve">
+    <value>Palavras-passe reutilizadas ({0})</value>
+  </data>
+  <data name="VerifierUntitled" xml:space="preserve">
+    <value>(sem título)</value>
+  </data>
+  <data name="VerifierBreachLabel" xml:space="preserve">
+    <value>{0:N0} fugas</value>
+  </data>
+  <data name="VerifierReused" xml:space="preserve">
+    <value>reutilizada</value>
+  </data>
+  <data name="SuggestUseAtLeast8" xml:space="preserve">
+    <value>Use pelo menos 8 caracteres</value>
+  </data>
+  <data name="SuggestUseAtLeast12" xml:space="preserve">
+    <value>Use pelo menos 12 caracteres para melhor proteção</value>
+  </data>
+  <data name="SuggestAddUppercase" xml:space="preserve">
+    <value>Adicione letras maiúsculas</value>
+  </data>
+  <data name="SuggestAddLowercase" xml:space="preserve">
+    <value>Adicione letras minúsculas</value>
+  </data>
+  <data name="SuggestAddNumbers" xml:space="preserve">
+    <value>Adicione números</value>
+  </data>
+  <data name="SuggestAddSpecial" xml:space="preserve">
+    <value>Adicione símbolos especiais (!@#$%)</value>
+  </data>
+  <data name="SuggestAvoidCommon" xml:space="preserve">
+    <value>Evite padrões comuns (password, 123456, qwerty...)</value>
+  </data>
 </root>

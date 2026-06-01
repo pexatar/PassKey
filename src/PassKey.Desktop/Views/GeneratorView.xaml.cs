@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
+using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -184,7 +185,7 @@ public sealed partial class GeneratorView : UserControl
         StrengthLabel.Foreground = brush;
 
         // Crack time
-        CrackTimeText.Text = GetCrackTimeLabel(result.EstimatedCrackTime);
+        CrackTimeText.Text = CrackTimeFormatter.Localize(result.EstimatedCrackTime);
 
         // Segmented bar
         UpdateStrengthBar(result.Score, brush);
@@ -369,35 +370,6 @@ public sealed partial class GeneratorView : UserControl
             "Strong"    => loader.GetString("StrengthStrong"),
             "VeryStrong"=> loader.GetString("StrengthVeryStrong"),
             _           => "—"
-        };
-    }
-
-    private static string GetCrackTimeLabel(string time) => time switch
-    {
-        "instant" => s_res.GetString("CrackTimeInstant"),
-        "seconds" => s_res.GetString("CrackTimeSeconds"),
-        "trillionyears" => s_res.GetString("CrackTimeTrillionYears"),
-        _ => LocalizeCrackTimeString(time)
-    };
-
-    private static string LocalizeCrackTimeString(string time)
-    {
-        var parts = time.Split(' ', 2);
-        if (parts.Length != 2) return time;
-
-        var number = parts[0];
-        var unit = parts[1].ToLowerInvariant();
-
-        return unit switch
-        {
-            "minutes" or "minute" => string.Format(s_res.GetString("CrackTimeMinutes"), number),
-            "hours" or "hour" => string.Format(s_res.GetString("CrackTimeHours"), number),
-            "days" or "day" => string.Format(s_res.GetString("CrackTimeDays"), number),
-            "years" or "year" => string.Format(s_res.GetString("CrackTimeYears"), number),
-            "thousandyears" => string.Format(s_res.GetString("CrackTimeThousandYears"), number),
-            "millionyears" => string.Format(s_res.GetString("CrackTimeMillionYears"), number),
-            "billionyears" => string.Format(s_res.GetString("CrackTimeBillionYears"), number),
-            _ => time
         };
     }
 

@@ -5,6 +5,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using PassKey.Core.Models;
 using PassKey.Desktop.Services;
+using Microsoft.Windows.ApplicationModel.Resources;
+using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -12,6 +14,8 @@ namespace PassKey.Desktop.Views;
 public sealed partial class PasswordVerifierView : UserControl
 {
     private PasswordVerifierViewModel? _viewModel;
+    // Static loader (used by the static GetLocalized* helpers and the header builders).
+    private static readonly ResourceLoader s_res = new();
 
     // Strength bar segments
     private Border[] _strengthSegments = [];
@@ -58,17 +62,17 @@ public sealed partial class PasswordVerifierView : UserControl
                 break;
             case nameof(PasswordVerifierViewModel.CompromisedCount):
                 CompromisedCountText.Text = _viewModel!.CompromisedCount.ToString();
-                CompromisedExpanderHeaderText.Text = $"Password compromesse ({_viewModel.CompromisedCount})";
+                CompromisedExpanderHeaderText.Text = string.Format(s_res.GetString("VerifierCompromisedFmt"), _viewModel.CompromisedCount);
                 RebuildIssueList(CompromisedPasswordsList, _viewModel.CompromisedPasswords);
                 break;
             case nameof(PasswordVerifierViewModel.WeakCount):
                 WeakCountText.Text = _viewModel!.WeakCount.ToString();
-                WeakExpanderHeaderText.Text = $"Password deboli ({_viewModel.WeakCount})";
+                WeakExpanderHeaderText.Text = string.Format(s_res.GetString("VerifierWeakFmt"), _viewModel.WeakCount);
                 RebuildIssueList(WeakPasswordsList, _viewModel.WeakPasswords);
                 break;
             case nameof(PasswordVerifierViewModel.DuplicateCount):
                 DuplicateCountText.Text = _viewModel!.DuplicateCount.ToString();
-                DuplicateExpanderHeaderText.Text = $"Password riutilizzate ({_viewModel.DuplicateCount})";
+                DuplicateExpanderHeaderText.Text = string.Format(s_res.GetString("VerifierDuplicateFmt"), _viewModel.DuplicateCount);
                 RebuildIssueList(DuplicateGroupsList, _viewModel.DuplicateEntries);
                 break;
             case nameof(PasswordVerifierViewModel.IsAuditLoading):
@@ -122,7 +126,7 @@ public sealed partial class PasswordVerifierView : UserControl
         var info = new StackPanel { Spacing = 2 };
         info.Children.Add(new TextBlock
         {
-            Text = string.IsNullOrEmpty(item.Title) ? "(senza titolo)" : item.Title,
+            Text = string.IsNullOrEmpty(item.Title) ? s_res.GetString("VerifierUntitled") : item.Title,
             Style = (Style)Application.Current.Resources["BodyStrongTextBlockStyle"],
         });
         var details = new System.Text.StringBuilder();
@@ -130,12 +134,12 @@ public sealed partial class PasswordVerifierView : UserControl
         if (item.BreachCount > 0)
         {
             if (details.Length > 0) details.Append(" — ");
-            details.Append($"{item.BreachCount:N0} breach");
+            details.Append(string.Format(s_res.GetString("VerifierBreachLabel"), item.BreachCount));
         }
         if (item.IsDuplicate)
         {
             if (details.Length > 0) details.Append(" — ");
-            details.Append("riutilizzata");
+            details.Append(s_res.GetString("VerifierReused"));
         }
         if (details.Length > 0)
         {
@@ -203,7 +207,7 @@ public sealed partial class PasswordVerifierView : UserControl
 
         // Strength label + crack time
         StrengthLabel.Text = GetLocalizedLabel(result.Label);
-        CrackTimeText.Text = result.EstimatedCrackTime;
+        CrackTimeText.Text = CrackTimeFormatter.Localize(result.EstimatedCrackTime);
 
         // 5-segment bar
         UpdateStrengthBar(result.Score);
@@ -356,23 +360,23 @@ public sealed partial class PasswordVerifierView : UserControl
 
     private static string GetLocalizedLabel(string label) => label switch
     {
-        "VeryWeak" => "Molto debole",
-        "Weak" => "Debole",
-        "Medium" => "Media",
-        "Strong" => "Forte",
-        "VeryStrong" => "Molto forte",
+        "VeryWeak" => s_res.GetString("StrengthVeryWeak"),
+        "Weak" => s_res.GetString("StrengthWeak"),
+        "Medium" => s_res.GetString("StrengthMedium"),
+        "Strong" => s_res.GetString("StrengthStrong"),
+        "VeryStrong" => s_res.GetString("StrengthVeryStrong"),
         _ => label
     };
 
     private static string GetLocalizedSuggestion(string key) => key switch
     {
-        "UseAtLeast8Characters" => "Usa almeno 8 caratteri",
-        "UseAtLeast12Characters" => "Usa almeno 12 caratteri per una protezione migliore",
-        "AddUppercaseLetters" => "Aggiungi lettere maiuscole",
-        "AddLowercaseLetters" => "Aggiungi lettere minuscole",
-        "AddNumbers" => "Aggiungi numeri",
-        "AddSpecialCharacters" => "Aggiungi simboli speciali (!@#$%)",
-        "AvoidCommonPatterns" => "Evita pattern comuni (password, 123456, qwerty...)",
+        "UseAtLeast8Characters" => s_res.GetString("SuggestUseAtLeast8"),
+        "UseAtLeast12Characters" => s_res.GetString("SuggestUseAtLeast12"),
+        "AddUppercaseLetters" => s_res.GetString("SuggestAddUppercase"),
+        "AddLowercaseLetters" => s_res.GetString("SuggestAddLowercase"),
+        "AddNumbers" => s_res.GetString("SuggestAddNumbers"),
+        "AddSpecialCharacters" => s_res.GetString("SuggestAddSpecial"),
+        "AvoidCommonPatterns" => s_res.GetString("SuggestAvoidCommon"),
         _ => key
     };
 }

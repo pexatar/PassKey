@@ -1950,4 +1950,43 @@ Deseas activar esta verificacion?</value>
   <data name="CrackTimeTrillionYears" xml:space="preserve">
     <value>más de un billón de años</value>
   </data>
+  <data name="VerifierCompromisedFmt" xml:space="preserve">
+    <value>Contraseñas comprometidas ({0})</value>
+  </data>
+  <data name="VerifierWeakFmt" xml:space="preserve">
+    <value>Contraseñas débiles ({0})</value>
+  </data>
+  <data name="VerifierDuplicateFmt" xml:space="preserve">
+    <value>Contraseñas reutilizadas ({0})</value>
+  </data>
+  <data name="VerifierUntitled" xml:space="preserve">
+    <value>(sin título)</value>
+  </data>
+  <data name="VerifierBreachLabel" xml:space="preserve">
+    <value>{0:N0} filtraciones</value>
+  </data>
+  <data name="VerifierReused" xml:space="preserve">
+    <value>reutilizada</value>
+  </data>
+  <data name="SuggestUseAtLeast8" xml:space="preserve">
+    <value>Usa al menos 8 caracteres</value>
+  </data>
+  <data name="SuggestUseAtLeast12" xml:space="preserve">
+    <value>Usa al menos 12 caracteres para mayor protección</value>
+  </data>
+  <data name="SuggestAddUppercase" xml:space="preserve">
+    <value>Añade letras mayúsculas</value>
+  </data>
+  <data name="SuggestAddLowercase" xml:space="preserve">
+    <value>Añade letras minúsculas</value>
+  </data>
+  <data name="SuggestAddNumbers" xml:space="preserve">
+    <value>Añade números</value>
+  </data>
+  <data name="SuggestAddSpecial" xml:space="preserve">
+    <value>Añade símbolos especiales (!@#$%)</value>
+  </data>
+  <data name="SuggestAvoidCommon" xml:space="preserve">
+    <value>Evita patrones comunes (password, 123456, qwerty...)</value>
+  </data>
 </root>
