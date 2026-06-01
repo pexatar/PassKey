@@ -1811,4 +1811,52 @@ Do you want to enable this check?</value>
   <data name="ButtonOk" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="NoteCategoryGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="NoteCategoryPersonal" xml:space="preserve">
+    <value>Personal</value>
+  </data>
+  <data name="NoteCategoryWork" xml:space="preserve">
+    <value>Work</value>
+  </data>
+  <data name="NoteCategoryFinancial" xml:space="preserve">
+    <value>Financial</value>
+  </data>
+  <data name="NoteCategoryMedical" xml:space="preserve">
+    <value>Medical</value>
+  </data>
+  <data name="NoteCategoryTravel" xml:space="preserve">
+    <value>Travel</value>
+  </data>
+  <data name="NoteCategoryEducation" xml:space="preserve">
+    <value>Education</value>
+  </data>
+  <data name="NoteCategoryLegal" xml:space="preserve">
+    <value>Legal</value>
+  </data>
+  <data name="NoteCategoryTechnical" xml:space="preserve">
+    <value>Technical</value>
+  </data>
+  <data name="NoteCategoryOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="NoteTimeNow" xml:space="preserve">
+    <value>Just now</value>
+  </data>
+  <data name="NoteTimeMinutes" xml:space="preserve">
+    <value>{0} min ago</value>
+  </data>
+  <data name="NoteTimeHours" xml:space="preserve">
+    <value>{0} h ago</value>
+  </data>
+  <data name="NoteTimeYesterday" xml:space="preserve">
+    <value>Yesterday</value>
+  </data>
+  <data name="NoteTimeDays" xml:space="preserve">
+    <value>{0}d ago</value>
+  </data>
+  <data name="NoteDateCulture" xml:space="preserve">
+    <value>en-GB</value>
+  </data>
 </root>

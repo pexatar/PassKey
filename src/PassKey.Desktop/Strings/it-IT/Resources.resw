@@ -1824,4 +1824,52 @@ Vuoi attivare questa verifica?</value>
   <data name="ButtonOk" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="NoteCategoryGeneral" xml:space="preserve">
+    <value>Generale</value>
+  </data>
+  <data name="NoteCategoryPersonal" xml:space="preserve">
+    <value>Personale</value>
+  </data>
+  <data name="NoteCategoryWork" xml:space="preserve">
+    <value>Lavoro</value>
+  </data>
+  <data name="NoteCategoryFinancial" xml:space="preserve">
+    <value>Finanziario</value>
+  </data>
+  <data name="NoteCategoryMedical" xml:space="preserve">
+    <value>Medico</value>
+  </data>
+  <data name="NoteCategoryTravel" xml:space="preserve">
+    <value>Viaggio</value>
+  </data>
+  <data name="NoteCategoryEducation" xml:space="preserve">
+    <value>Educazione</value>
+  </data>
+  <data name="NoteCategoryLegal" xml:space="preserve">
+    <value>Legale</value>
+  </data>
+  <data name="NoteCategoryTechnical" xml:space="preserve">
+    <value>Tecnico</value>
+  </data>
+  <data name="NoteCategoryOther" xml:space="preserve">
+    <value>Altro</value>
+  </data>
+  <data name="NoteTimeNow" xml:space="preserve">
+    <value>Adesso</value>
+  </data>
+  <data name="NoteTimeMinutes" xml:space="preserve">
+    <value>{0} min fa</value>
+  </data>
+  <data name="NoteTimeHours" xml:space="preserve">
+    <value>{0} ore fa</value>
+  </data>
+  <data name="NoteTimeYesterday" xml:space="preserve">
+    <value>Ieri</value>
+  </data>
+  <data name="NoteTimeDays" xml:space="preserve">
+    <value>{0}g fa</value>
+  </data>
+  <data name="NoteDateCulture" xml:space="preserve">
+    <value>it-IT</value>
+  </data>
 </root>

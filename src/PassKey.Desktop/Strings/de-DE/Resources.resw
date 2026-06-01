@@ -1821,4 +1821,52 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="ButtonOk" xml:space="preserve">
     <value>OK</value>
   </data>
+  <data name="NoteCategoryGeneral" xml:space="preserve">
+    <value>Allgemein</value>
+  </data>
+  <data name="NoteCategoryPersonal" xml:space="preserve">
+    <value>Persönlich</value>
+  </data>
+  <data name="NoteCategoryWork" xml:space="preserve">
+    <value>Arbeit</value>
+  </data>
+  <data name="NoteCategoryFinancial" xml:space="preserve">
+    <value>Finanzen</value>
+  </data>
+  <data name="NoteCategoryMedical" xml:space="preserve">
+    <value>Medizinisch</value>
+  </data>
+  <data name="NoteCategoryTravel" xml:space="preserve">
+    <value>Reisen</value>
+  </data>
+  <data name="NoteCategoryEducation" xml:space="preserve">
+    <value>Bildung</value>
+  </data>
+  <data name="NoteCategoryLegal" xml:space="preserve">
+    <value>Rechtliches</value>
+  </data>
+  <data name="NoteCategoryTechnical" xml:space="preserve">
+    <value>Technisch</value>
+  </data>
+  <data name="NoteCategoryOther" xml:space="preserve">
+    <value>Sonstiges</value>
+  </data>
+  <data name="NoteTimeNow" xml:space="preserve">
+    <value>Gerade eben</value>
+  </data>
+  <data name="NoteTimeMinutes" xml:space="preserve">
+    <value>vor {0} Min.</value>
+  </data>
+  <data name="NoteTimeHours" xml:space="preserve">
+    <value>vor {0} Std.</value>
+  </data>
+  <data name="NoteTimeYesterday" xml:space="preserve">
+    <value>Gestern</value>
+  </data>
+  <data name="NoteTimeDays" xml:space="preserve">
+    <value>vor {0} T.</value>
+  </data>
+  <data name="NoteDateCulture" xml:space="preserve">
+    <value>de-DE</value>
+  </data>
 </root>
