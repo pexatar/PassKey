@@ -257,13 +257,13 @@ public sealed partial class PasswordDetailView : UserControl
 
         var input = new TextBox
         {
-            PlaceholderText = "Es. JBSW Y3DP EHPK 3PXP",
+            PlaceholderText = _resourceLoader.GetString("TotpSeedPlaceholder"),
             FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Consolas, Courier New"),
             AcceptsReturn = false,
         };
         var dialog = new ContentDialog
         {
-            Title = "Inserisci chiave 2FA",
+            Title = _resourceLoader.GetString("Totp2faDialogTitle"),
             Content = new StackPanel
             {
                 Spacing = 8,
@@ -271,14 +271,14 @@ public sealed partial class PasswordDetailView : UserControl
                 {
                     new TextBlock
                     {
-                        Text = "Incolla la chiave Base32 fornita dal sito (lo stesso testo che inseriresti in Google Authenticator). Maiuscole e spazi vengono ignorati.",
+                        Text = _resourceLoader.GetString("Totp2faDialogBody"),
                         TextWrapping = TextWrapping.Wrap,
                     },
                     input,
                 },
             },
-            PrimaryButtonText = "Salva",
-            CloseButtonText = "Annulla",
+            PrimaryButtonText = _resourceLoader.GetString("SaveButton"),
+            CloseButtonText = _resourceLoader.GetString("CancelButton"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot,
         };

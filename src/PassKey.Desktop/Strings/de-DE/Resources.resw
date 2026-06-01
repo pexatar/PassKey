@@ -1788,4 +1788,37 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="RequiredFieldLegendIdentity.Text" xml:space="preserve">
     <value>* Pflichtfeld (Vor- oder Nachname)</value>
   </data>
+  <data name="TrayMenuShow" xml:space="preserve">
+    <value>PassKey anzeigen</value>
+  </data>
+  <data name="TrayMenuLock" xml:space="preserve">
+    <value>Tresor sperren</value>
+  </data>
+  <data name="TrayMenuExit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="TrayCloseContent" xml:space="preserve">
+    <value>PassKey im Hintergrund weiterlaufen lassen?</value>
+  </data>
+  <data name="TrayCloseMinimize" xml:space="preserve">
+    <value>Minimieren</value>
+  </data>
+  <data name="TrayCloseExit" xml:space="preserve">
+    <value>PassKey schließen</value>
+  </data>
+  <data name="Totp2faDialogTitle" xml:space="preserve">
+    <value>2FA-Schlüssel eingeben</value>
+  </data>
+  <data name="Totp2faDialogBody" xml:space="preserve">
+    <value>Fügen Sie den vom Dienst bereitgestellten Base32-Schlüssel ein (derselbe Text, den Sie in Google Authenticator eingeben würden). Groß-/Kleinschreibung und Leerzeichen werden ignoriert.</value>
+  </data>
+  <data name="TotpSeedPlaceholder" xml:space="preserve">
+    <value>z. B. JBSW Y3DP EHPK 3PXP</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="ButtonOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

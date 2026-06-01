@@ -1778,4 +1778,37 @@ Do you want to enable this check?</value>
   <data name="RequiredFieldLegendIdentity.Text" xml:space="preserve">
     <value>* Required field (first or last name)</value>
   </data>
+  <data name="TrayMenuShow" xml:space="preserve">
+    <value>Show PassKey</value>
+  </data>
+  <data name="TrayMenuLock" xml:space="preserve">
+    <value>Lock Vault</value>
+  </data>
+  <data name="TrayMenuExit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="TrayCloseContent" xml:space="preserve">
+    <value>Keep PassKey running in the background?</value>
+  </data>
+  <data name="TrayCloseMinimize" xml:space="preserve">
+    <value>Minimise</value>
+  </data>
+  <data name="TrayCloseExit" xml:space="preserve">
+    <value>Close PassKey</value>
+  </data>
+  <data name="Totp2faDialogTitle" xml:space="preserve">
+    <value>Enter 2FA key</value>
+  </data>
+  <data name="Totp2faDialogBody" xml:space="preserve">
+    <value>Paste the Base32 key provided by the site (the same text you would enter in Google Authenticator). Case and spaces are ignored.</value>
+  </data>
+  <data name="TotpSeedPlaceholder" xml:space="preserve">
+    <value>E.g. JBSW Y3DP EHPK 3PXP</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="ButtonOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

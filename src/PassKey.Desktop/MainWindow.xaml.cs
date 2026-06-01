@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Desktop.Services;
 using PassKey.Desktop.ViewModels;
 using PassKey.Desktop.Views;
@@ -13,6 +14,7 @@ namespace PassKey.Desktop;
 public sealed partial class MainWindow : Window
 {
     private readonly MainViewModel _mainViewModel;
+    private readonly ResourceLoader _resourceLoader = new();
     private bool _initialized;
 
     // Comandi tray: x:Bind li risolve a compile-time sulla MainWindow, evitando
@@ -34,6 +36,11 @@ public sealed partial class MainWindow : Window
 
         InitializeComponent();
         Title = "PassKey";
+
+        // Localized tray context-menu items (MainWindow.xaml has no x:Uid resource map).
+        TrayShowItem.Text = _resourceLoader.GetString("TrayMenuShow");
+        TrayLockItem.Text = _resourceLoader.GetString("TrayMenuLock");
+        TrayExitItem.Text = _resourceLoader.GetString("TrayMenuExit");
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "PassKey.ico"));
 
         // Imposta l'icona tray con percorso assoluto (AppContext.BaseDirectory).
@@ -65,10 +72,10 @@ public sealed partial class MainWindow : Window
         var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
         {
             Title = "PassKey",
-            Content = "Vuoi mantenere PassKey attivo in background?",
-            PrimaryButtonText = "Minimizza",
-            SecondaryButtonText = "Chiudi PassKey",
-            CloseButtonText = "Annulla",
+            Content = _resourceLoader.GetString("TrayCloseContent"),
+            PrimaryButtonText = _resourceLoader.GetString("TrayCloseMinimize"),
+            SecondaryButtonText = _resourceLoader.GetString("TrayCloseExit"),
+            CloseButtonText = _resourceLoader.GetString("CancelButton"),
             DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Primary,
             XamlRoot = Content.XamlRoot
         };

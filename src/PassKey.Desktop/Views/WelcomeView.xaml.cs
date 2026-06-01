@@ -82,7 +82,7 @@ public sealed partial class WelcomeView : UserControl
         {
             Title = _resourceLoader.GetString("RestorePwDialogTitle"),
             Content = pwBox,
-            PrimaryButtonText = "OK",
+            PrimaryButtonText = _resourceLoader.GetString("ButtonOk"),
             CloseButtonText = _resourceLoader.GetString("RestoreWarningCancel"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
@@ -115,7 +115,7 @@ public sealed partial class WelcomeView : UserControl
         {
             Title = title,
             Content = message,
-            CloseButtonText = "OK",
+            CloseButtonText = _resourceLoader.GetString("ButtonOk"),
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = XamlRoot
         };

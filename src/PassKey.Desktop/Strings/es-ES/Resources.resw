@@ -1791,4 +1791,37 @@ Deseas activar esta verificacion?</value>
   <data name="RequiredFieldLegendIdentity.Text" xml:space="preserve">
     <value>* Campo obligatorio (nombre o apellido)</value>
   </data>
+  <data name="TrayMenuShow" xml:space="preserve">
+    <value>Mostrar PassKey</value>
+  </data>
+  <data name="TrayMenuLock" xml:space="preserve">
+    <value>Bloquear el baúl</value>
+  </data>
+  <data name="TrayMenuExit" xml:space="preserve">
+    <value>Salir</value>
+  </data>
+  <data name="TrayCloseContent" xml:space="preserve">
+    <value>¿Mantener PassKey activo en segundo plano?</value>
+  </data>
+  <data name="TrayCloseMinimize" xml:space="preserve">
+    <value>Minimizar</value>
+  </data>
+  <data name="TrayCloseExit" xml:space="preserve">
+    <value>Cerrar PassKey</value>
+  </data>
+  <data name="Totp2faDialogTitle" xml:space="preserve">
+    <value>Introducir clave 2FA</value>
+  </data>
+  <data name="Totp2faDialogBody" xml:space="preserve">
+    <value>Pega la clave Base32 proporcionada por el sitio (el mismo texto que introducirías en Google Authenticator). Las mayúsculas y los espacios se ignoran.</value>
+  </data>
+  <data name="TotpSeedPlaceholder" xml:space="preserve">
+    <value>Ej. JBSW Y3DP EHPK 3PXP</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="ButtonOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

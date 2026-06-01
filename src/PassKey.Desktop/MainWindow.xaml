@@ -30,14 +30,17 @@
             <tb:TaskbarIcon.ContextFlyout>
                 <MenuFlyout>
                     <MenuFlyoutItem
+                        x:Name="TrayShowItem"
                         Text="Mostra PassKey"
                         Command="{x:Bind TrayShowCommand}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
+                        x:Name="TrayLockItem"
                         Text="Blocca Vault"
                         Command="{x:Bind TrayLockCommand}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
+                        x:Name="TrayExitItem"
                         Text="Esci"
                         Command="{x:Bind TrayExitCommand}" />
                 </MenuFlyout>
