@@ -1917,12 +1917,6 @@ Deseja ativar esta verificacao?</value>
   <data name="CrackTimeSeconds" xml:space="preserve">
     <value>Poucos segundos</value>
   </data>
-  <data name="CrackTimeCenturies" xml:space="preserve">
-    <value>Séculos</value>
-  </data>
-  <data name="CrackTimeMillennia" xml:space="preserve">
-    <value>Milénios</value>
-  </data>
   <data name="CrackTimeMinutes" xml:space="preserve">
     <value>{0} minutos</value>
   </data>
@@ -1940,5 +1934,17 @@ Deseja ativar esta verificacao?</value>
   </data>
   <data name="GeneratorPwCopied" xml:space="preserve">
     <value>Palavra-passe copiada para a área de transferência</value>
+  </data>
+  <data name="CrackTimeThousandYears" xml:space="preserve">
+    <value>{0} mil anos</value>
+  </data>
+  <data name="CrackTimeMillionYears" xml:space="preserve">
+    <value>{0} milhões de anos</value>
+  </data>
+  <data name="CrackTimeBillionYears" xml:space="preserve">
+    <value>{0} mil milhões de anos</value>
+  </data>
+  <data name="CrackTimeTrillionYears" xml:space="preserve">
+    <value>mais de um bilião de anos</value>
   </data>
 </root>

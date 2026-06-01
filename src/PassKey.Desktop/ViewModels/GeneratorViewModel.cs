@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
 using PassKey.Core.Services;
 using PassKey.Desktop.Services;
@@ -18,6 +19,8 @@ public partial class GeneratorViewModel : ObservableObject
     private readonly IClipboardService _clipboard;
     private readonly ISettingsService _settings;
     private readonly IVaultStateService _vaultState;
+    private readonly IToastService _toast;
+    private readonly ResourceLoader _resourceLoader = new();
 
     [ObservableProperty]
     public partial string GeneratedPassword { get; set; } = string.Empty;
@@ -54,13 +57,15 @@ public partial class GeneratorViewModel : ObservableObject
         IPasswordStrengthAnalyzer analyzer,
         IClipboardService clipboard,
         ISettingsService settings,
-        IVaultStateService vaultState)
+        IVaultStateService vaultState,
+        IToastService toast)
     {
         _generator = generator;
         _analyzer = analyzer;
         _clipboard = clipboard;
         _settings = settings;
         _vaultState = vaultState;
+        _toast = toast;
 
         // Load persisted settings
         Length = _settings.PasswordGeneratorLength;
@@ -116,6 +121,7 @@ public partial class GeneratorViewModel : ObservableObject
 
         _clipboard.Copy(GeneratedPassword, CopyType.Sensitive);
         ShowCopiedFeedback = true;
+        _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
     }
 
     [RelayCommand]
@@ -132,6 +138,7 @@ public partial class GeneratorViewModel : ObservableObject
             return;
 
         _clipboard.Copy(entry.Password, CopyType.Sensitive);
+        _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
     }
 
     /// <summary>

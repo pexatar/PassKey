@@ -1917,12 +1917,6 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="CrackTimeSeconds" xml:space="preserve">
     <value>Wenige Sekunden</value>
   </data>
-  <data name="CrackTimeCenturies" xml:space="preserve">
-    <value>Jahrhunderte</value>
-  </data>
-  <data name="CrackTimeMillennia" xml:space="preserve">
-    <value>Jahrtausende</value>
-  </data>
   <data name="CrackTimeMinutes" xml:space="preserve">
     <value>{0} Minuten</value>
   </data>
@@ -1940,5 +1934,17 @@ Moechten Sie diese Pruefung aktivieren?</value>
   </data>
   <data name="GeneratorPwCopied" xml:space="preserve">
     <value>Passwort in die Zwischenablage kopiert</value>
+  </data>
+  <data name="CrackTimeThousandYears" xml:space="preserve">
+    <value>{0} Tausend Jahre</value>
+  </data>
+  <data name="CrackTimeMillionYears" xml:space="preserve">
+    <value>{0} Millionen Jahre</value>
+  </data>
+  <data name="CrackTimeBillionYears" xml:space="preserve">
+    <value>{0} Milliarden Jahre</value>
+  </data>
+  <data name="CrackTimeTrillionYears" xml:space="preserve">
+    <value>über eine Billion Jahre</value>
   </data>
 </root>

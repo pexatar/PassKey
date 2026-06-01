@@ -1907,12 +1907,6 @@ Do you want to enable this check?</value>
   <data name="CrackTimeSeconds" xml:space="preserve">
     <value>A few seconds</value>
   </data>
-  <data name="CrackTimeCenturies" xml:space="preserve">
-    <value>Centuries</value>
-  </data>
-  <data name="CrackTimeMillennia" xml:space="preserve">
-    <value>Millennia</value>
-  </data>
   <data name="CrackTimeMinutes" xml:space="preserve">
     <value>{0} minutes</value>
   </data>
@@ -1930,5 +1924,17 @@ Do you want to enable this check?</value>
   </data>
   <data name="GeneratorPwCopied" xml:space="preserve">
     <value>Password copied to clipboard</value>
+  </data>
+  <data name="CrackTimeThousandYears" xml:space="preserve">
+    <value>{0} thousand years</value>
+  </data>
+  <data name="CrackTimeMillionYears" xml:space="preserve">
+    <value>{0} million years</value>
+  </data>
+  <data name="CrackTimeBillionYears" xml:space="preserve">
+    <value>{0} billion years</value>
+  </data>
+  <data name="CrackTimeTrillionYears" xml:space="preserve">
+    <value>over a trillion years</value>
   </data>
 </root>

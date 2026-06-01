@@ -131,16 +131,19 @@ public sealed class PasswordStrengthAnalyzer : IPasswordStrengthAnalyzer
         var combinations = Math.Pow(charsetSize, length);
         var seconds = combinations / guessesPerSecond / 2; // average case
 
-        return seconds switch
-        {
-            < 1 => "instant",
-            < TimeConstants.SecondsPerMinute     => "seconds",
-            < TimeConstants.SecondsPerHour       => $"{(int)(seconds / TimeConstants.SecondsPerMinute)} minutes",
-            < TimeConstants.SecondsPerDay        => $"{(int)(seconds / TimeConstants.SecondsPerHour)} hours",
-            < TimeConstants.SecondsPerYear       => $"{(int)(seconds / TimeConstants.SecondsPerDay)} days",
-            < TimeConstants.SecondsPerCentury    => $"{(int)(seconds / TimeConstants.SecondsPerYear)} years",
-            < TimeConstants.SecondsPerMillennium => "centuries",
-            _ => "millennia"
-        };
+        if (seconds < 1) return "instant";
+        if (seconds < TimeConstants.SecondsPerMinute) return "seconds";
+        if (seconds < TimeConstants.SecondsPerHour) return $"{(int)(seconds / TimeConstants.SecondsPerMinute)} minutes";
+        if (seconds < TimeConstants.SecondsPerDay) return $"{(int)(seconds / TimeConstants.SecondsPerHour)} hours";
+        if (seconds < TimeConstants.SecondsPerYear) return $"{(int)(seconds / TimeConstants.SecondsPerDay)} days";
+
+        // Above a year, use numeric large-scale buckets so the estimate doesn't collapse
+        // straight from "years" to "millennia" (each extra char multiplies guesses ~100x).
+        var years = seconds / TimeConstants.SecondsPerYear;
+        if (years < 1_000)             return $"{(int)years} years";
+        if (years < 1_000_000)         return $"{(int)(years / 1_000)} thousandyears";
+        if (years < 1_000_000_000)     return $"{(int)(years / 1_000_000)} millionyears";
+        if (years < 1_000_000_000_000) return $"{(int)(years / 1_000_000_000)} billionyears";
+        return "trillionyears";
     }
 }

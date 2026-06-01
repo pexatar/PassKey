@@ -1920,12 +1920,6 @@ Vuoi attivare questa verifica?</value>
   <data name="CrackTimeSeconds" xml:space="preserve">
     <value>Pochi secondi</value>
   </data>
-  <data name="CrackTimeCenturies" xml:space="preserve">
-    <value>Secoli</value>
-  </data>
-  <data name="CrackTimeMillennia" xml:space="preserve">
-    <value>Millenni</value>
-  </data>
   <data name="CrackTimeMinutes" xml:space="preserve">
     <value>{0} minuti</value>
   </data>
@@ -1943,5 +1937,17 @@ Vuoi attivare questa verifica?</value>
   </data>
   <data name="GeneratorPwCopied" xml:space="preserve">
     <value>Password copiata negli appunti</value>
+  </data>
+  <data name="CrackTimeThousandYears" xml:space="preserve">
+    <value>{0} mila anni</value>
+  </data>
+  <data name="CrackTimeMillionYears" xml:space="preserve">
+    <value>{0} milioni di anni</value>
+  </data>
+  <data name="CrackTimeBillionYears" xml:space="preserve">
+    <value>{0} miliardi di anni</value>
+  </data>
+  <data name="CrackTimeTrillionYears" xml:space="preserve">
+    <value>oltre mille miliardi di anni</value>
   </data>
 </root>

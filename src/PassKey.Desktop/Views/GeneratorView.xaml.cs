@@ -31,6 +31,17 @@ public sealed partial class GeneratorView : UserControl
     public GeneratorView()
     {
         InitializeComponent();
+        // Re-render colour-dependent UI when the app theme changes at runtime, so the
+        // code-built colours (password syntax, strength bar, history) follow the new theme.
+        ActualThemeChanged += OnActualThemeChanged;
+    }
+
+    private void OnActualThemeChanged(FrameworkElement sender, object args)
+    {
+        if (_viewModel is null) return;
+        UpdatePasswordDisplay(_viewModel.GeneratedPassword);
+        UpdateStrengthUI();
+        UpdateHistoryUI();
     }
 
     public void SetViewModel(GeneratorViewModel vm)
@@ -94,9 +105,9 @@ public sealed partial class GeneratorView : UserControl
         if (string.IsNullOrEmpty(password))
             return;
 
-        var letterBrush = (Brush)Application.Current.Resources["PasswordCharLetterBrush"];
-        var digitBrush = (Brush)Application.Current.Resources["PasswordCharDigitBrush"];
-        var symbolBrush = (Brush)Application.Current.Resources["PasswordCharSymbolBrush"];
+        var letterBrush = ThemeBrush("PasswordCharLetterBrush");
+        var digitBrush = ThemeBrush("PasswordCharDigitBrush");
+        var symbolBrush = ThemeBrush("PasswordCharSymbolBrush");
 
         // Group consecutive characters of the same type into a single Run
         var currentType = ClassifyChar(password[0]);
@@ -182,7 +193,6 @@ public sealed partial class GeneratorView : UserControl
     private void UpdateStrengthBar(int score, Brush? activeBrush)
     {
         var segments = new[] { StrengthSeg0, StrengthSeg1, StrengthSeg2, StrengthSeg3, StrengthSeg4 };
-        var inactiveBrush = (Brush)Application.Current.Resources["ControlStrongFillColorDisabledBrush"];
 
         int filledCount;
         if (score == 0) filledCount = 0;
@@ -194,7 +204,12 @@ public sealed partial class GeneratorView : UserControl
 
         for (int i = 0; i < segments.Length; i++)
         {
-            segments[i].Background = i < filledCount ? (activeBrush ?? inactiveBrush) : inactiveBrush;
+            if (i < filledCount && activeBrush is not null)
+                segments[i].Background = activeBrush;
+            else
+                // Revert to the XAML-declared {ThemeResource ControlStrongFillColorDisabledBrush}
+                // so the inactive colour stays theme-aware.
+                segments[i].ClearValue(Border.BackgroundProperty);
         }
     }
 
@@ -222,13 +237,8 @@ public sealed partial class GeneratorView : UserControl
 
     private Grid CreateHistoryItem(GeneratorViewModel.HistoryEntry entry)
     {
-        var grid = new Grid
-        {
-            Padding = new Thickness(10, 8, 10, 8),
-            ColumnSpacing = 8,
-            CornerRadius = new CornerRadius(6),
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"]
-        };
+        // Style (theme-aware ThemeResource background) defined in GeneratorView.xaml.
+        var grid = new Grid { Style = (Style)Resources["HistoryItemGridStyle"] };
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // strength dot
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // password
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // timestamp
@@ -262,9 +272,7 @@ public sealed partial class GeneratorView : UserControl
         var timeText = new TextBlock
         {
             Text = GetRelativeTime(entry.GeneratedAt),
-            VerticalAlignment = VerticalAlignment.Center,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-            FontSize = 12
+            Style = (Style)Resources["HistoryTimeTextStyle"]
         };
         Grid.SetColumn(timeText, 2);
         grid.Children.Add(timeText);
@@ -275,7 +283,7 @@ public sealed partial class GeneratorView : UserControl
             Padding = new Thickness(6, 4, 6, 4),
             Content = new FontIcon { Glyph = "\uE8C8", FontSize = 12 }
         };
-        ToolTipService.SetToolTip(copyBtn, "Copia");
+        ToolTipService.SetToolTip(copyBtn, s_res.GetString("ButtonCopy"));
         copyBtn.Click += (_, _) => _viewModel?.CopyHistoryEntryCommand.Execute(entry);
         Grid.SetColumn(copyBtn, 3);
         grid.Children.Add(copyBtn);
@@ -368,8 +376,7 @@ public sealed partial class GeneratorView : UserControl
     {
         "instant" => s_res.GetString("CrackTimeInstant"),
         "seconds" => s_res.GetString("CrackTimeSeconds"),
-        "centuries" => s_res.GetString("CrackTimeCenturies"),
-        "millennia" => s_res.GetString("CrackTimeMillennia"),
+        "trillionyears" => s_res.GetString("CrackTimeTrillionYears"),
         _ => LocalizeCrackTimeString(time)
     };
 
@@ -387,11 +394,14 @@ public sealed partial class GeneratorView : UserControl
             "hours" or "hour" => string.Format(s_res.GetString("CrackTimeHours"), number),
             "days" or "day" => string.Format(s_res.GetString("CrackTimeDays"), number),
             "years" or "year" => string.Format(s_res.GetString("CrackTimeYears"), number),
+            "thousandyears" => string.Format(s_res.GetString("CrackTimeThousandYears"), number),
+            "millionyears" => string.Format(s_res.GetString("CrackTimeMillionYears"), number),
+            "billionyears" => string.Format(s_res.GetString("CrackTimeBillionYears"), number),
             _ => time
         };
     }
 
-    private static Brush GetStrengthBrush(int score)
+    private Brush GetStrengthBrush(int score)
     {
         var key = score switch
         {
@@ -401,6 +411,23 @@ public sealed partial class GeneratorView : UserControl
             < 80 => "StrengthStrongBrush",
             _ => "StrengthVeryStrongBrush"
         };
+        return ThemeBrush(key);
+    }
+
+    /// <summary>
+    /// Resolves a brush that lives inside ThemeColors' ThemeDictionaries for the control's
+    /// current ActualTheme. Needed because Application.Current.Resources[key] is NOT theme-aware
+    /// for keys declared inside ThemeDictionaries (it returns the wrong theme's value).
+    /// </summary>
+    private Brush ThemeBrush(string key)
+    {
+        var dictKey = ActualTheme == ElementTheme.Dark ? "Default" : "Light";
+        foreach (var md in Application.Current.Resources.MergedDictionaries)
+        {
+            if (md.ThemeDictionaries.TryGetValue(dictKey, out var obj) &&
+                obj is ResourceDictionary td && td.TryGetValue(key, out var b) && b is Brush brush)
+                return brush;
+        }
         return (Brush)Application.Current.Resources[key];
     }
 }
