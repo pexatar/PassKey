@@ -466,8 +466,8 @@ public partial class SettingsViewModel : ObservableObject
             //    file being invisible in the picker.
             var path = format switch
             {
-                ImportFormat.Bitwarden => await _filePicker.PickOpenFileAsync(new[] { ".json", ".zip" }, "Bitwarden (JSON o ZIP)"),
-                ImportFormat.Kdbx => await _filePicker.PickOpenFileAsync(new[] { ".kdbx", ".kdb" }, "KeePass (.kdbx / .kdb)"),
+                ImportFormat.Bitwarden => await _filePicker.PickOpenFileAsync(new[] { ".json", ".zip" }, _resourceLoader.GetString("ImportPickerBitwarden")),
+                ImportFormat.Kdbx => await _filePicker.PickOpenFileAsync(new[] { ".kdbx", ".kdb" }, _resourceLoader.GetString("ImportPickerKeepass")),
                 _ => await _filePicker.PickOpenFileAsync(extension, description)
             };
             if (path is null) return;
@@ -499,7 +499,7 @@ public partial class SettingsViewModel : ObservableObject
             if (totalImported == 0)
             {
                 if (OperationError is not null)
-                    await OperationError.Invoke("Il file selezionato non contiene alcuna voce riconoscibile. Verifica che l'esportazione di origine non sia vuota e che il formato sia supportato.");
+                    await OperationError.Invoke("IMPORT_NO_ENTRIES");
                 return;
             }
 

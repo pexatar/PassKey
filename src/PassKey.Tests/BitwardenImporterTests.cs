@@ -24,7 +24,8 @@ public class BitwardenImporterTests
         """;
 
         var ex = Assert.Throws<ImportFileException>(() => _importer.ParseBitwarden(json));
-        Assert.Contains("cifrato", ex.Message);
+        // The importer now throws an error CODE (localized by the Desktop layer), not a literal message.
+        Assert.Equal("IMPORT_BW_ENCRYPTED", ex.Message);
     }
 
     [Fact]

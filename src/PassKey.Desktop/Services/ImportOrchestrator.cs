@@ -107,8 +107,7 @@ public sealed class ImportOrchestrator : IImportOrchestrator
         using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
 
         var entry = archive.GetEntry("data.json")
-            ?? throw new ImportFileException(
-                "Il file ZIP di Bitwarden non contiene 'data.json'. Esporta nuovamente i dati da Bitwarden e riprova.");
+            ?? throw new ImportFileException("IMPORT_BW_ZIP");
 
         using var reader = new StreamReader(entry.Open());
         return await reader.ReadToEndAsync();
@@ -127,7 +126,7 @@ public sealed class ImportOrchestrator : IImportOrchestrator
         using (var archive = new ZipArchive(stream, ZipArchiveMode.Read))
         {
             var entry = archive.GetEntry("export.data")
-                ?? throw new InvalidDataException("The .1pux file does not contain 'export.data'.");
+                ?? throw new ImportFileException("IMPORT_1PUX");
 
             using var reader = new StreamReader(entry.Open());
             exportDataJson = await reader.ReadToEndAsync();
@@ -154,9 +153,7 @@ public sealed class ImportOrchestrator : IImportOrchestrator
             // KDBX but differs on the 5th (0x65 vs 0x67). KeePassLib cannot read it, so give
             // a clear, actionable message instead of an opaque library exception.
             if (IsKeePass1File(filePath))
-                throw new ImportFileException(
-                    "Questo è un database KeePass 1.x (.kdb), non supportato. Aprilo in KeePass 2.x e " +
-                    "salvalo (o esportalo) in formato .kdbx, poi riprova.");
+                throw new ImportFileException("IMPORT_KEEPASS_1X");
 
             var ioConnInfo = new IOConnectionInfo { Path = filePath };
             var compositeKey = new CompositeKey();
@@ -175,9 +172,7 @@ public sealed class ImportOrchestrator : IImportOrchestrator
             catch (Exception)
             {
                 // Wrong password or a file that isn't a valid KDBX 2.x database.
-                throw new ImportFileException(
-                    "Impossibile aprire il database KeePass. Verifica che la password sia corretta e " +
-                    "che il file sia un .kdbx valido (KeePass 2.x).");
+                throw new ImportFileException("IMPORT_KEEPASS_OPEN");
             }
             finally
             {

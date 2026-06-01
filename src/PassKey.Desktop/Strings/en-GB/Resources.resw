@@ -1976,4 +1976,28 @@ Do you want to enable this check?</value>
   <data name="SuggestAvoidCommon" xml:space="preserve">
     <value>Avoid common patterns (password, 123456, qwerty...)</value>
   </data>
+  <data name="ImportErrBwEncrypted" xml:space="preserve">
+    <value>This Bitwarden file is encrypted and cannot be imported. Export your data from Bitwarden in unencrypted (.json) format and try again.</value>
+  </data>
+  <data name="ImportErrBwZip" xml:space="preserve">
+    <value>The Bitwarden ZIP file does not contain 'data.json'. Export your data from Bitwarden again and try again.</value>
+  </data>
+  <data name="ImportErr1pux" xml:space="preserve">
+    <value>The .1pux file does not contain 'export.data'.</value>
+  </data>
+  <data name="ImportErrKeepass1x" xml:space="preserve">
+    <value>This is a KeePass 1.x database (.kdb), which is not supported. Open it in KeePass 2.x and save (or export) it as .kdbx, then try again.</value>
+  </data>
+  <data name="ImportErrKeepassOpen" xml:space="preserve">
+    <value>Could not open the KeePass database. Check that the password is correct and that the file is a valid .kdbx (KeePass 2.x).</value>
+  </data>
+  <data name="ImportErrNoEntries" xml:space="preserve">
+    <value>The selected file contains no recognizable entries. Make sure the source export is not empty and the format is supported.</value>
+  </data>
+  <data name="ImportPickerBitwarden" xml:space="preserve">
+    <value>Bitwarden (JSON or ZIP)</value>
+  </data>
+  <data name="ImportPickerKeepass" xml:space="preserve">
+    <value>KeePass (.kdbx / .kdb)</value>
+  </data>
 </root>

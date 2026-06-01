@@ -1986,4 +1986,28 @@ Deseja ativar esta verificacao?</value>
   <data name="SuggestAvoidCommon" xml:space="preserve">
     <value>Evite padrões comuns (password, 123456, qwerty...)</value>
   </data>
+  <data name="ImportErrBwEncrypted" xml:space="preserve">
+    <value>Este ficheiro do Bitwarden está cifrado e não pode ser importado. Exporte os seus dados do Bitwarden em formato não cifrado (.json) e tente novamente.</value>
+  </data>
+  <data name="ImportErrBwZip" xml:space="preserve">
+    <value>O ficheiro ZIP do Bitwarden não contém 'data.json'. Exporte novamente os seus dados do Bitwarden e tente novamente.</value>
+  </data>
+  <data name="ImportErr1pux" xml:space="preserve">
+    <value>O ficheiro .1pux não contém 'export.data'.</value>
+  </data>
+  <data name="ImportErrKeepass1x" xml:space="preserve">
+    <value>Esta é uma base de dados do KeePass 1.x (.kdb), que não é suportada. Abra-a no KeePass 2.x e guarde-a (ou exporte-a) no formato .kdbx, depois tente novamente.</value>
+  </data>
+  <data name="ImportErrKeepassOpen" xml:space="preserve">
+    <value>Não foi possível abrir a base de dados do KeePass. Verifique se a palavra-passe está correta e se o ficheiro é um .kdbx válido (KeePass 2.x).</value>
+  </data>
+  <data name="ImportErrNoEntries" xml:space="preserve">
+    <value>O ficheiro selecionado não contém entradas reconhecíveis. Certifique-se de que a exportação de origem não está vazia e de que o formato é suportado.</value>
+  </data>
+  <data name="ImportPickerBitwarden" xml:space="preserve">
+    <value>Bitwarden (JSON ou ZIP)</value>
+  </data>
+  <data name="ImportPickerKeepass" xml:space="preserve">
+    <value>KeePass (.kdbx / .kdb)</value>
+  </data>
 </root>

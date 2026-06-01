@@ -816,6 +816,12 @@ public sealed partial class SettingsView : UserControl
         {
             "WRONG_PASSWORD" => _resourceLoader.GetString("RestoreErrorWrongPw"),
             "INVALID_FILE" => _resourceLoader.GetString("RestoreErrorInvalid"),
+            "IMPORT_BW_ENCRYPTED" => _resourceLoader.GetString("ImportErrBwEncrypted"),
+            "IMPORT_BW_ZIP" => _resourceLoader.GetString("ImportErrBwZip"),
+            "IMPORT_1PUX" => _resourceLoader.GetString("ImportErr1pux"),
+            "IMPORT_KEEPASS_1X" => _resourceLoader.GetString("ImportErrKeepass1x"),
+            "IMPORT_KEEPASS_OPEN" => _resourceLoader.GetString("ImportErrKeepassOpen"),
+            "IMPORT_NO_ENTRIES" => _resourceLoader.GetString("ImportErrNoEntries"),
             _ => errorCode
         };
         await ShowInfoDialogAsync(_resourceLoader.GetString("ImportErrorTitle"), message);
