@@ -26,6 +26,9 @@
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8D7;" />
                 </NavigationViewItem.Icon>
+                <NavigationViewItem.Resources>
+                    <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#0078D4" />
+                </NavigationViewItem.Resources>
             </NavigationViewItem>
 
             <NavigationViewItem x:Uid="NavCards" Content="Carte" Tag="2"
@@ -33,6 +36,9 @@
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8C7;" />
                 </NavigationViewItem.Icon>
+                <NavigationViewItem.Resources>
+                    <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#8764B8" />
+                </NavigationViewItem.Resources>
             </NavigationViewItem>
 
             <NavigationViewItem x:Uid="NavIdentities" Content="Identità" Tag="3"
@@ -40,6 +46,9 @@
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE77B;" />
                 </NavigationViewItem.Icon>
+                <NavigationViewItem.Resources>
+                    <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#00B294" />
+                </NavigationViewItem.Resources>
             </NavigationViewItem>
 
             <NavigationViewItem x:Uid="NavNotes" Content="Note" Tag="4"
@@ -47,6 +56,9 @@
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE70B;" />
                 </NavigationViewItem.Icon>
+                <NavigationViewItem.Resources>
+                    <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#FFB900" />
+                </NavigationViewItem.Resources>
             </NavigationViewItem>
 
             <NavigationViewItemSeparator />

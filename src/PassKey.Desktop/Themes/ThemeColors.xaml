@@ -11,6 +11,10 @@
             <SolidColorBrush x:Key="IdentitiesIconBrush" Color="#00B294" />
             <SolidColorBrush x:Key="NotesIconBrush" Color="#FFB900" />
 
+            <!-- Nav selection indicator: neutral for non-category pages (category pages
+                 override per-item in ShellView). Graphite for contrast on the light pane. -->
+            <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#5F5F5F" />
+
             <!-- Stat delta colors -->
             <SolidColorBrush x:Key="StatAddedBrush" Color="#388E3C" />
             <SolidColorBrush x:Key="StatRemovedBrush" Color="#C62828" />
@@ -50,6 +54,10 @@
             <SolidColorBrush x:Key="CardsIconBrush" Color="#8764B8" />
             <SolidColorBrush x:Key="IdentitiesIconBrush" Color="#00B294" />
             <SolidColorBrush x:Key="NotesIconBrush" Color="#FFB900" />
+
+            <!-- Nav selection indicator: neutral for non-category pages (category pages
+                 override per-item in ShellView). Lighter grey for contrast on the dark pane. -->
+            <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#A6A6A6" />
 
             <!-- Stat delta colors -->
             <SolidColorBrush x:Key="StatAddedBrush" Color="#81C784" />

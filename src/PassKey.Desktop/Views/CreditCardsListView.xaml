@@ -38,7 +38,7 @@
                                 x:Uid="SearchCards"
                                 PlaceholderText="Cerca carte..."
                                 QueryIcon="Find"
-                                MaxWidth="300"
+                                MaxWidth="280"
                                 HorizontalAlignment="Right"
                                 TextChanged="SearchBox_TextChanged"
                                 AutomationProperties.Name="Cerca carte" />
