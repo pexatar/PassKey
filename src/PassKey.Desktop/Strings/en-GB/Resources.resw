@@ -1859,4 +1859,46 @@ Do you want to enable this check?</value>
   <data name="NoteDateCulture" xml:space="preserve">
     <value>en-GB</value>
   </data>
+  <data name="NoteFilterAllCategories" xml:space="preserve">
+    <value>All categories</value>
+  </data>
+  <data name="NoteFilterAnnounce" xml:space="preserve">
+    <value>Filter: {0}</value>
+  </data>
+  <data name="NoteNoResults" xml:space="preserve">
+    <value>No results found.</value>
+  </data>
+  <data name="NoteSectionPinned" xml:space="preserve">
+    <value>Pinned</value>
+  </data>
+  <data name="NoteSectionOthers" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="NotePinnedStatus" xml:space="preserve">
+    <value>Pinned</value>
+  </data>
+  <data name="NoteCharWordCount" xml:space="preserve">
+    <value>{0} chars · {1} words</value>
+  </data>
+  <data name="NoteCharWordAnnounce" xml:space="preserve">
+    <value>{0} characters, {1} words</value>
+  </data>
+  <data name="NoteUnsavedChanges" xml:space="preserve">
+    <value>Unsaved changes</value>
+  </data>
+  <data name="NotePinName" xml:space="preserve">
+    <value>Pin note to top of list</value>
+  </data>
+  <data name="NoteUnpinName" xml:space="preserve">
+    <value>Unpin from top</value>
+  </data>
+  <data name="NoteSavingAnnounce" xml:space="preserve">
+    <value>Saving...</value>
+  </data>
+  <data name="NoteSavedAnnounce" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="NoteFilterTooltip" xml:space="preserve">
+    <value>Filter by category</value>
+  </data>
 </root>

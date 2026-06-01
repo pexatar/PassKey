@@ -1871,4 +1871,46 @@ Voulez-vous activer cette verification ?</value>
   <data name="NoteDateCulture" xml:space="preserve">
     <value>fr-FR</value>
   </data>
+  <data name="NoteFilterAllCategories" xml:space="preserve">
+    <value>Toutes les catégories</value>
+  </data>
+  <data name="NoteFilterAnnounce" xml:space="preserve">
+    <value>Filtre : {0}</value>
+  </data>
+  <data name="NoteNoResults" xml:space="preserve">
+    <value>Aucun résultat trouvé.</value>
+  </data>
+  <data name="NoteSectionPinned" xml:space="preserve">
+    <value>Épinglées</value>
+  </data>
+  <data name="NoteSectionOthers" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="NotePinnedStatus" xml:space="preserve">
+    <value>Épinglée</value>
+  </data>
+  <data name="NoteCharWordCount" xml:space="preserve">
+    <value>{0} car · {1} mots</value>
+  </data>
+  <data name="NoteCharWordAnnounce" xml:space="preserve">
+    <value>{0} caractères, {1} mots</value>
+  </data>
+  <data name="NoteUnsavedChanges" xml:space="preserve">
+    <value>Modifications non enregistrées</value>
+  </data>
+  <data name="NotePinName" xml:space="preserve">
+    <value>Épingler la note en haut de la liste</value>
+  </data>
+  <data name="NoteUnpinName" xml:space="preserve">
+    <value>Détacher du haut</value>
+  </data>
+  <data name="NoteSavingAnnounce" xml:space="preserve">
+    <value>Enregistrement...</value>
+  </data>
+  <data name="NoteSavedAnnounce" xml:space="preserve">
+    <value>Enregistré</value>
+  </data>
+  <data name="NoteFilterTooltip" xml:space="preserve">
+    <value>Filtrer par catégorie</value>
+  </data>
 </root>

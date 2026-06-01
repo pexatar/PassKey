@@ -17,6 +17,7 @@ namespace PassKey.Desktop.Views;
 public sealed partial class SecureNoteDetailView : UserControl
 {
     private SecureNoteDetailViewModel? _viewModel;
+    private readonly ResourceLoader _resourceLoader = new();
     private bool _updatingFromVm;
     private bool _isPreviewMode;
 
@@ -128,7 +129,7 @@ public sealed partial class SecureNoteDetailView : UserControl
                 var hasChanges = _viewModel?.HasUnsavedChanges ?? false;
                 UnsavedDot.Visibility = hasChanges ? Visibility.Visible : Visibility.Collapsed;
                 if (hasChanges)
-                    Announce("Modifiche non salvate");
+                    Announce(_resourceLoader.GetString("NoteUnsavedChanges"));
                 break;
             case nameof(SecureNoteDetailViewModel.IsPinned):
                 UpdatePinVisual();
@@ -140,7 +141,9 @@ public sealed partial class SecureNoteDetailView : UserControl
 
     private void UpdateCounterText()
     {
-        CharCountText.Text = $"{_viewModel?.CharacterCount ?? 0} car · {_viewModel?.WordCount ?? 0} parole";
+        CharCountText.Text = string.Format(
+            _resourceLoader.GetString("NoteCharWordCount"),
+            _viewModel?.CharacterCount ?? 0, _viewModel?.WordCount ?? 0);
     }
 
     // --- Toggle Modifica / Anteprima ---
@@ -203,7 +206,7 @@ public sealed partial class SecureNoteDetailView : UserControl
 
         // Accessibility: nome dinamico descrive l'azione futura (toggle pattern)
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(
-            PinToggle, pinned ? "Rimuovi dalla cima" : "Fissa nota in cima alla lista");
+            PinToggle, pinned ? _resourceLoader.GetString("NoteUnpinName") : _resourceLoader.GetString("NotePinName"));
     }
 
     // --- TextBox → ViewModel sync ---
@@ -255,7 +258,7 @@ public sealed partial class SecureNoteDetailView : UserControl
             ? saveLoader.GetString("SaveInProgress")
             : saveLoader.GetString("ButtonSave/Text");
         SaveButton.IsEnabled = !saving;
-        Announce(saving ? "Salvataggio in corso..." : "Salva completato");
+        Announce(saving ? _resourceLoader.GetString("NoteSavingAnnounce") : _resourceLoader.GetString("NoteSavedAnnounce"));
     }
 
     // --- Helpers ---
@@ -263,7 +266,9 @@ public sealed partial class SecureNoteDetailView : UserControl
     private void ContentBox_LostFocus(object sender, RoutedEventArgs e)
     {
         if (_viewModel is not null)
-            Announce($"{_viewModel.CharacterCount} caratteri, {_viewModel.WordCount} parole");
+            Announce(string.Format(
+                _resourceLoader.GetString("NoteCharWordAnnounce"),
+                _viewModel.CharacterCount, _viewModel.WordCount));
     }
 
     private void Announce(string message)

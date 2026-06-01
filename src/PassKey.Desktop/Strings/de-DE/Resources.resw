@@ -1869,4 +1869,46 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="NoteDateCulture" xml:space="preserve">
     <value>de-DE</value>
   </data>
+  <data name="NoteFilterAllCategories" xml:space="preserve">
+    <value>Alle Kategorien</value>
+  </data>
+  <data name="NoteFilterAnnounce" xml:space="preserve">
+    <value>Filter: {0}</value>
+  </data>
+  <data name="NoteNoResults" xml:space="preserve">
+    <value>Keine Ergebnisse gefunden.</value>
+  </data>
+  <data name="NoteSectionPinned" xml:space="preserve">
+    <value>Angeheftet</value>
+  </data>
+  <data name="NoteSectionOthers" xml:space="preserve">
+    <value>Notizen</value>
+  </data>
+  <data name="NotePinnedStatus" xml:space="preserve">
+    <value>Angeheftet</value>
+  </data>
+  <data name="NoteCharWordCount" xml:space="preserve">
+    <value>{0} Z. · {1} Wörter</value>
+  </data>
+  <data name="NoteCharWordAnnounce" xml:space="preserve">
+    <value>{0} Zeichen, {1} Wörter</value>
+  </data>
+  <data name="NoteUnsavedChanges" xml:space="preserve">
+    <value>Nicht gespeicherte Änderungen</value>
+  </data>
+  <data name="NotePinName" xml:space="preserve">
+    <value>Notiz oben in der Liste anheften</value>
+  </data>
+  <data name="NoteUnpinName" xml:space="preserve">
+    <value>Vom Anfang lösen</value>
+  </data>
+  <data name="NoteSavingAnnounce" xml:space="preserve">
+    <value>Wird gespeichert...</value>
+  </data>
+  <data name="NoteSavedAnnounce" xml:space="preserve">
+    <value>Gespeichert</value>
+  </data>
+  <data name="NoteFilterTooltip" xml:space="preserve">
+    <value>Nach Kategorie filtern</value>
+  </data>
 </root>

@@ -1872,4 +1872,46 @@ Deseas activar esta verificacion?</value>
   <data name="NoteDateCulture" xml:space="preserve">
     <value>es-ES</value>
   </data>
+  <data name="NoteFilterAllCategories" xml:space="preserve">
+    <value>Todas las categorías</value>
+  </data>
+  <data name="NoteFilterAnnounce" xml:space="preserve">
+    <value>Filtro: {0}</value>
+  </data>
+  <data name="NoteNoResults" xml:space="preserve">
+    <value>No se encontraron resultados.</value>
+  </data>
+  <data name="NoteSectionPinned" xml:space="preserve">
+    <value>Fijadas</value>
+  </data>
+  <data name="NoteSectionOthers" xml:space="preserve">
+    <value>Notas</value>
+  </data>
+  <data name="NotePinnedStatus" xml:space="preserve">
+    <value>Fijada</value>
+  </data>
+  <data name="NoteCharWordCount" xml:space="preserve">
+    <value>{0} car · {1} palabras</value>
+  </data>
+  <data name="NoteCharWordAnnounce" xml:space="preserve">
+    <value>{0} caracteres, {1} palabras</value>
+  </data>
+  <data name="NoteUnsavedChanges" xml:space="preserve">
+    <value>Cambios sin guardar</value>
+  </data>
+  <data name="NotePinName" xml:space="preserve">
+    <value>Fijar nota al principio de la lista</value>
+  </data>
+  <data name="NoteUnpinName" xml:space="preserve">
+    <value>Quitar del principio</value>
+  </data>
+  <data name="NoteSavingAnnounce" xml:space="preserve">
+    <value>Guardando...</value>
+  </data>
+  <data name="NoteSavedAnnounce" xml:space="preserve">
+    <value>Guardado</value>
+  </data>
+  <data name="NoteFilterTooltip" xml:space="preserve">
+    <value>Filtrar por categoría</value>
+  </data>
 </root>

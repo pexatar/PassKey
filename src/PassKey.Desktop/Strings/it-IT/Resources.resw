@@ -1872,4 +1872,46 @@ Vuoi attivare questa verifica?</value>
   <data name="NoteDateCulture" xml:space="preserve">
     <value>it-IT</value>
   </data>
+  <data name="NoteFilterAllCategories" xml:space="preserve">
+    <value>Tutte le categorie</value>
+  </data>
+  <data name="NoteFilterAnnounce" xml:space="preserve">
+    <value>Filtro: {0}</value>
+  </data>
+  <data name="NoteNoResults" xml:space="preserve">
+    <value>Nessun risultato trovato.</value>
+  </data>
+  <data name="NoteSectionPinned" xml:space="preserve">
+    <value>Fissate</value>
+  </data>
+  <data name="NoteSectionOthers" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="NotePinnedStatus" xml:space="preserve">
+    <value>Fissata</value>
+  </data>
+  <data name="NoteCharWordCount" xml:space="preserve">
+    <value>{0} car · {1} parole</value>
+  </data>
+  <data name="NoteCharWordAnnounce" xml:space="preserve">
+    <value>{0} caratteri, {1} parole</value>
+  </data>
+  <data name="NoteUnsavedChanges" xml:space="preserve">
+    <value>Modifiche non salvate</value>
+  </data>
+  <data name="NotePinName" xml:space="preserve">
+    <value>Fissa nota in cima alla lista</value>
+  </data>
+  <data name="NoteUnpinName" xml:space="preserve">
+    <value>Rimuovi dalla cima</value>
+  </data>
+  <data name="NoteSavingAnnounce" xml:space="preserve">
+    <value>Salvataggio in corso...</value>
+  </data>
+  <data name="NoteSavedAnnounce" xml:space="preserve">
+    <value>Salva completato</value>
+  </data>
+  <data name="NoteFilterTooltip" xml:space="preserve">
+    <value>Filtra per categoria</value>
+  </data>
 </root>
