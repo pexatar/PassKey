@@ -2045,4 +2045,7 @@ Do you want to enable this check?</value>
   <data name="NoteNoTitle" xml:space="preserve">
     <value>Untitled note</value>
   </data>
+  <data name="OperationGenericError" xml:space="preserve">
+    <value>Something went wrong. Please try again.</value>
+  </data>
 </root>

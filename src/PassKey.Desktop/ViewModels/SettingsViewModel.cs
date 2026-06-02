@@ -359,8 +359,9 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"[Settings] Backup failed: {ex}");
             if (OperationError is not null)
-                await OperationError.Invoke(ex.Message);
+                await OperationError.Invoke("OPERATION_FAILED");
         }
     }
 
@@ -424,8 +425,9 @@ public partial class SettingsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"[Settings] Restore failed: {ex}");
             if (OperationError is not null)
-                await OperationError.Invoke(ex.Message);
+                await OperationError.Invoke("OPERATION_FAILED");
         }
     }
 
@@ -522,10 +524,17 @@ public partial class SettingsViewModel : ObservableObject
             if (ImportCompleted is not null)
                 await ImportCompleted.Invoke(result);
         }
+        catch (ImportFileException ifx)
+        {
+            // Carries an error CODE (e.g. IMPORT_BW_ZIP) mapped to a localized message by the View.
+            if (OperationError is not null)
+                await OperationError.Invoke(ifx.Message);
+        }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"[Settings] Import failed: {ex}");
             if (OperationError is not null)
-                await OperationError.Invoke(ex.Message);
+                await OperationError.Invoke("OPERATION_FAILED");
         }
     }
 

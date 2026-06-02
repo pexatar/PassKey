@@ -2055,4 +2055,7 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="NoteNoTitle" xml:space="preserve">
     <value>Notiz ohne Titel</value>
   </data>
+  <data name="OperationGenericError" xml:space="preserve">
+    <value>Ein Fehler ist aufgetreten. Bitte erneut versuchen.</value>
+  </data>
 </root>

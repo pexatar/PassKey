@@ -816,6 +816,7 @@ public sealed partial class SettingsView : UserControl
         {
             "WRONG_PASSWORD" => _resourceLoader.GetString("RestoreErrorWrongPw"),
             "INVALID_FILE" => _resourceLoader.GetString("RestoreErrorInvalid"),
+            "OPERATION_FAILED" => _resourceLoader.GetString("OperationGenericError"),
             "IMPORT_BW_ENCRYPTED" => _resourceLoader.GetString("ImportErrBwEncrypted"),
             "IMPORT_BW_ZIP" => _resourceLoader.GetString("ImportErrBwZip"),
             "IMPORT_1PUX" => _resourceLoader.GetString("ImportErr1pux"),

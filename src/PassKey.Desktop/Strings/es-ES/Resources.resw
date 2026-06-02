@@ -2058,4 +2058,7 @@ Deseas activar esta verificacion?</value>
   <data name="NoteNoTitle" xml:space="preserve">
     <value>Nota sin título</value>
   </data>
+  <data name="OperationGenericError" xml:space="preserve">
+    <value>Se produjo un error. Inténtalo de nuevo.</value>
+  </data>
 </root>

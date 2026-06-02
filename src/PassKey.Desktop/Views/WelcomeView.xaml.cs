@@ -104,6 +104,7 @@ public sealed partial class WelcomeView : UserControl
         {
             "WRONG_PASSWORD" => _resourceLoader.GetString("RestoreErrorWrongPw"),
             "INVALID_FILE" => _resourceLoader.GetString("RestoreErrorInvalid"),
+            "OPERATION_FAILED" => _resourceLoader.GetString("OperationGenericError"),
             _ => errorCode
         };
         return ShowInfoDialogAsync(_resourceLoader.GetString("ImportErrorTitle"), message);
