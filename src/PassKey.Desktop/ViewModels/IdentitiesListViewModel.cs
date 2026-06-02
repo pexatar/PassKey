@@ -173,25 +173,6 @@ public partial class IdentitiesListViewModel : ObservableObject, IDisposable
         IsDetailOpen = true;
     }
 
-    [RelayCommand]
-    private void CopyEmail(IdentityEntry? entry)
-    {
-        if (entry is not null && !string.IsNullOrEmpty(entry.Email))
-        {
-            _clipboard.Copy(entry.Email, CopyType.Standard);
-            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
-        }
-    }
-
-    [RelayCommand]
-    private void CopyPhone(IdentityEntry? entry)
-    {
-        if (entry is not null && !string.IsNullOrEmpty(entry.Phone))
-        {
-            _clipboard.Copy(entry.Phone, CopyType.Standard);
-            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
-        }
-    }
 
     public void CloseDetail()
     {

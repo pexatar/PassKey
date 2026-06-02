@@ -125,13 +125,6 @@ public partial class GeneratorViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void GenerateAndCopy()
-    {
-        Generate();
-        CopyPassword();
-    }
-
-    [RelayCommand]
     private void CopyHistoryEntry(HistoryEntry? entry)
     {
         if (entry is null || string.IsNullOrEmpty(entry.Password))

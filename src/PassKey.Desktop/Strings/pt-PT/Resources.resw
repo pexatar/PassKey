@@ -267,9 +267,6 @@
   <data name="ButtonChangePassword" xml:space="preserve">
     <value>Alterar palavra-passe mestra</value>
   </data>
-  <data name="ButtonGenerateAndCopy" xml:space="preserve">
-    <value>Gerar e copiar</value>
-  </data>
   <data name="ButtonImport" xml:space="preserve">
     <value>Importar</value>
   </data>

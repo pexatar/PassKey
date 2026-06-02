@@ -335,9 +335,6 @@ public sealed partial class PasswordVerifierView : UserControl
     {
         if (_viewModel is null) return;
 
-        AuditLoadingRing.IsActive = false;
-        AuditLoadingRing.Visibility = Visibility.Collapsed;
-
         if (_viewModel.IsAuditLoading)
             UpdateAuditProgressUI();
         else
