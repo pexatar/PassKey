@@ -35,7 +35,7 @@
                                 x:Name="SearchBox"
                                 PlaceholderText="Cerca identità..."
                                 QueryIcon="Find"
-                                MaxWidth="280"
+                                Width="280"
                                 HorizontalAlignment="Right"
                                 TextChanged="SearchBox_TextChanged"
                                 AutomationProperties.Name="Cerca identità" />
