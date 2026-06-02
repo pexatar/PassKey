@@ -25,6 +25,7 @@ public sealed partial class PasswordDetailView : UserControl
     private PasswordDetailViewModel? _viewModel;
     private bool _updatingFromVm;
     private readonly ResourceLoader _resourceLoader = new();
+    private readonly IToastService? _toast = App.Services.GetService(typeof(IToastService)) as IToastService;
 
     /// <summary>Per-second timer that refreshes the live TOTP code while the view is loaded.</summary>
     private DispatcherQueueTimer? _totpTimer;
@@ -203,13 +204,13 @@ public sealed partial class PasswordDetailView : UserControl
         var otpauthUri = await DecodeQrFromFileAsync(file);
         if (string.IsNullOrEmpty(otpauthUri))
         {
-            ToolTipService.SetToolTip(TotpScanQrButton, "Nessun codice QR riconoscibile nell'immagine.");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipNoQr"));
             return;
         }
 
         if (!_viewModel.ApplyOtpAuthUri(otpauthUri))
         {
-            ToolTipService.SetToolTip(TotpScanQrButton, "QR riconosciuto ma non è un URI 'otpauth://' valido.");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipQrNotOtpauth"));
             return;
         }
 
@@ -224,7 +225,7 @@ public sealed partial class PasswordDetailView : UserControl
         var pkg = Clipboard.GetContent();
         if (!pkg.Contains(StandardDataFormats.Text))
         {
-            ToolTipService.SetToolTip(TotpPasteUriButton, "Negli appunti non c'è testo.");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipNoClipboard"));
             return;
         }
 
@@ -240,7 +241,7 @@ public sealed partial class PasswordDetailView : UserControl
 
             if (!_viewModel.ApplyOtpAuthUri(text.Trim()))
             {
-                ToolTipService.SetToolTip(TotpPasteUriButton, "Il testo negli appunti non è un URI 'otpauth://' valido.");
+                _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipClipNotOtpauth"));
                 return;
             }
             SyncTextBoxesFromViewModel();
@@ -286,7 +287,7 @@ public sealed partial class PasswordDetailView : UserControl
         var res = await dialog.ShowAsync();
         if (res != ContentDialogResult.Primary) return;
         if (!_viewModel.ApplyManualSeed(input.Text))
-            ToolTipService.SetToolTip(TotpEnterSecretButton, "Chiave Base32 non valida (usa solo A-Z e 2-7).");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipBase32Invalid"));
     }
 
     private void TotpCopyButton_Click(object sender, RoutedEventArgs e)
@@ -461,7 +462,7 @@ public sealed partial class PasswordDetailView : UserControl
         if (bytes.Length > 65536)
         {
             // File troppo grande — mostra tooltip sul bottone
-            ToolTipService.SetToolTip(BtnUploadIcon, "Immagine troppo grande (max 64 KB)");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipImageTooLarge"));
             return;
         }
 

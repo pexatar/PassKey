@@ -2000,4 +2000,49 @@ Do you want to enable this check?</value>
   <data name="ImportPickerKeepass" xml:space="preserve">
     <value>KeePass (.kdbx / .kdb)</value>
   </data>
+  <data name="TotpTipNoQr" xml:space="preserve">
+    <value>No recognizable QR code in the image.</value>
+  </data>
+  <data name="TotpTipQrNotOtpauth" xml:space="preserve">
+    <value>QR recognized but it isn't a valid 'otpauth://' URI.</value>
+  </data>
+  <data name="TotpTipNoClipboard" xml:space="preserve">
+    <value>There's no text in the clipboard.</value>
+  </data>
+  <data name="TotpTipClipNotOtpauth" xml:space="preserve">
+    <value>The clipboard text isn't a valid 'otpauth://' URI.</value>
+  </data>
+  <data name="TotpTipBase32Invalid" xml:space="preserve">
+    <value>Invalid Base32 key (use only A-Z and 2-7).</value>
+  </data>
+  <data name="TotpTipImageTooLarge" xml:space="preserve">
+    <value>Image too large (max 64 KB)</value>
+  </data>
+  <data name="LoginUnlockFailed" xml:space="preserve">
+    <value>Error unlocking the vault.</value>
+  </data>
+  <data name="SetupErrorButton" xml:space="preserve">
+    <value>ERROR</value>
+  </data>
+  <data name="SetupCreateError" xml:space="preserve">
+    <value>Could not create the vault. Please try again.</value>
+  </data>
+  <data name="UpdateAvailableTitle" xml:space="preserve">
+    <value>PassKey {0} available</value>
+  </data>
+  <data name="ActivityCsvFileName" xml:space="preserve">
+    <value>PassKey_History</value>
+  </data>
+  <data name="CatOnlineLabel" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="CardNoName" xml:space="preserve">
+    <value>Unnamed card</value>
+  </data>
+  <data name="IdentityNoName" xml:space="preserve">
+    <value>Unnamed identity</value>
+  </data>
+  <data name="NoteNoTitle" xml:space="preserve">
+    <value>Untitled note</value>
+  </data>
 </root>

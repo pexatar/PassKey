@@ -76,7 +76,7 @@ public partial class CreditCardDetailViewModel : BaseDetailViewModel<CreditCardE
     protected override string GetPanelTitleForNew() => "Aggiungi carta";
     protected override string GetPanelTitleForEdit() => "Modifica carta";
     protected override string GetDeleteDisplayName(CreditCardEntry entry)
-        => entry.Label is { Length: > 0 } l ? l : "Carta senza nome";
+        => entry.Label is { Length: > 0 } l ? l : _res.GetString("CardNoName");
 
     protected override IList<CreditCardEntry> GetVaultCollection(Vault vault) => vault.CreditCards;
 

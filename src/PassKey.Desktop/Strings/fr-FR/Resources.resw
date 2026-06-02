@@ -2012,4 +2012,49 @@ Voulez-vous activer cette verification ?</value>
   <data name="ImportPickerKeepass" xml:space="preserve">
     <value>KeePass (.kdbx / .kdb)</value>
   </data>
+  <data name="TotpTipNoQr" xml:space="preserve">
+    <value>Aucun code QR reconnaissable dans l'image.</value>
+  </data>
+  <data name="TotpTipQrNotOtpauth" xml:space="preserve">
+    <value>QR reconnu mais ce n'est pas un URI « otpauth:// » valide.</value>
+  </data>
+  <data name="TotpTipNoClipboard" xml:space="preserve">
+    <value>Aucun texte dans le presse-papiers.</value>
+  </data>
+  <data name="TotpTipClipNotOtpauth" xml:space="preserve">
+    <value>Le texte du presse-papiers n'est pas un URI « otpauth:// » valide.</value>
+  </data>
+  <data name="TotpTipBase32Invalid" xml:space="preserve">
+    <value>Clé Base32 non valide (utilisez seulement A-Z et 2-7).</value>
+  </data>
+  <data name="TotpTipImageTooLarge" xml:space="preserve">
+    <value>Image trop grande (max 64 Ko)</value>
+  </data>
+  <data name="LoginUnlockFailed" xml:space="preserve">
+    <value>Erreur lors du déverrouillage du coffre.</value>
+  </data>
+  <data name="SetupErrorButton" xml:space="preserve">
+    <value>ERREUR</value>
+  </data>
+  <data name="SetupCreateError" xml:space="preserve">
+    <value>Impossible de créer le coffre. Réessayez.</value>
+  </data>
+  <data name="UpdateAvailableTitle" xml:space="preserve">
+    <value>PassKey {0} disponible</value>
+  </data>
+  <data name="ActivityCsvFileName" xml:space="preserve">
+    <value>PassKey_Historique</value>
+  </data>
+  <data name="CatOnlineLabel" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="CardNoName" xml:space="preserve">
+    <value>Carte sans nom</value>
+  </data>
+  <data name="IdentityNoName" xml:space="preserve">
+    <value>Identité sans nom</value>
+  </data>
+  <data name="NoteNoTitle" xml:space="preserve">
+    <value>Note sans titre</value>
+  </data>
 </root>

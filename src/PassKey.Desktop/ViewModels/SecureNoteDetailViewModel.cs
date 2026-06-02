@@ -70,7 +70,7 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
     protected override string GetPanelTitleForNew() => "Nuova nota";
     protected override string GetPanelTitleForEdit() => "Modifica nota";
     protected override string GetDeleteDisplayName(SecureNoteEntry entry)
-        => !string.IsNullOrWhiteSpace(entry.Title) ? entry.Title : "Nota senza titolo";
+        => !string.IsNullOrWhiteSpace(entry.Title) ? entry.Title : _res.GetString("NoteNoTitle");
 
     protected override IList<SecureNoteEntry> GetVaultCollection(Vault vault) => vault.SecureNotes;
 

@@ -94,11 +94,11 @@ public sealed partial class SetupView : UserControl
         // Label and color based on score (theme-adaptive)
         StrengthLabel.Text = result.Score switch
         {
-            < 25 => "Molto debole",
-            < 40 => "Debole",
-            < 60 => "Discreta",
-            < 80 => "Forte",
-            _ => "Molto forte"
+            < 25 => _resourceLoader.GetString("StrengthVeryWeak"),
+            < 40 => _resourceLoader.GetString("StrengthWeak"),
+            < 60 => _resourceLoader.GetString("StrengthMedium"),
+            < 80 => _resourceLoader.GetString("StrengthStrong"),
+            _ => _resourceLoader.GetString("StrengthVeryStrong")
         };
         StrengthBar.Foreground = GetStrengthBrush(result.Score);
     }
@@ -143,7 +143,9 @@ public sealed partial class SetupView : UserControl
         }
         catch (Exception ex)
         {
-            errorMsg = ex.ToString();
+            // Don't surface the raw stack trace to the user; show a generic localized message and log.
+            System.Diagnostics.Debug.WriteLine($"[Setup] Create vault failed: {ex}");
+            errorMsg = _resourceLoader.GetString("SetupCreateError");
         }
         finally
         {
@@ -153,7 +155,7 @@ public sealed partial class SetupView : UserControl
         // Show error AFTER SetCreatingState resets the button text
         if (errorMsg is not null)
         {
-            CreateButtonText.Text = "ERRORE";
+            CreateButtonText.Text = _resourceLoader.GetString("SetupErrorButton");
             CreateButton.IsEnabled = false;
             StrengthLabel.Text = errorMsg;
         }

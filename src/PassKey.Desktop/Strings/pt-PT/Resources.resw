@@ -2010,4 +2010,49 @@ Deseja ativar esta verificacao?</value>
   <data name="ImportPickerKeepass" xml:space="preserve">
     <value>KeePass (.kdbx / .kdb)</value>
   </data>
+  <data name="TotpTipNoQr" xml:space="preserve">
+    <value>Nenhum código QR reconhecível na imagem.</value>
+  </data>
+  <data name="TotpTipQrNotOtpauth" xml:space="preserve">
+    <value>QR reconhecido, mas não é um URI 'otpauth://' válido.</value>
+  </data>
+  <data name="TotpTipNoClipboard" xml:space="preserve">
+    <value>Não há texto na área de transferência.</value>
+  </data>
+  <data name="TotpTipClipNotOtpauth" xml:space="preserve">
+    <value>O texto da área de transferência não é um URI 'otpauth://' válido.</value>
+  </data>
+  <data name="TotpTipBase32Invalid" xml:space="preserve">
+    <value>Chave Base32 inválida (use apenas A-Z e 2-7).</value>
+  </data>
+  <data name="TotpTipImageTooLarge" xml:space="preserve">
+    <value>Imagem demasiado grande (máx. 64 KB)</value>
+  </data>
+  <data name="LoginUnlockFailed" xml:space="preserve">
+    <value>Erro ao desbloquear o cofre.</value>
+  </data>
+  <data name="SetupErrorButton" xml:space="preserve">
+    <value>ERRO</value>
+  </data>
+  <data name="SetupCreateError" xml:space="preserve">
+    <value>Não foi possível criar o cofre. Tente novamente.</value>
+  </data>
+  <data name="UpdateAvailableTitle" xml:space="preserve">
+    <value>PassKey {0} disponível</value>
+  </data>
+  <data name="ActivityCsvFileName" xml:space="preserve">
+    <value>PassKey_Historico</value>
+  </data>
+  <data name="CatOnlineLabel" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="CardNoName" xml:space="preserve">
+    <value>Cartão sem nome</value>
+  </data>
+  <data name="IdentityNoName" xml:space="preserve">
+    <value>Identidade sem nome</value>
+  </data>
+  <data name="NoteNoTitle" xml:space="preserve">
+    <value>Nota sem título</value>
+  </data>
 </root>

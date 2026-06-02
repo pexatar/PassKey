@@ -275,7 +275,7 @@ public sealed partial class CreditCardControl : UserControl
             CardCategory.Personal => s_res.GetString("CatPersonalLabel"),
             CardCategory.Work => s_res.GetString("CatWorkLabel"),
             CardCategory.Travel => s_res.GetString("CatTravelLabel"),
-            CardCategory.Online => "Online",
+            CardCategory.Online => s_res.GetString("CatOnlineLabel"),
             _ => s_res.GetString("CatPersonalLabel")
         };
     }

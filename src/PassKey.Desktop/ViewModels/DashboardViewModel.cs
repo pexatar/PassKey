@@ -18,21 +18,20 @@ public partial class DashboardViewModel : ObservableObject, IDisposable
     private readonly IPasswordStrengthAnalyzer _strengthAnalyzer;
     private readonly IClipboardService _clipboard;
 
-    // Localized greeting resources (set by View code-behind)
-    private string _greetingMorning = "Buongiorno!";
-    private string _greetingAfternoon = "Bentornato!";
-    private string _greetingEvening = "Buonasera!";
+    // All set by the View code-behind (SetGreetingResources/SetActionLabels/SetDeletedLabels)
+    // before display, so they start empty rather than carrying hardcoded Italian defaults.
+    private string _greetingMorning = string.Empty;
+    private string _greetingAfternoon = string.Empty;
+    private string _greetingEvening = string.Empty;
 
-    // Localized action labels (set by View code-behind)
-    private string _labelCreated = "Aggiunto";
-    private string _labelModified = "Modificato";
-    private string _labelDeleted = "Eliminato";
+    private string _labelCreated = string.Empty;
+    private string _labelModified = string.Empty;
+    private string _labelDeleted = string.Empty;
 
-    // Localized "deleted entity" fallback labels
-    private string _deletedPassword = "Password eliminata";
-    private string _deletedCard = "Carta eliminata";
-    private string _deletedIdentity = "Identità eliminata";
-    private string _deletedNote = "Nota eliminata";
+    private string _deletedPassword = string.Empty;
+    private string _deletedCard = string.Empty;
+    private string _deletedIdentity = string.Empty;
+    private string _deletedNote = string.Empty;
 
     // ── Greeting ─────────────────────────────────────────────────────────────
 

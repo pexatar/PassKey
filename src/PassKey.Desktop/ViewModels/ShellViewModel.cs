@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Desktop.Services;
 
 namespace PassKey.Desktop.ViewModels;
@@ -13,6 +14,7 @@ public partial class ShellViewModel : ObservableObject, IDisposable
 {
     private readonly IVaultStateService _vaultState;
     private readonly INavigationStack _navigation;
+    private readonly ResourceLoader _resourceLoader = new();
     private readonly IUpdateService _updateService;
     private readonly ISettingsService _settings;
     private readonly DashboardViewModel _dashboardViewModel;
@@ -180,7 +182,7 @@ public partial class ShellViewModel : ObservableObject, IDisposable
     private void ShowUpdateInfoBar(UpdateCheckResult result)
     {
         _currentUpdate     = result;
-        UpdateInfoBarTitle = $"PassKey {result.NewVersion} disponibile";
+        UpdateInfoBarTitle = string.Format(_resourceLoader.GetString("UpdateAvailableTitle"), result.NewVersion);
         IsUpdateInfoBarOpen = true;
         IsDownloading      = false;
         DownloadProgress   = 0;

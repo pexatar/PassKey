@@ -35,8 +35,8 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     /// <summary>Dialog queue used to serialize <see cref="Microsoft.UI.Xaml.Controls.ContentDialog"/> instances.</summary>
     protected readonly IDialogQueueService DialogQueue;
 
-    /// <summary>Localized string resources for the shared delete-confirmation dialog.</summary>
-    private readonly ResourceLoader _res = new();
+    /// <summary>Localized string resources (delete dialog + subclass fallback display names).</summary>
+    protected readonly ResourceLoader _res = new();
 
     /// <summary>The entry currently being edited, or <see langword="null"/> when creating a new entry.</summary>
     protected TEntry? EditingEntry;

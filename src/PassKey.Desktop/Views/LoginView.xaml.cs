@@ -93,8 +93,8 @@ public sealed partial class LoginView : UserControl
             ErrorPanel.Visibility = Visibility.Visible;
             ErrorText.Text = _viewModel.ErrorMessage switch
             {
-                "IncorrectPassword" => "Password non corretta. Riprova.",
-                "UnlockFailed" => "Errore durante lo sblocco del vault.",
+                "IncorrectPassword" => _resourceLoader.GetString("LoginIncorrectPassword"),
+                "UnlockFailed" => _resourceLoader.GetString("LoginUnlockFailed"),
                 _ => _viewModel.ErrorMessage
             };
         }

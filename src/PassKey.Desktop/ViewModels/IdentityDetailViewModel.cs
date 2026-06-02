@@ -106,7 +106,7 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
         var displayName = !string.IsNullOrWhiteSpace(entry.Label)
             ? entry.Label
             : $"{entry.FirstName} {entry.LastName}".Trim();
-        return string.IsNullOrWhiteSpace(displayName) ? "Identità senza nome" : displayName;
+        return string.IsNullOrWhiteSpace(displayName) ? _res.GetString("IdentityNoName") : displayName;
     }
 
     protected override IList<IdentityEntry> GetVaultCollection(Vault vault) => vault.Identities;

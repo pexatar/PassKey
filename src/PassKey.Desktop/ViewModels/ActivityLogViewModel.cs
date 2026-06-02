@@ -66,7 +66,7 @@ public partial class ActivityLogViewModel : ObservableObject
         if (Entries.Count == 0) return;
 
         var path = await _filePicker.PickSaveFileAsync(
-            $"PassKey_Cronologia_{DateTime.Now:yyyyMMdd}",
+            $"{_res.GetString("ActivityCsvFileName")}_{DateTime.Now:yyyyMMdd}",
             ".csv",
             _res.GetString("ActivityCsvFileType"));
         if (path is null) return;

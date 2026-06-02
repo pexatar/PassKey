@@ -2010,4 +2010,49 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="ImportPickerKeepass" xml:space="preserve">
     <value>KeePass (.kdbx / .kdb)</value>
   </data>
+  <data name="TotpTipNoQr" xml:space="preserve">
+    <value>Kein erkennbarer QR-Code im Bild.</value>
+  </data>
+  <data name="TotpTipQrNotOtpauth" xml:space="preserve">
+    <value>QR-Code erkannt, aber keine gültige 'otpauth://'-URI.</value>
+  </data>
+  <data name="TotpTipNoClipboard" xml:space="preserve">
+    <value>Kein Text in der Zwischenablage.</value>
+  </data>
+  <data name="TotpTipClipNotOtpauth" xml:space="preserve">
+    <value>Der Text in der Zwischenablage ist keine gültige 'otpauth://'-URI.</value>
+  </data>
+  <data name="TotpTipBase32Invalid" xml:space="preserve">
+    <value>Ungültiger Base32-Schlüssel (nur A-Z und 2-7 verwenden).</value>
+  </data>
+  <data name="TotpTipImageTooLarge" xml:space="preserve">
+    <value>Bild zu groß (max. 64 KB)</value>
+  </data>
+  <data name="LoginUnlockFailed" xml:space="preserve">
+    <value>Fehler beim Entsperren des Tresors.</value>
+  </data>
+  <data name="SetupErrorButton" xml:space="preserve">
+    <value>FEHLER</value>
+  </data>
+  <data name="SetupCreateError" xml:space="preserve">
+    <value>Tresor konnte nicht erstellt werden. Bitte erneut versuchen.</value>
+  </data>
+  <data name="UpdateAvailableTitle" xml:space="preserve">
+    <value>PassKey {0} verfügbar</value>
+  </data>
+  <data name="ActivityCsvFileName" xml:space="preserve">
+    <value>PassKey_Verlauf</value>
+  </data>
+  <data name="CatOnlineLabel" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="CardNoName" xml:space="preserve">
+    <value>Unbenannte Karte</value>
+  </data>
+  <data name="IdentityNoName" xml:space="preserve">
+    <value>Unbenannte Identität</value>
+  </data>
+  <data name="NoteNoTitle" xml:space="preserve">
+    <value>Notiz ohne Titel</value>
+  </data>
 </root>
