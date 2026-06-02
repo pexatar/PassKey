@@ -108,9 +108,10 @@ public partial class App : Application
             var ipcService = Services.GetRequiredService<IBrowserIpcService>();
             await ipcService.StartAsync();
         }
-        catch
+        catch (Exception ex)
         {
-            // IPC service failure should not prevent app from starting
+            // IPC service failure should not prevent app from starting; log for diagnostics.
+            System.Diagnostics.Debug.WriteLine($"[App] Browser IPC service failed to start: {ex}");
         }
 
         // Fire-and-forget: silent update check (max once per 24h, 10s timeout)

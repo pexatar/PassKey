@@ -290,7 +290,7 @@ public sealed partial class DashboardView : UserControl
             {
                 _ = Windows.System.Launcher.LaunchUriAsync(new Uri(item.Url!));
             }
-            catch { /* invalid URL */ }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Dashboard] Could not open recent-item URL: {ex}"); }
         }
     }
 
