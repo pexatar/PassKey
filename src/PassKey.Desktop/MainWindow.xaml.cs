@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Desktop.Services;
@@ -43,6 +44,9 @@ public sealed partial class MainWindow : Window
         TrayExitItem.Text = _resourceLoader.GetString("TrayMenuExit");
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "PassKey.ico"));
 
+        // Open centered on the monitor the window is created on (FU: startup centering).
+        CenterOnScreen();
+
         // Imposta l'icona tray con percorso assoluto (AppContext.BaseDirectory).
         // NON usare path relativo in XAML: H.NotifyIcon risolve tramite File.OpenRead()
         // relativo alla working directory del processo (C:\Windows\System32 in produzione).
@@ -63,6 +67,19 @@ public sealed partial class MainWindow : Window
 
         // Doppio click sull'icona tray → mostra la finestra
         TrayIcon.DoubleClickCommand = new RelayCommand(RestoreWindow);
+    }
+
+    /// <summary>Centers the window on the work area of the display it is created on.</summary>
+    private void CenterOnScreen()
+    {
+        var area = DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Nearest);
+        if (area is null) return;
+
+        var work = area.WorkArea;
+        var size = AppWindow.Size;
+        var x = work.X + System.Math.Max(0, (work.Width - size.Width) / 2);
+        var y = work.Y + System.Math.Max(0, (work.Height - size.Height) / 2);
+        AppWindow.Move(new Windows.Graphics.PointInt32(x, y));
     }
 
     private async void OnWindowClosing(Microsoft.UI.Windowing.AppWindow sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs args)
