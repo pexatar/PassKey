@@ -17,6 +17,7 @@ public sealed partial class MainWindow : Window
     private readonly MainViewModel _mainViewModel;
     private readonly ResourceLoader _resourceLoader = new();
     private bool _initialized;
+    private bool _closePromptOpen;
 
     // Comandi tray: x:Bind li risolve a compile-time sulla MainWindow, evitando
     // il routing XAML degli eventi Click (che non funziona dal popup di H.NotifyIcon).
@@ -86,23 +87,36 @@ public sealed partial class MainWindow : Window
     {
         args.Cancel = true;
 
-        var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+        // Re-entrancy guard: repeated clicks on the X must not stack multiple close prompts.
+        if (_closePromptOpen) return;
+        _closePromptOpen = true;
+        try
         {
-            Title = "PassKey",
-            Content = _resourceLoader.GetString("TrayCloseContent"),
-            PrimaryButtonText = _resourceLoader.GetString("TrayCloseMinimize"),
-            SecondaryButtonText = _resourceLoader.GetString("TrayCloseExit"),
-            CloseButtonText = _resourceLoader.GetString("CancelButton"),
-            DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Primary,
-            XamlRoot = Content.XamlRoot
-        };
+            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+            {
+                Title = "PassKey",
+                Content = _resourceLoader.GetString("TrayCloseContent"),
+                PrimaryButtonText = _resourceLoader.GetString("TrayCloseMinimize"),
+                SecondaryButtonText = _resourceLoader.GetString("TrayCloseExit"),
+                CloseButtonText = _resourceLoader.GetString("CancelButton"),
+                DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Primary,
+                XamlRoot = Content.XamlRoot
+            };
 
-        var result = await dialog.ShowAsync();
+            // Route through the shared dialog queue so it never collides with another open
+            // ContentDialog ("Only a single ContentDialog can be open at any time").
+            var dialogQueue = App.Services.GetRequiredService<IDialogQueueService>();
+            var result = await dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
 
-        if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
-            AppWindow.Hide();
-        else if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
-            Application.Current.Exit();
+            if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
+                AppWindow.Hide();
+            else if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
+                Application.Current.Exit();
+        }
+        finally
+        {
+            _closePromptOpen = false;
+        }
     }
 
     private async void OnActivated(object sender, WindowActivatedEventArgs args)
