@@ -2055,4 +2055,13 @@ Deseja ativar esta verificacao?</value>
   <data name="OperationGenericError" xml:space="preserve">
     <value>Ocorreu um erro. Tente novamente.</value>
   </data>
+  <data name="ActivityBackBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Voltar às definições</value>
+  </data>
+  <data name="ActivityBackBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Voltar às definições</value>
+  </data>
+  <data name="ActivityExportBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Exportar histórico para CSV</value>
+  </data>
 </root>

@@ -19,11 +19,10 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0" x:Name="BackButton"
+                    x:Uid="ActivityBackBtn"
                     VerticalAlignment="Center"
                     Click="BackButton_Click"
-                    Style="{StaticResource SubtleButtonStyle}"
-                    ToolTipService.ToolTip="Torna alle impostazioni"
-                    AutomationProperties.Name="Torna alle impostazioni">
+                    Style="{StaticResource SubtleButtonStyle}">
                 <FontIcon Glyph="&#xE72B;" FontSize="16" />
             </Button>
 
@@ -37,9 +36,9 @@
             </StackPanel>
 
             <Button Grid.Column="2" x:Name="ExportButton"
+                    x:Uid="ActivityExportBtn"
                     VerticalAlignment="Center"
-                    Click="ExportButton_Click"
-                    AutomationProperties.Name="Esporta cronologia in CSV">
+                    Click="ExportButton_Click">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <FontIcon Glyph="&#xE74E;" FontSize="14" />
                     <TextBlock x:Uid="ActivityExportButton" Text="Esporta CSV" />

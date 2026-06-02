@@ -2055,4 +2055,13 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="OperationGenericError" xml:space="preserve">
     <value>Ein Fehler ist aufgetreten. Bitte erneut versuchen.</value>
   </data>
+  <data name="ActivityBackBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Zurück zu den Einstellungen</value>
+  </data>
+  <data name="ActivityBackBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Zurück zu den Einstellungen</value>
+  </data>
+  <data name="ActivityExportBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Verlauf als CSV exportieren</value>
+  </data>
 </root>

@@ -2045,4 +2045,13 @@ Do you want to enable this check?</value>
   <data name="OperationGenericError" xml:space="preserve">
     <value>Something went wrong. Please try again.</value>
   </data>
+  <data name="ActivityBackBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Back to settings</value>
+  </data>
+  <data name="ActivityBackBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Back to settings</value>
+  </data>
+  <data name="ActivityExportBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Export history to CSV</value>
+  </data>
 </root>

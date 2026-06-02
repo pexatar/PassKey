@@ -2058,4 +2058,13 @@ Vuoi attivare questa verifica?</value>
   <data name="OperationGenericError" xml:space="preserve">
     <value>Si è verificato un errore. Riprova.</value>
   </data>
+  <data name="ActivityBackBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Torna alle impostazioni</value>
+  </data>
+  <data name="ActivityBackBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Torna alle impostazioni</value>
+  </data>
+  <data name="ActivityExportBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Esporta cronologia in CSV</value>
+  </data>
 </root>
