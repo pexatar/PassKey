@@ -95,6 +95,20 @@ $firefoxManifest = @{
 $chromeManifest  | Out-File -Encoding utf8 -FilePath (Join-Path $publishPath "com.passkey.host.json")
 $firefoxManifest | Out-File -Encoding utf8 -FilePath (Join-Path $publishPath "com.passkey.host.firefox.json")
 
+# 3.5 Ensure the Windows App Runtime redistributable is present.
+# Installer\PassKey.iss bundles WindowsAppRuntimeInstall-x64.exe as a [Files] Source,
+# but that binary is git-ignored (too large to commit). On a fresh CI runner it is
+# missing, so download it here before invoking Inno Setup. Download-Runtime.ps1 holds
+# the authoritative aka.ms URL pinned to the WindowsAppSDK package version.
+$runtimeExe = Join-Path $RepoRoot "Installer\WindowsAppRuntimeInstall-x64.exe"
+if (-not (Test-Path $runtimeExe)) {
+    Write-Host "Windows App Runtime redistributable missing — downloading..." -ForegroundColor Green
+    & (Join-Path $RepoRoot "Installer\Download-Runtime.ps1")
+    if (-not (Test-Path $runtimeExe)) { throw "Failed to obtain WindowsAppRuntimeInstall-x64.exe" }
+} else {
+    Write-Host "Windows App Runtime redistributable already present." -ForegroundColor Green
+}
+
 # 4. Compile Inno Setup installer
 if (Test-Path $InnoSetupPath) {
     Write-Host "Compiling Inno Setup installer..." -ForegroundColor Green
