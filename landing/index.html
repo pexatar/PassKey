@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ── Primary SEO ───────────────────────────────────────────────────────── -->
+  <title>PassKey — Free Local Password Manager for Windows | Open Source</title>
+  <meta name="description" content="PassKey is a free, open-source password manager for Windows. AES-256-GCM encrypted vault, offline-first — your passwords never leave your device. No cloud, no account, no subscription.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="pexatar">
+  <meta name="keywords" content="password manager, local password manager, offline password manager, free password manager, open source password manager, Windows password manager, AES-256, no cloud">
+  <link rel="canonical" href="https://pass-key.it/">
+
+  <!-- ── Open Graph (Facebook, LinkedIn, Discord, WhatsApp) ───────────────── -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://pass-key.it/">
+  <meta property="og:site_name"   content="PassKey">
+  <meta property="og:locale"      content="en_GB">
+  <meta property="og:title"       content="PassKey — Free Local Password Manager for Windows">
+  <meta property="og:description" content="AES-256-GCM encrypted vault. No cloud, no account, no subscription. Your passwords stay on your device, always.">
+  <meta property="og:image"       content="https://pass-key.it/assets/screenshot/passkey/01%20-%20dashboard.png">
+  <meta property="og:image:width"  content="1920">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image:alt"    content="PassKey dashboard — local password vault">
+
+  <!-- ── Twitter / X Card ─────────────────────────────────────────────────── -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="PassKey — Free Local Password Manager for Windows">
+  <meta name="twitter:description" content="AES-256-GCM encrypted vault. No cloud, no account, no subscription.">
+  <meta name="twitter:image"       content="https://pass-key.it/assets/screenshot/passkey/01%20-%20dashboard.png">
+  <meta name="twitter:image:alt"   content="PassKey dashboard">
+
+  <link rel="icon" type="image/png" href="assets/icona_passkey_rgb.png">
+
+  <!-- ── JSON-LD: SoftwareApplication (GEO + SEO) ─────────────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "PassKey",
+    "description": "PassKey is a free, open-source, offline-first password manager for Windows. It stores passwords, credit cards, identities and secure notes in a locally encrypted vault using AES-256-GCM. No cloud sync, no account, no telemetry.",
+    "url": "https://pass-key.it",
+    "downloadUrl": "https://github.com/pexatar/PassKey/releases/tag/v2.0.0",
+    "applicationCategory": "SecurityApplication",
+    "applicationSubCategory": "Password Manager",
+    "operatingSystem": "Windows 10, Windows 11",
+    "softwareVersion": "2.0.0",
+    "releaseNotes": "https://github.com/pexatar/PassKey/releases",
+    "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+    "screenshot": "https://pass-key.it/assets/screenshot/passkey/01%20-%20dashboard.png",
+    "image": "https://pass-key.it/assets/icona_passkey_rgb.png",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/InStock"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "pexatar",
+      "url": "https://github.com/pexatar"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PassKey",
+      "url": "https://pass-key.it",
+      "logo": "https://pass-key.it/assets/icona_passkey_rgb.png"
+    },
+    "featureList": [
+      "AES-256-GCM encryption with unique per-blob nonces",
+      "Argon2id key derivation (64 MB memory, 3 iterations, 4 threads)",
+      "Fully offline — no cloud sync, no telemetry, no network requests",
+      "Browser extension for Chrome, Firefox and Edge with one-click autofill",
+      "Native messaging IPC — no data leaves the device",
+      "Password generator and strength checker",
+      "Secure import from Bitwarden (JSON), 1Password (.1pux) and CSV",
+      "Encrypted backup format (.pkbak with Argon2id-AES-GCM)",
+      "Available in 6 languages: Italian, English, French, German, Spanish, Portuguese",
+      "GPL v3 open-source — fully auditable source code"
+    ],
+    "isAccessibleForFree": true,
+    "datePublished": "2026-05-15",
+    "dateModified": "2026-05-15",
+    "sameAs": ["https://github.com/pexatar/PassKey"]
+  }
+  </script>
+
+  <!-- ── JSON-LD: FAQPage (GEO — AI search engines extract Q&A directly) ──── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Does PassKey store passwords in the cloud?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. PassKey is fully offline. Your vault is stored locally on your Windows device and is never transmitted to any server. There is no cloud sync, no telemetry, and no network requests of any kind."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What encryption does PassKey use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "PassKey encrypts every vault entry with AES-256-GCM using a unique per-blob nonce. The master password is never stored — it derives the encryption key via Argon2id (64 MB memory, 3 iterations, 4 threads). PBKDF2-SHA256 (600,000 iterations) is supported for backward compatibility."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is PassKey free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. PassKey is completely free and open-source under the GNU General Public License v3 (GPL v3). There are no subscriptions, no premium tiers, and no in-app purchases."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which browsers does the PassKey extension support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The PassKey browser extension supports Google Chrome, Mozilla Firefox, and Microsoft Edge. It communicates with the PassKey desktop app via native messaging — no credentials are sent over the network."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are the system requirements for PassKey?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "PassKey requires Windows 10 version 1809 (build 17763) or later, 64-bit. The installer is self-contained — no .NET runtime or additional dependencies are required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I import passwords from other password managers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. PassKey supports importing from Bitwarden (JSON export), 1Password (.1pux format), and generic CSV files. You can also create and restore encrypted backups in PassKey's own .pkbak format."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is PassKey open source?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. PassKey is fully open-source under GPL v3. The complete source code is publicly available on GitHub at https://github.com/pexatar/PassKey and can be audited, forked or contributed to by anyone."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does PassKey sync between multiple devices?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "PassKey does not sync automatically between devices — this is by design, to ensure your data stays local. You can manually transfer your vault by creating an encrypted .pkbak backup and restoring it on another Windows machine."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- ── JSON-LD: Organization ─────────────────────────────────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "PassKey",
+    "url": "https://pass-key.it",
+    "logo": "https://pass-key.it/assets/icona_passkey_rgb.png",
+    "sameAs": ["https://github.com/pexatar/PassKey"],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "technical support",
+      "url": "https://github.com/pexatar/PassKey/issues"
+    }
+  }
+  </script>
+
+  <!-- Theme flash prevention — must run before any CSS render -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('pk-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+
+  <style>
+    /* ─────────────────────────────────────────────────────────
+       DESIGN TOKENS
+    ───────────────────────────────────────────────────────── */
+    :root {
+      --xs: 4px;  --sm: 8px;   --md: 16px;  --lg: 24px;
+      --xl: 32px; --xxl: 48px; --xxxl: 80px;
+      --r-sm: 6px; --r-md: 12px; --r-lg: 20px; --r-xl: 28px;
+      --max-w: 1100px;
+      --nav-h: 76px;
+      --transition: 200ms ease;
+    }
+
+    [data-theme="dark"] {
+      --bg:           #1a1a1a;
+      --surface:      #222222;
+      --surface-high: #2d2d2d;
+      --surface-card: #252525;
+      --border:       rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.16);
+      --accent:       #ffcc00;
+      --accent-hover: #ffd633;
+      --accent-on:    #1a1a1a;
+      --text-1:       #f0f0f0;
+      --text-2:       #a0a0a0;
+      --text-3:       #606060;
+      --nav-bg:       rgba(26, 26, 26, 0.88);
+      --hero-glow:    radial-gradient(ellipse 80% 55% at 50% -5%, rgba(255, 204, 0, 0.13) 0%, transparent 70%);
+      --card-shadow:  0 4px 20px rgba(0, 0, 0, 0.4);
+      --img-shadow:   0 24px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255,255,255,0.06), 0 0 60px rgba(255, 204, 0, 0.05);
+    }
+
+    [data-theme="light"] {
+      --bg:           #ffffff;
+      --surface:      #f6f6f6;
+      --surface-high: #ebebeb;
+      --surface-card: #f2f2f2;
+      --border:       rgba(0, 0, 0, 0.08);
+      --border-hover: rgba(0, 0, 0, 0.16);
+      --accent:       #cc9900;
+      --accent-hover: #b38600;
+      --accent-on:    #ffffff;
+      --text-1:       #1a1a1a;
+      --text-2:       #555555;
+      --text-3:       #999999;
+      --nav-bg:       rgba(255, 255, 255, 0.88);
+      --hero-glow:    radial-gradient(ellipse 80% 55% at 50% -5%, rgba(230, 162, 0, 0.09) 0%, transparent 70%);
+      --card-shadow:  0 2px 12px rgba(0, 0, 0, 0.07);
+      --img-shadow:   0 24px 80px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0,0,0,0.06);
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       RESET & BASE
+    ───────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text-1);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    img { display: block; max-width: 100%; height: auto; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+      vertical-align: middle;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       LAYOUT UTILITIES
+    ───────────────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--xl);
+    }
+    @media (max-width: 767px) { .container { padding: 0 var(--md); } }
+
+    .section { padding: var(--xxxl) 0; }
+    @media (max-width: 767px) { .section { padding: var(--xxl) 0; } }
+
+    /* ─────────────────────────────────────────────────────────
+       SCROLL ANIMATIONS
+    ───────────────────────────────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    .fade-in:nth-child(2) { transition-delay: 80ms; }
+    .fade-in:nth-child(3) { transition-delay: 160ms; }
+    .fade-in:nth-child(4) { transition-delay: 240ms; }
+    .fade-in:nth-child(5) { transition-delay: 320ms; }
+    .fade-in:nth-child(6) { transition-delay: 400ms; }
+
+    /* Hero content is always visible — no fade delay */
+    #hero .fade-in { transition-delay: 0ms !important; }
+
+    /* ─────────────────────────────────────────────────────────
+       TYPOGRAPHY
+    ───────────────────────────────────────────────────────── */
+    .section-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--md);
+    }
+
+    h1 {
+      font-size: clamp(36px, 5.5vw, 54px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--text-1);
+    }
+
+    h2 {
+      font-size: clamp(24px, 3.5vw, 36px);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      color: var(--text-1);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: var(--sm);
+    }
+
+    .section-intro {
+      font-size: 18px;
+      color: var(--text-2);
+      max-width: 520px;
+      margin-top: var(--md);
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       BUTTONS
+    ───────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sm);
+      padding: 14px 28px;
+      border-radius: var(--r-md);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1;
+      transition: background var(--transition), transform 120ms ease, box-shadow var(--transition);
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-on);
+      box-shadow: 0 2px 16px rgba(255, 204, 0, 0.25);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 24px rgba(255, 204, 0, 0.35);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover {
+      border-color: var(--border-hover);
+      color: var(--text-1);
+    }
+
+    .btn-dark {
+      background: #1a1a1a;
+      color: #f0f0f0;
+    }
+    .btn-dark:hover { background: #2d2d2d; }
+
+    /* ─────────────────────────────────────────────────────────
+       NAVBAR
+    ───────────────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    /* Propagate full height down so align-items: center works against 76px, not content height */
+    .nav .container { height: 100%; }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      position: relative;   /* anchor for absolutely-centered nav-links */
+    }
+
+    /* Logo — dual mode */
+    #logo-dark, #logo-light { text-decoration: none; }
+
+    [data-theme="dark"]  #logo-light { display: none; }
+    [data-theme="dark"]  #logo-dark  { display: flex; align-items: center; gap: 10px; }
+    [data-theme="light"] #logo-dark  { display: none; }
+    [data-theme="light"] #logo-light { display: flex; align-items: center; }
+
+    /* nav-logo-text removed — both themes now use full logo PNG files */
+
+    /* Nav links — absolutely centered so they don't depend on logo/actions widths */
+    .nav-links {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: var(--md);
+      z-index: 1;
+    }
+
+    .nav-links a {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-2);
+      padding: 6px 10px;
+      border-radius: var(--r-sm);
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-links a:hover { color: var(--text-1); background: var(--border); }
+
+    /* Active nav indicator — gold underline just below the link text */
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 10px;
+      right: 10px;
+      height: 2px;
+      border-radius: 1px;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .nav-links a.active { color: var(--text-1); }
+    .nav-links a.active::after { opacity: 1; }
+
+    /* Nav actions (right) */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sm);
+    }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: var(--r-sm);
+      color: var(--text-2);
+      transition: color var(--transition), background var(--transition);
+    }
+    .theme-toggle:hover { color: var(--text-1); background: var(--border); }
+
+    .nav-cta {
+      padding: 9px 20px;
+      font-size: 14px;
+    }
+
+    /* Mobile menu button */
+    .menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: var(--r-sm);
+      color: var(--text-2);
+      transition: color var(--transition), background var(--transition);
+    }
+    .menu-btn:hover { color: var(--text-1); background: var(--border); }
+
+    /* Mobile menu dropdown */
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      padding: var(--md);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      gap: var(--xs);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-2);
+      padding: 10px 12px;
+      border-radius: var(--r-sm);
+      transition: color var(--transition), background var(--transition);
+    }
+    .mobile-menu a:hover { color: var(--text-1); background: var(--border); }
+    .mobile-menu .btn-primary { margin-top: var(--sm); width: 100%; justify-content: center; }
+
+    @media (max-width: 767px) {
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .menu-btn { display: flex; }
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      padding: 100px 0 80px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--hero-glow);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: var(--xxl);
+    }
+
+    .hero-text { max-width: 520px; }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: var(--lg);
+      letter-spacing: 0.02em;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    #hero h1 { margin-bottom: var(--lg); }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-2);
+      max-width: 460px;
+      margin-bottom: var(--xl);
+      line-height: 1.65;
+    }
+
+    .hero-cta {
+      display: flex;
+      align-items: center;
+      gap: var(--md);
+      flex-wrap: wrap;
+      margin-bottom: var(--md);
+    }
+
+    .platform-note {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: var(--sm);
+    }
+
+    /* Hero image */
+    .hero-img-wrap {
+      position: relative;
+    }
+
+    .hero-img {
+      width: 100%;
+      border-radius: var(--r-lg);
+      box-shadow: var(--img-shadow);
+      border: 1px solid var(--border);
+    }
+
+    @media (max-width: 1023px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-img-wrap { display: none; }
+      .hero-text { max-width: 100%; }
+      #hero { padding: 80px 0 64px; text-align: center; }
+      .hero-cta { justify-content: center; }
+      .hero-sub { margin: 0 auto var(--xl); }
+      .hero-eyebrow { margin-left: auto; margin-right: auto; display: inline-flex; }
+    }
+
+    @media (max-width: 767px) {
+      #hero { padding: 64px 0 48px; }
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       FEATURES BENTO GRID
+    ───────────────────────────────────────────────────────── */
+    #features { background: var(--surface); }
+
+    .features-header { margin-bottom: var(--xxl); }
+
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: minmax(180px, auto);
+      gap: var(--md);
+    }
+
+    .bento-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sm);
+      box-shadow: var(--card-shadow);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .bento-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--card-shadow), 0 0 0 1px var(--border-hover);
+    }
+
+    .bento-card .card-icon {
+      font-size: 28px;
+      color: var(--accent);
+      margin-bottom: var(--xs);
+    }
+
+    .bento-card p { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+
+    /* Bento layout: desktop 12-col */
+    .bento-card:nth-child(1) { grid-column: span 7; }
+    .bento-card:nth-child(2) { grid-column: span 5; }
+    .bento-card:nth-child(3) { grid-column: span 4; }
+    .bento-card:nth-child(4) { grid-column: span 4; }
+    .bento-card:nth-child(5) { grid-column: span 4; }
+    .bento-card:nth-child(6) { grid-column: span 12; }
+
+    /* Card 1 (encryption) — featured, badge */
+    .bento-card:nth-child(1) .card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      color: var(--accent);
+      background: rgba(255, 204, 0, 0.1);
+      border: 1px solid rgba(255, 204, 0, 0.25);
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-top: auto;
+    }
+
+    /* Card 6 (import) — horizontal layout on desktop */
+    .bento-card:nth-child(6) {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--xl);
+    }
+    .bento-card:nth-child(6) .card-body { flex: 1; }
+    .bento-card:nth-child(6) .card-formats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sm);
+      align-self: center;
+    }
+    .card-format-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      background: var(--surface-high);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: var(--r-sm);
+    }
+
+    @media (max-width: 1023px) {
+      .bento-card:nth-child(1) { grid-column: span 12; }
+      .bento-card:nth-child(2) { grid-column: span 12; }
+      .bento-card:nth-child(3) { grid-column: span 6; }
+      .bento-card:nth-child(4) { grid-column: span 6; }
+      .bento-card:nth-child(5) { grid-column: span 6; grid-row: auto; }
+      .bento-card:nth-child(6) { grid-column: span 6; grid-row: auto; flex-direction: column; }
+    }
+
+    @media (max-width: 767px) {
+      .bento { grid-template-columns: 1fr; grid-auto-rows: auto; }
+      .bento-card { grid-column: span 1 !important; }
+      .bento-card:nth-child(6) { flex-direction: column; }
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       HOW IT WORKS
+    ───────────────────────────────────────────────────────── */
+    #how-it-works .how-header { margin-bottom: var(--xxl); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0 var(--lg);
+      align-items: start;
+    }
+
+    /* Arrow separator between steps */
+    .step-sep {
+      display: flex;
+      align-items: flex-start;
+      padding-top: 14px; /* vertically aligns with icon center */
+      color: var(--accent);
+      opacity: 0.45;
+    }
+    .step-sep .material-symbols-outlined { font-size: 28px; }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--md);
+    }
+
+    .step-number {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+    }
+
+    .step-number-bg {
+      position: absolute;
+      inset: 0;
+      font-size: 56px;
+      font-weight: 800;
+      color: var(--accent);
+      opacity: 0.08;
+      line-height: 1;
+      letter-spacing: -2px;
+      user-select: none;
+    }
+
+    .step-icon-wrap {
+      position: relative;
+      z-index: 1;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--r-md);
+      background: rgba(255, 204, 0, 0.1);
+      border: 1px solid rgba(255, 204, 0, 0.25);
+    }
+
+    .step-icon-wrap .material-symbols-outlined {
+      font-size: 26px;
+      color: var(--accent);
+    }
+
+    .step-body h3 { font-size: 17px; }
+    .step-body p  { font-size: 14px; color: var(--text-2); margin-top: var(--xs); line-height: 1.6; }
+    .step-body a  { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+    .step-body a:hover { color: var(--accent-hover); }
+
+    @media (max-width: 767px) {
+      .steps { grid-template-columns: 1fr; gap: var(--xl) 0; }
+      .step-sep { display: none; }
+      .step { flex-direction: row; }
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       BROWSER EXTENSION
+    ───────────────────────────────────────────────────────── */
+    #extension { background: var(--surface); }
+
+    .extension-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--xxl);
+      align-items: center;
+    }
+
+    .extension-left h2 { margin-bottom: var(--lg); }
+
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--md);
+      margin-bottom: var(--xxl);
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--md);
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    .feature-list .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .store-badges {
+      display: flex;
+      align-items: center;
+      gap: var(--md);
+      flex-wrap: wrap;
+    }
+
+    .store-badge {
+      display: block;
+      height: 48px;
+      width: auto;
+      max-width: none;
+      border-radius: var(--r-sm);
+      transition: opacity var(--transition), transform var(--transition);
+    }
+    .store-badge:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* Stats grid (right column) */
+    .ext-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--md);
+    }
+
+    .ext-stat {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--lg) var(--xl);
+      transition: border-color var(--transition);
+    }
+    .ext-stat:hover { border-color: var(--border-hover); }
+
+    .ext-stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+      margin-bottom: var(--xs);
+    }
+
+    .ext-stat-label {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 1023px) {
+      .extension-inner { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 767px) {
+      .ext-stats { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       DOWNLOAD CTA
+    ───────────────────────────────────────────────────────── */
+    #download {
+      background: var(--accent);
+      padding: var(--xxxl) 0;
+    }
+
+    .download-inner {
+      text-align: center;
+    }
+
+    #download h2 {
+      color: #1a1a1a;
+      margin-bottom: var(--md);
+    }
+
+    .download-sub {
+      font-size: 16px;
+      color: rgba(26, 26, 26, 0.65);
+      margin-bottom: var(--xxl);
+    }
+
+    .download-cta-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--md);
+      flex-wrap: wrap;
+    }
+
+    .download-secondary-links {
+      margin-top: var(--lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--md);
+      font-size: 14px;
+      color: rgba(26, 26, 26, 0.55);
+    }
+    .download-secondary-links a {
+      color: rgba(26, 26, 26, 0.7);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color var(--transition);
+    }
+    .download-secondary-links a:hover { color: #1a1a1a; }
+    .download-secondary-links span { opacity: 0.4; }
+
+    /* ─────────────────────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: var(--xxl) 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--lg);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--md);
+    }
+
+    /* footer-logo-text removed — both themes now use full logo PNG files */
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: var(--lg);
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--text-2);
+      transition: color var(--transition);
+    }
+    .footer-links a:hover { color: var(--text-1); }
+
+    @media (max-width: 767px) {
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-brand { flex-direction: column; }
+      .footer-links { justify-content: center; }
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       FAQ
+    ───────────────────────────────────────────────────────── */
+    #faq { background: var(--bg); }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--md);
+      margin-top: var(--xxl);
+    }
+    @media (max-width: 767px) { .faq-grid { grid-template-columns: 1fr; } }
+
+    .faq-item {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      transition: border-color var(--transition);
+    }
+    .faq-item:hover { border-color: var(--border-hover); }
+    .faq-item[open] { border-color: rgba(255, 204, 0, 0.3); }
+
+    .faq-item summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--md);
+      padding: var(--lg) var(--xl);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-1);
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      transition: color var(--transition);
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: 'add';
+      font-family: 'Material Symbols Outlined';
+      font-size: 20px;
+      color: var(--accent);
+      flex-shrink: 0;
+      transition: transform 0.25s ease;
+    }
+    .faq-item[open] summary::after {
+      content: 'remove';
+    }
+
+    .faq-answer {
+      padding: 0 var(--xl) var(--lg);
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+      padding-top: var(--md);
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       BACK TO TOP
+    ───────────────────────────────────────────────────────── */
+    #back-to-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 200;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--accent-on);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.25s ease, transform 0.25s ease, background var(--transition);
+      pointer-events: none;
+    }
+    #back-to-top.visible {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+    #back-to-top:hover { background: var(--accent-hover); }
+    #back-to-top:active { transform: scale(0.93); }
+
+    /* Footer logo — dual mode (same logic as navbar) */
+    [data-theme="dark"]  .footer-logo-light { display: none; }
+    [data-theme="dark"]  .footer-logo-dark  { display: flex; align-items: center; gap: 8px; }
+    [data-theme="light"] .footer-logo-dark  { display: none; }
+    [data-theme="light"] .footer-logo-light { display: flex; align-items: center; }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════════════════════ -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="container">
+      <div class="nav-inner">
+
+        <!-- Logo — dark mode -->
+        <a href="#hero" id="logo-dark" aria-label="PassKey — Home">
+          <img src="assets/logo_passkey_dark.png" alt="PassKey"
+               style="height:36px;width:auto;max-width:none;display:block;">
+        </a>
+        <!-- Logo — light mode -->
+        <a href="#hero" id="logo-light" aria-label="PassKey — Home">
+          <img src="assets/logo_passkey_light.png" alt="PassKey"
+               style="height:36px;width:auto;max-width:none;display:block;">
+        </a>
+
+        <!-- Desktop nav links -->
+        <ul class="nav-links" role="list">
+          <li>
+            <a href="#hero" aria-label="Home">
+              <span class="material-symbols-outlined" style="font-size:18px;">home</span>
+            </a>
+          </li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How it works</a></li>
+          <li><a href="#extension">Extension</a></li>
+        </ul>
+
+        <!-- Actions -->
+        <div class="nav-actions">
+          <button class="theme-toggle" id="theme-toggle" aria-label="Switch to light mode">
+            <span class="material-symbols-outlined">light_mode</span>
+          </button>
+          <a href="https://github.com/pexatar/PassKey/releases/tag/v2.0.0"
+             target="_blank" rel="noopener noreferrer"
+             class="btn btn-primary nav-cta">
+            <span class="material-symbols-outlined" style="font-size:16px;">download</span>
+            Download
+          </a>
+          <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu" id="mobile-menu" role="menu">
+      <a href="#hero" role="menuitem">
+        <span class="material-symbols-outlined" style="font-size:18px;">home</span> Home
+      </a>
+      <a href="#features" role="menuitem">
+        <span class="material-symbols-outlined" style="font-size:18px;">shield</span> Features
+      </a>
+      <a href="#how-it-works" role="menuitem">
+        <span class="material-symbols-outlined" style="font-size:18px;">arrow_circle_right</span> How it works
+      </a>
+      <a href="#extension" role="menuitem">
+        <span class="material-symbols-outlined" style="font-size:18px;">extension</span> Extension
+      </a>
+      <a href="https://github.com/pexatar/PassKey/releases/tag/v2.0.0"
+         target="_blank" rel="noopener noreferrer"
+         class="btn btn-primary">
+        <span class="material-symbols-outlined" style="font-size:16px;">download</span>
+        Download for Windows
+      </a>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════════ -->
+  <section id="hero" aria-labelledby="hero-heading">
+    <div class="container">
+      <div class="hero-inner">
+
+        <!-- Text col -->
+        <div class="hero-text">
+          <div class="hero-eyebrow fade-in visible">v2.0.0 &nbsp;·&nbsp; Open Source &nbsp;·&nbsp; GPL v3</div>
+
+          <h1 id="hero-heading" class="fade-in visible">
+            Your passwords,<br>locked locally.
+          </h1>
+
+          <p class="hero-sub fade-in visible">
+            AES-256-GCM encrypted vault. No cloud, no account, no subscription.
+            Your data never leaves your computer.
+          </p>
+
+          <div class="hero-cta fade-in visible">
+            <a href="https://github.com/pexatar/PassKey/releases/tag/v2.0.0"
+               target="_blank" rel="noopener noreferrer"
+               class="btn btn-primary">
+              <span class="material-symbols-outlined" style="font-size:18px;">download</span>
+              Download for Windows
+            </a>
+            <a href="https://github.com/pexatar/PassKey"
+               target="_blank" rel="noopener noreferrer"
+               class="btn btn-ghost">
+              <span class="material-symbols-outlined" style="font-size:18px;">code</span>
+              View on GitHub
+            </a>
+          </div>
+
+          <p class="platform-note fade-in visible">
+            Windows 10 version 1809+ &nbsp;·&nbsp; x64 &nbsp;·&nbsp; No .NET required
+          </p>
+        </div>
+
+        <!-- Image col (hidden on mobile) -->
+        <div class="hero-img-wrap fade-in visible" aria-hidden="true">
+          <img src="assets/screenshot/passkey/01 - dashboard.png"
+               alt="PassKey dashboard showing the password vault"
+               class="hero-img"
+               loading="eager"
+               fetchpriority="high">
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       FEATURES
+  ══════════════════════════════════════════════════════════ -->
+  <section id="features" class="section" aria-labelledby="features-heading">
+    <div class="container">
+
+      <div class="features-header fade-in">
+        <span class="section-label">Features</span>
+        <h2 id="features-heading">Built for security.<br>Designed for simplicity.</h2>
+        <p class="section-intro">
+          Every feature is designed around a single principle: your data belongs to you and only you.
+        </p>
+      </div>
+
+      <div class="bento">
+
+        <!-- Card 1 — Encryption (featured) -->
+        <div class="bento-card fade-in">
+          <span class="material-symbols-outlined card-icon">lock</span>
+          <h3>AES-256-GCM Encryption</h3>
+          <p>
+            Every entry is encrypted with AES-256-GCM using a unique per-blob nonce.
+            Key derivation with Argon2id (64 MB · 3 iterations · 4 threads) and
+            PBKDF2-SHA256 (600 000 iterations) for backward compatibility.
+          </p>
+          <div class="card-badge">
+            <span>●</span> Encrypted Vault
+          </div>
+        </div>
+
+        <!-- Card 2 — Local only -->
+        <div class="bento-card fade-in">
+          <span class="material-symbols-outlined card-icon">wifi_off</span>
+          <h3>Fully Local</h3>
+          <p>
+            No cloud sync. No telemetry. No analytics. No network requests of any kind.
+            PassKey is 100% offline-first — your vault never leaves your device.
+          </p>
+        </div>
+
+        <!-- Card 3 — Open source -->
+        <div class="bento-card fade-in">
+          <span class="material-symbols-outlined card-icon">code</span>
+          <h3>Open Source</h3>
+          <p>
+            GPL v3 licensed. The full source code is on GitHub — readable, auditable and forkable by anyone.
+          </p>
+        </div>
+
+        <!-- Card 4 — Browser extension -->
+        <div class="bento-card fade-in">
+          <span class="material-symbols-outlined card-icon">extension</span>
+          <h3>Browser Extension</h3>
+          <p>
+            One-click autofill for Chrome, Firefox and Edge. Communicates with the desktop app via native messaging — no data leaves your machine.
+          </p>
+        </div>
+
+        <!-- Card 5 — Languages -->
+        <div class="bento-card fade-in">
+          <span class="material-symbols-outlined card-icon">translate</span>
+          <h3>6 Languages</h3>
+          <p>
+            Available in Italian, English, French, German, Spanish and Portuguese — with full UI localisation across every screen.
+          </p>
+        </div>
+
+        <!-- Card 6 — Import & backup -->
+        <div class="bento-card fade-in">
+          <div class="card-body">
+            <span class="material-symbols-outlined card-icon">upload_file</span>
+            <h3>Import & Backup</h3>
+            <p>
+              Migrate from other managers or create encrypted backups in the PassKey format (.pkbak), secured with Argon2id-AES-GCM.
+            </p>
+          </div>
+          <div class="card-formats">
+            <span class="card-format-tag">Bitwarden JSON</span>
+            <span class="card-format-tag">1Password .1pux</span>
+            <span class="card-format-tag">CSV</span>
+            <span class="card-format-tag">.pkbak</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       HOW IT WORKS
+  ══════════════════════════════════════════════════════════ -->
+  <section id="how-it-works" class="section" aria-labelledby="how-heading">
+    <div class="container">
+
+      <div class="how-header fade-in">
+        <span class="section-label">Get started</span>
+        <h2 id="how-heading">Three steps to safer passwords</h2>
+        <p class="section-intro">Up and running in minutes, no account required.</p>
+      </div>
+
+      <div class="steps">
+
+        <div class="step fade-in">
+          <div class="step-number">
+            <div class="step-number-bg">1</div>
+            <div class="step-icon-wrap">
+              <span class="material-symbols-outlined">download</span>
+            </div>
+          </div>
+          <div class="step-body">
+            <h3>Install Desktop</h3>
+            <p>
+              Download the installer from
+              <a href="https://github.com/pexatar/PassKey/releases/tag/v2.0.0"
+                 target="_blank" rel="noopener noreferrer">GitHub Releases</a>.
+              Self-contained, no .NET runtime required. Runs on Windows 10 1809+ x64.
+            </p>
+          </div>
+        </div>
+
+        <div class="step-sep" aria-hidden="true">
+          <span class="material-symbols-outlined">arrow_right_alt</span>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-number">
+            <div class="step-number-bg">2</div>
+            <div class="step-icon-wrap">
+              <span class="material-symbols-outlined">extension</span>
+            </div>
+          </div>
+          <div class="step-body">
+            <h3>Install Extension</h3>
+            <p>
+              Add PassKey to
+              <a href="https://chromewebstore.google.com/detail/passkey/jadfnbfppmcpbfiickiolonfldkphmfb"
+                 target="_blank" rel="noopener noreferrer">Chrome</a>
+              or
+              <a href="https://addons.mozilla.org/firefox/addon/passkey/"
+                 target="_blank" rel="noopener noreferrer">Firefox</a>
+              from the official stores. Works with Chrome, Edge and Firefox.
+            </p>
+          </div>
+        </div>
+
+        <div class="step-sep" aria-hidden="true">
+          <span class="material-symbols-outlined">arrow_right_alt</span>
+        </div>
+
+        <div class="step fade-in">
+          <div class="step-number">
+            <div class="step-number-bg">3</div>
+            <div class="step-icon-wrap">
+              <span class="material-symbols-outlined">key</span>
+            </div>
+          </div>
+          <div class="step-body">
+            <h3>Autofill &amp; go</h3>
+            <p>
+              Open the extension popup, unlock your vault, and autofill credentials with a single click — without ever leaving your browser tab.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       BROWSER EXTENSION
+  ══════════════════════════════════════════════════════════ -->
+  <section id="extension" class="section" aria-labelledby="extension-heading">
+    <div class="container">
+      <div class="extension-inner">
+
+        <!-- Left: text + badges -->
+        <div class="extension-left fade-in">
+          <span class="section-label">Browser Extension</span>
+          <h2 id="extension-heading">Pairs with your browser</h2>
+
+          <ul class="feature-list">
+            <li>
+              <span class="material-symbols-outlined">check_circle</span>
+              <span>One-click autofill from the extension popup</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined">check_circle</span>
+              <span>Unlock vault directly in browser — never leave your tab</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined">check_circle</span>
+              <span>Works with React, Angular and Vue virtual DOM</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined">check_circle</span>
+              <span>Multi-step login forms (email-only first step)</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined">check_circle</span>
+              <span>ECDH P-256 + AES-256-GCM session encryption</span>
+            </li>
+          </ul>
+
+          <div class="store-badges">
+            <a href="https://chromewebstore.google.com/detail/passkey/jadfnbfppmcpbfiickiolonfldkphmfb"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Available on Chrome Web Store">
+              <img src="assets/logos/205x60-chrome.png"
+                   alt="Available on Chrome Web Store"
+                   class="store-badge">
+            </a>
+            <a href="https://addons.mozilla.org/firefox/addon/passkey/"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Get the Firefox Add-on">
+              <img src="assets/logos/205x60-firefox.png"
+                   alt="Get the Firefox Add-on"
+                   class="store-badge">
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: stats grid -->
+        <div class="ext-stats fade-in">
+
+          <div class="ext-stat">
+            <div class="ext-stat-value">3</div>
+            <div class="ext-stat-label">Browsers supported<br>Chrome · Firefox · Edge</div>
+          </div>
+
+          <div class="ext-stat">
+            <div class="ext-stat-value">6</div>
+            <div class="ext-stat-label">Languages<br>IT · EN · FR · DE · ES · PT</div>
+          </div>
+
+          <div class="ext-stat">
+            <div class="ext-stat-value">0</div>
+            <div class="ext-stat-label">Cloud calls<br>Pure local IPC</div>
+          </div>
+
+          <div class="ext-stat">
+            <div class="ext-stat-value">GPL v3</div>
+            <div class="ext-stat-label">Open source<br>Fully auditable</div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       FAQ  (visible content required for FAQPage schema validity)
+  ══════════════════════════════════════════════════════════ -->
+  <section id="faq" class="section" aria-labelledby="faq-heading">
+    <div class="container">
+
+      <div class="fade-in">
+        <span class="section-label">FAQ</span>
+        <h2 id="faq-heading">Frequently asked questions</h2>
+        <p class="section-intro">Everything you need to know before downloading.</p>
+      </div>
+
+      <div class="faq-grid">
+
+        <details class="faq-item fade-in">
+          <summary>Does PassKey store passwords in the cloud?</summary>
+          <p class="faq-answer">No. PassKey is fully offline. Your vault is stored locally on your Windows device and is never transmitted to any server. There is no cloud sync, no telemetry, and no network requests of any kind.</p>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>What encryption does PassKey use?</summary>
+          <p class="faq-answer">Every vault entry is encrypted with AES-256-GCM using a unique per-blob nonce. The master password is never stored — it derives the encryption key via Argon2id (64 MB, 3 iterations, 4 threads). PBKDF2-SHA256 (600,000 iterations) is supported for backward compatibility.</p>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>Is PassKey free?</summary>
+          <p class="faq-answer">Yes. PassKey is completely free and open-source under the GNU General Public License v3 (GPL v3). There are no subscriptions, no premium tiers, and no in-app purchases — ever.</p>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>Which browsers does the extension support?</summary>
+          <p class="faq-answer">The PassKey extension supports Google Chrome, Mozilla Firefox, and Microsoft Edge. It communicates with the desktop app via native messaging — no credentials are sent over the network.</p>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>What are the system requirements?</summary>
+          <p class="faq-answer">PassKey requires Windows 10 version 1809 (build 17763) or later, 64-bit. The installer is self-contained — no .NET runtime or additional dependencies are required.</p>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>Can I import from other password managers?</summary>
+          <p class="faq-answer">Yes. PassKey supports importing from Bitwarden (JSON), 1Password (.1pux), and generic CSV files. You can also create and restore encrypted backups in PassKey's own .pkbak format.</p>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>Is PassKey open source?</summary>
+          <p class="faq-answer">Yes. PassKey is fully open-source under GPL v3. The complete source code is publicly available on GitHub and can be audited, forked, or contributed to by anyone.</p>
+        </details>
+
+        <details class="faq-item fade-in">
+          <summary>Does PassKey sync between multiple devices?</summary>
+          <p class="faq-answer">PassKey does not sync automatically — this is by design, to keep your data local. You can manually transfer your vault by creating an encrypted .pkbak backup and restoring it on another Windows machine.</p>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       DOWNLOAD CTA
+  ══════════════════════════════════════════════════════════ -->
+  <section id="download" aria-labelledby="download-heading">
+    <div class="container">
+      <div class="download-inner fade-in">
+        <h2 id="download-heading">Start protecting your<br>passwords today.</h2>
+        <p class="download-sub">Free, open-source, and runs entirely on your machine.</p>
+
+        <div class="download-cta-row">
+          <a href="https://github.com/pexatar/PassKey/releases/tag/v2.0.0"
+             target="_blank" rel="noopener noreferrer"
+             class="btn btn-dark"
+             style="font-size:16px;padding:16px 36px;">
+            <span class="material-symbols-outlined" style="font-size:20px;">download</span>
+            Download PassKey v2.0.0
+          </a>
+        </div>
+
+        <div class="download-secondary-links">
+          <a href="https://github.com/pexatar/PassKey/releases/download/v2.0.0/PassKey-Portable-x64.zip"
+             target="_blank" rel="noopener noreferrer">Portable ZIP ↗</a>
+          <span>·</span>
+          <a href="https://github.com/pexatar/PassKey"
+             target="_blank" rel="noopener noreferrer">Source on GitHub ↗</a>
+          <span>·</span>
+          <a href="https://github.com/pexatar/PassKey/releases"
+             target="_blank" rel="noopener noreferrer">Changelog ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════════ -->
+  <footer role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+
+        <!-- Brand -->
+        <div class="footer-brand">
+          <!-- Dark mode -->
+          <div class="footer-logo-dark">
+            <img src="assets/logo_passkey_dark.png" alt="PassKey"
+                 style="height:28px;width:auto;max-width:none;display:block;">
+          </div>
+          <!-- Light mode -->
+          <div class="footer-logo-light">
+            <img src="assets/logo_passkey_light.png" alt="PassKey"
+                 style="height:28px;width:auto;max-width:none;display:block;">
+          </div>
+          <p class="footer-copy">© 2026 PassKey &nbsp;·&nbsp; GPL v3</p>
+        </div>
+
+        <!-- Links -->
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="https://github.com/pexatar/PassKey"
+             target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="privacy/index.html">Privacy Policy</a>
+          <a href="user-guide/01-getting-started.html">Docs</a>
+          <a href="https://github.com/pexatar/PassKey/releases"
+             target="_blank" rel="noopener noreferrer">Changelog</a>
+        </nav>
+
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Back to top -->
+  <button id="back-to-top" aria-label="Back to top">
+    <span class="material-symbols-outlined">arrow_upward</span>
+  </button>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       JAVASCRIPT
+  ══════════════════════════════════════════════════════════ -->
+  <script>
+    // ── 1. Theme toggle ──────────────────────────────────────────────────────
+    const html      = document.documentElement;
+    const themeBtn  = document.getElementById('theme-toggle');
+    const themeIcon = themeBtn.querySelector('.material-symbols-outlined');
+
+    function applyTheme(t) {
+      html.setAttribute('data-theme', t);
+      localStorage.setItem('pk-theme', t);
+      themeIcon.textContent = (t === 'dark') ? 'light_mode' : 'dark_mode';
+      themeBtn.setAttribute('aria-label',
+        (t === 'dark') ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    themeBtn.addEventListener('click', function () {
+      applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    // Sync icon with whatever theme was set by the flash-prevention script
+    applyTheme(html.getAttribute('data-theme'));
+
+
+    // ── 2. Mobile menu ───────────────────────────────────────────────────────
+    var menuBtn    = document.getElementById('menu-btn');
+    var mobileMenu = document.getElementById('mobile-menu');
+    var menuIcon   = menuBtn.querySelector('.material-symbols-outlined');
+
+    menuBtn.addEventListener('click', function () {
+      var open = mobileMenu.classList.toggle('open');
+      menuIcon.textContent = open ? 'close' : 'menu';
+      menuBtn.setAttribute('aria-expanded', String(open));
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        mobileMenu.classList.remove('open');
+        menuIcon.textContent = 'menu';
+        menuBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+
+    // ── 3. Smooth scroll ─────────────────────────────────────────────────────
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var target = document.querySelector(a.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+
+    // ── 4. Back to top ───────────────────────────────────────────────────────
+    var backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', function () {
+      backToTop.classList.toggle('visible', window.scrollY > 320);
+    }, { passive: true });
+    backToTop.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+
+    // ── 5. Active nav link on scroll ────────────────────────────────────────
+    var navAnchors = document.querySelectorAll('.nav-links a[href^="#"]');
+
+    var sectionMap = [];
+    navAnchors.forEach(function (a) {
+      var href = a.getAttribute('href');
+      var sec  = document.querySelector(href);
+      if (sec) sectionMap.push({ el: sec, a: a });
+    });
+
+    if (sectionMap.length) {
+      var activeNavObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            navAnchors.forEach(function (a) { a.classList.remove('active'); });
+            var match = sectionMap.find(function (s) { return s.el === e.target; });
+            if (match) match.a.classList.add('active');
+          }
+        });
+      }, {
+        rootMargin: '-10% 0px -80% 0px',   // trigger when section top enters upper 20% of viewport
+        threshold: 0
+      });
+
+      sectionMap.forEach(function (s) { activeNavObs.observe(s.el); });
+    }
+
+
+    // ── 6. Scroll fade-in (prefers-reduced-motion safe) ──────────────────────
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReduced) {
+      var fadeObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            fadeObs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      document.querySelectorAll('.fade-in:not(.visible)').forEach(function (el) {
+        fadeObs.observe(el);
+      });
+    } else {
+      // Reduced motion: show all elements immediately
+      document.querySelectorAll('.fade-in').forEach(function (el) {
+        el.classList.add('visible');
+      });
+    }
+  </script>
+
+</body>
+</html>
