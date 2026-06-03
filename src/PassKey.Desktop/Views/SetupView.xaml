@@ -34,6 +34,7 @@
                 <TextBlock x:Uid="SetupPasswordLabel" Text="Password *" Style="{StaticResource CaptionTextBlockStyle}" />
                 <controls:SecureInputBox
                     x:Name="PasswordInput"
+                    x:Uid="SetupPasswordPlaceholder"
                     PlaceholderText="Inserisci la master password"
                     MaxLength="128"
                     TabIndex="10" />
@@ -44,8 +45,8 @@
                 <TextBlock x:Uid="SetupConfirmLabel" Text="Conferma password *" Style="{StaticResource CaptionTextBlockStyle}" />
                 <controls:SecureInputBox
                     x:Name="ConfirmInput"
+                    x:Uid="SetupConfirmPlaceholder"
                     PlaceholderText="Ripeti la master password"
-                    ShowRevealButton="Collapsed"
                     MaxLength="128"
                     TabIndex="20" />
             </StackPanel>
@@ -97,12 +98,12 @@
             <!-- Create vault button -->
             <Button
                 x:Name="CreateButton"
+                x:Uid="SetupCreateVaultBtn"
                 Style="{StaticResource AccentButtonStyle}"
                 HorizontalAlignment="Stretch"
                 Height="40"
                 IsEnabled="False"
                 Click="CreateButton_Click"
-                AutomationProperties.Name="Crea Vault"
                 TabIndex="30">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <ProgressRing

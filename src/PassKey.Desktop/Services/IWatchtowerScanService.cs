@@ -17,10 +17,11 @@ public interface IWatchtowerScanService
     WatchtowerResult? LastResult { get; }
 
     /// <summary>
-    /// Raised on the UI thread every time a single entry has been checked. The argument
-    /// is in <c>[0, 1]</c>. Useful for progress bars during long scans.
+    /// Raised on the UI thread every time a single entry has been checked, reporting
+    /// <c>(scanned, total)</c> so the UI can show both a determinate ring and a live
+    /// "X / N" count during long scans.
     /// </summary>
-    event Action<double>? Progress;
+    event Action<int, int>? Progress;
 
     /// <summary>Raised on the UI thread when the scan finishes (success, cancel, or error).</summary>
     event Action<WatchtowerResult?>? Completed;

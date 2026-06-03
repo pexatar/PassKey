@@ -1,4 +1,5 @@
 using PassKey.Core.Constants;
+using PassKey.Core.Services;
 
 namespace PassKey.Core.Models;
 
@@ -26,6 +27,18 @@ public sealed class CreditCardEntry : IVaultEntry
 
     /// <summary>Gets or sets the Primary Account Number (PAN) of the card.</summary>
     public string CardNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the card number masked for display (e.g., "•••• •••• •••• 1234"). Returns
+    /// a fully-masked placeholder if the card number is empty. Used by the list view
+    /// so the raw PAN is never shown alongside the rest of the entry — only the last
+    /// digits are visible, matching the skeuomorphic card view. Mirrors the
+    /// <see cref="ExpiryFormatted"/> pattern of exposing a display-ready computed value
+    /// directly on the model.
+    /// </summary>
+    public string MaskedCardNumber => string.IsNullOrWhiteSpace(CardNumber)
+        ? "•••• •••• •••• ••••"
+        : CardTypeDetector.MaskCardNumber(CardNumber, CardType);
 
     /// <summary>Gets or sets the expiry month (1–12).</summary>
     public int ExpiryMonth { get; set; }

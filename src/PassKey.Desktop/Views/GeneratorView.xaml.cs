@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
+using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -25,10 +26,23 @@ public sealed partial class GeneratorView : UserControl
 {
     private GeneratorViewModel? _viewModel;
     private bool _updatingFromVm;
+    // Shared loader (also used by the static crack-time helpers).
+    private static readonly ResourceLoader s_res = new();
 
     public GeneratorView()
     {
         InitializeComponent();
+        // Re-render colour-dependent UI when the app theme changes at runtime, so the
+        // code-built colours (password syntax, strength bar, history) follow the new theme.
+        ActualThemeChanged += OnActualThemeChanged;
+    }
+
+    private void OnActualThemeChanged(FrameworkElement sender, object args)
+    {
+        if (_viewModel is null) return;
+        UpdatePasswordDisplay(_viewModel.GeneratedPassword);
+        UpdateStrengthUI();
+        UpdateHistoryUI();
     }
 
     public void SetViewModel(GeneratorViewModel vm)
@@ -59,7 +73,7 @@ public sealed partial class GeneratorView : UserControl
         {
             case nameof(GeneratorViewModel.GeneratedPassword):
                 UpdatePasswordDisplay(_viewModel?.GeneratedPassword ?? string.Empty);
-                Announce("Nuova password generata");
+                Announce(s_res.GetString("GeneratorPwGenerated"));
                 break;
 
             case nameof(GeneratorViewModel.StrengthResult):
@@ -92,9 +106,9 @@ public sealed partial class GeneratorView : UserControl
         if (string.IsNullOrEmpty(password))
             return;
 
-        var letterBrush = (Brush)Application.Current.Resources["PasswordCharLetterBrush"];
-        var digitBrush = (Brush)Application.Current.Resources["PasswordCharDigitBrush"];
-        var symbolBrush = (Brush)Application.Current.Resources["PasswordCharSymbolBrush"];
+        var letterBrush = ThemeBrush("PasswordCharLetterBrush");
+        var digitBrush = ThemeBrush("PasswordCharDigitBrush");
+        var symbolBrush = ThemeBrush("PasswordCharSymbolBrush");
 
         // Group consecutive characters of the same type into a single Run
         var currentType = ClassifyChar(password[0]);
@@ -171,7 +185,7 @@ public sealed partial class GeneratorView : UserControl
         StrengthLabel.Foreground = brush;
 
         // Crack time
-        CrackTimeText.Text = GetCrackTimeLabel(result.EstimatedCrackTime);
+        CrackTimeText.Text = CrackTimeFormatter.Localize(result.EstimatedCrackTime);
 
         // Segmented bar
         UpdateStrengthBar(result.Score, brush);
@@ -180,7 +194,6 @@ public sealed partial class GeneratorView : UserControl
     private void UpdateStrengthBar(int score, Brush? activeBrush)
     {
         var segments = new[] { StrengthSeg0, StrengthSeg1, StrengthSeg2, StrengthSeg3, StrengthSeg4 };
-        var inactiveBrush = (Brush)Application.Current.Resources["ControlStrongFillColorDisabledBrush"];
 
         int filledCount;
         if (score == 0) filledCount = 0;
@@ -192,7 +205,12 @@ public sealed partial class GeneratorView : UserControl
 
         for (int i = 0; i < segments.Length; i++)
         {
-            segments[i].Background = i < filledCount ? (activeBrush ?? inactiveBrush) : inactiveBrush;
+            if (i < filledCount && activeBrush is not null)
+                segments[i].Background = activeBrush;
+            else
+                // Revert to the XAML-declared {ThemeResource ControlStrongFillColorDisabledBrush}
+                // so the inactive colour stays theme-aware.
+                segments[i].ClearValue(Border.BackgroundProperty);
         }
     }
 
@@ -220,13 +238,8 @@ public sealed partial class GeneratorView : UserControl
 
     private Grid CreateHistoryItem(GeneratorViewModel.HistoryEntry entry)
     {
-        var grid = new Grid
-        {
-            Padding = new Thickness(10, 8, 10, 8),
-            ColumnSpacing = 8,
-            CornerRadius = new CornerRadius(6),
-            Background = (Brush)Application.Current.Resources["CardBackgroundFillColorDefaultBrush"]
-        };
+        // Style (theme-aware ThemeResource background) defined in GeneratorView.xaml.
+        var grid = new Grid { Style = (Style)Resources["HistoryItemGridStyle"] };
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // strength dot
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // password
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // timestamp
@@ -260,9 +273,7 @@ public sealed partial class GeneratorView : UserControl
         var timeText = new TextBlock
         {
             Text = GetRelativeTime(entry.GeneratedAt),
-            VerticalAlignment = VerticalAlignment.Center,
-            Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
-            FontSize = 12
+            Style = (Style)Resources["HistoryTimeTextStyle"]
         };
         Grid.SetColumn(timeText, 2);
         grid.Children.Add(timeText);
@@ -273,7 +284,7 @@ public sealed partial class GeneratorView : UserControl
             Padding = new Thickness(6, 4, 6, 4),
             Content = new FontIcon { Glyph = "\uE8C8", FontSize = 12 }
         };
-        ToolTipService.SetToolTip(copyBtn, "Copia");
+        ToolTipService.SetToolTip(copyBtn, s_res.GetString("ButtonCopy"));
         copyBtn.Click += (_, _) => _viewModel?.CopyHistoryEntryCommand.Execute(entry);
         Grid.SetColumn(copyBtn, 3);
         grid.Children.Add(copyBtn);
@@ -295,7 +306,7 @@ public sealed partial class GeneratorView : UserControl
     private async void ShowCopyFeedback()
     {
         CopyIcon.Glyph = "\uE73E"; // Checkmark
-        Announce("Password copiata negli appunti");
+        Announce(s_res.GetString("GeneratorPwCopied"));
 
         await Task.Delay(2000);
 
@@ -362,34 +373,7 @@ public sealed partial class GeneratorView : UserControl
         };
     }
 
-    private static string GetCrackTimeLabel(string time) => time switch
-    {
-        "instant" => "Istantaneo",
-        "seconds" => "Pochi secondi",
-        "centuries" => "Secoli",
-        "millennia" => "Millenni",
-        _ => LocalizeCrackTimeString(time)
-    };
-
-    private static string LocalizeCrackTimeString(string time)
-    {
-        var parts = time.Split(' ', 2);
-        if (parts.Length != 2) return time;
-
-        var number = parts[0];
-        var unit = parts[1].ToLowerInvariant();
-
-        return unit switch
-        {
-            "minutes" or "minute" => $"{number} minuti",
-            "hours" or "hour" => $"{number} ore",
-            "days" or "day" => $"{number} giorni",
-            "years" or "year" => $"{number} anni",
-            _ => time
-        };
-    }
-
-    private static Brush GetStrengthBrush(int score)
+    private Brush GetStrengthBrush(int score)
     {
         var key = score switch
         {
@@ -399,6 +383,23 @@ public sealed partial class GeneratorView : UserControl
             < 80 => "StrengthStrongBrush",
             _ => "StrengthVeryStrongBrush"
         };
+        return ThemeBrush(key);
+    }
+
+    /// <summary>
+    /// Resolves a brush that lives inside ThemeColors' ThemeDictionaries for the control's
+    /// current ActualTheme. Needed because Application.Current.Resources[key] is NOT theme-aware
+    /// for keys declared inside ThemeDictionaries (it returns the wrong theme's value).
+    /// </summary>
+    private Brush ThemeBrush(string key)
+    {
+        var dictKey = ActualTheme == ElementTheme.Dark ? "Default" : "Light";
+        foreach (var md in Application.Current.Resources.MergedDictionaries)
+        {
+            if (md.ThemeDictionaries.TryGetValue(dictKey, out var obj) &&
+                obj is ResourceDictionary td && td.TryGetValue(key, out var b) && b is Brush brush)
+                return brush;
+        }
         return (Brush)Application.Current.Resources[key];
     }
 }

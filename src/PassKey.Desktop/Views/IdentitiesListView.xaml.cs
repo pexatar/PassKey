@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
-using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -27,11 +26,13 @@ public sealed partial class IdentitiesListView : UserControl
 
     public async void SetViewModel(IdentitiesListViewModel vm)
     {
+        // Drop any handler attached to a previous VM to avoid subscription leaks.
+        if (_viewModel is not null) _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
         _viewModel = vm;
         DataContext = vm;
 
         vm.PropertyChanged += OnViewModelPropertyChanged;
-        vm.SaveCompleted += ShowSavedToast;
 
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
         EmptyState.Title = _resourceLoader.GetString("EmptyIdentitiesTitle");
@@ -39,6 +40,12 @@ public sealed partial class IdentitiesListView : UserControl
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();
         UpdateEmptyState();
+
+        // Sync the detail panel from VM state — see CreditCardsListView for the full
+        // rationale. Without this, navigating away with a detail open and coming back
+        // leaves the UI frozen.
+        UpdateDetailPanel();
+        UpdateDetailContent();
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -47,6 +54,14 @@ public sealed partial class IdentitiesListView : UserControl
         {
             case nameof(IdentitiesListViewModel.IsDetailOpen):
                 UpdateDetailPanel();
+                // When the detail panel closes after an in-place edit, the edited entry is
+                // the same object reference the GridView already holds. The GridView recycles
+                // its container without re-running ContainerContentChanging, so the computed
+                // fields (avatar initial, full name, formatted phone) keep their stale values
+                // until the page is revisited. Rebinding ItemsSource forces a full container
+                // regeneration so the edited card reflects the change immediately.
+                if (_viewModel?.IsDetailOpen == false)
+                    RefreshListContainers();
                 break;
             case nameof(IdentitiesListViewModel.IsEmpty):
                 UpdateEmptyState();
@@ -59,6 +74,18 @@ public sealed partial class IdentitiesListView : UserControl
 
     private void UpdateList()
     {
+        IdentityList.ItemsSource = _viewModel?.Entries;
+    }
+
+    /// <summary>
+    /// Forces the GridView to regenerate every container by rebinding ItemsSource. Needed
+    /// after an in-place edit because the identity cards populate their computed fields
+    /// (avatar, full name, formatted phone) via ContainerContentChanging, which the
+    /// GridView does not re-run when it recycles a container for the same object reference.
+    /// </summary>
+    private void RefreshListContainers()
+    {
+        IdentityList.ItemsSource = null;
         IdentityList.ItemsSource = _viewModel?.Entries;
     }
 
@@ -108,10 +135,13 @@ public sealed partial class IdentitiesListView : UserControl
         }
     }
 
-    private void AddButton_Click(object sender, RoutedEventArgs e)
-    {
-        _viewModel?.AddNewCommand.Execute(null);
-    }
+    private void AddButton_Click(object sender, RoutedEventArgs e) => InvokeAddNew();
+
+    /// <summary>
+    /// Opens the "new item" editor. Public so the Ctrl+N accelerator handled by
+    /// <see cref="ShellView"/> can route the shortcut to whichever list page is shown.
+    /// </summary>
+    public void InvokeAddNew() => _viewModel?.AddNewCommand.Execute(null);
 
     private void IdentityList_ItemClick(object sender, ItemClickEventArgs e)
     {
@@ -180,9 +210,6 @@ public sealed partial class IdentitiesListView : UserControl
             Application.Current.Resources.TryGetValue("CardStrokeColorDefaultBrush", out var brush))
             card.BorderBrush = (Brush)brush;
     }
-
-    // Save confirmation toast
-    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip);
 
     // ── Formatters ────────────────────────────────────────────────────────────
 

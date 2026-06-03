@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Interfaces;
 using PassKey.Core.Models;
@@ -19,6 +20,10 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
     private readonly IVaultStateService _vaultState;
     private readonly IDialogQueueService _dialogQueue;
     private readonly IVaultRepository _repository;
+    private readonly IToastService _toast;
+    private readonly ResourceLoader _resourceLoader = new();
+    // Static loader for the static GetCategoryName/GetRelativeDate helpers.
+    private static readonly ResourceLoader s_res = new();
     private bool _disposed;
 
     private List<SecureNoteEntry> _allEntries = [];
@@ -46,20 +51,19 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     public partial SecureNoteDetailViewModel? DetailViewModel { get; set; }
 
-    /// <summary>Fired after a note is saved successfully (for toast notification).</summary>
-    public event Action? SaveCompleted;
-
     private readonly SecureNoteDetailViewModel _detailVm;
 
     public SecureNotesListViewModel(
         IVaultStateService vaultState,
         IDialogQueueService dialogQueue,
         IVaultRepository repository,
+        IToastService toast,
         SecureNoteDetailViewModel detailViewModel)
     {
         _vaultState = vaultState;
         _dialogQueue = dialogQueue;
         _repository = repository;
+        _toast = toast;
         _detailVm = detailViewModel;
 
         _vaultState.VaultLocked += OnVaultLocked;
@@ -185,10 +189,10 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
         if (SelectedEntry is null) return;
 
         var confirmed = await _dialogQueue.ConfirmAsync(
-            title: "Elimina nota",
-            content: $"Eliminare \"{SelectedEntry.Title}\"?\nQuesta azione è irreversibile.",
-            primaryButtonText: "Elimina",
-            closeButtonText: "Annulla");
+            title: string.Format(_resourceLoader.GetString("DeleteConfirmTitle"), SelectedEntry.Title),
+            content: string.Format(_resourceLoader.GetString("DeleteConfirmMessage"), SelectedEntry.Title),
+            primaryButtonText: _resourceLoader.GetString("DeleteButton"),
+            closeButtonText: _resourceLoader.GetString("CancelButton"));
 
         if (confirmed)
         {
@@ -205,6 +209,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
             });
             await LoadEntriesCommand.ExecuteAsync(null);
             CloseEditor();
+            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
         }
     }
 
@@ -229,7 +234,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
             Timestamp = DateTime.UtcNow
         });
         await LoadEntriesCommand.ExecuteAsync(null);
-        SaveCompleted?.Invoke();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
     }
 
     private async void OnEntryDeleted(Guid entryId)
@@ -244,6 +249,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
         });
         await LoadEntriesCommand.ExecuteAsync(null);
         CloseEditor();
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
     }
 
     // --- Static helpers ---
@@ -276,35 +282,36 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
     {
         return category switch
         {
-            NoteCategory.General => "Generale",
-            NoteCategory.Personal => "Personale",
-            NoteCategory.Work => "Lavoro",
-            NoteCategory.Financial => "Finanziario",
-            NoteCategory.Medical => "Medico",
-            NoteCategory.Travel => "Viaggio",
-            NoteCategory.Education => "Educazione",
-            NoteCategory.Legal => "Legale",
-            NoteCategory.Technical => "Tecnico",
-            NoteCategory.Other => "Altro",
-            _ => "Generale"
+            NoteCategory.General => s_res.GetString("NoteCategoryGeneral"),
+            NoteCategory.Personal => s_res.GetString("NoteCategoryPersonal"),
+            NoteCategory.Work => s_res.GetString("NoteCategoryWork"),
+            NoteCategory.Financial => s_res.GetString("NoteCategoryFinancial"),
+            NoteCategory.Medical => s_res.GetString("NoteCategoryMedical"),
+            NoteCategory.Travel => s_res.GetString("NoteCategoryTravel"),
+            NoteCategory.Education => s_res.GetString("NoteCategoryEducation"),
+            NoteCategory.Legal => s_res.GetString("NoteCategoryLegal"),
+            NoteCategory.Technical => s_res.GetString("NoteCategoryTechnical"),
+            NoteCategory.Other => s_res.GetString("NoteCategoryOther"),
+            _ => s_res.GetString("NoteCategoryGeneral")
         };
     }
 
     /// <summary>
-    /// Get Italian relative date string for display in note cards.
+    /// Get the localized relative date string for display in note cards.
     /// </summary>
     public static string GetRelativeDate(DateTime utcDate)
     {
         var local = utcDate.ToLocalTime();
         var now = DateTime.Now;
         var diff = now - local;
+        var culture = new CultureInfo(s_res.GetString("NoteDateCulture"));
 
-        if (diff.TotalMinutes < 1) return "Adesso";
-        if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes} min fa";
-        if (diff.TotalHours < 24 && local.Date == now.Date) return $"{(int)diff.TotalHours} ore fa";
-        if (local.Date == now.Date.AddDays(-1)) return "Ieri";
-        if (diff.TotalDays < 7) return $"{(int)diff.TotalDays}g fa";
-        if (local.Year == now.Year) return local.ToString("d MMM", new CultureInfo("it-IT"));
-        return local.ToString("d MMM yyyy", new CultureInfo("it-IT"));
+        if (diff.TotalMinutes < 1) return s_res.GetString("NoteTimeNow");
+        if (diff.TotalMinutes < 60) return string.Format(s_res.GetString("NoteTimeMinutes"), (int)diff.TotalMinutes);
+        if (diff.TotalHours < 24 && local.Date == now.Date) return string.Format(s_res.GetString("NoteTimeHours"), (int)diff.TotalHours);
+        if (local.Date == now.Date.AddDays(-1)) return s_res.GetString("NoteTimeYesterday");
+        if (diff.TotalDays < 7) return string.Format(s_res.GetString("NoteTimeDays"), (int)diff.TotalDays);
+        if (local.Year == now.Year) return local.ToString("d MMM", culture);
+        return local.ToString("d MMM yyyy", culture);
     }
 }

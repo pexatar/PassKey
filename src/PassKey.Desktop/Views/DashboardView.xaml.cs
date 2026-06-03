@@ -290,7 +290,7 @@ public sealed partial class DashboardView : UserControl
             {
                 _ = Windows.System.Launcher.LaunchUriAsync(new Uri(item.Url!));
             }
-            catch { /* invalid URL */ }
+            catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[Dashboard] Could not open recent-item URL: {ex}"); }
         }
     }
 
@@ -338,7 +338,12 @@ public sealed partial class DashboardView : UserControl
     {
         if (args.ChosenSuggestion is SearchResultItem item)
         {
-            _viewModel?.NavigateToItem(item.EntityType, item.EntityId);
+            // Defer the navigation: navigating synchronously inside this event tears down
+            // the Dashboard (and this AutoSuggestBox) before the control closes its
+            // suggestion popup. The orphaned popup then overlays the destination page and
+            // silently swallows all pointer input. Enqueueing lets the AutoSuggestBox
+            // finish closing its popup before the view is replaced.
+            DispatcherQueue.TryEnqueue(() => _viewModel?.NavigateToItem(item.EntityType, item.EntityId));
         }
     }
 

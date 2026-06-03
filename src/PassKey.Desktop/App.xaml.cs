@@ -39,6 +39,8 @@ public partial class App : Application
                 services.AddSingleton<INavigationStack, NavigationStack>();
                 services.AddSingleton<ISettingsService, SettingsService>();
                 services.AddSingleton<IDialogQueueService, DialogQueueService>();
+                services.AddSingleton<IToastService, ToastService>();
+                services.AddSingleton<IAutoLockService, AutoLockService>();
                 services.AddSingleton<IClipboardService, ClipboardService>();
                 services.AddSingleton<IVaultStateService, VaultStateService>();
                 services.AddSingleton<IDatabaseService, DatabaseService>();
@@ -75,6 +77,7 @@ public partial class App : Application
                 services.AddTransient<PasswordVerifierViewModel>();
                 services.AddTransient<SettingsViewModel>();
                 services.AddTransient<HelpViewModel>();
+                services.AddTransient<ActivityLogViewModel>();
             })
             .Build();
     }
@@ -105,9 +108,10 @@ public partial class App : Application
             var ipcService = Services.GetRequiredService<IBrowserIpcService>();
             await ipcService.StartAsync();
         }
-        catch
+        catch (Exception ex)
         {
-            // IPC service failure should not prevent app from starting
+            // IPC service failure should not prevent app from starting; log for diagnostics.
+            System.Diagnostics.Debug.WriteLine($"[App] Browser IPC service failed to start: {ex}");
         }
 
         // Fire-and-forget: silent update check (max once per 24h, 10s timeout)

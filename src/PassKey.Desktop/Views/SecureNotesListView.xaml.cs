@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Constants;
 using PassKey.Core.Models;
-using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -25,15 +24,22 @@ public sealed partial class SecureNotesListView : UserControl
     public SecureNotesListView()
     {
         InitializeComponent();
+
+        // Localized tooltip + accessible name for the category filter button.
+        var filterTip = _resourceLoader.GetString("NoteFilterTooltip");
+        ToolTipService.SetToolTip(FilterButton, filterTip);
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(FilterButton, filterTip);
     }
 
     public async void SetViewModel(SecureNotesListViewModel vm)
     {
+        // Drop any handler attached to a previous VM to avoid subscription leaks.
+        if (_viewModel is not null) _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
         _viewModel = vm;
         DataContext = vm;
 
         vm.PropertyChanged += OnViewModelPropertyChanged;
-        vm.SaveCompleted += ShowSavedToast;
 
         BuildCategoryFilter();
 
@@ -46,6 +52,12 @@ public sealed partial class SecureNotesListView : UserControl
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();
         UpdateEmptyState();
+
+        // Sync the editor panel from VM state — see CreditCardsListView for the full
+        // rationale. Without this, navigating away with the editor open and coming
+        // back leaves the UI frozen.
+        UpdateEditorPanel();
+        UpdateEditorContent();
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -69,8 +81,8 @@ public sealed partial class SecureNotesListView : UserControl
                 UpdateFilterBadge();
                 var filterName = _viewModel?.FilterCategory.HasValue == true
                     ? SecureNotesListViewModel.GetCategoryName(_viewModel.FilterCategory!.Value)
-                    : "Tutte le categorie";
-                Announce($"Filtro: {filterName}");
+                    : _resourceLoader.GetString("NoteFilterAllCategories");
+                Announce(string.Format(_resourceLoader.GetString("NoteFilterAnnounce"), filterName));
                 break;
         }
     }
@@ -95,7 +107,7 @@ public sealed partial class SecureNotesListView : UserControl
             EmptyState.Visibility = Visibility.Collapsed;
             FilteredEmptyState.Visibility = Visibility.Visible;
             NotesList.Visibility = Visibility.Collapsed;
-            Announce("Nessun risultato trovato.");
+            Announce(_resourceLoader.GetString("NoteNoResults"));
         }
         else
         {
@@ -142,12 +154,20 @@ public sealed partial class SecureNotesListView : UserControl
     {
         CategoryFilterFlyout.Items.Clear();
 
-        // "Tutte le categorie" (nessun filtro)
+        // "All categories" entry (no filter). A neutral grey dot in the icon column keeps
+        // it aligned with the coloured category dots below (avoids a big dot-to-text gap).
         var allItem = new RadioMenuFlyoutItem
         {
-            Text = "Tutte le categorie",
+            Text = _resourceLoader.GetString("NoteFilterAllCategories"),
             GroupName = "CategoryFilter",
-            IsChecked = true
+            IsChecked = true,
+            Icon = new FontIcon
+            {
+                Glyph = "●",
+                FontFamily = new FontFamily("Segoe UI"),
+                Foreground = (Brush)Application.Current.Resources["MutedTextBrush"],
+                FontSize = 14
+            }
         };
         allItem.Click += (_, _) =>
         {
@@ -207,10 +227,13 @@ public sealed partial class SecureNotesListView : UserControl
         }
     }
 
-    private void AddButton_Click(object sender, RoutedEventArgs e)
-    {
-        _viewModel?.AddNewCommand.Execute(null);
-    }
+    private void AddButton_Click(object sender, RoutedEventArgs e) => InvokeAddNew();
+
+    /// <summary>
+    /// Opens the "new item" editor. Public so the Ctrl+N accelerator handled by
+    /// <see cref="ShellView"/> can route the shortcut to whichever list page is shown.
+    /// </summary>
+    public void InvokeAddNew() => _viewModel?.AddNewCommand.Execute(null);
 
     private void NotesList_ItemClick(object sender, ItemClickEventArgs e)
     {
@@ -248,14 +271,14 @@ public sealed partial class SecureNotesListView : UserControl
                 }
                 else if (entry.IsPinned && (idx == 0 || !entries[idx - 1].IsPinned))
                 {
-                    // Primo pinnato → "Fissate"
-                    sectionHeader.Text = "Fissate";
+                    // Primo pinnato → header "Fissate"
+                    sectionHeader.Text = _resourceLoader.GetString("NoteSectionPinned");
                     sectionHeader.Visibility = Visibility.Visible;
                 }
                 else if (!entry.IsPinned && idx > 0 && entries[idx - 1].IsPinned)
                 {
-                    // Primo non-pinnato dopo pinnati → "Note"
-                    sectionHeader.Text = "Note";
+                    // Primo non-pinnato dopo pinnati → header "Note"
+                    sectionHeader.Text = _resourceLoader.GetString("NoteSectionOthers");
                     sectionHeader.Visibility = Visibility.Visible;
                 }
                 else
@@ -306,12 +329,8 @@ public sealed partial class SecureNotesListView : UserControl
 
         // Accessibility: ItemStatus per note pinnate
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetItemStatus(
-            args.ItemContainer, entry.IsPinned ? "Fissata" : "");
+            args.ItemContainer, entry.IsPinned ? _resourceLoader.GetString("NotePinnedStatus") : "");
     }
-
-    // --- Toast conferma salvataggio ---
-
-    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip, () => Announce("Nota salvata."));
 
     // --- Helpers ---
 

@@ -5,21 +5,42 @@
     xmlns:tb="using:H.NotifyIcon"
     Title="PassKey">
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ContentPresenter x:Name="RootPresenter" />
+        <ContentPresenter x:Name="RootPresenter">
+            <ContentPresenter.ContentTransitions>
+                <TransitionCollection>
+                    <ContentThemeTransition />
+                </TransitionCollection>
+            </ContentPresenter.ContentTransitions>
+        </ContentPresenter>
+
+        <!-- Toast host: a single shared InfoBar driven by IToastService. Anchored
+             bottom-right; collapses to zero size when closed so it never blocks content. -->
+        <InfoBar
+            x:Name="ToastHost"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,24,24"
+            MaxWidth="400"
+            AutomationProperties.LiveSetting="Polite"
+            IsOpen="False" />
+
         <tb:TaskbarIcon
             x:Name="TrayIcon"
             ToolTipText="PassKey">
             <tb:TaskbarIcon.ContextFlyout>
                 <MenuFlyout>
                     <MenuFlyoutItem
+                        x:Name="TrayShowItem"
                         Text="Mostra PassKey"
                         Command="{x:Bind TrayShowCommand}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
+                        x:Name="TrayLockItem"
                         Text="Blocca Vault"
                         Command="{x:Bind TrayLockCommand}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem
+                        x:Name="TrayExitItem"
                         Text="Esci"
                         Command="{x:Bind TrayExitCommand}" />
                 </MenuFlyout>

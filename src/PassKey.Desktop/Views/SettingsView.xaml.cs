@@ -15,13 +15,50 @@ public sealed partial class SettingsView : UserControl
     private bool _updatingFromVm;
     private readonly ResourceLoader _resourceLoader = new();
     private IDialogQueueService _dialogQueue = null!;
+    private IToastService _toast = null!;
 
     /// <summary>Raised when the user clicks "Guida e scorciatoie" to navigate to HelpView.</summary>
     public event Action? NavigateToHelpRequested;
 
+    /// <summary>Raised when the user clicks "Cronologia attività" to navigate to the activity-log viewer.</summary>
+    public event Action? NavigateToActivityLogRequested;
+
     public SettingsView()
     {
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Returns the current vertical scroll offset so the shell can capture it before
+    /// navigating to the activity-log viewer and restore it on the way back (FU8).
+    /// </summary>
+    public double GetScrollOffset() => RootScroller.VerticalOffset;
+
+    /// <summary>
+    /// Restores a previously captured vertical scroll offset (FU8). Deferred via the
+    /// dispatcher (and the Loaded event when needed) because a freshly-created view has
+    /// not completed its layout pass yet — an immediate ChangeView would be clamped to
+    /// zero since the ScrollViewer's extent is not known at that point.
+    /// </summary>
+    public void RestoreScrollOffset(double offset)
+    {
+        if (offset <= 0) return;
+
+        void Apply() => RootScroller.ChangeView(null, offset, null, disableAnimation: true);
+
+        if (IsLoaded)
+        {
+            DispatcherQueue.TryEnqueue(Apply);
+        }
+        else
+        {
+            void OnLoaded(object sender, RoutedEventArgs e)
+            {
+                Loaded -= OnLoaded;
+                DispatcherQueue.TryEnqueue(Apply);
+            }
+            Loaded += OnLoaded;
+        }
     }
 
     public void SetViewModel(SettingsViewModel vm)
@@ -29,6 +66,7 @@ public sealed partial class SettingsView : UserControl
         _viewModel = vm;
         DataContext = vm;
         _dialogQueue = App.Services.GetRequiredService<IDialogQueueService>();
+        _toast = App.Services.GetRequiredService<IToastService>();
 
         _updatingFromVm = true;
 
@@ -48,11 +86,28 @@ public sealed partial class SettingsView : UserControl
 
         _updatingFromVm = false;
 
-        // Subscribe to VM changes
+        // Subscribe VM -> View events. The SettingsViewModel is a persistent singleton in
+        // ShellViewModel while this view is recreated on every navigation. If these handlers
+        // were never detached, each return to the Settings page would stack another set on
+        // the same VM, and VM-raised dialogs (master-password prompt, import format, merge
+        // strategy, …) would fire once per accumulated handler — the "dialogs multiply" bug
+        // (FU9). We detach on Unloaded so a discarded view releases its handlers; the
+        // defensive unsubscribe first guards against a repeated SetViewModel on the same view.
+        UnsubscribeVmEvents(vm);
+        SubscribeVmEvents(vm);
+        Unloaded += OnUnloaded;
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs e)
+    {
+        Unloaded -= OnUnloaded;
+        if (_viewModel is not null) UnsubscribeVmEvents(_viewModel);
+    }
+
+    private void SubscribeVmEvents(SettingsViewModel vm)
+    {
         vm.PropertyChanged += OnViewModelPropertyChanged;
         vm.ThemeChangeRequested += OnThemeChangeRequested;
-
-        // Backup/Restore/Import event subscriptions
         vm.BackupPasswordRequested += OnBackupPasswordRequested;
         vm.RestoreWarningRequested += OnRestoreWarningRequested;
         vm.RestorePasswordRequested += OnRestorePasswordRequested;
@@ -63,6 +118,22 @@ public sealed partial class SettingsView : UserControl
         vm.BackupCompleted += OnBackupCompleted;
         vm.RestoreCompleted += OnRestoreCompleted;
         vm.OperationError += OnOperationError;
+    }
+
+    private void UnsubscribeVmEvents(SettingsViewModel vm)
+    {
+        vm.PropertyChanged -= OnViewModelPropertyChanged;
+        vm.ThemeChangeRequested -= OnThemeChangeRequested;
+        vm.BackupPasswordRequested -= OnBackupPasswordRequested;
+        vm.RestoreWarningRequested -= OnRestoreWarningRequested;
+        vm.RestorePasswordRequested -= OnRestorePasswordRequested;
+        vm.ImportFormatRequested -= OnImportFormatRequested;
+        vm.ImportPasswordRequested -= OnImportPasswordRequested;
+        vm.MergeStrategyRequested -= OnMergeStrategyRequested;
+        vm.ImportCompleted -= OnImportCompleted;
+        vm.BackupCompleted -= OnBackupCompleted;
+        vm.RestoreCompleted -= OnRestoreCompleted;
+        vm.OperationError -= OnOperationError;
     }
 
     private void OnThemeChangeRequested(ElementTheme theme)
@@ -113,8 +184,17 @@ public sealed partial class SettingsView : UserControl
     {
         var exePath = Environment.ProcessPath;
         if (exePath is not null)
+            // The "--restart" flag tells the new instance it was spawned by a language
+            // restart: instead of bailing out under the single-instance guard (this
+            // process is still alive for a few moments), it waits for us to exit and
+            // then claims ownership. Without it the new instance would see "another
+            // instance running", exit immediately, and leave nothing running.
             System.Diagnostics.Process.Start(
-                new System.Diagnostics.ProcessStartInfo(exePath) { UseShellExecute = true });
+                new System.Diagnostics.ProcessStartInfo(exePath)
+                {
+                    UseShellExecute = true,
+                    Arguments = "--restart"
+                });
         Application.Current.Exit();
     }
 
@@ -136,6 +216,70 @@ public sealed partial class SettingsView : UserControl
     private void HelpButton_Click(object sender, RoutedEventArgs e)
     {
         NavigateToHelpRequested?.Invoke();
+    }
+
+    private void ActivityLogButton_Click(object sender, RoutedEventArgs e)
+    {
+        NavigateToActivityLogRequested?.Invoke();
+    }
+
+    /// <summary>
+    /// Shows a step-by-step guide for installing the PassKey browser extension,
+    /// with direct links to the Chrome Web Store and Firefox Add-ons.
+    /// </summary>
+    private async void BrowserExtensionButton_Click(object sender, RoutedEventArgs e)
+    {
+        const string chromeUrl = "https://chromewebstore.google.com/detail/passkey/jadfnbfppmcpbfiickiolonfldkphmfb";
+        const string firefoxUrl = "https://addons.mozilla.org/firefox/addon/passkey/";
+
+        var panel = new StackPanel { Spacing = 10 };
+
+        panel.Children.Add(new TextBlock
+        {
+            Text = _resourceLoader.GetString("BrowserExtIntro"),
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 0, 0, 4)
+        });
+
+        panel.Children.Add(new TextBlock
+        {
+            Text = _resourceLoader.GetString("BrowserExtStep1"),
+            TextWrapping = TextWrapping.Wrap,
+            FontWeight = Microsoft.UI.Text.FontWeights.SemiBold
+        });
+
+        var chromeButton = new Button { Content = _resourceLoader.GetString("BrowserExtChromeBtn") };
+        chromeButton.Click += (_, _) => _ = Windows.System.Launcher.LaunchUriAsync(new Uri(chromeUrl));
+
+        var firefoxButton = new Button { Content = _resourceLoader.GetString("BrowserExtFirefoxBtn") };
+        firefoxButton.Click += (_, _) => _ = Windows.System.Launcher.LaunchUriAsync(new Uri(firefoxUrl));
+
+        var buttonRow = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
+        buttonRow.Children.Add(chromeButton);
+        buttonRow.Children.Add(firefoxButton);
+        panel.Children.Add(buttonRow);
+
+        panel.Children.Add(new TextBlock
+        {
+            Text = _resourceLoader.GetString("BrowserExtStep2"),
+            TextWrapping = TextWrapping.Wrap
+        });
+        panel.Children.Add(new TextBlock
+        {
+            Text = _resourceLoader.GetString("BrowserExtStep3"),
+            TextWrapping = TextWrapping.Wrap
+        });
+
+        var dialog = new ContentDialog
+        {
+            Title = _resourceLoader.GetString("BrowserExtDialogTitle"),
+            Content = panel,
+            CloseButtonText = _resourceLoader.GetString("BrowserExtClose"),
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = XamlRoot
+        };
+
+        await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
     }
 
     private async void ChangePwButton_Click(object sender, RoutedEventArgs e)
@@ -254,6 +398,84 @@ public sealed partial class SettingsView : UserControl
             XamlRoot = XamlRoot
         };
         return _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
+    }
+
+    /// <summary>
+    /// Clears the whole vault after a two-step confirmation: an irreversible-action warning,
+    /// then a master-password re-entry prompt. Metadata and master password are preserved.
+    /// </summary>
+    private async void ClearVaultButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null) return;
+
+        // Step 1 — irreversible-action warning.
+        var proceed = await _dialogQueue.ConfirmAsync(
+            title: _resourceLoader.GetString("ClearVaultWarnTitle"),
+            content: _resourceLoader.GetString("ClearVaultWarnMessage"),
+            primaryButtonText: _resourceLoader.GetString("ClearVaultWarnContinue"),
+            closeButtonText: _resourceLoader.GetString("RestoreWarningCancel"),
+            defaultButton: ContentDialogButton.Close);
+        if (!proceed) return;
+
+        // Step 2 — master-password re-entry.
+        var pwBox = new SecureInputBox
+        {
+            PlaceholderText = _resourceLoader.GetString("ClearVaultPwPlaceholder"),
+            ShowRevealButton = Visibility.Visible,
+            Width = 320
+        };
+        var errorText = new TextBlock
+        {
+            Foreground = (Microsoft.UI.Xaml.Media.Brush)Application.Current.Resources["SystemFillColorCriticalBrush"],
+            Visibility = Visibility.Collapsed,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 8, 0, 0)
+        };
+        var descText = new TextBlock
+        {
+            Text = _resourceLoader.GetString("ClearVaultPwDesc"),
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 0, 0, 12)
+        };
+        var panel = new StackPanel { Spacing = 12 };
+        panel.Children.Add(descText);
+        panel.Children.Add(pwBox);
+        panel.Children.Add(errorText);
+
+        var dialog = new ContentDialog
+        {
+            Title = _resourceLoader.GetString("ClearVaultPwTitle"),
+            Content = panel,
+            PrimaryButtonText = _resourceLoader.GetString("ClearVaultPwConfirm"),
+            CloseButtonText = _resourceLoader.GetString("RestoreWarningCancel"),
+            DefaultButton = ContentDialogButton.Close,
+            XamlRoot = XamlRoot
+        };
+        dialog.PrimaryButtonClick += (_, args) =>
+        {
+            if (string.IsNullOrEmpty(pwBox.Password))
+            {
+                errorText.Text = _resourceLoader.GetString("ClearVaultPwErrEmpty");
+                errorText.Visibility = Visibility.Visible;
+                args.Cancel = true;
+            }
+        };
+
+        var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
+        if (result != ContentDialogResult.Primary) return;
+
+        ClearVaultButton.IsEnabled = false;
+        try
+        {
+            var ok = await _viewModel.PerformClearVaultAsync(pwBox.Password);
+            await ShowInfoDialogAsync(
+                ok ? _resourceLoader.GetString("ClearVaultSuccessTitle") : _resourceLoader.GetString("ClearVaultErrorTitle"),
+                ok ? _resourceLoader.GetString("ClearVaultSuccessMessage") : _resourceLoader.GetString("ClearVaultErrWrong"));
+        }
+        finally
+        {
+            ClearVaultButton.IsEnabled = true;
+        }
     }
 
     // ═══ AGGIORNAMENTI ═══
@@ -505,6 +727,11 @@ public sealed partial class SettingsView : UserControl
             XamlRoot = XamlRoot
         };
 
+        // FU3 UX: a KDBX cannot be opened without a password, so keep "OK" disabled until
+        // the user types something instead of letting them proceed with an empty password.
+        dialog.IsPrimaryButtonEnabled = false;
+        pwBox.PasswordChanged += (_, pw) => dialog.IsPrimaryButtonEnabled = !string.IsNullOrEmpty(pw);
+
         var result = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
         return result == ContentDialogResult.Primary
             ? (pwBox.Password, true)
@@ -570,18 +797,17 @@ public sealed partial class SettingsView : UserControl
         await ShowInfoDialogAsync(_resourceLoader.GetString("ImportSummaryTitle"), lines.ToString().TrimEnd());
     }
 
-    private async Task OnBackupCompleted(string path)
+    private Task OnBackupCompleted(string path)
     {
-        await ShowInfoDialogAsync(
-            _resourceLoader.GetString("BackupSuccessTitle"),
-            _resourceLoader.GetString("BackupSuccessMessage"));
+        // A modal dialog is too heavy for a simple "done" confirmation — use a toast.
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("BackupSuccessMessage"));
+        return Task.CompletedTask;
     }
 
-    private async Task OnRestoreCompleted()
+    private Task OnRestoreCompleted()
     {
-        await ShowInfoDialogAsync(
-            _resourceLoader.GetString("RestoreSuccessTitle"),
-            _resourceLoader.GetString("RestoreSuccessMessage"));
+        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("RestoreSuccessMessage"));
+        return Task.CompletedTask;
     }
 
     private async Task OnOperationError(string errorCode)
@@ -590,6 +816,13 @@ public sealed partial class SettingsView : UserControl
         {
             "WRONG_PASSWORD" => _resourceLoader.GetString("RestoreErrorWrongPw"),
             "INVALID_FILE" => _resourceLoader.GetString("RestoreErrorInvalid"),
+            "OPERATION_FAILED" => _resourceLoader.GetString("OperationGenericError"),
+            "IMPORT_BW_ENCRYPTED" => _resourceLoader.GetString("ImportErrBwEncrypted"),
+            "IMPORT_BW_ZIP" => _resourceLoader.GetString("ImportErrBwZip"),
+            "IMPORT_1PUX" => _resourceLoader.GetString("ImportErr1pux"),
+            "IMPORT_KEEPASS_1X" => _resourceLoader.GetString("ImportErrKeepass1x"),
+            "IMPORT_KEEPASS_OPEN" => _resourceLoader.GetString("ImportErrKeepassOpen"),
+            "IMPORT_NO_ENTRIES" => _resourceLoader.GetString("ImportErrNoEntries"),
             _ => errorCode
         };
         await ShowInfoDialogAsync(_resourceLoader.GetString("ImportErrorTitle"), message);

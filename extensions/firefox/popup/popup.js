@@ -51,8 +51,13 @@ const SPIN_SVG = `<svg class="pk-spin" width="15" height="15" viewBox="0 0 15 15
  * @param {string} svgString - SVG markup string.
  */
 function setSvgIcon(element, svgString) {
-  const doc = new DOMParser().parseFromString(svgString, 'image/svg+xml');
-  element.replaceChildren(doc.documentElement);
+  // Parse as text/html (not image/svg+xml): the HTML parser places <svg> in the
+  // SVG namespace automatically, so the inline icon strings render even without an
+  // explicit xmlns. Strict XML parsing left them in the null namespace → invisible.
+  // DOMParser stays CSP-safe (it never executes scripts).
+  const doc = new DOMParser().parseFromString(svgString, 'text/html');
+  const svg = doc.body.firstElementChild;
+  if (svg) element.replaceChildren(svg);
 }
 
 // ─── State ────────────────────────────────────────────────────────────────────

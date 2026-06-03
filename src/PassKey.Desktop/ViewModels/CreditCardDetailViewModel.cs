@@ -53,6 +53,17 @@ public partial class CreditCardDetailViewModel : BaseDetailViewModel<CreditCardE
     [ObservableProperty]
     public partial string FormattedCardNumber { get; set; } = string.Empty;
 
+    // ── Inline validation (T5.6) ───────────────────────────────────────────────
+
+    [ObservableProperty]
+    public partial bool IsCardNumberEmpty { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsCardholderNameEmpty { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsCvvEmpty { get; set; }
+
     public CreditCardDetailViewModel(
         IVaultStateService vaultState,
         IDialogQueueService dialogQueue)
@@ -62,11 +73,8 @@ public partial class CreditCardDetailViewModel : BaseDetailViewModel<CreditCardE
 
     // ─── Template-method overrides ────────────────────────────────────────────
 
-    protected override string GetPanelTitleForNew() => "Aggiungi carta";
-    protected override string GetPanelTitleForEdit() => "Modifica carta";
-    protected override string GetDeleteDialogTitle() => "Elimina carta";
     protected override string GetDeleteDisplayName(CreditCardEntry entry)
-        => entry.Label is { Length: > 0 } l ? l : "Carta senza nome";
+        => entry.Label is { Length: > 0 } l ? l : _res.GetString("CardNoName");
 
     protected override IList<CreditCardEntry> GetVaultCollection(Vault vault) => vault.CreditCards;
 
@@ -85,6 +93,9 @@ public partial class CreditCardDetailViewModel : BaseDetailViewModel<CreditCardE
         DetectedCardType = CardType.Unknown;
         IsLuhnValid = false;
         FormattedCardNumber = string.Empty;
+        IsCardNumberEmpty = true;
+        IsCardholderNameEmpty = true;
+        IsCvvEmpty = true;
     }
 
     protected override void LoadFromEntry(CreditCardEntry entry)
@@ -146,16 +157,27 @@ public partial class CreditCardDetailViewModel : BaseDetailViewModel<CreditCardE
 
     partial void OnCardNumberChanged(string value)
     {
+        IsCardNumberEmpty = string.IsNullOrWhiteSpace(value);
         DetectedCardType = CardTypeDetector.Detect(value);
         IsLuhnValid = CardTypeDetector.ValidateLuhn(value);
         UpdateCardNumberDisplay();
         UpdateCanSave();
     }
 
-    partial void OnCardholderNameChanged(string value) => UpdateCanSave();
+    partial void OnCardholderNameChanged(string value)
+    {
+        IsCardholderNameEmpty = string.IsNullOrWhiteSpace(value);
+        UpdateCanSave();
+    }
+
     partial void OnExpiryMonthChanged(int value) => UpdateCanSave();
     partial void OnExpiryYearChanged(int value) => UpdateCanSave();
-    partial void OnCvvChanged(string value) => UpdateCanSave();
+
+    partial void OnCvvChanged(string value)
+    {
+        IsCvvEmpty = string.IsNullOrWhiteSpace(value);
+        UpdateCanSave();
+    }
 
     private void UpdateCardNumberDisplay()
     {

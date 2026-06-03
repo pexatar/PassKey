@@ -7,6 +7,47 @@ public class BitwardenImporterTests
     private readonly BitwardenImporter _importer = new();
 
     [Fact]
+    public void ParseBitwarden_EncryptedExport_ThrowsImportFileException()
+    {
+        // FU3: an encrypted Bitwarden export carries "encrypted": true and no plaintext
+        // items. It must raise a clear ImportFileException, not silently return an empty
+        // vault.
+        var json = """
+        {
+          "encrypted": true,
+          "passwordProtected": true,
+          "salt": "AiRlaTQEUwdu32IgAQ7wZA==",
+          "kdfType": 0,
+          "kdfIterations": 600000,
+          "data": "2.76nphWCd+C3AzRNx+hpTRw==|RPj5GQEHwakg..."
+        }
+        """;
+
+        var ex = Assert.Throws<ImportFileException>(() => _importer.ParseBitwarden(json));
+        // The importer now throws an error CODE (localized by the Desktop layer), not a literal message.
+        Assert.Equal("IMPORT_BW_ENCRYPTED", ex.Message);
+    }
+
+    [Fact]
+    public void ParseBitwarden_PlaintextExport_NotTreatedAsEncrypted()
+    {
+        // A normal plaintext export sets "encrypted": false and must import normally.
+        var json = """
+        {
+          "encrypted": false,
+          "items": [{
+            "type": 1,
+            "name": "GitHub",
+            "login": { "username": "u", "password": "p" }
+          }]
+        }
+        """;
+
+        var vault = _importer.ParseBitwarden(json);
+        Assert.Single(vault.Passwords);
+    }
+
+    [Fact]
     public void ParseBitwarden_LoginItem_MapsToPasswordEntry()
     {
         var json = """
@@ -101,6 +142,55 @@ public class BitwardenImporterTests
         Assert.Equal("jane@test.com", id.Email);
         Assert.Equal("123 Main St, Apt 4", id.Street);
         Assert.Equal("Springfield", id.City);
+    }
+
+    [Fact]
+    public void ParseBitwarden_IdentityItem_MapsAllExtendedFields()
+    {
+        // FU4: the DTO previously dropped middleName, company, username, ssn,
+        // passportNumber, licenseNumber and address3 on import — they must now be mapped.
+        var json = """
+        {
+          "items": [{
+            "type": 4,
+            "name": "Full Identity",
+            "identity": {
+              "title": "Mr",
+              "firstName": "Joseph",
+              "middleName": "Q",
+              "lastName": "Public",
+              "company": "Acme Srl",
+              "username": "jpublic",
+              "ssn": "JHSROS92H10H264C",
+              "passportNumber": "AA1234BB",
+              "licenseNumber": "CC1234DD",
+              "email": "j@acme.it",
+              "phone": "+39000",
+              "address1": "Via Roma 1",
+              "address2": "Scala B",
+              "address3": "Interno 3",
+              "city": "Roma",
+              "state": "Lazio",
+              "postalCode": "00100",
+              "country": "Italia"
+            }
+          }]
+        }
+        """;
+
+        var vault = _importer.ParseBitwarden(json);
+
+        Assert.Single(vault.Identities);
+        var id = vault.Identities[0];
+        Assert.Equal("Q", id.MiddleName);
+        Assert.Equal("Acme Srl", id.Company);
+        Assert.Equal("jpublic", id.Username);
+        // ssn -> codice fiscale / tessera sanitaria for Italian users
+        Assert.Equal("JHSROS92H10H264C", id.HealthCardNumber);
+        Assert.Equal("AA1234BB", id.PassportNumber);
+        Assert.Equal("CC1234DD", id.DrivingLicenseNumber);
+        // address1 + address2 + address3 combined
+        Assert.Equal("Via Roma 1, Scala B, Interno 3", id.Street);
     }
 
     [Fact]

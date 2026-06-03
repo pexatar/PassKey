@@ -26,9 +26,9 @@
                 <StackPanel Spacing="6">
                     <TextBlock x:Uid="FieldLabel" Text="Etichetta" Style="{StaticResource CaptionTextBlockStyle}" />
                     <TextBox x:Name="LabelBox"
+                             x:Uid="IdLabelBox"
                              PlaceholderText="Es. Casa, Lavoro..."
                              TextChanged="LabelBox_TextChanged"
-                             AutomationProperties.Name="Etichetta identità"
                              TabIndex="10" />
                 </StackPanel>
 
@@ -47,29 +47,43 @@
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldFirstName" Text="Nome *" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="FirstNameBox"
+                                     x:Uid="IdFirstNameBox"
                                      PlaceholderText="Mario"
                                      TextChanged="FirstNameBox_TextChanged"
-                                     AutomationProperties.Name="Nome"
                                      TabIndex="20" />
+                        </StackPanel>
+
+                        <!-- Middle Name (FU5) -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldMiddleName" Text="Secondo nome" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="MiddleNameBox"
+                                     x:Uid="IdMiddleNameBox"
+                                     TextChanged="MiddleNameBox_TextChanged"
+                                     TabIndex="25" />
                         </StackPanel>
 
                         <!-- Last Name -->
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldLastName" Text="Cognome *" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="LastNameBox"
+                                     x:Uid="IdLastNameBox"
                                      PlaceholderText="Rossi"
                                      TextChanged="LastNameBox_TextChanged"
-                                     AutomationProperties.Name="Cognome"
                                      TabIndex="30" />
+                            <TextBlock x:Uid="FieldFirstAndLastNameError"
+                                       Text="Nome o Cognome è obbligatorio"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                       Visibility="{Binding IsFirstAndLastNameEmpty, Converter={StaticResource BoolToVisibility}}" />
                         </StackPanel>
 
                         <!-- Birth Date (string field — SC-02 safe) -->
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldBirthDate" Text="Data di nascita" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="BirthDateBox"
+                                     x:Uid="IdBirthDateBox"
                                      PlaceholderText="GG/MM/AAAA"
                                      TextChanged="BirthDateBox_TextChanged"
-                                     AutomationProperties.Name="Data di nascita"
                                      TabIndex="40" />
                         </StackPanel>
 
@@ -77,22 +91,46 @@
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldEmail" Text="Email" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="EmailBox"
+                                     x:Uid="IdEmailBox"
                                      PlaceholderText="mario@esempio.it"
                                      InputScope="EmailSmtpAddress"
                                      TextChanged="EmailBox_TextChanged"
-                                     AutomationProperties.Name="Email"
                                      TabIndex="50" />
+                            <TextBlock x:Uid="FieldEmailFormatWarning"
+                                       Text="Il formato email non sembra valido"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                       TextWrapping="Wrap"
+                                       Visibility="{Binding IsEmailFormatSuspect, Converter={StaticResource BoolToVisibility}}" />
                         </StackPanel>
 
                         <!-- Phone -->
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldPhone" Text="Telefono" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="PhoneBox"
+                                     x:Uid="IdPhoneBox"
                                      PlaceholderText="+39 123 45 67 890"
                                      InputScope="TelephoneNumber"
                                      TextChanged="PhoneBox_TextChanged"
-                                     AutomationProperties.Name="Telefono"
                                      TabIndex="60" />
+                        </StackPanel>
+
+                        <!-- Company (FU5) -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldCompany" Text="Azienda" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="CompanyBox"
+                                     x:Uid="IdCompanyBox"
+                                     TextChanged="CompanyBox_TextChanged"
+                                     TabIndex="62" />
+                        </StackPanel>
+
+                        <!-- Username (FU5) -->
+                        <StackPanel Spacing="6">
+                            <TextBlock x:Uid="FieldIdentityUsername" Text="Nome utente" Style="{StaticResource CaptionTextBlockStyle}" />
+                            <TextBox x:Name="UsernameBox"
+                                     x:Uid="IdUsernameBox"
+                                     TextChanged="UsernameBox_TextChanged"
+                                     TabIndex="64" />
                         </StackPanel>
                     </StackPanel>
                 </Expander>
@@ -112,9 +150,9 @@
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldStreet" Text="Via" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="StreetBox"
+                                     x:Uid="IdStreetBox"
                                      PlaceholderText="Via Roma, 1"
                                      TextChanged="StreetBox_TextChanged"
-                                     AutomationProperties.Name="Via"
                                      TabIndex="70" />
                         </StackPanel>
 
@@ -127,17 +165,17 @@
                             <StackPanel Grid.Column="0" Spacing="6">
                                 <TextBlock x:Uid="FieldCity" Text="Città" Style="{StaticResource CaptionTextBlockStyle}" />
                                 <TextBox x:Name="CityBox"
+                                         x:Uid="IdCityBox"
                                          PlaceholderText="Roma"
                                          TextChanged="CityBox_TextChanged"
-                                         AutomationProperties.Name="Città"
                                          TabIndex="80" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Spacing="6">
                                 <TextBlock x:Uid="FieldPostalCode" Text="CAP" Style="{StaticResource CaptionTextBlockStyle}" />
                                 <TextBox x:Name="PostalCodeBox"
+                                         x:Uid="IdPostalCodeBox"
                                          PlaceholderText="00100"
                                          TextChanged="PostalCodeBox_TextChanged"
-                                         AutomationProperties.Name="CAP"
                                          TabIndex="90" />
                             </StackPanel>
                         </Grid>
@@ -151,17 +189,17 @@
                             <StackPanel Grid.Column="0" Spacing="6">
                                 <TextBlock x:Uid="FieldProvince" Text="Provincia" Style="{StaticResource CaptionTextBlockStyle}" />
                                 <TextBox x:Name="ProvinceBox"
+                                         x:Uid="IdProvinceBox"
                                          PlaceholderText="RM"
                                          TextChanged="ProvinceBox_TextChanged"
-                                         AutomationProperties.Name="Provincia"
                                          TabIndex="100" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Spacing="6">
                                 <TextBlock x:Uid="FieldRegion" Text="Regione" Style="{StaticResource CaptionTextBlockStyle}" />
                                 <TextBox x:Name="RegionBox"
+                                         x:Uid="IdRegionBox"
                                          PlaceholderText="Lazio"
                                          TextChanged="RegionBox_TextChanged"
-                                         AutomationProperties.Name="Regione"
                                          TabIndex="110" />
                             </StackPanel>
                         </Grid>
@@ -170,9 +208,9 @@
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldCountry" Text="Nazione" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="CountryBox"
+                                     x:Uid="IdCountryBox"
                                      PlaceholderText="Italia"
                                      TextChanged="CountryBox_TextChanged"
-                                     AutomationProperties.Name="Nazione"
                                      TabIndex="120" />
                         </StackPanel>
                     </StackPanel>
@@ -193,9 +231,9 @@
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldIdCard" Text="Carta d'identità" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="IdCardBox"
+                                     x:Uid="IdIdCardBox"
                                      PlaceholderText="Numero documento"
                                      TextChanged="IdCardBox_TextChanged"
-                                     AutomationProperties.Name="Carta d'identità"
                                      TabIndex="130" />
                         </StackPanel>
 
@@ -203,9 +241,9 @@
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldHealthCard" Text="Tessera sanitaria" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="HealthCardBox"
+                                     x:Uid="IdHealthCardBox"
                                      PlaceholderText="Numero tessera"
                                      TextChanged="HealthCardBox_TextChanged"
-                                     AutomationProperties.Name="Tessera sanitaria"
                                      TabIndex="140" />
                         </StackPanel>
 
@@ -213,9 +251,9 @@
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldDrivingLicense" Text="Patente" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="DrivingLicenseBox"
+                                     x:Uid="IdDrivingLicenseBox"
                                      PlaceholderText="Numero patente"
                                      TextChanged="DrivingLicenseBox_TextChanged"
-                                     AutomationProperties.Name="Patente"
                                      TabIndex="150" />
                         </StackPanel>
 
@@ -223,9 +261,9 @@
                         <StackPanel Spacing="6">
                             <TextBlock x:Uid="FieldPassport" Text="Passaporto" Style="{StaticResource CaptionTextBlockStyle}" />
                             <TextBox x:Name="PassportBox"
+                                     x:Uid="IdPassportBox"
                                      PlaceholderText="Numero passaporto"
                                      TextChanged="PassportBox_TextChanged"
-                                     AutomationProperties.Name="Passaporto"
                                      TabIndex="160" />
                         </StackPanel>
                     </StackPanel>
@@ -235,6 +273,7 @@
                 <StackPanel Spacing="6">
                     <TextBlock x:Uid="FieldNotes" Text="Note" Style="{StaticResource CaptionTextBlockStyle}" />
                     <TextBox x:Name="NotesBox"
+                             x:Uid="PlaceholderNotes"
                              AcceptsReturn="True"
                              TextWrapping="Wrap"
                              MinHeight="144"
@@ -242,12 +281,11 @@
                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                              PlaceholderText="Note aggiuntive..."
                              TextChanged="NotesBox_TextChanged"
-                             AutomationProperties.Name="Note"
                              TabIndex="170" />
                 </StackPanel>
 
                 <!-- Required field legend -->
-                <TextBlock x:Uid="RequiredFieldLegend" Text="* Campo obbligatorio (Nome o Cognome)"
+                <TextBlock x:Uid="RequiredFieldLegendIdentity" Text="* Campo obbligatorio (Nome o Cognome)"
                            Style="{StaticResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </StackPanel>
@@ -268,9 +306,9 @@
             <!-- Delete button (only visible in edit mode) -->
             <Button x:Name="DeleteButton"
                     Grid.Column="0"
+                    x:Uid="IdDeleteButton"
                     Visibility="Collapsed"
                     Click="DeleteButton_Click"
-                    AutomationProperties.Name="Elimina identità"
                     TabIndex="180">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource StatRemovedBrush}" />
@@ -282,7 +320,6 @@
             <Button x:Uid="ButtonCancel" Grid.Column="2"
                     Content="Annulla"
                     Click="CancelButton_Click"
-                    AutomationProperties.Name="Annulla"
                     TabIndex="190" />
 
             <!-- Save -->
@@ -291,7 +328,6 @@
                     Style="{StaticResource AccentButtonStyle}"
                     IsEnabled="False"
                     Click="SaveButton_Click"
-                    AutomationProperties.Name="Salva"
                     TabIndex="200">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <ProgressRing x:Name="SaveProgress"

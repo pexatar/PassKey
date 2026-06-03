@@ -51,7 +51,10 @@ public sealed partial class CreditCardDetailView : UserControl
 
         // Populate UI from ViewModel
         _updatingFromVm = true;
-        PanelTitleText.Text = vm.PanelTitle;
+        // Localised panel title (Add vs Edit), resolved against the active language.
+        PanelTitleText.Text = vm.IsNew
+            ? _resourceLoader.GetString("CardPanelTitleNew")
+            : _resourceLoader.GetString("CardPanelTitleEdit");
         CardNumberBox.Text = vm.CardNumber;
         CardholderBox.Text = vm.CardholderName;
         LabelBox.Text = vm.Label;

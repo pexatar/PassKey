@@ -32,10 +32,10 @@
             <StackPanel Spacing="8">
                 <Button
                     x:Name="AddPasswordButton"
+                    x:Uid="WelcomeAddPasswordBtn"
                     HorizontalAlignment="Stretch"
                     Height="40"
-                    Click="AddPasswordButton_Click"
-                    AutomationProperties.Name="Aggiungi la prima password">
+                    Click="AddPasswordButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <FontIcon Glyph="&#xE8D7;" FontSize="16" />
                         <TextBlock x:Uid="WelcomeAddPassword" Text="Aggiungi la prima password" VerticalAlignment="Center" />
@@ -44,10 +44,10 @@
 
                 <Button
                     x:Name="ImportButton"
+                    x:Uid="WelcomeImportBtn"
                     HorizontalAlignment="Stretch"
                     Height="40"
-                    Click="ImportButton_Click"
-                    AutomationProperties.Name="Importa da un altro gestore">
+                    Click="ImportButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <FontIcon Glyph="&#xE8B5;" FontSize="16" />
                         <TextBlock x:Uid="WelcomeImport" Text="Importa da un altro gestore" VerticalAlignment="Center" />
@@ -55,11 +55,23 @@
                 </Button>
 
                 <Button
-                    x:Name="SettingsButton"
+                    x:Name="RestoreBackupButton"
+                    x:Uid="WelcomeRestoreBtn"
                     HorizontalAlignment="Stretch"
                     Height="40"
-                    Click="SettingsButton_Click"
-                    AutomationProperties.Name="Esplora le impostazioni">
+                    Click="RestoreBackupButton_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon Glyph="&#xE8E5;" FontSize="16" />
+                        <TextBlock x:Uid="WelcomeRestore" Text="Ripristina backup esistente" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+
+                <Button
+                    x:Name="SettingsButton"
+                    x:Uid="WelcomeSettingsBtn"
+                    HorizontalAlignment="Stretch"
+                    Height="40"
+                    Click="SettingsButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <FontIcon Glyph="&#xE713;" FontSize="16" />
                         <TextBlock x:Uid="WelcomeSettings" Text="Esplora le impostazioni" VerticalAlignment="Center" />
@@ -79,11 +91,11 @@
             <!-- Continue button -->
             <Button
                 x:Name="ContinueButton"
+                x:Uid="WelcomeContinueBtn"
                 Style="{StaticResource AccentButtonStyle}"
                 HorizontalAlignment="Stretch"
                 Height="40"
-                Click="ContinueButton_Click"
-                AutomationProperties.Name="Continua">
+                Click="ContinueButton_Click">
                 <TextBlock x:Uid="ButtonContinue" Text="Continua" />
             </Button>
 

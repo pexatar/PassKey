@@ -8,11 +8,19 @@
         VerticalAlignment="Center"
         Spacing="16">
 
-        <FontIcon
-            x:Name="IconElement"
-            FontSize="48"
-            HorizontalAlignment="Center"
-            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        <Grid
+            Width="104"
+            Height="104"
+            HorizontalAlignment="Center">
+            <Ellipse
+                x:Name="BadgeCircle"
+                Opacity="0.14" />
+            <FontIcon
+                x:Name="IconElement"
+                FontSize="44"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Grid>
 
         <TextBlock
             x:Name="TitleText"

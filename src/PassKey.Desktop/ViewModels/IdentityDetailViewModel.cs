@@ -20,6 +20,9 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     public partial string FirstName { get; set; } = string.Empty;
 
     [ObservableProperty]
+    public partial string MiddleName { get; set; } = string.Empty;
+
+    [ObservableProperty]
     public partial string LastName { get; set; } = string.Empty;
 
     [ObservableProperty]
@@ -30,6 +33,12 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
 
     [ObservableProperty]
     public partial string Phone { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string Company { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string Username { get; set; } = string.Empty;
 
     // Address
     [ObservableProperty]
@@ -67,6 +76,19 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     [ObservableProperty]
     public partial string Notes { get; set; } = string.Empty;
 
+    // ── Inline validation (T5.6) ───────────────────────────────────────────────
+
+    [ObservableProperty]
+    public partial bool IsFirstAndLastNameEmpty { get; set; }
+
+    /// <summary>
+    /// True when an email has been entered but its format is not plausible. Drives a
+    /// non-blocking inline warning (FU1) — the email is optional, so this never affects
+    /// <see cref="BaseDetailViewModel{T}.CanSave"/>; it only nudges the user to double-check.
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsEmailFormatSuspect { get; set; }
+
     public IdentityDetailViewModel(
         IVaultStateService vaultState,
         IDialogQueueService dialogQueue)
@@ -76,16 +98,12 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
 
     // ─── Template-method overrides ────────────────────────────────────────────
 
-    protected override string GetPanelTitleForNew() => "Aggiungi identità";
-    protected override string GetPanelTitleForEdit() => "Modifica identità";
-    protected override string GetDeleteDialogTitle() => "Elimina identità";
-
     protected override string GetDeleteDisplayName(IdentityEntry entry)
     {
         var displayName = !string.IsNullOrWhiteSpace(entry.Label)
             ? entry.Label
             : $"{entry.FirstName} {entry.LastName}".Trim();
-        return string.IsNullOrWhiteSpace(displayName) ? "Identità senza nome" : displayName;
+        return string.IsNullOrWhiteSpace(displayName) ? _res.GetString("IdentityNoName") : displayName;
     }
 
     protected override IList<IdentityEntry> GetVaultCollection(Vault vault) => vault.Identities;
@@ -94,10 +112,13 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     {
         Label = string.Empty;
         FirstName = string.Empty;
+        MiddleName = string.Empty;
         LastName = string.Empty;
         BirthDate = string.Empty;
         Email = string.Empty;
         Phone = string.Empty;
+        Company = string.Empty;
+        Username = string.Empty;
         Street = string.Empty;
         City = string.Empty;
         Province = string.Empty;
@@ -109,16 +130,21 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
         DrivingLicenseNumber = string.Empty;
         PassportNumber = string.Empty;
         Notes = string.Empty;
+        IsFirstAndLastNameEmpty = true;
+        IsEmailFormatSuspect = false;
     }
 
     protected override void LoadFromEntry(IdentityEntry entry)
     {
         Label = entry.Label;
         FirstName = entry.FirstName;
+        MiddleName = entry.MiddleName;
         LastName = entry.LastName;
         BirthDate = entry.BirthDate;
         Email = entry.Email;
         Phone = entry.Phone;
+        Company = entry.Company;
+        Username = entry.Username;
 
         Street = entry.Street;
         City = entry.City;
@@ -139,10 +165,13 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     {
         Label = Label.Trim(),
         FirstName = FirstName.Trim(),
+        MiddleName = MiddleName.Trim(),
         LastName = LastName.Trim(),
         BirthDate = BirthDate.Trim(),
         Email = Email.Trim(),
         Phone = Phone.Trim(),
+        Company = Company.Trim(),
+        Username = Username.Trim(),
         Street = Street.Trim(),
         City = City.Trim(),
         Province = Province.Trim(),
@@ -160,10 +189,13 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
     {
         entry.Label = Label.Trim();
         entry.FirstName = FirstName.Trim();
+        entry.MiddleName = MiddleName.Trim();
         entry.LastName = LastName.Trim();
         entry.BirthDate = BirthDate.Trim();
         entry.Email = Email.Trim();
         entry.Phone = Phone.Trim();
+        entry.Company = Company.Trim();
+        entry.Username = Username.Trim();
         entry.Street = Street.Trim();
         entry.City = City.Trim();
         entry.Province = Province.Trim();
@@ -185,7 +217,49 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
 
     // ─── Property change handlers ─────────────────────────────────────────────
 
-    partial void OnFirstNameChanged(string value) => UpdateCanSave();
-    partial void OnLastNameChanged(string value) => UpdateCanSave();
-    partial void OnEmailChanged(string value) => UpdateCanSave();
+    partial void OnFirstNameChanged(string value)
+    {
+        UpdateValidationState();
+        UpdateCanSave();
+    }
+
+    partial void OnLastNameChanged(string value)
+    {
+        UpdateValidationState();
+        UpdateCanSave();
+    }
+
+    partial void OnEmailChanged(string value)
+    {
+        // Non-blocking format check (FU1): warn only when something is typed and it
+        // doesn't look like an email. Does NOT gate saving — email is optional.
+        IsEmailFormatSuspect = !string.IsNullOrWhiteSpace(value) && !IsPlausibleEmail(value);
+        UpdateCanSave();
+    }
+
+    private void UpdateValidationState()
+    {
+        IsFirstAndLastNameEmpty = string.IsNullOrWhiteSpace(FirstName) && string.IsNullOrWhiteSpace(LastName);
+    }
+
+    /// <summary>
+    /// Lenient plausibility check for an email address — deliberately NOT a strict
+    /// RFC 5322 validator. Requires exactly one '@' (neither first nor last char) and a
+    /// domain part containing a dot that is neither the first nor the last character.
+    /// Rejects the common typos "user", "user.com", "user@host", "user@host." while
+    /// accepting ordinary addresses like "mario@esempio.it".
+    /// </summary>
+    private static bool IsPlausibleEmail(string email)
+    {
+        email = email.Trim();
+
+        int at = email.IndexOf('@');
+        if (at <= 0) return false;                       // no '@', or '@' is the first char
+        if (at != email.LastIndexOf('@')) return false;  // more than one '@'
+        if (at == email.Length - 1) return false;        // nothing after '@'
+
+        var domain = email[(at + 1)..];
+        int dot = domain.IndexOf('.');
+        return dot > 0 && dot < domain.Length - 1;        // dot present, not first/last
+    }
 }

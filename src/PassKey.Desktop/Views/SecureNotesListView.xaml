@@ -18,30 +18,28 @@
               BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}"
               BorderThickness="0,0,1,0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />  <!-- Header: titolo + ComboBox + pulsante -->
-                <RowDefinition Height="Auto" />  <!-- Search -->
+                <RowDefinition Height="Auto" />  <!-- Header: titolo + imbuto -->
                 <RowDefinition Height="*" />     <!-- Lista / EmptyState -->
             </Grid.RowDefinitions>
 
-            <!-- Header: Titolo + Filter icon + Pulsante aggiungi -->
+            <!-- Header: page title + category filter (search + add moved to the detail panel) -->
             <Grid Grid.Row="0" Padding="16,16,16,8" ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />     <!-- Titolo -->
                     <ColumnDefinition Width="Auto" />  <!-- Filter button -->
-                    <ColumnDefinition Width="Auto" />  <!-- Pulsante + -->
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0"
                            x:Uid="PageNotes" Text="Note sicure"
                            Style="{StaticResource TitleTextBlockStyle}"
+                           TextWrapping="NoWrap"
                            VerticalAlignment="Center"
                            AutomationProperties.HeadingLevel="Level1" />
 
-                <!-- Filter icon button con MenuFlyout + RadioMenuFlyoutItem -->
+                <!-- Filter icon button con MenuFlyout + RadioMenuFlyoutItem (tooltip set in code-behind) -->
                 <Button x:Name="FilterButton" Grid.Column="1"
-                        ToolTipService.ToolTip="Filtra per categoria"
-                        AutomationProperties.Name="Filtra per categoria"
-                        TabIndex="1"
+                        VerticalAlignment="Center"
+                        TabIndex="2"
                         Padding="8">
                     <Grid>
                         <FontIcon x:Name="FilterIcon" Glyph="&#xE71C;" FontSize="16" />
@@ -55,34 +53,10 @@
                         <MenuFlyout x:Name="CategoryFilterFlyout" Placement="BottomEdgeAlignedRight" />
                     </Button.Flyout>
                 </Button>
-
-                <Button Grid.Column="2"
-                        Style="{StaticResource AccentButtonStyle}"
-                        Click="AddButton_Click"
-                        AutomationProperties.Name="Aggiungi nota (Ctrl+N)"
-                        ToolTipService.ToolTip="Nuova nota (Ctrl+N)"
-                        TabIndex="2"
-                        Padding="10,6">
-                    <StackPanel Orientation="Horizontal" Spacing="6">
-                        <FontIcon Glyph="&#xE710;" FontSize="14" />
-                        <TextBlock x:Uid="ButtonAddNote" Text="Aggiungi" />
-                    </StackPanel>
-                </Button>
             </Grid>
 
-            <!-- Search -->
-            <AutoSuggestBox x:Uid="SearchNotes" Grid.Row="1"
-                            x:Name="SearchBox"
-                            PlaceholderText="Cerca note..."
-                            QueryIcon="Find"
-                            Margin="16,0,16,8"
-                            TextChanged="SearchBox_TextChanged"
-                            AutomationProperties.Name="Cerca note"
-                            AutomationProperties.HelpText="Filtra note per titolo, contenuto o categoria"
-                            TabIndex="3" />
-
             <!-- Note mini-cards list -->
-            <ListView Grid.Row="2"
+            <ListView Grid.Row="1"
                       x:Name="NotesList"
                       SelectionMode="Single"
                       IsItemClickEnabled="True"
@@ -164,51 +138,84 @@
 
             <!-- Empty state: nessuna nota nel vault -->
             <controls:EmptyStateControl
-                x:Uid="EmptyNotes"
                 x:Name="EmptyState"
-                Grid.Row="2"
+                Grid.Row="1"
                 Visibility="Collapsed"
                 Icon="&#xE70B;"
+                AccentBrush="{ThemeResource NotesIconBrush}"
                 Title="Nessuna nota"
-                Subtitle="Crea la tua prima nota sicura per salvare informazioni riservate."
-                AutomationProperties.Name="Nessuna nota. Crea la tua prima nota sicura." />
+                Subtitle="Crea la tua prima nota sicura per salvare informazioni riservate." />
 
             <!-- Empty state: filtro attivo ma 0 risultati -->
             <controls:EmptyStateControl
                 x:Name="FilteredEmptyState"
-                Grid.Row="2"
+                Grid.Row="1"
                 Visibility="Collapsed"
                 Icon="&#xF78B;"
                 Title="Nessun risultato"
-                Subtitle="Prova a modificare i filtri o la ricerca."
-                AutomationProperties.Name="Nessun risultato. Prova a modificare i filtri o la ricerca." />
+                Subtitle="Prova a modificare i filtri o la ricerca." />
         </Grid>
 
-        <!-- Detail: Editor panel -->
-        <Grid x:Name="EditorPanel" Grid.Column="1" Visibility="Collapsed">
-            <ContentPresenter x:Name="EditorContent" />
+        <!-- Detail panel: toolbar (search + add) on top, editor/empty below -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />  <!-- Toolbar: search + add -->
+                <RowDefinition Height="*" />     <!-- Editor / empty placeholder -->
+            </Grid.RowDefinitions>
+
+            <!-- Toolbar: search + add, top-right -->
+            <Grid Grid.Row="0" Padding="16,16,24,8" ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />  <!-- Search -->
+                    <ColumnDefinition Width="Auto" />  <!-- Add -->
+                </Grid.ColumnDefinitions>
+
+                <AutoSuggestBox x:Uid="SearchNotes" Grid.Column="1"
+                                x:Name="SearchBox"
+                                PlaceholderText="Cerca note..."
+                                QueryIcon="Find"
+                                Width="280"
+                                VerticalAlignment="Center"
+                                TextChanged="SearchBox_TextChanged"
+                                TabIndex="1" />
+
+                <Button Grid.Column="2"
+                        x:Uid="AddNoteBtn"
+                        Style="{StaticResource AccentButtonStyle}"
+                        VerticalAlignment="Center"
+                        Click="AddButton_Click"
+                        TabIndex="3"
+                        Padding="10,6">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon Glyph="&#xE710;" FontSize="14" />
+                        <TextBlock x:Uid="ButtonAddNote" Text="Aggiungi" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+            <!-- Editor / empty placeholder -->
+            <Grid Grid.Row="1">
+                <!-- Editor panel -->
+                <Grid x:Name="EditorPanel" Visibility="Collapsed">
+                    <ContentPresenter x:Name="EditorContent" />
+                </Grid>
+
+                <!-- Empty editor placeholder -->
+                <StackPanel x:Name="EmptyEditor"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Spacing="12">
+                    <FontIcon Glyph="&#xE70B;" FontSize="48"
+                              Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                              HorizontalAlignment="Center" />
+                    <TextBlock x:Uid="EmptyEditorHint" Text="Seleziona una nota o creane una nuova"
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
+            </Grid>
         </Grid>
-
-        <!-- Empty editor placeholder -->
-        <StackPanel x:Name="EmptyEditor" Grid.Column="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Spacing="12">
-            <FontIcon Glyph="&#xE70B;" FontSize="48"
-                      Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                      HorizontalAlignment="Center" />
-            <TextBlock x:Uid="EmptyEditorHint" Text="Seleziona una nota o creane una nuova"
-                       Style="{StaticResource BodyTextBlockStyle}"
-                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                       HorizontalAlignment="Center" />
-        </StackPanel>
-
-        <!-- Toast conferma salvataggio -->
-        <TeachingTip x:Name="SavedTip"
-                     IsLightDismissEnabled="True"
-                     PreferredPlacement="Bottom"
-                     Title="Nota salvata!"
-                     AutomationProperties.LiveSetting="Polite" />
 
         <!-- Hidden announcer for screen reader live regions -->
         <TextBlock x:Name="A11yAnnouncer"

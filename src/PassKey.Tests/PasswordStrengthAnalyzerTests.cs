@@ -151,11 +151,11 @@ public class PasswordStrengthAnalyzerTests
     [Fact]
     public void Analyze_CrackTime_LongComplexIsExtreme()
     {
-        // 22 chars with all character sets → should be centuries or millennia
+        // 22 chars with all character sets → astronomically large, top "trillionyears" bucket
         var result = _analyzer.Analyze("Xy7$kQm2rPw9@NzLqJf!8Wv".AsSpan());
 
         Assert.True(
-            result.EstimatedCrackTime == "centuries" || result.EstimatedCrackTime == "millennia",
-            $"Expected 'centuries' or 'millennia', got '{result.EstimatedCrackTime}'");
+            result.EstimatedCrackTime is "billionyears" or "trillionyears",
+            $"Expected a high-end bucket, got '{result.EstimatedCrackTime}'");
     }
 }

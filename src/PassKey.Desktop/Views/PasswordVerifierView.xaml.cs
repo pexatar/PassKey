@@ -5,6 +5,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using PassKey.Core.Models;
 using PassKey.Desktop.Services;
+using Microsoft.Windows.ApplicationModel.Resources;
+using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 
 namespace PassKey.Desktop.Views;
@@ -12,6 +14,8 @@ namespace PassKey.Desktop.Views;
 public sealed partial class PasswordVerifierView : UserControl
 {
     private PasswordVerifierViewModel? _viewModel;
+    // Static loader (used by the static GetLocalized* helpers and the header builders).
+    private static readonly ResourceLoader s_res = new();
 
     // Strength bar segments
     private Border[] _strengthSegments = [];
@@ -58,22 +62,24 @@ public sealed partial class PasswordVerifierView : UserControl
                 break;
             case nameof(PasswordVerifierViewModel.CompromisedCount):
                 CompromisedCountText.Text = _viewModel!.CompromisedCount.ToString();
-                CompromisedExpanderHeaderText.Text = $"Password compromesse ({_viewModel.CompromisedCount})";
+                CompromisedExpanderHeaderText.Text = string.Format(s_res.GetString("VerifierCompromisedFmt"), _viewModel.CompromisedCount);
                 RebuildIssueList(CompromisedPasswordsList, _viewModel.CompromisedPasswords);
                 break;
             case nameof(PasswordVerifierViewModel.WeakCount):
                 WeakCountText.Text = _viewModel!.WeakCount.ToString();
-                WeakExpanderHeaderText.Text = $"Password deboli ({_viewModel.WeakCount})";
+                WeakExpanderHeaderText.Text = string.Format(s_res.GetString("VerifierWeakFmt"), _viewModel.WeakCount);
                 RebuildIssueList(WeakPasswordsList, _viewModel.WeakPasswords);
                 break;
             case nameof(PasswordVerifierViewModel.DuplicateCount):
                 DuplicateCountText.Text = _viewModel!.DuplicateCount.ToString();
-                DuplicateExpanderHeaderText.Text = $"Password riutilizzate ({_viewModel.DuplicateCount})";
+                DuplicateExpanderHeaderText.Text = string.Format(s_res.GetString("VerifierDuplicateFmt"), _viewModel.DuplicateCount);
                 RebuildIssueList(DuplicateGroupsList, _viewModel.DuplicateEntries);
                 break;
             case nameof(PasswordVerifierViewModel.IsAuditLoading):
-                AuditLoadingRing.IsActive = _viewModel!.IsAuditLoading;
-                AuditLoadingRing.Visibility = _viewModel.IsAuditLoading ? Visibility.Visible : Visibility.Collapsed;
+                UpdateAuditLoadingUI();
+                break;
+            case nameof(PasswordVerifierViewModel.AuditProgress):
+                UpdateAuditProgressUI();
                 break;
             case nameof(PasswordVerifierViewModel.HasAuditResults):
                 var hasPasswords = _viewModel!.TotalPasswords > 0;
@@ -120,7 +126,7 @@ public sealed partial class PasswordVerifierView : UserControl
         var info = new StackPanel { Spacing = 2 };
         info.Children.Add(new TextBlock
         {
-            Text = string.IsNullOrEmpty(item.Title) ? "(senza titolo)" : item.Title,
+            Text = string.IsNullOrEmpty(item.Title) ? s_res.GetString("VerifierUntitled") : item.Title,
             Style = (Style)Application.Current.Resources["BodyStrongTextBlockStyle"],
         });
         var details = new System.Text.StringBuilder();
@@ -128,12 +134,12 @@ public sealed partial class PasswordVerifierView : UserControl
         if (item.BreachCount > 0)
         {
             if (details.Length > 0) details.Append(" — ");
-            details.Append($"{item.BreachCount:N0} breach");
+            details.Append(string.Format(s_res.GetString("VerifierBreachLabel"), item.BreachCount));
         }
         if (item.IsDuplicate)
         {
             if (details.Length > 0) details.Append(" — ");
-            details.Append("riutilizzata");
+            details.Append(s_res.GetString("VerifierReused"));
         }
         if (details.Length > 0)
         {
@@ -141,7 +147,7 @@ public sealed partial class PasswordVerifierView : UserControl
             {
                 Text = details.ToString(),
                 Style = (Style)Application.Current.Resources["CaptionTextBlockStyle"],
-                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+                Foreground = (Brush)Application.Current.Resources["MutedTextBrush"],
             });
         }
         Grid.SetColumn(info, 1);
@@ -168,7 +174,7 @@ public sealed partial class PasswordVerifierView : UserControl
             return (Brush)Application.Current.Resources["StatRemovedBrush"];
         if (item.StrengthScore < 40)
             return (Brush)Application.Current.Resources["StatModifiedBrush"];
-        return (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"];
+        return (Brush)Application.Current.Resources["MutedTextBrush"];
     }
 
     private void VerifyPasswordInput_PasswordChanged(object sender, string password)
@@ -187,7 +193,7 @@ public sealed partial class PasswordVerifierView : UserControl
         if (result is null)
         {
             ScoreText.Text = "—";
-            ScoreText.Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"];
+            ScoreText.Foreground = (Brush)Application.Current.Resources["MutedTextBrush"];
             StrengthLabel.Text = "—";
             CrackTimeText.Text = "—";
             UpdateStrengthBar(0);
@@ -201,7 +207,7 @@ public sealed partial class PasswordVerifierView : UserControl
 
         // Strength label + crack time
         StrengthLabel.Text = GetLocalizedLabel(result.Label);
-        CrackTimeText.Text = result.EstimatedCrackTime;
+        CrackTimeText.Text = CrackTimeFormatter.Localize(result.EstimatedCrackTime);
 
         // 5-segment bar
         UpdateStrengthBar(result.Score);
@@ -236,11 +242,15 @@ public sealed partial class PasswordVerifierView : UserControl
         };
 
         var brush = GetStrengthBrush(score);
-        var emptyBrush = (Brush)Application.Current.Resources["ControlStrongFillColorDisabledBrush"];
 
         for (int i = 0; i < _strengthSegments.Length; i++)
         {
-            _strengthSegments[i].Background = i < filledCount ? brush : emptyBrush;
+            if (i < filledCount)
+                _strengthSegments[i].Background = brush;
+            else
+                // Revert to the XAML-declared {ThemeResource ControlStrongFillColorDisabledBrush}
+                // so the inactive segment colour stays theme-aware (matches GeneratorView).
+                _strengthSegments[i].ClearValue(Border.BackgroundProperty);
         }
     }
 
@@ -303,7 +313,7 @@ public sealed partial class PasswordVerifierView : UserControl
             {
                 Text = $"\u2022 {text}",
                 Style = (Style)Application.Current.Resources["BodyTextBlockStyle"],
-                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+                Foreground = (Brush)Application.Current.Resources["MutedTextBrush"],
                 TextWrapping = TextWrapping.Wrap
             });
         }
@@ -312,31 +322,62 @@ public sealed partial class PasswordVerifierView : UserControl
     private void UpdateVaultScoreUI()
     {
         if (_viewModel is null) return;
+        // While a scan is running the score ring is repurposed as a live progress ring
+        // (see UpdateAuditProgressUI); don't overwrite it with the not-yet-final score.
+        if (_viewModel.IsAuditLoading) return;
         VaultScoreRing.Value = _viewModel.VaultScore;
         VaultScoreText.Text = _viewModel.VaultScore.ToString();
         VaultScoreLabelText.Text = GetLocalizedLabel(_viewModel.VaultScoreLabel);
     }
 
+    /// <summary>
+    /// Toggles between the live-progress presentation (during a scan) and the final score
+    /// (once it completes). The separate indeterminate spinner is no longer used: the score
+    /// ring itself doubles as a determinate progress ring so the user sees the count climb.
+    /// </summary>
+    private void UpdateAuditLoadingUI()
+    {
+        if (_viewModel is null) return;
+
+        if (_viewModel.IsAuditLoading)
+            UpdateAuditProgressUI();
+        else
+            UpdateVaultScoreUI();
+    }
+
+    /// <summary>
+    /// Drives the score ring as a determinate progress indicator during a scan: the arc
+    /// grows with the percentage and the centre shows the live "X / N" count, so the user
+    /// always sees tangible forward motion instead of a frozen "0".
+    /// </summary>
+    private void UpdateAuditProgressUI()
+    {
+        if (_viewModel is null || !_viewModel.IsAuditLoading) return;
+        VaultScoreRing.Value = _viewModel.AuditProgress;          // 0..100
+        VaultScoreText.Text = _viewModel.ScannedCount.ToString();
+        VaultScoreLabelText.Text = $"/ {_viewModel.TotalToScan}";
+    }
+
 
     private static string GetLocalizedLabel(string label) => label switch
     {
-        "VeryWeak" => "Molto debole",
-        "Weak" => "Debole",
-        "Medium" => "Media",
-        "Strong" => "Forte",
-        "VeryStrong" => "Molto forte",
+        "VeryWeak" => s_res.GetString("StrengthVeryWeak"),
+        "Weak" => s_res.GetString("StrengthWeak"),
+        "Medium" => s_res.GetString("StrengthMedium"),
+        "Strong" => s_res.GetString("StrengthStrong"),
+        "VeryStrong" => s_res.GetString("StrengthVeryStrong"),
         _ => label
     };
 
     private static string GetLocalizedSuggestion(string key) => key switch
     {
-        "UseAtLeast8Characters" => "Usa almeno 8 caratteri",
-        "UseAtLeast12Characters" => "Usa almeno 12 caratteri per una protezione migliore",
-        "AddUppercaseLetters" => "Aggiungi lettere maiuscole",
-        "AddLowercaseLetters" => "Aggiungi lettere minuscole",
-        "AddNumbers" => "Aggiungi numeri",
-        "AddSpecialCharacters" => "Aggiungi simboli speciali (!@#$%)",
-        "AvoidCommonPatterns" => "Evita pattern comuni (password, 123456, qwerty...)",
+        "UseAtLeast8Characters" => s_res.GetString("SuggestUseAtLeast8"),
+        "UseAtLeast12Characters" => s_res.GetString("SuggestUseAtLeast12"),
+        "AddUppercaseLetters" => s_res.GetString("SuggestAddUppercase"),
+        "AddLowercaseLetters" => s_res.GetString("SuggestAddLowercase"),
+        "AddNumbers" => s_res.GetString("SuggestAddNumbers"),
+        "AddSpecialCharacters" => s_res.GetString("SuggestAddSpecial"),
+        "AvoidCommonPatterns" => s_res.GetString("SuggestAvoidCommon"),
         _ => key
     };
 }

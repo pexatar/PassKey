@@ -2,7 +2,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Desktop.Services;
 using PassKey.Desktop.ViewModels;
 using PassKey.Desktop.Views;
@@ -13,7 +15,9 @@ namespace PassKey.Desktop;
 public sealed partial class MainWindow : Window
 {
     private readonly MainViewModel _mainViewModel;
+    private readonly ResourceLoader _resourceLoader = new();
     private bool _initialized;
+    private bool _closePromptOpen;
 
     // Comandi tray: x:Bind li risolve a compile-time sulla MainWindow, evitando
     // il routing XAML degli eventi Click (che non funziona dal popup di H.NotifyIcon).
@@ -34,7 +38,15 @@ public sealed partial class MainWindow : Window
 
         InitializeComponent();
         Title = "PassKey";
+
+        // Localized tray context-menu items (MainWindow.xaml has no x:Uid resource map).
+        TrayShowItem.Text = _resourceLoader.GetString("TrayMenuShow");
+        TrayLockItem.Text = _resourceLoader.GetString("TrayMenuLock");
+        TrayExitItem.Text = _resourceLoader.GetString("TrayMenuExit");
         AppWindow.SetIcon(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "PassKey.ico"));
+
+        // Open centered on the monitor the window is created on (FU: startup centering).
+        CenterOnScreen();
 
         // Imposta l'icona tray con percorso assoluto (AppContext.BaseDirectory).
         // NON usare path relativo in XAML: H.NotifyIcon risolve tramite File.OpenRead()
@@ -58,27 +70,53 @@ public sealed partial class MainWindow : Window
         TrayIcon.DoubleClickCommand = new RelayCommand(RestoreWindow);
     }
 
+    /// <summary>Centers the window on the work area of the display it is created on.</summary>
+    private void CenterOnScreen()
+    {
+        var area = DisplayArea.GetFromWindowId(AppWindow.Id, DisplayAreaFallback.Nearest);
+        if (area is null) return;
+
+        var work = area.WorkArea;
+        var size = AppWindow.Size;
+        var x = work.X + System.Math.Max(0, (work.Width - size.Width) / 2);
+        var y = work.Y + System.Math.Max(0, (work.Height - size.Height) / 2);
+        AppWindow.Move(new Windows.Graphics.PointInt32(x, y));
+    }
+
     private async void OnWindowClosing(Microsoft.UI.Windowing.AppWindow sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs args)
     {
         args.Cancel = true;
 
-        var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+        // Re-entrancy guard: repeated clicks on the X must not stack multiple close prompts.
+        if (_closePromptOpen) return;
+        _closePromptOpen = true;
+        try
         {
-            Title = "PassKey",
-            Content = "Vuoi mantenere PassKey attivo in background?",
-            PrimaryButtonText = "Minimizza",
-            SecondaryButtonText = "Chiudi PassKey",
-            CloseButtonText = "Annulla",
-            DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Primary,
-            XamlRoot = Content.XamlRoot
-        };
+            var dialog = new Microsoft.UI.Xaml.Controls.ContentDialog
+            {
+                Title = "PassKey",
+                Content = _resourceLoader.GetString("TrayCloseContent"),
+                PrimaryButtonText = _resourceLoader.GetString("TrayCloseMinimize"),
+                SecondaryButtonText = _resourceLoader.GetString("TrayCloseExit"),
+                CloseButtonText = _resourceLoader.GetString("CancelButton"),
+                DefaultButton = Microsoft.UI.Xaml.Controls.ContentDialogButton.Primary,
+                XamlRoot = Content.XamlRoot
+            };
 
-        var result = await dialog.ShowAsync();
+            // Route through the shared dialog queue so it never collides with another open
+            // ContentDialog ("Only a single ContentDialog can be open at any time").
+            var dialogQueue = App.Services.GetRequiredService<IDialogQueueService>();
+            var result = await dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
 
-        if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
-            AppWindow.Hide();
-        else if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
-            Application.Current.Exit();
+            if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Primary)
+                AppWindow.Hide();
+            else if (result == Microsoft.UI.Xaml.Controls.ContentDialogResult.Secondary)
+                Application.Current.Exit();
+        }
+        finally
+        {
+            _closePromptOpen = false;
+        }
     }
 
     private async void OnActivated(object sender, WindowActivatedEventArgs args)
@@ -95,6 +133,13 @@ public sealed partial class MainWindow : Window
         // null until the window has rendered; reading it just-in-time, when each dialog is
         // about to be shown, is always safe.
         App.Services.GetRequiredService<IDialogQueueService>().XamlRootAccessor = () => Content?.XamlRoot;
+
+        // Bind the toast service to the bottom-right InfoBar declared in MainWindow.xaml.
+        // Done here (not in the constructor) so the control is fully realised in the visual tree.
+        App.Services.GetRequiredService<IToastService>().Attach(ToastHost);
+
+        // Start inactivity monitoring (must run on the UI thread so the timer binds correctly).
+        App.Services.GetRequiredService<IAutoLockService>().Initialize();
 
         try
         {
@@ -188,6 +233,25 @@ public sealed partial class MainWindow : Window
         };
 
         RootPresenter.Content = view;
+
+        // Fade-in animation for the new view (300ms)
+        if (view != null)
+        {
+            view.Opacity = 0;
+            var fadeInStoryboard = new Microsoft.UI.Xaml.Media.Animation.Storyboard();
+            var fadeInAnimation = new Microsoft.UI.Xaml.Media.Animation.DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = new TimeSpan(0, 0, 0, 0, 300),
+                EasingFunction = new Microsoft.UI.Xaml.Media.Animation.QuadraticEase { EasingMode = Microsoft.UI.Xaml.Media.Animation.EasingMode.EaseOut }
+            };
+
+            Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTarget(fadeInAnimation, view);
+            Microsoft.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(fadeInAnimation, "Opacity");
+            fadeInStoryboard.Children.Add(fadeInAnimation);
+            fadeInStoryboard.Begin();
+        }
     }
 
     private static LoginView CreateLoginView(LoginViewModel vm)

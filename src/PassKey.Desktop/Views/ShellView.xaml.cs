@@ -14,6 +14,13 @@ public sealed partial class ShellView : UserControl
     private ShellViewModel? _viewModel;
 
     /// <summary>
+    /// Vertical scroll offset of the Settings page captured when navigating to the
+    /// activity-log viewer, restored when the user comes back (FU8). The Settings page
+    /// is recreated on every navigation, so the offset cannot live on the view itself.
+    /// </summary>
+    private double _settingsScrollOffset;
+
+    /// <summary>
     /// Exposes the current ViewModel for {x:Bind} expressions in ShellView.xaml.
     /// Must be a public property (x:Bind does not work with private fields).
     /// </summary>
@@ -66,6 +73,7 @@ public sealed partial class ShellView : UserControl
             PasswordVerifierViewModel vm => SetVm(new PasswordVerifierView(), vm),
             SettingsViewModel vm => SetVm(new SettingsView(), vm),
             HelpViewModel vm => SetVm(new HelpView(), vm),
+            ActivityLogViewModel vm => SetVm(new ActivityLogView(), vm),
             _ => null
         };
 
@@ -113,6 +121,23 @@ public sealed partial class ShellView : UserControl
         return v;
     }
     private static HelpView SetVm(HelpView v, HelpViewModel vm) { v.SetViewModel(vm); return v; }
+    private ActivityLogView SetVm(ActivityLogView v, ActivityLogViewModel vm)
+    {
+        v.BackRequested += OnActivityLogBackRequested;
+        v.SetViewModel(vm);
+        return v;
+    }
+
+    private void OnActivityLogBackRequested()
+    {
+        _viewModel?.NavigateToSettings();
+        NavView.SelectedItem = NavView.SettingsItem;
+
+        // Restore the scroll position captured when we left Settings (FU8). After
+        // NavigateToSettings the new SettingsView is already hosted in ShellContent.
+        if (ShellContent.Content is SettingsView sv)
+            sv.RestoreScrollOffset(_settingsScrollOffset);
+    }
 
     private void OnVerifierVmPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -129,6 +154,7 @@ public sealed partial class ShellView : UserControl
     private SettingsView SetVm(SettingsView v, SettingsViewModel vm)
     {
         v.NavigateToHelpRequested += OnSettingsNavigateToHelp;
+        v.NavigateToActivityLogRequested += OnSettingsNavigateToActivityLog;
         v.SetViewModel(vm);
         return v;
     }
@@ -137,6 +163,17 @@ public sealed partial class ShellView : UserControl
     {
         _viewModel?.NavigateToHelp();
         NavView.SelectedItem = NavItemHelp;
+    }
+
+    private void OnSettingsNavigateToActivityLog()
+    {
+        // Capture the Settings scroll position so we can restore it on the way back (FU8).
+        if (ShellContent.Content is SettingsView sv)
+            _settingsScrollOffset = sv.GetScrollOffset();
+
+        _viewModel?.NavigateToActivityLog();
+        // The activity-log viewer has no sidebar entry; clear the selection.
+        NavView.SelectedItem = null;
     }
 
     private void NavView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -216,7 +253,16 @@ public sealed partial class ShellView : UserControl
 
     private void NewItem_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
     {
-        // Phases 5-10: Create new item based on current page
+        // Ctrl+N creates a new item on the four list pages that support it. Other pages
+        // (Dashboard, Generator, Verifier, Settings, Help, Activity Log) have nothing to
+        // create, so the shortcut is a no-op there.
+        switch (ShellContent.Content)
+        {
+            case PasswordsListView v: v.InvokeAddNew(); break;
+            case CreditCardsListView v: v.InvokeAddNew(); break;
+            case IdentitiesListView v: v.InvokeAddNew(); break;
+            case SecureNotesListView v: v.InvokeAddNew(); break;
+        }
         args.Handled = true;
     }
 

@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Core.Models;
-using PassKey.Desktop.Helpers;
 using PassKey.Desktop.ViewModels;
 using Windows.Storage.Streams;
 
@@ -27,6 +26,9 @@ public sealed partial class PasswordsListView : UserControl
 
     public async void SetViewModel(PasswordsListViewModel vm)
     {
+        // Drop any handler attached to a previous VM to avoid subscription leaks.
+        if (_viewModel is not null) _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
         _viewModel = vm;
         DataContext = vm;
 
@@ -34,11 +36,17 @@ public sealed partial class PasswordsListView : UserControl
         EmptyState.Title = _resourceLoader.GetString("EmptyPasswordsTitle");
         EmptyState.Subtitle = _resourceLoader.GetString("EmptyPasswordsSubtitle");
         vm.PropertyChanged += OnViewModelPropertyChanged;
-        vm.SaveCompleted += ShowSavedToast;
 
         await vm.LoadEntriesCommand.ExecuteAsync(null);
         UpdateList();
         UpdateEmptyState();
+
+        // Sync the detail panel from VM state — see CreditCardsListView for the full
+        // rationale. Without this, navigating away with a detail open and coming back
+        // leaves the UI frozen (Edit clicks become no-ops because IsDetailOpen never
+        // changes value, so PropertyChanged doesn't fire).
+        UpdateDetailPanel();
+        UpdateDetailContent();
     }
 
     private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -100,10 +108,6 @@ public sealed partial class PasswordsListView : UserControl
         }
     }
 
-    // --- Toast ---
-
-    public void ShowSavedToast() => ListViewHelpers.ShowSavedToast(SavedTip);
-
     // --- Search ---
 
     private void SearchBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -117,10 +121,13 @@ public sealed partial class PasswordsListView : UserControl
 
     // --- Add ---
 
-    private void AddButton_Click(object sender, RoutedEventArgs e)
-    {
-        _viewModel?.AddNewCommand.Execute(null);
-    }
+    private void AddButton_Click(object sender, RoutedEventArgs e) => InvokeAddNew();
+
+    /// <summary>
+    /// Opens the "new item" editor. Public so the Ctrl+N accelerator handled by
+    /// <see cref="ShellView"/> can route the shortcut to whichever list page is shown.
+    /// </summary>
+    public void InvokeAddNew() => _viewModel?.AddNewCommand.Execute(null);
 
     // --- Item click ---
 
@@ -148,6 +155,12 @@ public sealed partial class PasswordsListView : UserControl
     {
         if (sender is Button btn && btn.Tag is PasswordEntry entry)
             _viewModel?.EditEntryCommand.Execute(entry);
+    }
+
+    private void DeleteEntry_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is PasswordEntry entry)
+            _ = _viewModel?.DeleteSelectedCommand.ExecuteAsync(entry);
     }
 
     // --- Column header sort (Step A) ---

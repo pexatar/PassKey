@@ -38,26 +38,23 @@
                                 x:Uid="SearchCards"
                                 PlaceholderText="Cerca carte..."
                                 QueryIcon="Find"
-                                MaxWidth="300"
+                                Width="280"
                                 HorizontalAlignment="Right"
-                                TextChanged="SearchBox_TextChanged"
-                                AutomationProperties.Name="Cerca carte" />
+                                TextChanged="SearchBox_TextChanged" />
 
                 <!-- Toggle card/list view -->
                 <Button Grid.Column="2"
                         x:Name="ViewToggle"
+                        x:Uid="CardViewToggle"
                         Click="ViewToggle_Click"
-                        ToolTipService.ToolTip="Cambia vista"
-                        AutomationProperties.Name="Cambia vista carte/lista"
                         Padding="8">
                     <FontIcon x:Name="ViewToggleIcon" Glyph="&#xE8FD;" FontSize="16" />
                 </Button>
 
                 <Button Grid.Column="3"
+                        x:Uid="AddCardBtn"
                         Style="{StaticResource AccentButtonStyle}"
-                        Click="AddButton_Click"
-                        AutomationProperties.Name="Nuova carta"
-                        ToolTipService.ToolTip="Nuova carta (Ctrl+N)">
+                        Click="AddButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <FontIcon Glyph="&#xE710;" FontSize="14" />
                         <TextBlock x:Uid="AddCardLabel" Text="Nuova carta" />
@@ -111,6 +108,7 @@
                                 <ColumnDefinition Width="100" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
                             <!-- Card type icon circle -->
@@ -127,7 +125,7 @@
                                 <TextBlock Text="{Binding Label}"
                                            TextTrimming="CharacterEllipsis"
                                            Style="{StaticResource BodyStrongTextBlockStyle}" />
-                                <TextBlock Text="{Binding CardNumber}"
+                                <TextBlock Text="{Binding MaskedCardNumber}"
                                            TextTrimming="CharacterEllipsis"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
@@ -150,7 +148,7 @@
 
                             <!-- Copy card number -->
                             <Button Grid.Column="4"
-                                    ToolTipService.ToolTip="Copia numero carta"
+                                    x:Uid="TipCopyCardNumber"
                                     Click="CopyCardNumber_Click"
                                     Tag="{Binding}"
                                     Style="{StaticResource SubtleButtonStyle}"
@@ -161,13 +159,25 @@
 
                             <!-- Edit -->
                             <Button Grid.Column="5"
-                                    ToolTipService.ToolTip="Modifica"
+                                    x:Uid="TipEdit"
                                     Click="EditEntry_Click"
                                     Tag="{Binding}"
                                     Style="{StaticResource SubtleButtonStyle}"
                                     Opacity="0"
                                     Padding="6">
                                 <FontIcon Glyph="&#xE70F;" FontSize="14" />
+                            </Button>
+
+                            <!-- Delete -->
+                            <Button Grid.Column="6"
+                                    x:Uid="TipDelete"
+                                    Click="DeleteEntry_Click"
+                                    Tag="{Binding}"
+                                    Style="{StaticResource SubtleButtonStyle}"
+                                    Opacity="0"
+                                    Padding="6">
+                                <FontIcon Glyph="&#xE74D;" FontSize="14"
+                                          Foreground="{ThemeResource StatRemovedBrush}" />
                             </Button>
                         </Grid>
                     </DataTemplate>
@@ -180,6 +190,7 @@
                 Grid.Row="2"
                 Visibility="Collapsed"
                 Icon="&#xE8C7;"
+                AccentBrush="{ThemeResource CardsIconBrush}"
                 Title="Nessuna carta salvata"
                 Subtitle="Aggiungi la tua prima carta di credito per averla sempre al sicuro."
                 />
@@ -193,12 +204,5 @@
               BorderThickness="1,0,0,0">
             <ContentPresenter x:Name="DetailContent" />
         </Grid>
-
-        <!-- Save confirmation toast -->
-        <TeachingTip x:Name="SavedTip"
-                     x:Uid="CardSavedTip"
-                     IsLightDismissEnabled="True"
-                     PreferredPlacement="Bottom"
-                     Title="Salvato!" />
     </Grid>
 </UserControl>

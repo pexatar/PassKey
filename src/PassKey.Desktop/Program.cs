@@ -27,6 +27,11 @@ public static class Program
         EventWaitHandle? showEvent = null;
         bool isFirstInstance = true;
 
+        // Set by SettingsView when restarting for a language change. The previous
+        // instance is still shutting down, so we must not treat it as a rival instance.
+        bool isLanguageRestart = args.Any(
+            a => string.Equals(a, "--restart", StringComparison.OrdinalIgnoreCase));
+
         try
         {
             showEvent = new EventWaitHandle(
@@ -39,6 +44,15 @@ public static class Program
         {
             // Named-event creation failed (unusual system configuration) —
             // treat as first instance so the app always starts.
+        }
+
+        if (!isFirstInstance && isLanguageRestart)
+        {
+            // Language-change restart: the previous instance owns the single-instance
+            // event but is exiting. Release our handle, then poll until the event is
+            // gone (previous instance fully terminated) and claim ownership ourselves.
+            showEvent?.Dispose();
+            showEvent = WaitForSingleInstanceOwnership(out isFirstInstance);
         }
 
         if (!isFirstInstance)
@@ -126,6 +140,45 @@ public static class Program
                 // Silently ignore — this is a non-critical background thread.
             }
         }
+    }
+
+    /// <summary>
+    /// Polls for ownership of the single-instance named event, giving the previous
+    /// instance time to terminate during a language-change restart. Returns the owned
+    /// handle, or <c>null</c> if ownership could not be claimed within the timeout
+    /// (in which case the caller proceeds as a fresh first instance regardless).
+    /// </summary>
+    private static EventWaitHandle? WaitForSingleInstanceOwnership(out bool acquired)
+    {
+        acquired = false;
+
+        // Poll for up to ~5 seconds — the previous instance only needs to finish
+        // process teardown after Application.Exit(), which is near-instant in practice.
+        for (int attempt = 0; attempt < 50; attempt++)
+        {
+            Thread.Sleep(100);
+            try
+            {
+                var handle = new EventWaitHandle(
+                    initialState: false,
+                    mode: EventResetMode.AutoReset,
+                    name: ShowEventName,
+                    createdNew: out acquired);
+
+                if (acquired)
+                    return handle;
+
+                handle.Dispose();
+            }
+            catch
+            {
+                // Transient failure — keep polling.
+            }
+        }
+
+        // Timed out: start anyway so the app is never left unable to launch.
+        acquired = true;
+        return null;
     }
 
     private static void WriteCrashLog(Exception ex)

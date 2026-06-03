@@ -50,12 +50,27 @@ public sealed class VaultStateService : IVaultStateService, IDisposable
     /// </summary>
     /// <param name="masterPassword">The master password used to derive the KEK.</param>
     /// <returns>Always true on success.</returns>
-    public async Task<bool> InitializeAsync(ReadOnlyMemory<char> masterPassword)
+    public Task<bool> InitializeAsync(ReadOnlyMemory<char> masterPassword)
+        => InitializeWithVaultAsync(masterPassword, new Vault());
+
+    /// <summary>
+    /// Creates a new vault from <paramref name="masterPassword"/> pre-populated with
+    /// <paramref name="vault"/>, persists metadata and the encrypted blob, and transitions
+    /// the service to the unlocked state. <see cref="InitializeAsync"/> delegates here with
+    /// an empty vault; the login-screen "restore backup" path passes the decrypted backup.
+    /// </summary>
+    /// <param name="masterPassword">The master password used to derive the KEK.</param>
+    /// <param name="vault">The vault content to persist (empty for first-run setup).</param>
+    /// <returns>Always true on success.</returns>
+    public async Task<bool> InitializeWithVaultAsync(ReadOnlyMemory<char> masterPassword, Vault vault)
     {
         var (metadata, dek) = _vaultService.InitializeVault(masterPassword.Span);
+
+        // Replace any DEK from a prior unlocked session before adopting the new one.
+        _dek?.Dispose();
         _dek = dek;
 
-        CurrentVault = new Vault();
+        CurrentVault = vault;
         var encrypted = _vaultService.EncryptVault(CurrentVault, _dek.ReadOnlySpan);
 
         await _repository.SaveMetadataAsync(metadata);
@@ -188,6 +203,33 @@ public sealed class VaultStateService : IVaultStateService, IDisposable
         await _repository.SaveMetadataAsync(newMetadata);
 
         return true;
+    }
+
+    /// <summary>
+    /// Verifies the supplied password against the stored vault metadata by attempting a
+    /// key derivation + unwrap. No state is changed; the candidate key is zeroed immediately.
+    /// </summary>
+    /// <param name="password">The password to verify.</param>
+    /// <returns><see langword="true"/> when the password is correct; otherwise <see langword="false"/>.</returns>
+    public async Task<bool> VerifyMasterPasswordAsync(ReadOnlyMemory<char> password)
+    {
+        var metadata = await _repository.LoadMetadataAsync();
+        if (metadata is null) return false;
+
+        PinnedSecureBuffer? verifyDek = null;
+        try
+        {
+            verifyDek = _vaultService.UnlockVault(password.Span, metadata);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            verifyDek?.Dispose();
+        }
     }
 
     /// <summary>

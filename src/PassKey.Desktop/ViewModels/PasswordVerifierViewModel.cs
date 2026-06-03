@@ -62,6 +62,14 @@ public partial class PasswordVerifierViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     public partial double AuditProgress { get; set; }
 
+    /// <summary>Number of passwords checked so far in the running scan (live count).</summary>
+    [ObservableProperty]
+    public partial int ScannedCount { get; set; }
+
+    /// <summary>Total number of passwords the running scan will check.</summary>
+    [ObservableProperty]
+    public partial int TotalToScan { get; set; }
+
     [ObservableProperty]
     public partial bool HasAuditResults { get; set; }
 
@@ -165,7 +173,12 @@ public partial class PasswordVerifierViewModel : ObservableObject, IDisposable
 
     // ─── Scan service event handlers ──────────────────────────────────────────
 
-    private void OnScanProgress(double pct) => AuditProgress = pct;
+    private void OnScanProgress(int scanned, int total)
+    {
+        ScannedCount = scanned;
+        TotalToScan = total;
+        AuditProgress = total > 0 ? (double)scanned / total * 100 : 0;
+    }
 
     private void OnScanCompleted(WatchtowerResult? result)
     {

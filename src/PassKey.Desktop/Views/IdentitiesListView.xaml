@@ -35,16 +35,14 @@
                                 x:Name="SearchBox"
                                 PlaceholderText="Cerca identità..."
                                 QueryIcon="Find"
-                                MaxWidth="300"
+                                Width="280"
                                 HorizontalAlignment="Right"
-                                TextChanged="SearchBox_TextChanged"
-                                AutomationProperties.Name="Cerca identità" />
+                                TextChanged="SearchBox_TextChanged" />
 
                 <Button Grid.Column="2"
+                        x:Uid="AddIdentityBtn"
                         Style="{StaticResource AccentButtonStyle}"
-                        Click="AddButton_Click"
-                        AutomationProperties.Name="Aggiungi identità"
-                        ToolTipService.ToolTip="Aggiungi identità (Ctrl+N)">
+                        Click="AddButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <FontIcon Glyph="&#xE710;" FontSize="14" />
                         <TextBlock x:Uid="AddIdentity" Text="Aggiungi identità" />
@@ -57,11 +55,11 @@
 
                 <!-- Empty state -->
                 <controls:EmptyStateControl
-                    x:Uid="EmptyIdentities"
                     x:Name="EmptyState"
                     Visibility="Collapsed"
                     Margin="0,16,0,0"
                     Icon="&#xE77B;"
+                    AccentBrush="{ThemeResource IdentitiesIconBrush}"
                     Title="Nessuna identità"
                     Subtitle="Aggiungi la tua prima identità per salvare dati personali, indirizzi e documenti."
                     />
@@ -161,13 +159,6 @@
                 </GridView>
             </Grid>
         </Grid>
-
-        <!-- Save confirmation toast -->
-        <TeachingTip x:Name="SavedTip"
-                     x:Uid="IdSavedTip"
-                     IsLightDismissEnabled="True"
-                     PreferredPlacement="Bottom"
-                     Title="Salvato!" />
 
         <!-- Detail panel (right side, 400px) -->
         <Grid x:Name="DetailPanel"

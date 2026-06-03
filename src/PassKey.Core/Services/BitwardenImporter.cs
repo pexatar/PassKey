@@ -26,6 +26,12 @@ public sealed class BitwardenImporter : IBitwardenImporter
         var vault = new Vault();
         var export = JsonSerializer.Deserialize(jsonContent, BitwardenJsonContext.Default.BitwardenExport);
 
+        // FU3: an encrypted export has no plaintext items — surface a clear message
+        // instead of silently importing an empty vault. Throws an error CODE; the Desktop
+        // layer maps it to a localized message (Core stays UI/i18n-free).
+        if (export?.Encrypted == true)
+            throw new ImportFileException("IMPORT_BW_ENCRYPTED");
+
         if (export?.Items is null) return vault;
 
         foreach (var item in export.Items)
@@ -163,24 +169,33 @@ public sealed class BitwardenImporter : IBitwardenImporter
             Id = Guid.NewGuid(),
             Label = item.Name ?? string.Empty,
             FirstName = id?.FirstName ?? string.Empty,
+            MiddleName = id?.MiddleName ?? string.Empty,
             LastName = id?.LastName ?? string.Empty,
             Email = id?.Email ?? string.Empty,
             Phone = id?.Phone ?? string.Empty,
-            Street = CombineAddress(id?.Address1, id?.Address2),
+            Company = id?.Company ?? string.Empty,
+            Username = id?.Username ?? string.Empty,
+            Street = CombineAddress(id?.Address1, id?.Address2, id?.Address3),
             City = id?.City ?? string.Empty,
             Province = id?.State ?? string.Empty,
             PostalCode = id?.PostalCode ?? string.Empty,
             Country = id?.Country ?? string.Empty,
+            // For Italian users Codice Fiscale and Tessera Sanitaria coincide in common use,
+            // so Bitwarden's "ssn" maps onto the existing HealthCardNumber field (FU4/FU5).
+            HealthCardNumber = id?.Ssn ?? string.Empty,
+            PassportNumber = id?.PassportNumber ?? string.Empty,
+            DrivingLicenseNumber = id?.LicenseNumber ?? string.Empty,
             Notes = item.Notes ?? string.Empty,
             CreatedAt = DateTime.UtcNow,
             ModifiedAt = DateTime.UtcNow
         };
     }
 
-    private static string CombineAddress(string? address1, string? address2)
+    private static string CombineAddress(string? address1, string? address2, string? address3)
     {
-        if (string.IsNullOrEmpty(address2)) return address1 ?? string.Empty;
-        if (string.IsNullOrEmpty(address1)) return address2;
-        return $"{address1}, {address2}";
+        var parts = new[] { address1, address2, address3 }
+            .Where(a => !string.IsNullOrWhiteSpace(a))
+            .Select(a => a!.Trim());
+        return string.Join(", ", parts);
     }
 }

@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Windows.ApplicationModel.Resources;
 using PassKey.Desktop.Services;
 
 namespace PassKey.Desktop.ViewModels;
@@ -13,6 +14,7 @@ public partial class ShellViewModel : ObservableObject, IDisposable
 {
     private readonly IVaultStateService _vaultState;
     private readonly INavigationStack _navigation;
+    private readonly ResourceLoader _resourceLoader = new();
     private readonly IUpdateService _updateService;
     private readonly ISettingsService _settings;
     private readonly DashboardViewModel _dashboardViewModel;
@@ -24,6 +26,7 @@ public partial class ShellViewModel : ObservableObject, IDisposable
     private readonly PasswordVerifierViewModel _verifierViewModel;
     private readonly SettingsViewModel _settingsViewModel;
     private readonly HelpViewModel _helpViewModel;
+    private readonly ActivityLogViewModel _activityLogViewModel;
 
     private UpdateCheckResult? _currentUpdate;
 
@@ -76,7 +79,8 @@ public partial class ShellViewModel : ObservableObject, IDisposable
         GeneratorViewModel generatorViewModel,
         PasswordVerifierViewModel verifierViewModel,
         SettingsViewModel settingsViewModel,
-        HelpViewModel helpViewModel)
+        HelpViewModel helpViewModel,
+        ActivityLogViewModel activityLogViewModel)
     {
         _vaultState               = vaultState;
         _navigation               = navigation;
@@ -91,6 +95,7 @@ public partial class ShellViewModel : ObservableObject, IDisposable
         _verifierViewModel        = verifierViewModel;
         _settingsViewModel        = settingsViewModel;
         _helpViewModel            = helpViewModel;
+        _activityLogViewModel     = activityLogViewModel;
 
         // Handle race: background check may have completed before this VM was constructed
         if (_updateService.PendingUpdate is { UpdateAvailable: true } pending)
@@ -151,6 +156,12 @@ public partial class ShellViewModel : ObservableObject, IDisposable
         CurrentPage = _helpViewModel;
     }
 
+    /// <summary>Navigates to the activity-log ("Cronologia") page (outside indexed sidebar items).</summary>
+    public void NavigateToActivityLog()
+    {
+        CurrentPage = _activityLogViewModel;
+    }
+
     // ── Vault lock ────────────────────────────────────────────────────────────
 
     /// <summary>Locks the vault. MainViewModel detects the event and navigates to LoginViewModel.</summary>
@@ -171,7 +182,7 @@ public partial class ShellViewModel : ObservableObject, IDisposable
     private void ShowUpdateInfoBar(UpdateCheckResult result)
     {
         _currentUpdate     = result;
-        UpdateInfoBarTitle = $"PassKey {result.NewVersion} disponibile";
+        UpdateInfoBarTitle = string.Format(_resourceLoader.GetString("UpdateAvailableTitle"), result.NewVersion);
         IsUpdateInfoBarOpen = true;
         IsDownloading      = false;
         DownloadProgress   = 0;

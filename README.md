@@ -59,8 +59,8 @@ PassKey stores your passwords, credit cards, identities, and secure notes in a l
 
 | Version | Platform | Type |
 |---------|----------|------|
-| [v1.0.17](https://github.com/pexatar/PassKey/releases/tag/v1.0.17) | Windows x64 | Installer EXE |
-| [v1.0.17](https://github.com/pexatar/PassKey/releases/tag/v1.0.17) | Windows x64 | Portable ZIP |
+| [v2.0.0](https://github.com/pexatar/PassKey/releases/tag/v2.0.0) | Windows x64 | Installer EXE |
+| [v2.0.0](https://github.com/pexatar/PassKey/releases/tag/v2.0.0) | Windows x64 | Portable ZIP |
 
 > **Requirements:** Windows 10 version 1809 (build 17763) or later, x64 processor.
 > No .NET runtime required — PassKey is fully self-contained.

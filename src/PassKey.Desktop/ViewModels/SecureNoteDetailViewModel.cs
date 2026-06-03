@@ -50,6 +50,11 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
     [ObservableProperty]
     public partial bool HasUnsavedChanges { get; set; }
 
+    // ── Inline validation (T5.6) ───────────────────────────────────────────────
+
+    [ObservableProperty]
+    public partial bool IsTitleEmpty { get; set; }
+
     /// <summary>Raised when <see cref="IsPinned"/> is toggled (instant-save, no Save button needed).</summary>
     public Action? PinToggled { get; set; }
 
@@ -62,11 +67,8 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
 
     // ─── Template-method overrides ────────────────────────────────────────────
 
-    protected override string GetPanelTitleForNew() => "Nuova nota";
-    protected override string GetPanelTitleForEdit() => "Modifica nota";
-    protected override string GetDeleteDialogTitle() => "Elimina nota";
     protected override string GetDeleteDisplayName(SecureNoteEntry entry)
-        => !string.IsNullOrWhiteSpace(entry.Title) ? entry.Title : "Nota senza titolo";
+        => !string.IsNullOrWhiteSpace(entry.Title) ? entry.Title : _res.GetString("NoteNoTitle");
 
     protected override IList<SecureNoteEntry> GetVaultCollection(Vault vault) => vault.SecureNotes;
 
@@ -85,6 +87,7 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
         _originalContent = string.Empty;
         _originalCategory = NoteCategory.General;
         _originalIsPinned = false;
+        IsTitleEmpty = true;
     }
 
     protected override void LoadFromEntry(SecureNoteEntry entry)
@@ -132,7 +135,6 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
         EditingEntry = entry;
         SetIsNew(false);
         IsEditMode = true;
-        PanelTitle = GetPanelTitleForEdit();
         UpdateSnapshotFromCurrent();
     }
 
@@ -146,6 +148,7 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
 
     partial void OnTitleChanged(string value)
     {
+        IsTitleEmpty = string.IsNullOrWhiteSpace(value);
         UpdateCanSave();
         UpdateHasUnsavedChanges();
     }

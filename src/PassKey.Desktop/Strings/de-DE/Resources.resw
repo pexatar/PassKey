@@ -183,8 +183,8 @@
   <data name="AddCard" xml:space="preserve">
     <value>+ Neue Karte</value>
   </data>
-  <data name="AddIdentity" xml:space="preserve">
-    <value>+ Identität hinzufügen</value>
+  <data name="AddIdentity.Text" xml:space="preserve">
+    <value>Identität hinzufügen</value>
   </data>
   <data name="AddNote" xml:space="preserve">
     <value>+ Neue Notiz</value>
@@ -196,50 +196,53 @@
     <value>Änderungen speichern</value>
   </data>
   <!-- Feldbezeichnungen -->
-  <data name="FieldFirstName" xml:space="preserve">
+  <data name="FieldFirstName.Text" xml:space="preserve">
     <value>Vorname</value>
   </data>
-  <data name="FieldLastName" xml:space="preserve">
+  <data name="FieldLastName.Text" xml:space="preserve">
     <value>Nachname</value>
   </data>
-  <data name="FieldBirthDate" xml:space="preserve">
+  <data name="FieldFirstAndLastNameError.Text" xml:space="preserve">
+    <value>Vorname oder Nachname ist erforderlich</value>
+  </data>
+  <data name="FieldBirthDate.Text" xml:space="preserve">
     <value>Geburtsdatum</value>
   </data>
-  <data name="FieldEmail" xml:space="preserve">
+  <data name="FieldEmail.Text" xml:space="preserve">
     <value>E-Mail</value>
   </data>
-  <data name="FieldPhone" xml:space="preserve">
+  <data name="FieldPhone.Text" xml:space="preserve">
     <value>Telefon</value>
   </data>
-  <data name="FieldStreet" xml:space="preserve">
+  <data name="FieldStreet.Text" xml:space="preserve">
     <value>Straße</value>
   </data>
-  <data name="FieldCity" xml:space="preserve">
+  <data name="FieldCity.Text" xml:space="preserve">
     <value>Stadt</value>
   </data>
-  <data name="FieldPostalCode" xml:space="preserve">
+  <data name="FieldPostalCode.Text" xml:space="preserve">
     <value>Postleitzahl</value>
   </data>
-  <data name="FieldProvince" xml:space="preserve">
+  <data name="FieldProvince.Text" xml:space="preserve">
     <value>Bundesland</value>
   </data>
-  <data name="FieldRegion" xml:space="preserve">
+  <data name="FieldRegion.Text" xml:space="preserve">
     <value>Region</value>
   </data>
-  <data name="FieldCountry" xml:space="preserve">
+  <data name="FieldCountry.Text" xml:space="preserve">
     <value>Land</value>
   </data>
   <data name="FieldNoteContent" xml:space="preserve">
     <value>Inhalt</value>
   </data>
   <!-- Abschnitte -->
-  <data name="SectionPersonalData" xml:space="preserve">
+  <data name="SectionPersonalData.Text" xml:space="preserve">
     <value>Persönliche Daten</value>
   </data>
-  <data name="SectionAddress" xml:space="preserve">
+  <data name="SectionAddress.Text" xml:space="preserve">
     <value>Adresse</value>
   </data>
-  <data name="SectionDocuments" xml:space="preserve">
+  <data name="SectionDocuments.Text" xml:space="preserve">
     <value>Dokumente</value>
   </data>
   <data name="SectionRecentActivity" xml:space="preserve">
@@ -249,10 +252,10 @@
     <value>Kartendetails</value>
   </data>
   <!-- Schaltfl&#228;chen -->
-  <data name="ButtonSave" xml:space="preserve">
+  <data name="ButtonSave.Text" xml:space="preserve">
     <value>Speichern</value>
   </data>
-  <data name="ButtonDelete" xml:space="preserve">
+  <data name="ButtonDelete.Text" xml:space="preserve">
     <value>Löschen</value>
   </data>
   <data name="ButtonCopy" xml:space="preserve">
@@ -263,9 +266,6 @@
   </data>
   <data name="ButtonChangePassword" xml:space="preserve">
     <value>Master-Passwort ändern</value>
-  </data>
-  <data name="ButtonGenerateAndCopy" xml:space="preserve">
-    <value>Generieren und kopieren</value>
   </data>
   <data name="ButtonImport" xml:space="preserve">
     <value>Importieren</value>
@@ -305,10 +305,10 @@
     <value>Version</value>
   </data>
   <!-- Seitentitel -->
-  <data name="PageIdentities" xml:space="preserve">
+  <data name="PageIdentities.Text" xml:space="preserve">
     <value>Identitäten</value>
   </data>
-  <data name="PageNotes" xml:space="preserve">
+  <data name="PageNotes.Text" xml:space="preserve">
     <value>Sichere Notizen</value>
   </data>
   <data name="PageDashboard" xml:space="preserve">
@@ -321,16 +321,16 @@
     <value>Zeichensätze</value>
   </data>
   <!-- Dokumente -->
-  <data name="FieldIdCard" xml:space="preserve">
+  <data name="FieldIdCard.Text" xml:space="preserve">
     <value>Personalausweis</value>
   </data>
-  <data name="FieldHealthCard" xml:space="preserve">
+  <data name="FieldHealthCard.Text" xml:space="preserve">
     <value>Gesundheitskarte</value>
   </data>
-  <data name="FieldDrivingLicense" xml:space="preserve">
+  <data name="FieldDrivingLicense.Text" xml:space="preserve">
     <value>Führerschein</value>
   </data>
-  <data name="FieldPassport" xml:space="preserve">
+  <data name="FieldPassport.Text" xml:space="preserve">
     <value>Reisepass</value>
   </data>
   <data name="PlaceholderSearch" xml:space="preserve">
@@ -416,10 +416,10 @@
     <value>Weiter</value>
   </data>
   <data name="AddCardLabel.Text" xml:space="preserve">
-    <value>Neue Karte</value>
+    <value>Karte hinzufügen</value>
   </data>
   <data name="AddPasswordLabel.Text" xml:space="preserve">
-    <value>Neues Passwort</value>
+    <value>Passwort hinzufügen</value>
   </data>
   <data name="ButtonCancel.Content" xml:space="preserve">
     <value>Abbrechen</value>
@@ -445,6 +445,15 @@
   <data name="FieldCvv.Text" xml:space="preserve">
     <value>CVV/CVV2 *</value>
   </data>
+  <data name="FieldCardNumberError.Text" xml:space="preserve">
+    <value>Erforderliches Feld</value>
+  </data>
+  <data name="FieldCardholderError.Text" xml:space="preserve">
+    <value>Erforderliches Feld</value>
+  </data>
+  <data name="FieldCvvError.Text" xml:space="preserve">
+    <value>Erforderliches Feld</value>
+  </data>
   <data name="FieldExpiry.Text" xml:space="preserve">
     <value>Gültig bis *</value>
   </data>
@@ -466,6 +475,15 @@
   <data name="FieldPassword.Text" xml:space="preserve">
     <value>Passwort *</value>
   </data>
+  <data name="FieldTitleError.Text" xml:space="preserve">
+    <value>Erforderliches Feld</value>
+  </data>
+  <data name="FieldUsernameError.Text" xml:space="preserve">
+    <value>Erforderliches Feld</value>
+  </data>
+  <data name="FieldPasswordError.Text" xml:space="preserve">
+    <value>Erforderliches Feld</value>
+  </data>
   <data name="FieldPin.Text" xml:space="preserve">
     <value>PIN</value>
   </data>
@@ -486,6 +504,9 @@
   </data>
   <data name="SearchCards.PlaceholderText" xml:space="preserve">
     <value>Karten suchen...</value>
+  </data>
+  <data name="SearchIdentities.PlaceholderText" xml:space="preserve">
+    <value>Identitäten suchen...</value>
   </data>
   <data name="SearchPasswords.PlaceholderText" xml:space="preserve">
     <value>Passwörter suchen...</value>
@@ -841,7 +862,7 @@
     <value>Uebersprungen (Duplikate): {0}</value>
   </data>
   <data name="ImportFormatCsv" xml:space="preserve">
-    <value>Generisches CSV</value>
+    <value>Generisches CSV (.csv)</value>
   </data>
   <data name="RestoreWarningCancel" xml:space="preserve">
     <value>Abbrechen</value>
@@ -898,7 +919,7 @@
     <value>KeePass-Masterpasswort</value>
   </data>
   <data name="ImportFormatKdbx" xml:space="preserve">
-    <value>KeePass (.kdbx)</value>
+    <value>KeePass 2.x (.kdbx)</value>
   </data>
   <data name="RestorePwPlaceholder" xml:space="preserve">
     <value>Backup-Passwort</value>
@@ -922,7 +943,7 @@
     <value>Die Datei ist kein gueltiges PassKey-Backup.</value>
   </data>
   <data name="ImportFormatBitwarden" xml:space="preserve">
-    <value>Bitwarden (JSON)</value>
+    <value>Bitwarden (.json / .zip)</value>
   </data>
   <data name="ImportMergeKeepBoth" xml:space="preserve">
     <value>Beide behalten</value>
@@ -999,127 +1020,127 @@
     <value>Gespeichert!</value>
   </data>
   <!-- Help page & Settings additions -->
-  <data name="PageHelp" xml:space="preserve">
+  <data name="PageHelp.Text" xml:space="preserve">
     <value>Hilfe</value>
   </data>
-  <data name="HelpShortcutsTitle" xml:space="preserve">
+  <data name="HelpShortcutsTitle.Text" xml:space="preserve">
     <value>Tastenkürzel</value>
   </data>
-  <data name="HelpShortcutsNavTitle" xml:space="preserve">
+  <data name="HelpShortcutsNavTitle.Text" xml:space="preserve">
     <value>Navigation</value>
   </data>
-  <data name="HelpShortcutNav18" xml:space="preserve">
+  <data name="HelpShortcutNav18.Text" xml:space="preserve">
     <value>Zwischen Abschnitten wechseln (Dashboard, Passw&#246;rter, Karten&#8230;, Einstellungen)</value>
   </data>
-  <data name="HelpShortcutSearch" xml:space="preserve">
+  <data name="HelpShortcutSearch.Text" xml:space="preserve">
     <value>Suchen (im Dashboard)</value>
   </data>
-  <data name="HelpShortcutLock" xml:space="preserve">
+  <data name="HelpShortcutLock.Text" xml:space="preserve">
     <value>Tresor sperren</value>
   </data>
-    <data name="HelpShortcutHelp" xml:space="preserve">
+    <data name="HelpShortcutHelp.Text" xml:space="preserve">
     <value>Hilfe &#246;ffnen</value>
   </data>
-  <data name="HelpShortcutsActionsTitle" xml:space="preserve">
+  <data name="HelpShortcutsActionsTitle.Text" xml:space="preserve">
     <value>Aktionen</value>
   </data>
-  <data name="HelpShortcutNew" xml:space="preserve">
+  <data name="HelpShortcutNew.Text" xml:space="preserve">
     <value>Neues Element</value>
   </data>
-  <data name="HelpShortcutEdit" xml:space="preserve">
+  <data name="HelpShortcutEdit.Text" xml:space="preserve">
     <value>Ausgewähltes Element bearbeiten</value>
   </data>
-  <data name="HelpShortcutDelKey" xml:space="preserve">
+  <data name="HelpShortcutDelKey.Text" xml:space="preserve">
     <value>Entf</value>
   </data>
-  <data name="HelpShortcutDelete" xml:space="preserve">
+  <data name="HelpShortcutDelete.Text" xml:space="preserve">
     <value>Ausgewähltes Element löschen</value>
   </data>
-  <data name="HelpShortcutEsc" xml:space="preserve">
+  <data name="HelpShortcutEsc.Text" xml:space="preserve">
     <value>Abbrechen / Zurück</value>
   </data>
-  <data name="HelpFaqTitle" xml:space="preserve">
+  <data name="HelpFaqTitle.Text" xml:space="preserve">
     <value>Häufige Fragen</value>
   </data>
-  <data name="HelpFaq1Question" xml:space="preserve">
+  <data name="HelpFaq1Question.Text" xml:space="preserve">
     <value>Wie ändere ich das Hauptpasswort?</value>
   </data>
-  <data name="HelpFaq1Answer" xml:space="preserve">
+  <data name="HelpFaq1Answer.Text" xml:space="preserve">
     <value>Gehen Sie zu Einstellungen und scrollen Sie zum Bereich Sicherheit. Klicken Sie auf 'Master-Passwort ändern': Sie werden nach Ihrem aktuellen Passwort gefragt (zur Bestätigung Ihrer Identität) und dann zweimal nach dem neuen Passwort. Das neue Master-Passwort wird sofort angewendet.</value>
   </data>
-  <data name="HelpFaq2Question" xml:space="preserve">
+  <data name="HelpFaq2Question.Text" xml:space="preserve">
     <value>Wie erstelle ich eine Sicherungskopie des Tresors?</value>
   </data>
-  <data name="HelpFaq2Answer" xml:space="preserve">
+  <data name="HelpFaq2Answer.Text" xml:space="preserve">
     <value>Gehen Sie zu Einstellungen und scrollen Sie zum Bereich Sicherung und Import. Klicken Sie auf 'Sicherung erstellen': Eine mit Ihrem Master-Passwort verschlüsselte Datei wird erstellt. Bewahren Sie sie sicher auf. Zur Wiederherstellung nutzen Sie 'Sicherung wiederherstellen' im selben Bereich und geben Sie das beim Erstellen verwendete Master-Passwort ein.</value>
   </data>
-  <data name="HelpFaq3Question" xml:space="preserve">
+  <data name="HelpFaq3Question.Text" xml:space="preserve">
     <value>Wo werden meine Daten gespeichert?</value>
   </data>
-  <data name="HelpFaq3Answer" xml:space="preserve">
+  <data name="HelpFaq3Answer.Text" xml:space="preserve">
     <value>Alle PassKey-Daten werden ausschließlich auf Ihrem Gerät gespeichert, in einer SQLite-Datenbank, die mit AES-GCM 256-Bit verschlüsselt ist. Es werden keine Informationen über das Internet oder an externe Server übertragen. Der Dateipfad wird unten angezeigt.</value>
   </data>
-  <data name="HelpFaq4Question" xml:space="preserve">
+  <data name="HelpFaq4Question.Text" xml:space="preserve">
     <value>Wie importiere ich Passwörter aus einem anderen Manager?</value>
   </data>
-  <data name="HelpFaq4Answer" xml:space="preserve">
-    <value>Gehen Sie zu Einstellungen und scrollen Sie zum Bereich Sicherung und Import. Klicken Sie auf 'Daten importieren' und wählen Sie das Quellformat: generisches CSV, Bitwarden JSON, 1Password (.1pux) und KeePass (.kdbx). PassKey zeigt eine Zusammenfassung der erkannten Einträge vor der endgültigen Bestätigung.</value>
+  <data name="HelpFaq4Answer.Text" xml:space="preserve">
+    <value>Öffnen Sie Einstellungen, Bereich Sicherung und Import, und klicken Sie auf &apos;Daten importieren&apos;, dann wählen Sie das Quellformat. Unterstützte Formate: generisches CSV (.csv), kompatibel mit den meisten Managern sowie mit Exporten aus Chrome, Firefox und NordPass; Bitwarden, entweder als unverschlüsselte .json oder als .zip mit Anhängen (PassKey extrahiert die Daten automatisch); 1Password (.1pux); und KeePass 2.x (.kdbx), wofür das Datenbankkennwort abgefragt wird. Verschlüsselte Bitwarden-Exporte können nicht importiert werden (exportieren Sie sie unverschlüsselt), ebenso wenig KeePass-1.x-Datenbanken (.kdb), ein älteres Format, das Sie zuerst mit KeePass 2.x in .kdbx konvertieren müssen. Vor der endgültigen Bestätigung zeigt PassKey stets eine Zusammenfassung der erkannten Elemente.</value>
   </data>
-  <data name="HelpAboutTitle" xml:space="preserve">
+  <data name="HelpAboutTitle.Text" xml:space="preserve">
     <value>Über</value>
   </data>
-  <data name="HelpAboutDesc" xml:space="preserve">
+  <data name="HelpAboutDesc.Text" xml:space="preserve">
     <value>Sicherer Passwort-Manager für Windows</value>
   </data>
-  <data name="HelpGuideSectionTitle" xml:space="preserve">
+  <data name="HelpGuideSectionTitle.Text" xml:space="preserve">
     <value>Benutzerhandbuch</value>
   </data>
-  <data name="HelpGuideDashboardHeader" xml:space="preserve">
+  <data name="HelpGuideDashboardHeader.Text" xml:space="preserve">
     <value>Dashboard</value>
   </data>
-  <data name="HelpGuideDashboardBody" xml:space="preserve">
+  <data name="HelpGuideDashboardBody.Text" xml:space="preserve">
     <value>Das Dashboard ist der Hauptbildschirm von PassKey. Es zeigt eine Zusammenfassung der gespeicherten Einträge nach Typ (Passwörter, Karten, Identitäten, Notizen), Tresor-Statistiken und zuletzt geänderte Einträge. Nutzen Sie die Suchleiste (Strg+F), um schnell beliebige Einträge zu finden.</value>
   </data>
-  <data name="HelpGuidePasswordsHeader" xml:space="preserve">
+  <data name="HelpGuidePasswordsHeader.Text" xml:space="preserve">
     <value>Passwörter</value>
   </data>
-  <data name="HelpGuidePasswordsBody" xml:space="preserve">
+  <data name="HelpGuidePasswordsBody.Text" xml:space="preserve">
     <value>Alle im Tresor gespeicherten Passwörter anzeigen und verwalten. Klicken Sie auf einen Eintrag, um das Detailpanel zu öffnen: Dort können Sie Benutzername oder Passwort mit einem Klick kopieren, die zugehörige URL anzeigen, Felder bearbeiten oder den Eintrag mit Bestätigung löschen.</value>
   </data>
-  <data name="HelpGuideCardsHeader" xml:space="preserve">
+  <data name="HelpGuideCardsHeader.Text" xml:space="preserve">
     <value>Kreditkarten</value>
   </data>
-  <data name="HelpGuideCardsBody" xml:space="preserve">
+  <data name="HelpGuideCardsBody.Text" xml:space="preserve">
     <value>Kreditkarten im Tresor verwalten. Kartennummer, Inhaber, Ablaufdatum und CVV werden vollständig verschlüsselt gespeichert. Im Detailpanel können Sie die Kartennummer mit einem Klick kopieren und den CVV durch Drücken und Halten anzeigen. Die Kartenfarbe ist anpassbar.</value>
   </data>
-  <data name="HelpGuideIdentitiesHeader" xml:space="preserve">
+  <data name="HelpGuideIdentitiesHeader.Text" xml:space="preserve">
     <value>Identitäten</value>
   </data>
-  <data name="HelpGuideIdentitiesBody" xml:space="preserve">
+  <data name="HelpGuideIdentitiesBody.Text" xml:space="preserve">
     <value>Persönliche Identitätsdokumente und Informationen speichern: Vor- und Nachname, Adresse, Dokumenttyp und -nummer, Steuer-ID, Geburtsdatum, Telefonnummer und E-Mail-Adresse. Nützlich für das schnelle Kopieren einzelner Felder beim Ausfüllen von Formularen ohne Suche nach physischen Dokumenten.</value>
   </data>
-  <data name="HelpGuideNotesHeader" xml:space="preserve">
+  <data name="HelpGuideNotesHeader.Text" xml:space="preserve">
     <value>Sichere Notizen</value>
   </data>
-  <data name="HelpGuideNotesBody" xml:space="preserve">
+  <data name="HelpGuideNotesBody.Text" xml:space="preserve">
     <value>Sensible Informationen als freie Textnotizen speichern, verschlüsselt wie alle anderen Einträge. Jede Notiz hat einen Titel, eine anpassbare Farbe und ein Textfeld ohne Längenbeschränkung. Ideal für PINs, Zugangscodes, Sicherheitsfragen oder beliebige Daten, die in keine andere Kategorie passen.</value>
   </data>
-  <data name="HelpGuideGeneratorHeader" xml:space="preserve">
+  <data name="HelpGuideGeneratorHeader.Text" xml:space="preserve">
     <value>Generator</value>
   </data>
-  <data name="HelpGuideGeneratorBody" xml:space="preserve">
+  <data name="HelpGuideGeneratorBody.Text" xml:space="preserve">
     <value>Zufällige, kryptografisch sichere Passwörter generieren. Länge und Zeichensätze konfigurieren (Groß-/Kleinbuchstaben, Ziffern und Symbole). Die Passwortstärke wird in Echtzeit angezeigt. Ergebnis mit einem Klick in die Zwischenablage kopieren.</value>
   </data>
-  <data name="HelpGuideVerifierHeader" xml:space="preserve">
+  <data name="HelpGuideVerifierHeader.Text" xml:space="preserve">
     <value>Passwort-Prüfer</value>
   </data>
-  <data name="HelpGuideVerifierBody" xml:space="preserve">
+  <data name="HelpGuideVerifierBody.Text" xml:space="preserve">
     <value>Passwortsicherheit analysieren, ohne es im Tresor zu speichern. Zeigt eine Bewertung von 0 bis 4 Sternen, eine Schätzung der Crack-Zeit per Brute-Force und ob das Passwort in öffentlichen Datenleck-Datenbanken erscheint. Nützlich zur Überprüfung bereits genutzter Passwörter.</value>
   </data>
-  <data name="HelpGuideSettingsHeader" xml:space="preserve">
+  <data name="HelpGuideSettingsHeader.Text" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
-  <data name="HelpGuideSettingsBody" xml:space="preserve">
+  <data name="HelpGuideSettingsBody.Text" xml:space="preserve">
     <value>Alle Konfigurationsoptionen zentral verwalten: Sprache, Master-Passwort, automatische Sperrverzögerung, Tresor-Sicherung und -Wiederherstellung sowie Import aus anderen Passwort-Managern (CSV, Bitwarden, 1Password, KeePass).</value>
   </data>
   <!-- Sichere Notizen -->
@@ -1496,5 +1517,962 @@ Moechten Sie diese Pruefung aktivieren?</value>
   </data>
   <data name="DashHealthWeakLabel.Text" xml:space="preserve">
     <value>Schwach</value>
+  </data>
+  <data name="ToastSaved" xml:space="preserve">
+    <value>Anderungen gespeichert</value>
+  </data>
+  <data name="ToastDeleted" xml:space="preserve">
+    <value>Element geloscht</value>
+  </data>
+  <data name="ToastUsernameCopied" xml:space="preserve">
+    <value>Benutzername kopiert</value>
+  </data>
+  <data name="ToastPasswordCopied" xml:space="preserve">
+    <value>Passwort kopiert</value>
+  </data>
+  <data name="ToastCopied" xml:space="preserve">
+    <value>In Zwischenablage kopiert</value>
+  </data>
+  <data name="ForgotPwTitle" xml:space="preserve">
+    <value>Passwort vergessen</value>
+  </data>
+  <data name="ForgotPwMessage" xml:space="preserve">
+    <value>PassKey speichert das Master-Passwort niemals. Aus Sicherheitsgrunden (Zero-Knowledge-Modell) kennen nur Sie es. Falls Sie es vergessen haben, konnen Sie eine .pkbak-Sicherung wiederherstellen oder einen neuen Tresor erstellen.</value>
+  </data>
+  <data name="ForgotPwRestore" xml:space="preserve">
+    <value>Sicherung wiederherstellen</value>
+  </data>
+  <data name="ForgotPwNewVault" xml:space="preserve">
+    <value>Neuen Tresor erstellen</value>
+  </data>
+  <data name="NewVaultWarnTitle" xml:space="preserve">
+    <value>Neuen Tresor erstellen</value>
+  </data>
+  <data name="NewVaultWarnMessage" xml:space="preserve">
+    <value>Der aktuelle Tresor und alle seine Daten werden dauerhaft unzuganglich. Dieser Vorgang kann nicht ruckgangig gemacht werden. Fortfahren?</value>
+  </data>
+  <data name="NewVaultWarnConfirm" xml:space="preserve">
+    <value>Loschen und fortfahren</value>
+  </data>
+  <data name="AutoLockCountdown" xml:space="preserve">
+    <value>Der Tresor wird in {0} Sekunden gesperrt</value>
+  </data>
+  <data name="AutoLockStayActive" xml:space="preserve">
+    <value>Aktiv bleiben</value>
+  </data>
+  <data name="ToastAutoLockUpdated" xml:space="preserve">
+    <value>Automatische Sperre aktualisiert</value>
+  </data>
+  <data name="ActivityPageTitle.Text" xml:space="preserve">
+    <value>Verlauf</value>
+  </data>
+  <data name="ActivityPageSubtitle.Text" xml:space="preserve">
+    <value>Letzte Tresor-Aktivität</value>
+  </data>
+  <data name="ActivityExportButton.Text" xml:space="preserve">
+    <value>CSV exportieren</value>
+  </data>
+  <data name="ActivityEmptyTitle" xml:space="preserve">
+    <value>Keine Aktivität</value>
+  </data>
+  <data name="ActivityEmptySubtitle" xml:space="preserve">
+    <value>Tresor-Aktionen erscheinen hier.</value>
+  </data>
+  <data name="ActivityColTime" xml:space="preserve">
+    <value>Datum und Uhrzeit</value>
+  </data>
+  <data name="ActivityColType" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="ActivityColAction" xml:space="preserve">
+    <value>Aktion</value>
+  </data>
+  <data name="ActivityCsvFileType" xml:space="preserve">
+    <value>CSV-Datei</value>
+  </data>
+  <data name="ActivityExportSuccess" xml:space="preserve">
+    <value>Verlauf exportiert</value>
+  </data>
+  <data name="ActivityExportError" xml:space="preserve">
+    <value>Export fehlgeschlagen</value>
+  </data>
+  <data name="ActivityActionCreated" xml:space="preserve">
+    <value>Erstellt</value>
+  </data>
+  <data name="ActivityActionModified" xml:space="preserve">
+    <value>Geändert</value>
+  </data>
+  <data name="ActivityActionDeleted" xml:space="preserve">
+    <value>Gelöscht</value>
+  </data>
+  <data name="ActivityActionCopied" xml:space="preserve">
+    <value>Kopiert</value>
+  </data>
+  <data name="ActivityActionUnlocked" xml:space="preserve">
+    <value>Entsperrt</value>
+  </data>
+  <data name="ActivityActionLocked" xml:space="preserve">
+    <value>Gesperrt</value>
+  </data>
+  <data name="ActivityEntityPassword" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="ActivityEntityCard" xml:space="preserve">
+    <value>Karte</value>
+  </data>
+  <data name="ActivityEntityIdentity" xml:space="preserve">
+    <value>Identität</value>
+  </data>
+  <data name="ActivityEntityNote" xml:space="preserve">
+    <value>Notiz</value>
+  </data>
+  <data name="ActivityEntityVault" xml:space="preserve">
+    <value>Tresor</value>
+  </data>
+  <data name="SettingsActivityLogBtn.Text" xml:space="preserve">
+    <value>Aktivitätsverlauf</value>
+  </data>
+  <data name="SettingsBrowserExtTitle.Text" xml:space="preserve">
+    <value>Browser-Erweiterung</value>
+  </data>
+  <data name="SettingsBrowserExtDesc.Text" xml:space="preserve">
+    <value>Füllt Anmeldedaten auf Websites automatisch aus</value>
+  </data>
+  <data name="BrowserExtDialogTitle" xml:space="preserve">
+    <value>Browser-Erweiterung installieren</value>
+  </data>
+  <data name="BrowserExtIntro" xml:space="preserve">
+    <value>Die PassKey-Erweiterung füllt Benutzernamen und Passwörter auf Websites automatisch aus. Sie funktioniert, während PassKey ausgeführt wird.</value>
+  </data>
+  <data name="BrowserExtStep1" xml:space="preserve">
+    <value>1. Öffnen Sie den Store Ihres Browsers:</value>
+  </data>
+  <data name="BrowserExtChromeBtn" xml:space="preserve">
+    <value>Chrome / Edge</value>
+  </data>
+  <data name="BrowserExtFirefoxBtn" xml:space="preserve">
+    <value>Firefox</value>
+  </data>
+  <data name="BrowserExtStep2" xml:space="preserve">
+    <value>2. Klicken Sie auf der Store-Seite auf "Hinzufügen" (oder "Installieren").</value>
+  </data>
+  <data name="BrowserExtStep3" xml:space="preserve">
+    <value>3. Lassen Sie PassKey laufen: Die Erweiterung verbindet sich automatisch.</value>
+  </data>
+  <data name="BrowserExtClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="HelpGuideBrowserExtHeader.Text" xml:space="preserve">
+    <value>Browser-Erweiterung</value>
+  </data>
+  <data name="HelpGuideBrowserExtBody.Text" xml:space="preserve">
+    <value>Die Browser-Erweiterung füllt Benutzernamen und Passwörter auf Websites automatisch aus. Zum Installieren öffnen Sie Einstellungen → Allgemein → Browser-Erweiterung: Eine geführte Prozedur führt Sie zu den Chrome/Edge- oder Firefox-Stores. Die Erweiterung verbindet sich mit PassKey, während die App läuft.</value>
+  </data>
+  <data name="SettingsClearVaultTitle.Text" xml:space="preserve">
+    <value>Tresor leeren</value>
+  </data>
+  <data name="SettingsClearVaultDesc.Text" xml:space="preserve">
+    <value>Löscht alle Passwörter, Karten, Identitäten und Notizen. Unwiderrufliche Operation.</value>
+  </data>
+  <data name="SettingsClearVaultBtn.Text" xml:space="preserve">
+    <value>Tresor leeren</value>
+  </data>
+  <data name="ClearVaultWarnTitle" xml:space="preserve">
+    <value>Tresor leeren</value>
+  </data>
+  <data name="ClearVaultWarnMessage" xml:space="preserve">
+    <value>WARNUNG: Dieser Vorgang löscht ENDGÜLTIG alle Passwörter, Karten, Identitäten und Notizen aus dem Tresor. Metadaten und das Master-Passwort bleiben erhalten. Der Vorgang ist UNWIDERRUFLICH. Möchten Sie fortfahren?</value>
+  </data>
+  <data name="ClearVaultWarnContinue" xml:space="preserve">
+    <value>Fortfahren</value>
+  </data>
+  <data name="ClearVaultPwTitle" xml:space="preserve">
+    <value>Leeren bestätigen</value>
+  </data>
+  <data name="ClearVaultPwDesc" xml:space="preserve">
+    <value>Geben Sie das Master-Passwort ein, um das Leeren des Tresors zu bestätigen.</value>
+  </data>
+  <data name="ClearVaultPwPlaceholder" xml:space="preserve">
+    <value>Master-Passwort</value>
+  </data>
+  <data name="ClearVaultPwConfirm" xml:space="preserve">
+    <value>Tresor leeren</value>
+  </data>
+  <data name="ClearVaultPwErrEmpty" xml:space="preserve">
+    <value>Geben Sie das Master-Passwort ein.</value>
+  </data>
+  <data name="ClearVaultErrWrong" xml:space="preserve">
+    <value>Falsches Master-Passwort. Der Tresor wurde nicht geleert.</value>
+  </data>
+  <data name="ClearVaultSuccessTitle" xml:space="preserve">
+    <value>Tresor geleert</value>
+  </data>
+  <data name="ClearVaultSuccessMessage" xml:space="preserve">
+    <value>Alle Einträge wurden gelöscht. Der Tresor ist jetzt leer.</value>
+  </data>
+  <data name="ClearVaultErrorTitle" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="WelcomeRestore.Text" xml:space="preserve">
+    <value>Vorhandenes Backup wiederherstellen</value>
+  </data>
+  <data name="PwPanelTitleNew" xml:space="preserve">
+    <value>Passwort hinzufügen</value>
+  </data>
+  <data name="PwPanelTitleEdit" xml:space="preserve">
+    <value>Passwort bearbeiten</value>
+  </data>
+  <data name="CardPanelTitleNew" xml:space="preserve">
+    <value>Karte hinzufügen</value>
+  </data>
+  <data name="CardPanelTitleEdit" xml:space="preserve">
+    <value>Karte bearbeiten</value>
+  </data>
+  <data name="IdPanelTitleNew" xml:space="preserve">
+    <value>Identität hinzufügen</value>
+  </data>
+  <data name="IdPanelTitleEdit" xml:space="preserve">
+    <value>Identität bearbeiten</value>
+  </data>
+  <data name="NotePanelTitleNew" xml:space="preserve">
+    <value>Notiz hinzufügen</value>
+  </data>
+  <data name="NotePanelTitleEdit" xml:space="preserve">
+    <value>Notiz bearbeiten</value>
+  </data>
+  <data name="FieldEmailFormatWarning.Text" xml:space="preserve">
+    <value>Das E-Mail-Format scheint ungültig zu sein</value>
+  </data>
+  <data name="FieldMiddleName.Text" xml:space="preserve">
+    <value>Zweiter Vorname</value>
+  </data>
+  <data name="FieldCompany.Text" xml:space="preserve">
+    <value>Firma</value>
+  </data>
+  <data name="FieldIdentityUsername.Text" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="ButtonAddNote.Text" xml:space="preserve">
+    <value>Notiz hinzufügen</value>
+  </data>
+  <data name="EmptyEditorHint.Text" xml:space="preserve">
+    <value>Wählen Sie eine Notiz aus oder erstellen Sie eine neue</value>
+  </data>
+  <data name="PlaceholderNotes.PlaceholderText" xml:space="preserve">
+    <value>Zusätzliche Notizen...</value>
+  </data>
+  <data name="PwDetailPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="SetupPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Master-Passwort eingeben</value>
+  </data>
+  <data name="SetupConfirmPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Master-Passwort wiederholen</value>
+  </data>
+  <data name="VerifierPasswordPlaceholder.PlaceholderText" xml:space="preserve">
+    <value>Geben Sie ein Passwort zur Überprüfung ein...</value>
+  </data>
+  <data name="VerifierOfflineNote.Text" xml:space="preserve">
+    <value>Die Überprüfung erfolgt vollständig offline; es werden keine Daten gesendet.</value>
+  </data>
+  <data name="GeneratorExcludeAmbiguous.Text" xml:space="preserve">
+    <value>Mehrdeutige Zeichen ausschließen</value>
+  </data>
+  <data name="TotpSecretReadout.Header" xml:space="preserve">
+    <value>Base32-Schlüssel</value>
+  </data>
+  <data name="RequiredFieldLegendIdentity.Text" xml:space="preserve">
+    <value>* Pflichtfeld (Vor- oder Nachname)</value>
+  </data>
+  <data name="TrayMenuShow" xml:space="preserve">
+    <value>PassKey anzeigen</value>
+  </data>
+  <data name="TrayMenuLock" xml:space="preserve">
+    <value>Tresor sperren</value>
+  </data>
+  <data name="TrayMenuExit" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="TrayCloseContent" xml:space="preserve">
+    <value>PassKey im Hintergrund weiterlaufen lassen?</value>
+  </data>
+  <data name="TrayCloseMinimize" xml:space="preserve">
+    <value>Minimieren</value>
+  </data>
+  <data name="TrayCloseExit" xml:space="preserve">
+    <value>PassKey schließen</value>
+  </data>
+  <data name="Totp2faDialogTitle" xml:space="preserve">
+    <value>2FA-Schlüssel eingeben</value>
+  </data>
+  <data name="Totp2faDialogBody" xml:space="preserve">
+    <value>Fügen Sie den vom Dienst bereitgestellten Base32-Schlüssel ein (derselbe Text, den Sie in Google Authenticator eingeben würden). Groß-/Kleinschreibung und Leerzeichen werden ignoriert.</value>
+  </data>
+  <data name="TotpSeedPlaceholder" xml:space="preserve">
+    <value>z. B. JBSW Y3DP EHPK 3PXP</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="ButtonOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="NoteCategoryGeneral" xml:space="preserve">
+    <value>Allgemein</value>
+  </data>
+  <data name="NoteCategoryPersonal" xml:space="preserve">
+    <value>Persönlich</value>
+  </data>
+  <data name="NoteCategoryWork" xml:space="preserve">
+    <value>Arbeit</value>
+  </data>
+  <data name="NoteCategoryFinancial" xml:space="preserve">
+    <value>Finanzen</value>
+  </data>
+  <data name="NoteCategoryMedical" xml:space="preserve">
+    <value>Medizinisch</value>
+  </data>
+  <data name="NoteCategoryTravel" xml:space="preserve">
+    <value>Reisen</value>
+  </data>
+  <data name="NoteCategoryEducation" xml:space="preserve">
+    <value>Bildung</value>
+  </data>
+  <data name="NoteCategoryLegal" xml:space="preserve">
+    <value>Rechtliches</value>
+  </data>
+  <data name="NoteCategoryTechnical" xml:space="preserve">
+    <value>Technisch</value>
+  </data>
+  <data name="NoteCategoryOther" xml:space="preserve">
+    <value>Sonstiges</value>
+  </data>
+  <data name="NoteTimeNow" xml:space="preserve">
+    <value>Gerade eben</value>
+  </data>
+  <data name="NoteTimeMinutes" xml:space="preserve">
+    <value>vor {0} Min.</value>
+  </data>
+  <data name="NoteTimeHours" xml:space="preserve">
+    <value>vor {0} Std.</value>
+  </data>
+  <data name="NoteTimeYesterday" xml:space="preserve">
+    <value>Gestern</value>
+  </data>
+  <data name="NoteTimeDays" xml:space="preserve">
+    <value>vor {0} T.</value>
+  </data>
+  <data name="NoteDateCulture" xml:space="preserve">
+    <value>de-DE</value>
+  </data>
+  <data name="NoteFilterAllCategories" xml:space="preserve">
+    <value>Alle Kategorien</value>
+  </data>
+  <data name="NoteFilterAnnounce" xml:space="preserve">
+    <value>Filter: {0}</value>
+  </data>
+  <data name="NoteNoResults" xml:space="preserve">
+    <value>Keine Ergebnisse gefunden.</value>
+  </data>
+  <data name="NoteSectionPinned" xml:space="preserve">
+    <value>Angeheftet</value>
+  </data>
+  <data name="NoteSectionOthers" xml:space="preserve">
+    <value>Notizen</value>
+  </data>
+  <data name="NotePinnedStatus" xml:space="preserve">
+    <value>Angeheftet</value>
+  </data>
+  <data name="NoteCharWordCount" xml:space="preserve">
+    <value>{0} Z. · {1} Wörter</value>
+  </data>
+  <data name="NoteCharWordAnnounce" xml:space="preserve">
+    <value>{0} Zeichen, {1} Wörter</value>
+  </data>
+  <data name="NoteUnsavedChanges" xml:space="preserve">
+    <value>Nicht gespeicherte Änderungen</value>
+  </data>
+  <data name="NotePinName" xml:space="preserve">
+    <value>Notiz oben in der Liste anheften</value>
+  </data>
+  <data name="NoteUnpinName" xml:space="preserve">
+    <value>Vom Anfang lösen</value>
+  </data>
+  <data name="NoteSavingAnnounce" xml:space="preserve">
+    <value>Wird gespeichert...</value>
+  </data>
+  <data name="NoteSavedAnnounce" xml:space="preserve">
+    <value>Gespeichert</value>
+  </data>
+  <data name="NoteFilterTooltip" xml:space="preserve">
+    <value>Nach Kategorie filtern</value>
+  </data>
+  <data name="CrackTimeInstant" xml:space="preserve">
+    <value>Sofort</value>
+  </data>
+  <data name="CrackTimeSeconds" xml:space="preserve">
+    <value>Wenige Sekunden</value>
+  </data>
+  <data name="CrackTimeMinutes" xml:space="preserve">
+    <value>{0} Minuten</value>
+  </data>
+  <data name="CrackTimeHours" xml:space="preserve">
+    <value>{0} Stunden</value>
+  </data>
+  <data name="CrackTimeDays" xml:space="preserve">
+    <value>{0} Tage</value>
+  </data>
+  <data name="CrackTimeYears" xml:space="preserve">
+    <value>{0} Jahre</value>
+  </data>
+  <data name="GeneratorPwGenerated" xml:space="preserve">
+    <value>Neues Passwort generiert</value>
+  </data>
+  <data name="GeneratorPwCopied" xml:space="preserve">
+    <value>Passwort in die Zwischenablage kopiert</value>
+  </data>
+  <data name="CrackTimeThousandYears" xml:space="preserve">
+    <value>{0} Tausend Jahre</value>
+  </data>
+  <data name="CrackTimeMillionYears" xml:space="preserve">
+    <value>{0} Millionen Jahre</value>
+  </data>
+  <data name="CrackTimeBillionYears" xml:space="preserve">
+    <value>{0} Milliarden Jahre</value>
+  </data>
+  <data name="CrackTimeTrillionYears" xml:space="preserve">
+    <value>über eine Billion Jahre</value>
+  </data>
+  <data name="VerifierCompromisedFmt" xml:space="preserve">
+    <value>Kompromittierte Passwörter ({0})</value>
+  </data>
+  <data name="VerifierWeakFmt" xml:space="preserve">
+    <value>Schwache Passwörter ({0})</value>
+  </data>
+  <data name="VerifierDuplicateFmt" xml:space="preserve">
+    <value>Wiederverwendete Passwörter ({0})</value>
+  </data>
+  <data name="VerifierUntitled" xml:space="preserve">
+    <value>(ohne Titel)</value>
+  </data>
+  <data name="VerifierBreachLabel" xml:space="preserve">
+    <value>{0:N0} Lecks</value>
+  </data>
+  <data name="VerifierReused" xml:space="preserve">
+    <value>wiederverwendet</value>
+  </data>
+  <data name="SuggestUseAtLeast8" xml:space="preserve">
+    <value>Mindestens 8 Zeichen verwenden</value>
+  </data>
+  <data name="SuggestUseAtLeast12" xml:space="preserve">
+    <value>Mindestens 12 Zeichen für besseren Schutz verwenden</value>
+  </data>
+  <data name="SuggestAddUppercase" xml:space="preserve">
+    <value>Großbuchstaben hinzufügen</value>
+  </data>
+  <data name="SuggestAddLowercase" xml:space="preserve">
+    <value>Kleinbuchstaben hinzufügen</value>
+  </data>
+  <data name="SuggestAddNumbers" xml:space="preserve">
+    <value>Zahlen hinzufügen</value>
+  </data>
+  <data name="SuggestAddSpecial" xml:space="preserve">
+    <value>Sonderzeichen hinzufügen (!@#$%)</value>
+  </data>
+  <data name="SuggestAvoidCommon" xml:space="preserve">
+    <value>Gängige Muster vermeiden (password, 123456, qwerty...)</value>
+  </data>
+  <data name="ImportErrBwEncrypted" xml:space="preserve">
+    <value>Diese Bitwarden-Datei ist verschlüsselt und kann nicht importiert werden. Exportieren Sie Ihre Daten aus Bitwarden im unverschlüsselten Format (.json) und versuchen Sie es erneut.</value>
+  </data>
+  <data name="ImportErrBwZip" xml:space="preserve">
+    <value>Die Bitwarden-ZIP-Datei enthält keine 'data.json'. Exportieren Sie Ihre Daten erneut aus Bitwarden und versuchen Sie es noch einmal.</value>
+  </data>
+  <data name="ImportErr1pux" xml:space="preserve">
+    <value>Die .1pux-Datei enthält keine 'export.data'.</value>
+  </data>
+  <data name="ImportErrKeepass1x" xml:space="preserve">
+    <value>Dies ist eine KeePass 1.x-Datenbank (.kdb), die nicht unterstützt wird. Öffnen Sie sie in KeePass 2.x und speichern (oder exportieren) Sie sie als .kdbx, und versuchen Sie es erneut.</value>
+  </data>
+  <data name="ImportErrKeepassOpen" xml:space="preserve">
+    <value>Die KeePass-Datenbank konnte nicht geöffnet werden. Prüfen Sie, ob das Passwort korrekt ist und die Datei eine gültige .kdbx (KeePass 2.x) ist.</value>
+  </data>
+  <data name="ImportErrNoEntries" xml:space="preserve">
+    <value>Die ausgewählte Datei enthält keine erkennbaren Einträge. Stellen Sie sicher, dass der Quellexport nicht leer ist und das Format unterstützt wird.</value>
+  </data>
+  <data name="ImportPickerBitwarden" xml:space="preserve">
+    <value>Bitwarden (JSON oder ZIP)</value>
+  </data>
+  <data name="ImportPickerKeepass" xml:space="preserve">
+    <value>KeePass (.kdbx / .kdb)</value>
+  </data>
+  <data name="TotpTipNoQr" xml:space="preserve">
+    <value>Kein erkennbarer QR-Code im Bild.</value>
+  </data>
+  <data name="TotpTipQrNotOtpauth" xml:space="preserve">
+    <value>QR-Code erkannt, aber keine gültige 'otpauth://'-URI.</value>
+  </data>
+  <data name="TotpTipNoClipboard" xml:space="preserve">
+    <value>Kein Text in der Zwischenablage.</value>
+  </data>
+  <data name="TotpTipClipNotOtpauth" xml:space="preserve">
+    <value>Der Text in der Zwischenablage ist keine gültige 'otpauth://'-URI.</value>
+  </data>
+  <data name="TotpTipBase32Invalid" xml:space="preserve">
+    <value>Ungültiger Base32-Schlüssel (nur A-Z und 2-7 verwenden).</value>
+  </data>
+  <data name="TotpTipImageTooLarge" xml:space="preserve">
+    <value>Bild zu groß (max. 64 KB)</value>
+  </data>
+  <data name="LoginUnlockFailed" xml:space="preserve">
+    <value>Fehler beim Entsperren des Tresors.</value>
+  </data>
+  <data name="SetupErrorButton" xml:space="preserve">
+    <value>FEHLER</value>
+  </data>
+  <data name="SetupCreateError" xml:space="preserve">
+    <value>Tresor konnte nicht erstellt werden. Bitte erneut versuchen.</value>
+  </data>
+  <data name="UpdateAvailableTitle" xml:space="preserve">
+    <value>PassKey {0} verfügbar</value>
+  </data>
+  <data name="ActivityCsvFileName" xml:space="preserve">
+    <value>PassKey_Verlauf</value>
+  </data>
+  <data name="CatOnlineLabel" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="CardNoName" xml:space="preserve">
+    <value>Unbenannte Karte</value>
+  </data>
+  <data name="IdentityNoName" xml:space="preserve">
+    <value>Unbenannte Identität</value>
+  </data>
+  <data name="NoteNoTitle" xml:space="preserve">
+    <value>Notiz ohne Titel</value>
+  </data>
+  <data name="OperationGenericError" xml:space="preserve">
+    <value>Ein Fehler ist aufgetreten. Bitte erneut versuchen.</value>
+  </data>
+  <data name="ActivityBackBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Zurück zu den Einstellungen</value>
+  </data>
+  <data name="ActivityBackBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Zurück zu den Einstellungen</value>
+  </data>
+  <data name="ActivityExportBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Verlauf als CSV exportieren</value>
+  </data>
+  <data name="SetupCreateVaultBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Tresor erstellen</value>
+  </data>
+  <data name="SettingsHibpToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Kompromittierte Passwörter prüfen</value>
+  </data>
+  <data name="VerifierPasswordPlaceholder.AutomationProperties.Name" xml:space="preserve">
+    <value>Zu prüfendes Passwort</value>
+  </data>
+  <data name="LoginActionButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Entsperren</value>
+  </data>
+  <data name="WelcomeAddPasswordBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Fügen Sie Ihr erstes Passwort hinzu</value>
+  </data>
+  <data name="WelcomeImportBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Aus anderem Manager importieren</value>
+  </data>
+  <data name="WelcomeRestoreBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Vorhandenes Backup wiederherstellen</value>
+  </data>
+  <data name="WelcomeSettingsBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Einstellungen erkunden</value>
+  </data>
+  <data name="WelcomeContinueBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Weiter</value>
+  </data>
+  <data name="SearchIdentities.AutomationProperties.Name" xml:space="preserve">
+    <value>Identitäten suchen</value>
+  </data>
+  <data name="AddIdentityBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Identität hinzufügen</value>
+  </data>
+  <data name="AddIdentityBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Identität hinzufügen (Strg+N)</value>
+  </data>
+  <data name="SecureInputReveal.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwort anzeigen</value>
+  </data>
+  <data name="TipCopyUsername.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Benutzername kopieren</value>
+  </data>
+  <data name="TipCopyPassword.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Passwort kopieren</value>
+  </data>
+  <data name="TipEdit.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="TipDelete.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="TipCopyCardNumber.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Kartennummer kopieren</value>
+  </data>
+  <data name="TipCopy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="TipOpenUrl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>URL öffnen</value>
+  </data>
+  <data name="SearchPasswords.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwörter suchen</value>
+  </data>
+  <data name="AddPasswordBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Neues Passwort</value>
+  </data>
+  <data name="AddPasswordBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Neues Passwort (Strg+N)</value>
+  </data>
+  <data name="NotesEmptyState.AutomationProperties.Name" xml:space="preserve">
+    <value>Keine Notizen. Erstellen Sie Ihre erste sichere Notiz.</value>
+  </data>
+  <data name="NotesFilteredEmptyState.AutomationProperties.Name" xml:space="preserve">
+    <value>Keine Ergebnisse. Ändern Sie die Filter oder die Suche.</value>
+  </data>
+  <data name="SearchNotes.AutomationProperties.Name" xml:space="preserve">
+    <value>Notizen suchen</value>
+  </data>
+  <data name="SearchNotes.AutomationProperties.HelpText" xml:space="preserve">
+    <value>Notizen nach Titel, Inhalt oder Kategorie filtern</value>
+  </data>
+  <data name="AddNoteBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Notiz hinzufügen (Strg+N)</value>
+  </data>
+  <data name="AddNoteBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Neue Notiz (Strg+N)</value>
+  </data>
+  <data name="SearchCards.AutomationProperties.Name" xml:space="preserve">
+    <value>Karten suchen</value>
+  </data>
+  <data name="CardViewToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Karten-/Listenansicht umschalten</value>
+  </data>
+  <data name="CardViewToggle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Ansicht wechseln</value>
+  </data>
+  <data name="AddCardBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Neue Karte</value>
+  </data>
+  <data name="AddCardBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Neue Karte (Strg+N)</value>
+  </data>
+  <data name="DashHealthBadge.AutomationProperties.Name" xml:space="preserve">
+    <value>Tresor-Zustand — Tresorprüfung öffnen</value>
+  </data>
+  <data name="DashHealthBadge.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Tresorprüfung öffnen</value>
+  </data>
+  <data name="DashTotalPasswords.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwörter gesamt</value>
+  </data>
+  <data name="DashTotalCards.AutomationProperties.Name" xml:space="preserve">
+    <value>Karten gesamt</value>
+  </data>
+  <data name="DashTotalIdentities.AutomationProperties.Name" xml:space="preserve">
+    <value>Identitäten gesamt</value>
+  </data>
+  <data name="DashTotalNotes.AutomationProperties.Name" xml:space="preserve">
+    <value>Notizen gesamt</value>
+  </data>
+  <data name="NavDashboard.AutomationProperties.Name" xml:space="preserve">
+    <value>Übersicht</value>
+  </data>
+  <data name="NavPasswords.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwörter</value>
+  </data>
+  <data name="NavCards.AutomationProperties.Name" xml:space="preserve">
+    <value>Kreditkarten</value>
+  </data>
+  <data name="NavIdentities.AutomationProperties.Name" xml:space="preserve">
+    <value>Identitäten</value>
+  </data>
+  <data name="NavNotes.AutomationProperties.Name" xml:space="preserve">
+    <value>Sichere Notizen</value>
+  </data>
+  <data name="NavGenerator.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwortgenerator</value>
+  </data>
+  <data name="NavVerifier.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwortprüfung und Tresor-Audit</value>
+  </data>
+  <data name="NavLockVault.AutomationProperties.Name" xml:space="preserve">
+    <value>Tresor sperren</value>
+  </data>
+  <data name="NavHelp.AutomationProperties.Name" xml:space="preserve">
+    <value>Hilfe</value>
+  </data>
+  <data name="GenPasswordDisplay.AutomationProperties.Name" xml:space="preserve">
+    <value>Generiertes Passwort</value>
+  </data>
+  <data name="GenCopyBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwort in die Zwischenablage kopieren</value>
+  </data>
+  <data name="GenCopyBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>In die Zwischenablage kopieren (Strg+C)</value>
+  </data>
+  <data name="GenRegenBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Neues Passwort generieren</value>
+  </data>
+  <data name="GenRegenBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Neues Passwort generieren</value>
+  </data>
+  <data name="GenLengthSlider.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwortlänge</value>
+  </data>
+  <data name="GenUpperToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Großbuchstaben einbeziehen</value>
+  </data>
+  <data name="GenLowerToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Kleinbuchstaben einbeziehen</value>
+  </data>
+  <data name="GenDigitsToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Zahlen einbeziehen</value>
+  </data>
+  <data name="GenSymbolsToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Sonderzeichen einbeziehen</value>
+  </data>
+  <data name="GenExcludeToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Mehrdeutige Zeichen wie Null/O und Eins/l/I ausschließen</value>
+  </data>
+  <data name="CardColorCombo.AutomationProperties.Name" xml:space="preserve">
+    <value>Kartenfarbe</value>
+  </data>
+  <data name="NoteUnsavedDot.AutomationProperties.Name" xml:space="preserve">
+    <value>Nicht gespeicherte Änderungen</value>
+  </data>
+  <data name="NoteUnsavedDot.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Nicht gespeicherte Änderungen</value>
+  </data>
+  <data name="NotesTitleBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Notiztitel</value>
+  </data>
+  <data name="NoteCategoryCombo.AutomationProperties.Name" xml:space="preserve">
+    <value>Notizkategorie</value>
+  </data>
+  <data name="NoteEditModeBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Bearbeitungsmodus</value>
+  </data>
+  <data name="NotePreviewModeBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Markdown-Vorschau</value>
+  </data>
+  <data name="NotesContentBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Notizinhalt</value>
+  </data>
+  <data name="NotesContentBox.AutomationProperties.HelpText" xml:space="preserve">
+    <value>Unterstützt Markdown-Syntax</value>
+  </data>
+  <data name="NoteMarkdownPreview.AutomationProperties.Name" xml:space="preserve">
+    <value>Notizvorschau in Markdown</value>
+  </data>
+  <data name="NoteDeleteButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Notiz löschen</value>
+  </data>
+  <data name="NotePinToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Notiz anheften</value>
+  </data>
+  <data name="NotePinToggle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Notiz oben in der Liste anheften</value>
+  </data>
+  <data name="NoteSaveButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Notiz speichern</value>
+  </data>
+  <data name="IdFirstNameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Vorname</value>
+  </data>
+  <data name="IdMiddleNameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Zweiter Vorname</value>
+  </data>
+  <data name="IdLastNameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Nachname</value>
+  </data>
+  <data name="IdBirthDateBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Geburtsdatum</value>
+  </data>
+  <data name="IdEmailBox.AutomationProperties.Name" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="IdPhoneBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="IdCompanyBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Firma</value>
+  </data>
+  <data name="IdUsernameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="IdStreetBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Straße</value>
+  </data>
+  <data name="IdCityBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Stadt</value>
+  </data>
+  <data name="IdPostalCodeBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Postleitzahl</value>
+  </data>
+  <data name="IdProvinceBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Bundesland</value>
+  </data>
+  <data name="IdRegionBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="IdCountryBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Land</value>
+  </data>
+  <data name="IdIdCardBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Personalausweis</value>
+  </data>
+  <data name="IdHealthCardBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Gesundheitskarte</value>
+  </data>
+  <data name="IdDrivingLicenseBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Führerschein</value>
+  </data>
+  <data name="IdPassportBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Reisepass</value>
+  </data>
+  <data name="PlaceholderNotes.AutomationProperties.Name" xml:space="preserve">
+    <value>Notizen</value>
+  </data>
+  <data name="IdLabelBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Identitätsbezeichnung</value>
+  </data>
+  <data name="IdDeleteButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Identität löschen</value>
+  </data>
+  <data name="PwTitleBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="PwUrlBox.AutomationProperties.Name" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PwUploadIconBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Bild hochladen</value>
+  </data>
+  <data name="PwUploadIconBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Bild hochladen (PNG, JPG, ICO — max. 64 KB)</value>
+  </data>
+  <data name="PwRemoveIconBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Symbol entfernen</value>
+  </data>
+  <data name="PwRemoveIconBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Symbol entfernen</value>
+  </data>
+  <data name="PwUsernameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>E-Mail oder Benutzer-ID</value>
+  </data>
+  <data name="PwGenerateBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwort generieren</value>
+  </data>
+  <data name="PwGenerateBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Passwort generieren</value>
+  </data>
+  <data name="PwTotpScanQrBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>QR-Code aus Bild scannen</value>
+  </data>
+  <data name="PwTotpScanQrBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>QR-Code aus PNG/JPG-Datei importieren</value>
+  </data>
+  <data name="PwTotpPasteUriBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>otpauth-URI aus Zwischenablage einfügen</value>
+  </data>
+  <data name="PwTotpPasteUriBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Eine &apos;otpauth://&apos;-URI aus der Zwischenablage einfügen</value>
+  </data>
+  <data name="PwTotpEnterSecretBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Base32-Seed manuell eingeben</value>
+  </data>
+  <data name="PwTotpEnterSecretBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Den Base32-Schlüssel manuell eingeben</value>
+  </data>
+  <data name="PwTotpCopyBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>TOTP-Code kopieren</value>
+  </data>
+  <data name="PwTotpCopyBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Aktuellen Code in die Zwischenablage kopieren</value>
+  </data>
+  <data name="PwTotpShowSecretBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Geheimen Schlüssel anzeigen</value>
+  </data>
+  <data name="PwTotpShowSecretBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Den Base32-Schlüssel anzeigen</value>
+  </data>
+  <data name="PwTotpRemoveBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>2FA-Code entfernen</value>
+  </data>
+  <data name="PwTotpRemoveBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Den 2FA-Code aus diesem Eintrag entfernen</value>
+  </data>
+  <data name="TotpSecretReadout.AutomationProperties.Name" xml:space="preserve">
+    <value>Base32-Schlüssel (schreibgeschützt)</value>
+  </data>
+  <data name="PwDeleteButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Passwort löschen</value>
+  </data>
+  <data name="IdLabelBox.PlaceholderText" xml:space="preserve">
+    <value>z. B. Zuhause, Arbeit...</value>
+  </data>
+  <data name="IdFirstNameBox.PlaceholderText" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="IdLastNameBox.PlaceholderText" xml:space="preserve">
+    <value>Mustermann</value>
+  </data>
+  <data name="IdBirthDateBox.PlaceholderText" xml:space="preserve">
+    <value>TT/MM/JJJJ</value>
+  </data>
+  <data name="IdEmailBox.PlaceholderText" xml:space="preserve">
+    <value>max@beispiel.de</value>
+  </data>
+  <data name="IdPhoneBox.PlaceholderText" xml:space="preserve">
+    <value>+49 123 4567890</value>
+  </data>
+  <data name="IdStreetBox.PlaceholderText" xml:space="preserve">
+    <value>Musterstraße 1</value>
+  </data>
+  <data name="IdCityBox.PlaceholderText" xml:space="preserve">
+    <value>Berlin</value>
+  </data>
+  <data name="IdProvinceBox.PlaceholderText" xml:space="preserve">
+    <value>Berlin</value>
+  </data>
+  <data name="IdRegionBox.PlaceholderText" xml:space="preserve">
+    <value>Berlin</value>
+  </data>
+  <data name="IdCountryBox.PlaceholderText" xml:space="preserve">
+    <value>Deutschland</value>
+  </data>
+  <data name="IdIdCardBox.PlaceholderText" xml:space="preserve">
+    <value>Ausweisnummer</value>
+  </data>
+  <data name="IdHealthCardBox.PlaceholderText" xml:space="preserve">
+    <value>Kartennummer</value>
+  </data>
+  <data name="IdDrivingLicenseBox.PlaceholderText" xml:space="preserve">
+    <value>Führerscheinnummer</value>
+  </data>
+  <data name="IdPassportBox.PlaceholderText" xml:space="preserve">
+    <value>Reisepassnummer</value>
+  </data>
+  <data name="PwTitleBox.PlaceholderText" xml:space="preserve">
+    <value>z. B. Google, Amazon...</value>
+  </data>
+  <data name="PwUsernameBox.PlaceholderText" xml:space="preserve">
+    <value>email@beispiel.de</value>
+  </data>
+  <data name="PwUrlBox.PlaceholderText" xml:space="preserve">
+    <value>https://...</value>
+  </data>
+  <data name="CardPinBox.PlaceholderText" xml:space="preserve">
+    <value>PIN</value>
   </data>
 </root>

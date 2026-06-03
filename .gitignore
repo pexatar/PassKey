@@ -54,3 +54,9 @@ web-ext-artifacts/
 
 # ─── Publish output ──────────────────────────────────────────────────────────
 publish/
+
+# ─── claude-code workspace artefacts (per-developer, never commit) ───────────
+.claude/
+
+# ─── Password-manager export files (real plaintext credentials — test only) ──
+pm-export/

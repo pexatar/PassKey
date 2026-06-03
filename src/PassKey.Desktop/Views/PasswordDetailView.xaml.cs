@@ -25,6 +25,7 @@ public sealed partial class PasswordDetailView : UserControl
     private PasswordDetailViewModel? _viewModel;
     private bool _updatingFromVm;
     private readonly ResourceLoader _resourceLoader = new();
+    private readonly IToastService? _toast = App.Services.GetService(typeof(IToastService)) as IToastService;
 
     /// <summary>Per-second timer that refreshes the live TOTP code while the view is loaded.</summary>
     private DispatcherQueueTimer? _totpTimer;
@@ -56,7 +57,10 @@ public sealed partial class PasswordDetailView : UserControl
 
         // Populate UI from ViewModel
         _updatingFromVm = true;
-        PanelTitleText.Text = vm.PanelTitle;
+        // Localised panel title (Add vs Edit), resolved against the active language.
+        PanelTitleText.Text = vm.IsNew
+            ? _resourceLoader.GetString("PwPanelTitleNew")
+            : _resourceLoader.GetString("PwPanelTitleEdit");
         TitleBox.Text = vm.Title;
         UsernameBox.Text = vm.Username;
         UrlBox.Text = vm.Url;
@@ -200,13 +204,13 @@ public sealed partial class PasswordDetailView : UserControl
         var otpauthUri = await DecodeQrFromFileAsync(file);
         if (string.IsNullOrEmpty(otpauthUri))
         {
-            ToolTipService.SetToolTip(TotpScanQrButton, "Nessun codice QR riconoscibile nell'immagine.");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipNoQr"));
             return;
         }
 
         if (!_viewModel.ApplyOtpAuthUri(otpauthUri))
         {
-            ToolTipService.SetToolTip(TotpScanQrButton, "QR riconosciuto ma non è un URI 'otpauth://' valido.");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipQrNotOtpauth"));
             return;
         }
 
@@ -221,7 +225,7 @@ public sealed partial class PasswordDetailView : UserControl
         var pkg = Clipboard.GetContent();
         if (!pkg.Contains(StandardDataFormats.Text))
         {
-            ToolTipService.SetToolTip(TotpPasteUriButton, "Negli appunti non c'è testo.");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipNoClipboard"));
             return;
         }
 
@@ -237,7 +241,7 @@ public sealed partial class PasswordDetailView : UserControl
 
             if (!_viewModel.ApplyOtpAuthUri(text.Trim()))
             {
-                ToolTipService.SetToolTip(TotpPasteUriButton, "Il testo negli appunti non è un URI 'otpauth://' valido.");
+                _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipClipNotOtpauth"));
                 return;
             }
             SyncTextBoxesFromViewModel();
@@ -254,13 +258,13 @@ public sealed partial class PasswordDetailView : UserControl
 
         var input = new TextBox
         {
-            PlaceholderText = "Es. JBSW Y3DP EHPK 3PXP",
+            PlaceholderText = _resourceLoader.GetString("TotpSeedPlaceholder"),
             FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Consolas, Courier New"),
             AcceptsReturn = false,
         };
         var dialog = new ContentDialog
         {
-            Title = "Inserisci chiave 2FA",
+            Title = _resourceLoader.GetString("Totp2faDialogTitle"),
             Content = new StackPanel
             {
                 Spacing = 8,
@@ -268,14 +272,14 @@ public sealed partial class PasswordDetailView : UserControl
                 {
                     new TextBlock
                     {
-                        Text = "Incolla la chiave Base32 fornita dal sito (lo stesso testo che inseriresti in Google Authenticator). Maiuscole e spazi vengono ignorati.",
+                        Text = _resourceLoader.GetString("Totp2faDialogBody"),
                         TextWrapping = TextWrapping.Wrap,
                     },
                     input,
                 },
             },
-            PrimaryButtonText = "Salva",
-            CloseButtonText = "Annulla",
+            PrimaryButtonText = _resourceLoader.GetString("SaveButton"),
+            CloseButtonText = _resourceLoader.GetString("CancelButton"),
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot,
         };
@@ -283,7 +287,7 @@ public sealed partial class PasswordDetailView : UserControl
         var res = await dialog.ShowAsync();
         if (res != ContentDialogResult.Primary) return;
         if (!_viewModel.ApplyManualSeed(input.Text))
-            ToolTipService.SetToolTip(TotpEnterSecretButton, "Chiave Base32 non valida (usa solo A-Z e 2-7).");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipBase32Invalid"));
     }
 
     private void TotpCopyButton_Click(object sender, RoutedEventArgs e)
@@ -306,6 +310,9 @@ public sealed partial class PasswordDetailView : UserControl
         {
             clip.Copy(raw, CopyType.Sensitive);
         }
+
+        if (App.Services.GetService(typeof(IToastService)) is IToastService toast)
+            toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastCopied"));
     }
 
     private void TotpShowSecretButton_Click(object sender, RoutedEventArgs e)
@@ -455,7 +462,7 @@ public sealed partial class PasswordDetailView : UserControl
         if (bytes.Length > 65536)
         {
             // File troppo grande — mostra tooltip sul bottone
-            ToolTipService.SetToolTip(BtnUploadIcon, "Immagine troppo grande (max 64 KB)");
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipImageTooLarge"));
             return;
         }
 
@@ -573,7 +580,11 @@ public sealed partial class PasswordDetailView : UserControl
     {
         SaveProgress.IsActive = saving;
         SaveProgress.Visibility = saving ? Visibility.Visible : Visibility.Collapsed;
-        SaveButtonText.Text = saving ? "Salvataggio..." : "Salva";
+        // Slash notation: the .resw key carries a property suffix ("ButtonSaveLabel.Text",
+        // applied to the TextBlock via x:Uid). Matches the other detail views.
+        SaveButtonText.Text = saving
+            ? _resourceLoader.GetString("SaveInProgress")
+            : _resourceLoader.GetString("ButtonSaveLabel/Text");
         SaveButton.IsEnabled = !saving;
     }
 }
