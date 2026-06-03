@@ -43,6 +43,9 @@
             <SolidColorBrush x:Key="LuhnValidBrush" Color="#388E3C" />
             <SolidColorBrush x:Key="LuhnInvalidBrush" Color="#C62828" />
 
+            <!-- Muted secondary text (theme-aware; for code-built elements) -->
+            <SolidColorBrush x:Key="MutedTextBrush" Color="#5F5F5F" />
+
             <!-- Color swatch selected border -->
             <SolidColorBrush x:Key="ColorSwatchSelectedBorderBrush" Color="#000000" />
         </ResourceDictionary>
@@ -86,6 +89,9 @@
             <!-- Luhn validation colors -->
             <SolidColorBrush x:Key="LuhnValidBrush" Color="#4CAF50" />
             <SolidColorBrush x:Key="LuhnInvalidBrush" Color="#DC3545" />
+
+            <!-- Muted secondary text (theme-aware; for code-built elements) -->
+            <SolidColorBrush x:Key="MutedTextBrush" Color="#C5C5C5" />
 
             <!-- Color swatch selected border -->
             <SolidColorBrush x:Key="ColorSwatchSelectedBorderBrush" Color="#FFFFFF" />

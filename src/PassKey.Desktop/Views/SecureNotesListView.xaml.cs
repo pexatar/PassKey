@@ -165,7 +165,7 @@ public sealed partial class SecureNotesListView : UserControl
             {
                 Glyph = "●",
                 FontFamily = new FontFamily("Segoe UI"),
-                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+                Foreground = (Brush)Application.Current.Resources["MutedTextBrush"],
                 FontSize = 14
             }
         };

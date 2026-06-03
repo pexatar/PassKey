@@ -108,8 +108,8 @@ public sealed partial class EmptyStateControl : UserControl
         PrimaryButton.Visibility = Visibility.Collapsed;
         SecondaryButton.Visibility = Visibility.Collapsed;
 
-        // Neutral fallback tint until a section AccentBrush is assigned.
-        ApplyBadgeBrush((Brush)Application.Current.Resources["TextFillColorSecondaryBrush"]);
+        // Neutral fallback tint until a section AccentBrush is assigned (theme-aware).
+        ApplyBadgeBrush((Brush)Application.Current.Resources["MutedTextBrush"]);
     }
 
     /// <summary>Applies the supplied brush to both the badge circle and the glyph.</summary>

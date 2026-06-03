@@ -147,7 +147,7 @@ public sealed partial class PasswordVerifierView : UserControl
             {
                 Text = details.ToString(),
                 Style = (Style)Application.Current.Resources["CaptionTextBlockStyle"],
-                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+                Foreground = (Brush)Application.Current.Resources["MutedTextBrush"],
             });
         }
         Grid.SetColumn(info, 1);
@@ -174,7 +174,7 @@ public sealed partial class PasswordVerifierView : UserControl
             return (Brush)Application.Current.Resources["StatRemovedBrush"];
         if (item.StrengthScore < 40)
             return (Brush)Application.Current.Resources["StatModifiedBrush"];
-        return (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"];
+        return (Brush)Application.Current.Resources["MutedTextBrush"];
     }
 
     private void VerifyPasswordInput_PasswordChanged(object sender, string password)
@@ -193,7 +193,7 @@ public sealed partial class PasswordVerifierView : UserControl
         if (result is null)
         {
             ScoreText.Text = "—";
-            ScoreText.Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"];
+            ScoreText.Foreground = (Brush)Application.Current.Resources["MutedTextBrush"];
             StrengthLabel.Text = "—";
             CrackTimeText.Text = "—";
             UpdateStrengthBar(0);
@@ -242,11 +242,15 @@ public sealed partial class PasswordVerifierView : UserControl
         };
 
         var brush = GetStrengthBrush(score);
-        var emptyBrush = (Brush)Application.Current.Resources["ControlStrongFillColorDisabledBrush"];
 
         for (int i = 0; i < _strengthSegments.Length; i++)
         {
-            _strengthSegments[i].Background = i < filledCount ? brush : emptyBrush;
+            if (i < filledCount)
+                _strengthSegments[i].Background = brush;
+            else
+                // Revert to the XAML-declared {ThemeResource ControlStrongFillColorDisabledBrush}
+                // so the inactive segment colour stays theme-aware (matches GeneratorView).
+                _strengthSegments[i].ClearValue(Border.BackgroundProperty);
         }
     }
 
@@ -309,7 +313,7 @@ public sealed partial class PasswordVerifierView : UserControl
             {
                 Text = $"\u2022 {text}",
                 Style = (Style)Application.Current.Resources["BodyTextBlockStyle"],
-                Foreground = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"],
+                Foreground = (Brush)Application.Current.Resources["MutedTextBrush"],
                 TextWrapping = TextWrapping.Wrap
             });
         }
