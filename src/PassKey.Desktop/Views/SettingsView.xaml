@@ -210,9 +210,9 @@
                                TextWrapping="Wrap" />
                 </tk:SettingsCard.Description>
                 <ToggleSwitch x:Name="HibpToggle"
+                              x:Uid="SettingsHibpToggle"
                               Toggled="HibpToggle_Toggled"
-                              TabIndex="65"
-                              AutomationProperties.Name="Controllo password compromesse" />
+                              TabIndex="65" />
             </tk:SettingsCard>
 
             <tk:SettingsCard>

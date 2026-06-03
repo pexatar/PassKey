@@ -98,12 +98,12 @@
             <!-- Create vault button -->
             <Button
                 x:Name="CreateButton"
+                x:Uid="SetupCreateVaultBtn"
                 Style="{StaticResource AccentButtonStyle}"
                 HorizontalAlignment="Stretch"
                 Height="40"
                 IsEnabled="False"
                 Click="CreateButton_Click"
-                AutomationProperties.Name="Crea Vault"
                 TabIndex="30">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <ProgressRing

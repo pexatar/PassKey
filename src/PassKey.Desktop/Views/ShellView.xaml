@@ -14,15 +14,13 @@
         ItemInvoked="NavView_ItemInvoked">
 
         <NavigationView.MenuItems>
-            <NavigationViewItem x:Uid="NavDashboard" Content="Dashboard" Tag="0"
-                                AutomationProperties.Name="Dashboard">
+            <NavigationViewItem x:Uid="NavDashboard" Content="Dashboard" Tag="0">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE80F;" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
-            <NavigationViewItem x:Uid="NavPasswords" Content="Password" Tag="1"
-                                AutomationProperties.Name="Password">
+            <NavigationViewItem x:Uid="NavPasswords" Content="Password" Tag="1">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8D7;" />
                 </NavigationViewItem.Icon>
@@ -31,8 +29,7 @@
                 </NavigationViewItem.Resources>
             </NavigationViewItem>
 
-            <NavigationViewItem x:Uid="NavCards" Content="Carte" Tag="2"
-                                AutomationProperties.Name="Carte di credito">
+            <NavigationViewItem x:Uid="NavCards" Content="Carte" Tag="2">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8C7;" />
                 </NavigationViewItem.Icon>
@@ -41,8 +38,7 @@
                 </NavigationViewItem.Resources>
             </NavigationViewItem>
 
-            <NavigationViewItem x:Uid="NavIdentities" Content="Identità" Tag="3"
-                                AutomationProperties.Name="Identità">
+            <NavigationViewItem x:Uid="NavIdentities" Content="Identità" Tag="3">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE77B;" />
                 </NavigationViewItem.Icon>
@@ -51,8 +47,7 @@
                 </NavigationViewItem.Resources>
             </NavigationViewItem>
 
-            <NavigationViewItem x:Uid="NavNotes" Content="Note" Tag="4"
-                                AutomationProperties.Name="Note sicure">
+            <NavigationViewItem x:Uid="NavNotes" Content="Note" Tag="4">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE70B;" />
                 </NavigationViewItem.Icon>
@@ -63,16 +58,14 @@
 
             <NavigationViewItemSeparator />
 
-            <NavigationViewItem x:Uid="NavGenerator" Content="Generatore" Tag="5"
-                                AutomationProperties.Name="Generatore password">
+            <NavigationViewItem x:Uid="NavGenerator" Content="Generatore" Tag="5">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE8B1;" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
             <NavigationViewItem x:Name="NavItemVerifier"
-                                x:Uid="NavVerifier" Content="Verifica" Tag="6"
-                                AutomationProperties.Name="Verifica password e audit del vault">
+                                x:Uid="NavVerifier" Content="Verifica" Tag="6">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE9D5;" />
                 </NavigationViewItem.Icon>
@@ -90,16 +83,14 @@
 
         <NavigationView.FooterMenuItems>
             <NavigationViewItem x:Uid="NavLockVault" Content="Blocca Vault" Tag="lock"
-                                KeyboardAcceleratorPlacementMode="Hidden"
-                                AutomationProperties.Name="Blocca vault">
+                                KeyboardAcceleratorPlacementMode="Hidden">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE72E;" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
             <NavigationViewItemSeparator />
             <NavigationViewItem x:Name="NavItemHelp"
-                                x:Uid="NavHelp" Content="Guida" Tag="help"
-                                AutomationProperties.Name="Guida">
+                                x:Uid="NavHelp" Content="Guida" Tag="help">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE897;" />
                 </NavigationViewItem.Icon>

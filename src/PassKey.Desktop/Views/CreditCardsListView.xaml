@@ -40,24 +40,21 @@
                                 QueryIcon="Find"
                                 Width="280"
                                 HorizontalAlignment="Right"
-                                TextChanged="SearchBox_TextChanged"
-                                AutomationProperties.Name="Cerca carte" />
+                                TextChanged="SearchBox_TextChanged" />
 
                 <!-- Toggle card/list view -->
                 <Button Grid.Column="2"
                         x:Name="ViewToggle"
+                        x:Uid="CardViewToggle"
                         Click="ViewToggle_Click"
-                        ToolTipService.ToolTip="Cambia vista"
-                        AutomationProperties.Name="Cambia vista carte/lista"
                         Padding="8">
                     <FontIcon x:Name="ViewToggleIcon" Glyph="&#xE8FD;" FontSize="16" />
                 </Button>
 
                 <Button Grid.Column="3"
+                        x:Uid="AddCardBtn"
                         Style="{StaticResource AccentButtonStyle}"
-                        Click="AddButton_Click"
-                        AutomationProperties.Name="Nuova carta"
-                        ToolTipService.ToolTip="Nuova carta (Ctrl+N)">
+                        Click="AddButton_Click">
                     <StackPanel Orientation="Horizontal" Spacing="6">
                         <FontIcon Glyph="&#xE710;" FontSize="14" />
                         <TextBlock x:Uid="AddCardLabel" Text="Nuova carta" />
@@ -151,7 +148,7 @@
 
                             <!-- Copy card number -->
                             <Button Grid.Column="4"
-                                    ToolTipService.ToolTip="Copia numero carta"
+                                    x:Uid="TipCopyCardNumber"
                                     Click="CopyCardNumber_Click"
                                     Tag="{Binding}"
                                     Style="{StaticResource SubtleButtonStyle}"
@@ -162,7 +159,7 @@
 
                             <!-- Edit -->
                             <Button Grid.Column="5"
-                                    ToolTipService.ToolTip="Modifica"
+                                    x:Uid="TipEdit"
                                     Click="EditEntry_Click"
                                     Tag="{Binding}"
                                     Style="{StaticResource SubtleButtonStyle}"
@@ -173,7 +170,7 @@
 
                             <!-- Delete -->
                             <Button Grid.Column="6"
-                                    ToolTipService.ToolTip="Elimina"
+                                    x:Uid="TipDelete"
                                     Click="DeleteEntry_Click"
                                     Tag="{Binding}"
                                     Style="{StaticResource SubtleButtonStyle}"

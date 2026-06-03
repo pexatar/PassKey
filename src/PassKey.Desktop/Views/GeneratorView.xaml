@@ -55,13 +55,13 @@
                                       VerticalScrollBarVisibility="Hidden"
                                       VerticalAlignment="Center">
                             <RichTextBlock x:Name="PasswordDisplay"
+                                           x:Uid="GenPasswordDisplay"
                                            FontFamily="Cascadia Mono"
                                            FontSize="22"
                                            CharacterSpacing="60"
                                            IsTextSelectionEnabled="True"
                                            TextWrapping="NoWrap"
-                                           VerticalAlignment="Center"
-                                           AutomationProperties.Name="Password generata">
+                                           VerticalAlignment="Center">
                                 <Paragraph x:Name="PasswordParagraph" />
                             </RichTextBlock>
                         </ScrollViewer>
@@ -69,19 +69,17 @@
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4"
                                     VerticalAlignment="Center" Margin="12,0,0,0">
                             <Button x:Name="CopyButton"
+                                    x:Uid="GenCopyBtn"
                                     Click="CopyButton_Click"
-                                    ToolTipService.ToolTip="Copia negli appunti (Ctrl+C)"
                                     Style="{StaticResource SubtleButtonStyle}"
-                                    Padding="8" TabIndex="70"
-                                    AutomationProperties.Name="Copia password negli appunti">
+                                    Padding="8" TabIndex="70">
                                 <FontIcon x:Name="CopyIcon" Glyph="&#xE8C8;" FontSize="16" />
                             </Button>
                             <Button x:Name="RegenerateButton"
+                                    x:Uid="GenRegenBtn"
                                     Click="RegenerateButton_Click"
-                                    ToolTipService.ToolTip="Genera nuova password"
                                     Style="{StaticResource SubtleButtonStyle}"
-                                    Padding="8" TabIndex="80"
-                                    AutomationProperties.Name="Genera nuova password">
+                                    Padding="8" TabIndex="80">
                                 <FontIcon Glyph="&#xE72C;" FontSize="16" />
                             </Button>
                         </StackPanel>
@@ -163,10 +161,10 @@
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </Grid>
                 <Slider x:Name="LengthSlider"
+                        x:Uid="GenLengthSlider"
                         Minimum="8" Maximum="128"
                         StepFrequency="1" SnapsTo="StepValues"
                         ValueChanged="LengthSlider_ValueChanged"
-                        AutomationProperties.Name="Lunghezza password"
                         TabIndex="10" />
             </StackPanel>
 
@@ -181,10 +179,10 @@
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
                 <ToggleSwitch x:Name="UppercaseToggle" Grid.Column="1"
+                              x:Uid="GenUpperToggle"
                               OnContent="" OffContent=""
                               VerticalAlignment="Center"
                               Toggled="CharsetToggle_Toggled"
-                              AutomationProperties.Name="Includi lettere maiuscole"
                               TabIndex="20" />
             </Grid>
 
@@ -199,10 +197,10 @@
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
                 <ToggleSwitch x:Name="LowercaseToggle" Grid.Column="1"
+                              x:Uid="GenLowerToggle"
                               OnContent="" OffContent=""
                               VerticalAlignment="Center"
                               Toggled="CharsetToggle_Toggled"
-                              AutomationProperties.Name="Includi lettere minuscole"
                               TabIndex="30" />
             </Grid>
 
@@ -217,10 +215,10 @@
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
                 <ToggleSwitch x:Name="DigitsToggle" Grid.Column="1"
+                              x:Uid="GenDigitsToggle"
                               OnContent="" OffContent=""
                               VerticalAlignment="Center"
                               Toggled="CharsetToggle_Toggled"
-                              AutomationProperties.Name="Includi numeri"
                               TabIndex="40" />
             </Grid>
 
@@ -235,10 +233,10 @@
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
                 <ToggleSwitch x:Name="SymbolsToggle" Grid.Column="1"
+                              x:Uid="GenSymbolsToggle"
                               OnContent="" OffContent=""
                               VerticalAlignment="Center"
                               Toggled="CharsetToggle_Toggled"
-                              AutomationProperties.Name="Includi simboli speciali"
                               TabIndex="50" />
             </Grid>
 
@@ -254,10 +252,10 @@
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
                 <ToggleSwitch x:Name="ExcludeAmbiguousToggle" Grid.Column="1"
+                              x:Uid="GenExcludeToggle"
                               OnContent="" OffContent=""
                               VerticalAlignment="Center"
                               Toggled="CharsetToggle_Toggled"
-                              AutomationProperties.Name="Escludi caratteri ambigui come zero/O e uno/l/I"
                               TabIndex="55" />
             </Grid>
 

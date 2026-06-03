@@ -31,8 +31,7 @@
                     VerticalAlignment="Center"
                     TextChanged="DashSearchBox_TextChanged"
                     SuggestionChosen="DashSearchBox_SuggestionChosen"
-                    QuerySubmitted="DashSearchBox_QuerySubmitted"
-                    AutomationProperties.Name="Cerca nel vault">
+                    QuerySubmitted="DashSearchBox_QuerySubmitted">
                     <AutoSuggestBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Padding="4,6" ColumnSpacing="8">
@@ -90,8 +89,7 @@
                       PointerPressed="HealthBadge_PointerPressed"
                       PointerEntered="HealthBadge_PointerEntered"
                       PointerExited="HealthBadge_PointerExited"
-                      ToolTipService.ToolTip="Apri Verifica vault"
-                      AutomationProperties.Name="Salute del vault — apri Verifica vault">
+                      x:Uid="DashHealthBadge">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -217,8 +215,8 @@
                                        VerticalAlignment="Center" />
                         </StackPanel>
                         <TextBlock x:Name="PasswordsCount" Text="0"
+                                   x:Uid="DashTotalPasswords"
                                    FontSize="48" FontWeight="SemiBold"
-                                   AutomationProperties.Name="Total passwords"
                                    AutomationProperties.LiveSetting="Polite" />
                         <TextBlock x:Name="PasswordsSubtitle"
                                    Style="{StaticResource CaptionTextBlockStyle}"
@@ -266,8 +264,8 @@
                                        VerticalAlignment="Center" />
                         </StackPanel>
                         <TextBlock x:Name="CardsCount" Text="0"
+                                   x:Uid="DashTotalCards"
                                    FontSize="48" FontWeight="SemiBold"
-                                   AutomationProperties.Name="Total cards"
                                    AutomationProperties.LiveSetting="Polite" />
                         <TextBlock x:Name="CardsSubtitle"
                                    Style="{StaticResource CaptionTextBlockStyle}"
@@ -314,8 +312,8 @@
                                        VerticalAlignment="Center" />
                         </StackPanel>
                         <TextBlock x:Name="IdentitiesCount" Text="0"
+                                   x:Uid="DashTotalIdentities"
                                    FontSize="48" FontWeight="SemiBold"
-                                   AutomationProperties.Name="Total identities"
                                    AutomationProperties.LiveSetting="Polite" />
                         <TextBlock x:Name="IdentitiesSubtitle"
                                    Style="{StaticResource CaptionTextBlockStyle}"
@@ -362,8 +360,8 @@
                                        VerticalAlignment="Center" />
                         </StackPanel>
                         <TextBlock x:Name="NotesCount" Text="0"
+                                   x:Uid="DashTotalNotes"
                                    FontSize="48" FontWeight="SemiBold"
-                                   AutomationProperties.Name="Total notes"
                                    AutomationProperties.LiveSetting="Polite" />
                         <TextBlock x:Name="NotesSubtitle"
                                    Style="{StaticResource CaptionTextBlockStyle}"
@@ -452,17 +450,17 @@
                                         Opacity="0" VerticalAlignment="Center">
                                 <Button Tag="{Binding}" Click="CopyAction_Click"
                                         Padding="6" Background="Transparent" BorderThickness="0"
-                                        ToolTipService.ToolTip="Copia">
+                                        x:Uid="TipCopy">
                                     <FontIcon Glyph="&#xE8C8;" FontSize="14" />
                                 </Button>
                                 <Button Tag="{Binding}" Click="OpenUrlAction_Click"
                                         Padding="6" Background="Transparent" BorderThickness="0"
-                                        ToolTipService.ToolTip="Apri URL">
+                                        x:Uid="TipOpenUrl">
                                     <FontIcon Glyph="&#xE774;" FontSize="14" />
                                 </Button>
                                 <Button Tag="{Binding}" Click="EditAction_Click"
                                         Padding="6" Background="Transparent" BorderThickness="0"
-                                        ToolTipService.ToolTip="Modifica">
+                                        x:Uid="TipEdit">
                                     <FontIcon Glyph="&#xE70F;" FontSize="14" />
                                 </Button>
                             </StackPanel>

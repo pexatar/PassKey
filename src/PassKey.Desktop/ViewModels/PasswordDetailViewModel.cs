@@ -98,8 +98,6 @@ public partial class PasswordDetailViewModel : BaseDetailViewModel<PasswordEntry
 
     // ─── Template-method overrides ────────────────────────────────────────────
 
-    protected override string GetPanelTitleForNew() => "Aggiungi password";
-    protected override string GetPanelTitleForEdit() => "Modifica password";
     protected override string GetDeleteDisplayName(PasswordEntry entry) => entry.Title;
 
     protected override IList<PasswordEntry> GetVaultCollection(Vault vault) => vault.Passwords;

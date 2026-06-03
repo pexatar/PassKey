@@ -30,7 +30,6 @@
                              x:Uid="LabelBox"
                              PlaceholderText="E.g. Main card, Shopping..."
                              TextChanged="LabelBox_TextChanged"
-                             AutomationProperties.Name="Card label"
                              TabIndex="10" />
                 </StackPanel>
 
@@ -47,7 +46,6 @@
                                   x:Uid="CategoryCombo"
                                   HorizontalAlignment="Stretch"
                                   SelectionChanged="CategoryCombo_SelectionChanged"
-                                  AutomationProperties.Name="Card category"
                                   TabIndex="20">
                             <ComboBoxItem x:Uid="CatPersonal" Content="Personal" Tag="Personal" />
                             <ComboBoxItem x:Uid="CatWork" Content="Work" Tag="Work" />
@@ -59,8 +57,8 @@
                         <TextBlock x:Uid="FieldColor" Text="Colore"
                                    Style="{StaticResource CaptionTextBlockStyle}" />
                         <ComboBox x:Name="ColorCombo"
+                                  x:Uid="CardColorCombo"
                                   SelectionChanged="ColorCombo_SelectionChanged"
-                                  AutomationProperties.Name="Card accent color"
                                   TabIndex="25" />
                     </StackPanel>
                 </Grid>
@@ -79,7 +77,6 @@
                              InputScope="NumericPin"
                              MaxLength="23"
                              TextChanged="CardNumberBox_TextChanged"
-                             AutomationProperties.Name="Card number"
                              TabIndex="30" />
                     <TextBlock x:Uid="FieldCardNumberError"
                                Text="Campo obbligatorio"
@@ -109,7 +106,6 @@
                              PlaceholderText="FULL NAME"
                              CharacterCasing="Upper"
                              TextChanged="CardholderBox_TextChanged"
-                             AutomationProperties.Name="Cardholder"
                              TabIndex="40" />
                     <TextBlock x:Uid="FieldCardholderError"
                                Text="Campo obbligatorio"
@@ -132,7 +128,6 @@
                                   PlaceholderText="Month"
                                   HorizontalAlignment="Stretch"
                                   SelectionChanged="MonthCombo_SelectionChanged"
-                                  AutomationProperties.Name="Expiry month"
                                   TabIndex="50" />
                         <ComboBox x:Name="YearCombo"
                                   Grid.Column="1"
@@ -140,7 +135,6 @@
                                   PlaceholderText="Year"
                                   HorizontalAlignment="Stretch"
                                   SelectionChanged="YearCombo_SelectionChanged"
-                                  AutomationProperties.Name="Expiry year"
                                   TabIndex="55" />
                     </Grid>
                 </StackPanel>
@@ -168,6 +162,7 @@
                         <TextBlock x:Uid="FieldPin" Text="PIN" Style="{StaticResource CaptionTextBlockStyle}" />
                         <controls:SecureInputBox
                             x:Name="PinInput"
+                            x:Uid="CardPinBox"
                             PlaceholderText="PIN"
                             MaxLength="8"
                             TabIndex="70" />
@@ -186,7 +181,6 @@
                              ScrollViewer.VerticalScrollBarVisibility="Auto"
                              PlaceholderText="Additional notes..."
                              TextChanged="NotesBox_TextChanged"
-                             AutomationProperties.Name="Notes"
                              TabIndex="80" />
                 </StackPanel>
 
@@ -215,7 +209,6 @@
                     Visibility="Collapsed"
                     Click="DeleteButton_Click"
                     x:Uid="CardDeleteButton"
-                    AutomationProperties.Name="Delete card"
                     TabIndex="100">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource StatRemovedBrush}" />
@@ -228,7 +221,6 @@
                     x:Uid="ButtonCancel"
                     Content="Cancel"
                     Click="CancelButton_Click"
-                    AutomationProperties.Name="Cancel"
                     TabIndex="110" />
 
             <!-- Save -->
@@ -237,7 +229,6 @@
                     Style="{StaticResource AccentButtonStyle}"
                     IsEnabled="False"
                     Click="SaveButton_Click"
-                    AutomationProperties.Name="Save"
                     TabIndex="120">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <ProgressRing x:Name="SaveProgress"

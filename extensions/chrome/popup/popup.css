@@ -358,31 +358,15 @@ body {
   text-overflow: ellipsis;
 }
 
-/* Password presence indicator (visible at rest, hidden on hover) */
-.pk-pw-indicator {
-  color: var(--pk-text-3);
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  transition: opacity 0.12s;
-  margin-right: 2px;
-}
-.pk-cred-item:hover .pk-pw-indicator,
-.pk-cred-item:focus-within .pk-pw-indicator { opacity: 0; pointer-events: none; }
+/* Password presence indicator — hidden: the always-visible copy-password action
+   now conveys password presence, so the separate dot would be redundant. */
+.pk-pw-indicator { display: none; }
 
-/* Action buttons — hidden at rest, revealed on hover/focus */
+/* Action buttons — always visible for discoverability (Bitwarden/1Password pattern) */
 .pk-cred-actions {
   display: flex;
   gap: 3px;
   flex-shrink: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s;
-}
-.pk-cred-item:hover .pk-cred-actions,
-.pk-cred-item:focus-within .pk-cred-actions {
-  opacity: 1;
-  pointer-events: auto;
 }
 
 /* Labeled action buttons (icon + text) */
@@ -422,7 +406,10 @@ body {
   height: 28px;
   padding: 0;
   justify-content: center;
+  color: var(--pk-text-1);
+  background: var(--pk-fill-hover);
 }
+.pk-action-btn:not([data-action="fill"]):hover { background: var(--pk-fill-active); }
 .pk-action-btn:not([data-action="fill"]) .pk-action-label { display: none; }
 
 /* Legacy icon-only buttons (kept for other potential uses) */

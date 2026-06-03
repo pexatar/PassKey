@@ -2064,4 +2064,415 @@ Deseja ativar esta verificacao?</value>
   <data name="ActivityExportBtn.AutomationProperties.Name" xml:space="preserve">
     <value>Exportar histórico para CSV</value>
   </data>
+  <data name="SetupCreateVaultBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Criar cofre</value>
+  </data>
+  <data name="SettingsHibpToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Verificar palavras-passe comprometidas</value>
+  </data>
+  <data name="VerifierPasswordPlaceholder.AutomationProperties.Name" xml:space="preserve">
+    <value>Palavra-passe a verificar</value>
+  </data>
+  <data name="LoginActionButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Desbloquear</value>
+  </data>
+  <data name="WelcomeAddPasswordBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Adicione a sua primeira palavra-passe</value>
+  </data>
+  <data name="WelcomeImportBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Importar de outro gestor</value>
+  </data>
+  <data name="WelcomeRestoreBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Restaurar uma cópia de segurança existente</value>
+  </data>
+  <data name="WelcomeSettingsBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Explorar definições</value>
+  </data>
+  <data name="WelcomeContinueBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Continuar</value>
+  </data>
+  <data name="SearchIdentities.AutomationProperties.Name" xml:space="preserve">
+    <value>Pesquisar identidades</value>
+  </data>
+  <data name="AddIdentityBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Adicionar identidade</value>
+  </data>
+  <data name="AddIdentityBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Adicionar identidade (Ctrl+N)</value>
+  </data>
+  <data name="SecureInputReveal.AutomationProperties.Name" xml:space="preserve">
+    <value>Mostrar palavra-passe</value>
+  </data>
+  <data name="TipCopyUsername.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copiar nome de utilizador</value>
+  </data>
+  <data name="TipCopyPassword.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copiar palavra-passe</value>
+  </data>
+  <data name="TipEdit.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="TipDelete.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="TipCopyCardNumber.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copiar número do cartão</value>
+  </data>
+  <data name="TipCopy.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="TipOpenUrl.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Abrir URL</value>
+  </data>
+  <data name="SearchPasswords.AutomationProperties.Name" xml:space="preserve">
+    <value>Pesquisar palavras-passe</value>
+  </data>
+  <data name="AddPasswordBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Nova palavra-passe</value>
+  </data>
+  <data name="AddPasswordBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Nova palavra-passe (Ctrl+N)</value>
+  </data>
+  <data name="NotesEmptyState.AutomationProperties.Name" xml:space="preserve">
+    <value>Sem notas. Crie a sua primeira nota segura.</value>
+  </data>
+  <data name="NotesFilteredEmptyState.AutomationProperties.Name" xml:space="preserve">
+    <value>Sem resultados. Tente alterar os filtros ou a pesquisa.</value>
+  </data>
+  <data name="SearchNotes.AutomationProperties.Name" xml:space="preserve">
+    <value>Pesquisar notas</value>
+  </data>
+  <data name="SearchNotes.AutomationProperties.HelpText" xml:space="preserve">
+    <value>Filtrar notas por título, conteúdo ou categoria</value>
+  </data>
+  <data name="AddNoteBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Adicionar nota (Ctrl+N)</value>
+  </data>
+  <data name="AddNoteBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Nova nota (Ctrl+N)</value>
+  </data>
+  <data name="SearchCards.AutomationProperties.Name" xml:space="preserve">
+    <value>Pesquisar cartões</value>
+  </data>
+  <data name="CardViewToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Alternar vista cartões/lista</value>
+  </data>
+  <data name="CardViewToggle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Mudar vista</value>
+  </data>
+  <data name="AddCardBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Novo cartão</value>
+  </data>
+  <data name="AddCardBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Novo cartão (Ctrl+N)</value>
+  </data>
+  <data name="DashHealthBadge.AutomationProperties.Name" xml:space="preserve">
+    <value>Saúde do cofre — abrir Verificação do cofre</value>
+  </data>
+  <data name="DashHealthBadge.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Abrir Verificação do cofre</value>
+  </data>
+  <data name="DashTotalPasswords.AutomationProperties.Name" xml:space="preserve">
+    <value>Total de palavras-passe</value>
+  </data>
+  <data name="DashTotalCards.AutomationProperties.Name" xml:space="preserve">
+    <value>Total de cartões</value>
+  </data>
+  <data name="DashTotalIdentities.AutomationProperties.Name" xml:space="preserve">
+    <value>Total de identidades</value>
+  </data>
+  <data name="DashTotalNotes.AutomationProperties.Name" xml:space="preserve">
+    <value>Total de notas</value>
+  </data>
+  <data name="NavDashboard.AutomationProperties.Name" xml:space="preserve">
+    <value>Painel</value>
+  </data>
+  <data name="NavPasswords.AutomationProperties.Name" xml:space="preserve">
+    <value>Palavras-passe</value>
+  </data>
+  <data name="NavCards.AutomationProperties.Name" xml:space="preserve">
+    <value>Cartões de crédito</value>
+  </data>
+  <data name="NavIdentities.AutomationProperties.Name" xml:space="preserve">
+    <value>Identidades</value>
+  </data>
+  <data name="NavNotes.AutomationProperties.Name" xml:space="preserve">
+    <value>Notas seguras</value>
+  </data>
+  <data name="NavGenerator.AutomationProperties.Name" xml:space="preserve">
+    <value>Gerador de palavras-passe</value>
+  </data>
+  <data name="NavVerifier.AutomationProperties.Name" xml:space="preserve">
+    <value>Verificação de palavras-passe e auditoria do cofre</value>
+  </data>
+  <data name="NavLockVault.AutomationProperties.Name" xml:space="preserve">
+    <value>Bloquear cofre</value>
+  </data>
+  <data name="NavHelp.AutomationProperties.Name" xml:space="preserve">
+    <value>Ajuda</value>
+  </data>
+  <data name="GenPasswordDisplay.AutomationProperties.Name" xml:space="preserve">
+    <value>Palavra-passe gerada</value>
+  </data>
+  <data name="GenCopyBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Copiar palavra-passe para a área de transferência</value>
+  </data>
+  <data name="GenCopyBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copiar para a área de transferência (Ctrl+C)</value>
+  </data>
+  <data name="GenRegenBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Gerar nova palavra-passe</value>
+  </data>
+  <data name="GenRegenBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Gerar nova palavra-passe</value>
+  </data>
+  <data name="GenLengthSlider.AutomationProperties.Name" xml:space="preserve">
+    <value>Comprimento da palavra-passe</value>
+  </data>
+  <data name="GenUpperToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Incluir letras maiúsculas</value>
+  </data>
+  <data name="GenLowerToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Incluir letras minúsculas</value>
+  </data>
+  <data name="GenDigitsToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Incluir números</value>
+  </data>
+  <data name="GenSymbolsToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Incluir símbolos especiais</value>
+  </data>
+  <data name="GenExcludeToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Excluir caracteres ambíguos como zero/O e um/l/I</value>
+  </data>
+  <data name="CardColorCombo.AutomationProperties.Name" xml:space="preserve">
+    <value>Cor do cartão</value>
+  </data>
+  <data name="NoteUnsavedDot.AutomationProperties.Name" xml:space="preserve">
+    <value>Alterações não guardadas</value>
+  </data>
+  <data name="NoteUnsavedDot.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Alterações não guardadas</value>
+  </data>
+  <data name="NotesTitleBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Título da nota</value>
+  </data>
+  <data name="NoteCategoryCombo.AutomationProperties.Name" xml:space="preserve">
+    <value>Categoria da nota</value>
+  </data>
+  <data name="NoteEditModeBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Modo de edição</value>
+  </data>
+  <data name="NotePreviewModeBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Pré-visualização Markdown</value>
+  </data>
+  <data name="NotesContentBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Conteúdo da nota</value>
+  </data>
+  <data name="NotesContentBox.AutomationProperties.HelpText" xml:space="preserve">
+    <value>Suporta sintaxe Markdown</value>
+  </data>
+  <data name="NoteMarkdownPreview.AutomationProperties.Name" xml:space="preserve">
+    <value>Pré-visualização da nota em Markdown</value>
+  </data>
+  <data name="NoteDeleteButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Eliminar nota</value>
+  </data>
+  <data name="NotePinToggle.AutomationProperties.Name" xml:space="preserve">
+    <value>Fixar nota</value>
+  </data>
+  <data name="NotePinToggle.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Fixar nota no topo da lista</value>
+  </data>
+  <data name="NoteSaveButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Guardar nota</value>
+  </data>
+  <data name="IdFirstNameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Nome próprio</value>
+  </data>
+  <data name="IdMiddleNameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Nome do meio</value>
+  </data>
+  <data name="IdLastNameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Apelido</value>
+  </data>
+  <data name="IdBirthDateBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Data de nascimento</value>
+  </data>
+  <data name="IdEmailBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="IdPhoneBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Telefone</value>
+  </data>
+  <data name="IdCompanyBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Empresa</value>
+  </data>
+  <data name="IdUsernameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Nome de utilizador</value>
+  </data>
+  <data name="IdStreetBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Rua</value>
+  </data>
+  <data name="IdCityBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Cidade</value>
+  </data>
+  <data name="IdPostalCodeBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Código postal</value>
+  </data>
+  <data name="IdProvinceBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Distrito</value>
+  </data>
+  <data name="IdRegionBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Região</value>
+  </data>
+  <data name="IdCountryBox.AutomationProperties.Name" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="IdIdCardBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Cartão de cidadão</value>
+  </data>
+  <data name="IdHealthCardBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Cartão de saúde</value>
+  </data>
+  <data name="IdDrivingLicenseBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Carta de condução</value>
+  </data>
+  <data name="IdPassportBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Passaporte</value>
+  </data>
+  <data name="PlaceholderNotes.AutomationProperties.Name" xml:space="preserve">
+    <value>Notas</value>
+  </data>
+  <data name="IdLabelBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Etiqueta da identidade</value>
+  </data>
+  <data name="IdDeleteButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Eliminar identidade</value>
+  </data>
+  <data name="PwTitleBox.AutomationProperties.Name" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="PwUrlBox.AutomationProperties.Name" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PwUploadIconBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Carregar imagem</value>
+  </data>
+  <data name="PwUploadIconBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Carregar imagem (PNG, JPG, ICO — máx. 64 KB)</value>
+  </data>
+  <data name="PwRemoveIconBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Remover ícone</value>
+  </data>
+  <data name="PwRemoveIconBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Remover ícone</value>
+  </data>
+  <data name="PwUsernameBox.AutomationProperties.Name" xml:space="preserve">
+    <value>E-mail ou ID de utilizador</value>
+  </data>
+  <data name="PwGenerateBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Gerar palavra-passe</value>
+  </data>
+  <data name="PwGenerateBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Gerar palavra-passe</value>
+  </data>
+  <data name="PwTotpScanQrBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Ler código QR a partir de imagem</value>
+  </data>
+  <data name="PwTotpScanQrBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Importar um código QR de um ficheiro PNG/JPG</value>
+  </data>
+  <data name="PwTotpPasteUriBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Colar URI otpauth da área de transferência</value>
+  </data>
+  <data name="PwTotpPasteUriBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Colar uma URI &apos;otpauth://&apos; da área de transferência</value>
+  </data>
+  <data name="PwTotpEnterSecretBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Introduzir seed Base32 manualmente</value>
+  </data>
+  <data name="PwTotpEnterSecretBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Introduzir a chave Base32 manualmente</value>
+  </data>
+  <data name="PwTotpCopyBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Copiar código TOTP</value>
+  </data>
+  <data name="PwTotpCopyBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Copiar o código atual para a área de transferência</value>
+  </data>
+  <data name="PwTotpShowSecretBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Mostrar chave secreta</value>
+  </data>
+  <data name="PwTotpShowSecretBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Mostrar a chave Base32</value>
+  </data>
+  <data name="PwTotpRemoveBtn.AutomationProperties.Name" xml:space="preserve">
+    <value>Remover código 2FA</value>
+  </data>
+  <data name="PwTotpRemoveBtn.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Remover o código 2FA desta entrada</value>
+  </data>
+  <data name="TotpSecretReadout.AutomationProperties.Name" xml:space="preserve">
+    <value>Chave Base32 (apenas leitura)</value>
+  </data>
+  <data name="PwDeleteButton.AutomationProperties.Name" xml:space="preserve">
+    <value>Eliminar palavra-passe</value>
+  </data>
+  <data name="IdLabelBox.PlaceholderText" xml:space="preserve">
+    <value>Ex. Casa, Trabalho...</value>
+  </data>
+  <data name="IdFirstNameBox.PlaceholderText" xml:space="preserve">
+    <value>João</value>
+  </data>
+  <data name="IdLastNameBox.PlaceholderText" xml:space="preserve">
+    <value>Silva</value>
+  </data>
+  <data name="IdBirthDateBox.PlaceholderText" xml:space="preserve">
+    <value>DD/MM/AAAA</value>
+  </data>
+  <data name="IdEmailBox.PlaceholderText" xml:space="preserve">
+    <value>joao@exemplo.pt</value>
+  </data>
+  <data name="IdPhoneBox.PlaceholderText" xml:space="preserve">
+    <value>+351 912 345 678</value>
+  </data>
+  <data name="IdStreetBox.PlaceholderText" xml:space="preserve">
+    <value>Rua Principal, 1</value>
+  </data>
+  <data name="IdCityBox.PlaceholderText" xml:space="preserve">
+    <value>Lisboa</value>
+  </data>
+  <data name="IdProvinceBox.PlaceholderText" xml:space="preserve">
+    <value>Lisboa</value>
+  </data>
+  <data name="IdRegionBox.PlaceholderText" xml:space="preserve">
+    <value>Lisboa</value>
+  </data>
+  <data name="IdCountryBox.PlaceholderText" xml:space="preserve">
+    <value>Portugal</value>
+  </data>
+  <data name="IdIdCardBox.PlaceholderText" xml:space="preserve">
+    <value>Número do documento</value>
+  </data>
+  <data name="IdHealthCardBox.PlaceholderText" xml:space="preserve">
+    <value>Número do cartão</value>
+  </data>
+  <data name="IdDrivingLicenseBox.PlaceholderText" xml:space="preserve">
+    <value>Número da carta</value>
+  </data>
+  <data name="IdPassportBox.PlaceholderText" xml:space="preserve">
+    <value>Número do passaporte</value>
+  </data>
+  <data name="PwTitleBox.PlaceholderText" xml:space="preserve">
+    <value>Ex. Google, Amazon...</value>
+  </data>
+  <data name="PwUsernameBox.PlaceholderText" xml:space="preserve">
+    <value>email@exemplo.pt</value>
+  </data>
+  <data name="PwUrlBox.PlaceholderText" xml:space="preserve">
+    <value>https://...</value>
+  </data>
+  <data name="CardPinBox.PlaceholderText" xml:space="preserve">
+    <value>PIN</value>
+  </data>
 </root>

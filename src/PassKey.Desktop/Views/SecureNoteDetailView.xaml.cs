@@ -51,9 +51,6 @@ public sealed partial class SecureNoteDetailView : UserControl
         // Contatori
         UpdateCounterText();
 
-        // Dot colorato categoria
-        UpdateCategoryDot(vm.Category);
-
         // Pin visual
         UpdatePinVisual();
 
@@ -181,14 +178,6 @@ public sealed partial class SecureNoteDetailView : UserControl
         }
     }
 
-    // --- Categoria dot colorato ---
-
-    private void UpdateCategoryDot(NoteCategory category)
-    {
-        CategoryDot.Fill = new SolidColorBrush(
-            ParseColor(SecureNotesListViewModel.GetCategoryColor(category)));
-    }
-
     // --- Pin toggle (istantaneo, senza passare da Salva) ---
 
     private void PinToggle_Click(object sender, RoutedEventArgs e)
@@ -229,7 +218,6 @@ public sealed partial class SecureNoteDetailView : UserControl
             CategoryCombo.SelectedItem is ComboBoxItem item && item.Tag is NoteCategory cat)
         {
             _viewModel.Category = cat;
-            UpdateCategoryDot(cat);
         }
     }
 

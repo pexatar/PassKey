@@ -30,8 +30,7 @@ public sealed partial class IdentityDetailView : UserControl
         // Populate UI from ViewModel
         _updatingFromVm = true;
 
-        // PanelTitle on the VM (BaseDetailViewModel) is hardcoded Italian — bypass it
-        // here with a properly localised lookup so the title follows the active language.
+        // Localised panel title (Add vs Edit), resolved against the active language.
         PanelTitleText.Text = vm.IsNew
             ? _resourceLoader.GetString("IdPanelTitleNew")
             : _resourceLoader.GetString("IdPanelTitleEdit");

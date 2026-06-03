@@ -65,11 +65,11 @@
             <!-- Login button -->
             <Button
                 x:Name="LoginButton"
+                x:Uid="LoginActionButton"
                 Style="{StaticResource AccentButtonStyle}"
                 HorizontalAlignment="Stretch"
                 Height="40"
                 Click="LoginButton_Click"
-                AutomationProperties.Name="Accedi"
                 TabIndex="20">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <ProgressRing

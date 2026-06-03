@@ -57,7 +57,7 @@ public sealed partial class PasswordDetailView : UserControl
 
         // Populate UI from ViewModel
         _updatingFromVm = true;
-        // PanelTitle on the VM is hardcoded Italian — bypass with a localised lookup.
+        // Localised panel title (Add vs Edit), resolved against the active language.
         PanelTitleText.Text = vm.IsNew
             ? _resourceLoader.GetString("PwPanelTitleNew")
             : _resourceLoader.GetString("PwPanelTitleEdit");
@@ -580,7 +580,11 @@ public sealed partial class PasswordDetailView : UserControl
     {
         SaveProgress.IsActive = saving;
         SaveProgress.Visibility = saving ? Visibility.Visible : Visibility.Collapsed;
-        SaveButtonText.Text = saving ? "Salvataggio..." : "Salva";
+        // Slash notation: the .resw key carries a property suffix ("ButtonSaveLabel.Text",
+        // applied to the TextBlock via x:Uid). Matches the other detail views.
+        SaveButtonText.Text = saving
+            ? _resourceLoader.GetString("SaveInProgress")
+            : _resourceLoader.GetString("ButtonSaveLabel/Text");
         SaveButton.IsEnabled = !saving;
     }
 }

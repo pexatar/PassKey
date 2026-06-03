@@ -67,8 +67,6 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
 
     // ─── Template-method overrides ────────────────────────────────────────────
 
-    protected override string GetPanelTitleForNew() => "Nuova nota";
-    protected override string GetPanelTitleForEdit() => "Modifica nota";
     protected override string GetDeleteDisplayName(SecureNoteEntry entry)
         => !string.IsNullOrWhiteSpace(entry.Title) ? entry.Title : _res.GetString("NoteNoTitle");
 
@@ -137,7 +135,6 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
         EditingEntry = entry;
         SetIsNew(false);
         IsEditMode = true;
-        PanelTitle = GetPanelTitleForEdit();
         UpdateSnapshotFromCurrent();
     }
 

@@ -98,9 +98,6 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
 
     // ─── Template-method overrides ────────────────────────────────────────────
 
-    protected override string GetPanelTitleForNew() => "Aggiungi identità";
-    protected override string GetPanelTitleForEdit() => "Modifica identità";
-
     protected override string GetDeleteDisplayName(IdentityEntry entry)
     {
         var displayName = !string.IsNullOrWhiteSpace(entry.Label)

@@ -138,15 +138,13 @@
 
             <!-- Empty state: nessuna nota nel vault -->
             <controls:EmptyStateControl
-                x:Uid="EmptyNotes"
                 x:Name="EmptyState"
                 Grid.Row="1"
                 Visibility="Collapsed"
                 Icon="&#xE70B;"
                 AccentBrush="{ThemeResource NotesIconBrush}"
                 Title="Nessuna nota"
-                Subtitle="Crea la tua prima nota sicura per salvare informazioni riservate."
-                AutomationProperties.Name="Nessuna nota. Crea la tua prima nota sicura." />
+                Subtitle="Crea la tua prima nota sicura per salvare informazioni riservate." />
 
             <!-- Empty state: filtro attivo ma 0 risultati -->
             <controls:EmptyStateControl
@@ -155,8 +153,7 @@
                 Visibility="Collapsed"
                 Icon="&#xF78B;"
                 Title="Nessun risultato"
-                Subtitle="Prova a modificare i filtri o la ricerca."
-                AutomationProperties.Name="Nessun risultato. Prova a modificare i filtri o la ricerca." />
+                Subtitle="Prova a modificare i filtri o la ricerca." />
         </Grid>
 
         <!-- Detail panel: toolbar (search + add) on top, editor/empty below -->
@@ -181,16 +178,13 @@
                                 Width="280"
                                 VerticalAlignment="Center"
                                 TextChanged="SearchBox_TextChanged"
-                                AutomationProperties.Name="Cerca note"
-                                AutomationProperties.HelpText="Filtra note per titolo, contenuto o categoria"
                                 TabIndex="1" />
 
                 <Button Grid.Column="2"
+                        x:Uid="AddNoteBtn"
                         Style="{StaticResource AccentButtonStyle}"
                         VerticalAlignment="Center"
                         Click="AddButton_Click"
-                        AutomationProperties.Name="Aggiungi nota (Ctrl+N)"
-                        ToolTipService.ToolTip="Nuova nota (Ctrl+N)"
                         TabIndex="3"
                         Padding="10,6">
                     <StackPanel Orientation="Horizontal" Spacing="6">

@@ -46,10 +46,6 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     /// <summary>Indicates whether the panel is currently in "create new" mode (vs editing an existing entry).</summary>
     public bool IsNew => _isNew;
 
-    /// <summary>Localized title displayed at the top of the editor panel ("Aggiungi…" or "Modifica…").</summary>
-    [ObservableProperty]
-    public partial string PanelTitle { get; set; } = string.Empty;
-
     /// <summary>Whether the current field values satisfy the type-specific validation rules.</summary>
     [ObservableProperty]
     public partial bool CanSave { get; set; }
@@ -94,12 +90,6 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     /// <summary>Recompute <see cref="CanSave"/> based on the type-specific required-field validation.</summary>
     protected abstract void UpdateCanSave();
 
-    /// <summary>Localised panel title used when creating a new entry (e.g., "Aggiungi password").</summary>
-    protected abstract string GetPanelTitleForNew();
-
-    /// <summary>Localised panel title used when editing an existing entry (e.g., "Modifica password").</summary>
-    protected abstract string GetPanelTitleForEdit();
-
     /// <summary>Best-effort display name shown inside the delete-confirmation dialog for the supplied entry.</summary>
     protected abstract string GetDeleteDisplayName(TEntry entry);
 
@@ -118,7 +108,6 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     {
         EditingEntry = null;
         _isNew = true;
-        PanelTitle = GetPanelTitleForNew();
         ResetFieldsForNew();
         UpdateCanSave();
     }
@@ -128,7 +117,6 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     {
         EditingEntry = entry;
         _isNew = false;
-        PanelTitle = GetPanelTitleForEdit();
         LoadFromEntry(entry);
         UpdateCanSave();
     }

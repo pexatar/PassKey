@@ -73,8 +73,6 @@ public partial class CreditCardDetailViewModel : BaseDetailViewModel<CreditCardE
 
     // ─── Template-method overrides ────────────────────────────────────────────
 
-    protected override string GetPanelTitleForNew() => "Aggiungi carta";
-    protected override string GetPanelTitleForEdit() => "Modifica carta";
     protected override string GetDeleteDisplayName(CreditCardEntry entry)
         => entry.Label is { Length: > 0 } l ? l : _res.GetString("CardNoName");
 

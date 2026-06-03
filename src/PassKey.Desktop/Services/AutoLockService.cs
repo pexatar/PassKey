@@ -52,6 +52,7 @@ public sealed class AutoLockService : IAutoLockService, IDisposable
     private DispatcherQueueTimer? _timer;
     private bool _warned60;
     private bool _warned30;
+    private bool _warned10;
 
     public AutoLockService(IVaultStateService vaultState, ISettingsService settings, IToastService toast)
     {
@@ -84,6 +85,7 @@ public sealed class AutoLockService : IAutoLockService, IDisposable
         {
             _warned60 = false;
             _warned30 = false;
+            _warned10 = false;
             return;
         }
 
@@ -97,6 +99,7 @@ public sealed class AutoLockService : IAutoLockService, IDisposable
         {
             _warned60 = false;
             _warned30 = false;
+            _warned10 = false;
         }
 
         var remaining = limit - idle;
@@ -105,6 +108,7 @@ public sealed class AutoLockService : IAutoLockService, IDisposable
         {
             _warned60 = false;
             _warned30 = false;
+            _warned10 = false;
             _vaultState.Lock();
             return;
         }
@@ -119,6 +123,13 @@ public sealed class AutoLockService : IAutoLockService, IDisposable
         {
             _warned60 = true;
             ShowCountdownToast(60);
+        }
+        // Short timeout (≤30 s) has no room for a 30/60 s warning; give it a final 10 s
+        // heads-up so every tier keeps a consistent "stay active" prompt before locking.
+        else if (remaining <= 10 && !_warned10 && limit > 10 && limit <= 30)
+        {
+            _warned10 = true;
+            ShowCountdownToast(10);
         }
     }
 

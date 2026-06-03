@@ -20,6 +20,7 @@
 
         <Border
             x:Name="RevealButton"
+            x:Uid="SecureInputReveal"
             Grid.Column="1"
             Background="Transparent"
             VerticalAlignment="Center"
@@ -28,8 +29,7 @@
             CornerRadius="4"
             PointerPressed="RevealButton_PointerPressed"
             PointerReleased="RevealButton_PointerReleased"
-            PointerExited="RevealButton_PointerExited"
-            AutomationProperties.Name="Reveal password">
+            PointerExited="RevealButton_PointerExited">
             <FontIcon Glyph="&#xE7B3;" FontSize="16" />
         </Border>
     </Grid>
