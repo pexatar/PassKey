@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-06-04
+
+### Added
+- **Cluster 5 UX**: toast notifications, idle auto-lock with countdown warnings
+  (including a 10s warning for the 30s tier), inline form validation, Activity Log
+  with CSV export, illustrated empty states, forgot-password and clear-vault flows.
+- **TOTP / 2FA** (RFC 6238) with import via QR code, `otpauth://` URI or manual seed.
+- **Compromised-password check** via Have I Been Pwned (k-anonymity, opt-in).
+- **Identity fields**: Middle name, Company, Username.
+
+### Changed
+- **Full localization** in 6 languages (IT/EN/FR/DE/ES/PT).
+- App and installer version bumped to **2.0.0**; browser extensions to 1.0.1.
+
+### Fixed
+- Dark theme: unreadable secondary text and markers in the Verifier "Vault" tab.
+- Browser extension: invisible popup action icons (copy username/password).
+- Import: robust handling of Bitwarden / CSV / 1PUX, including encrypted, ZIP and
+  unsupported files.
+
 ## [1.0.12] - 2026-05-05
 
 ### Changed
