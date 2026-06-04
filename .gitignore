@@ -58,5 +58,8 @@ publish/
 # ─── claude-code workspace artefacts (per-developer, never commit) ───────────
 .claude/
 
+# ─── Landing page (deployed manually to a private host; not part of the repo) ─
+landing/
+
 # ─── Password-manager export files (real plaintext credentials — test only) ──
 pm-export/

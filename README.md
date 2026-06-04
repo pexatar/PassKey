@@ -65,6 +65,8 @@ PassKey stores your passwords, credit cards, identities, and secure notes in a l
 > **Requirements:** Windows 10 version 1809 (build 17763) or later, x64 processor.
 > No .NET runtime required — PassKey is fully self-contained.
 
+📋 See the [Changelog](CHANGELOG.md) for the full release history.
+
 > ⚠️ **SmartScreen warning:** PassKey v1.0 is signed with a self-signed certificate. Windows may show an "Unknown publisher" warning. Click **More info → Run anyway** to proceed. This will be resolved with a commercial certificate in a future release.
 
 ---
@@ -99,13 +101,6 @@ The browser extension requires PassKey Desktop to be installed and running. See 
 <p align="center">
   <img src="docs/assets/img/passkey/11 - generatore password.png" width="48%" alt="Password generator" />
   <img src="docs/assets/img/passkey/17 - impostazioni.png" width="48%" alt="Settings" />
-</p>
-
-### Installer
-
-<p align="center">
-  <img src="docs/assets/img/installer/02.png" width="48%" alt="Installer — select folder" />
-  <img src="docs/assets/img/installer/06.png" width="48%" alt="Installer — complete" />
 </p>
 
 ---
