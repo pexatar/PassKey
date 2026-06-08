@@ -274,16 +274,16 @@ async function handleGetAllCredentials() {
 async function handleCopyCredential(credentialId) {
   try {
     await ensureSession();
-    const req = buildRequest('get-credential-password', { id: credentialId });
+    const req = buildRequest('get-credential-password', { id: credentialId, sessionId });
     const resp = parseResponse(await sendNativeMessage(req));
     if (!resp.success) return resp;
 
-    let password;
-    if (resp.payload.nonce && resp.payload.nonce.length > 0) {
-      password = await decryptPassword(sessionKey, resp.payload.nonce, resp.payload.encryptedPassword);
-    } else {
-      password = new TextDecoder().decode(base64ToUint8Array(resp.payload.encryptedPassword));
+    // Desktop always returns an AES-GCM encrypted password tied to the ECDH session.
+    // A missing nonce means no valid session — never accept a plaintext fallback.
+    if (!resp.payload?.nonce || resp.payload.nonce.length === 0) {
+      return { success: false, error: 'no-session' };
     }
+    const password = await decryptPassword(sessionKey, resp.payload.nonce, resp.payload.encryptedPassword);
     return { success: true, password };
   } catch (err) {
     return { success: false, error: err.message || 'copy-failed' };
@@ -373,25 +373,23 @@ async function handleFillCredential(credentialId, username, tabId) {
     await ensureSession();
 
     // Request encrypted password
-    const req = buildRequest('get-credential-password', { id: credentialId });
+    const req = buildRequest('get-credential-password', { id: credentialId, sessionId });
     const resp = parseResponse(await sendNativeMessage(req));
 
     if (!resp.success) {
       return resp;
     }
 
-    // Decrypt password using session key
-    let password;
-    if (resp.payload.nonce && resp.payload.nonce.length > 0) {
-      password = await decryptPassword(
-        sessionKey,
-        resp.payload.nonce,
-        resp.payload.encryptedPassword
-      );
-    } else {
-      // No session encryption — decode Base64 plaintext (fallback)
-      password = new TextDecoder().decode(base64ToUint8Array(resp.payload.encryptedPassword));
+    // Desktop always returns an AES-GCM encrypted password tied to the ECDH session.
+    // A missing nonce means no valid session — never accept a plaintext fallback.
+    if (!resp.payload?.nonce || resp.payload.nonce.length === 0) {
+      return { success: false, error: 'no-session' };
     }
+    const password = await decryptPassword(
+      sessionKey,
+      resp.payload.nonce,
+      resp.payload.encryptedPassword
+    );
 
     // Send credentials to content script for form filling
     await browser.tabs.sendMessage(tabId, {

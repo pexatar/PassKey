@@ -93,8 +93,13 @@ internal sealed record GetCredentialsResponse(List<CredentialSummary> Credential
 
 // --- get-credential-password ---
 
-/// <summary>Request payload for <c>get-credential-password</c>: the GUID of the entry whose password to retrieve.</summary>
-internal sealed record GetCredentialPasswordRequest(Guid Id);
+/// <summary>
+/// Request payload for <c>get-credential-password</c>: the GUID of the entry whose password
+/// to retrieve, plus the ECDH <see cref="SessionId"/> obtained from <c>exchange-keys</c>.
+/// The session ID binds the response encryption to the exact session that established the
+/// shared key; requests without a valid session are rejected (no plaintext fallback).
+/// </summary>
+internal sealed record GetCredentialPasswordRequest(Guid Id, string? SessionId = null);
 
 /// <summary>
 /// Response payload for <c>get-credential-password</c>.
