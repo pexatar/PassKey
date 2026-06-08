@@ -38,10 +38,24 @@ internal sealed class BrowserIpcService : IBrowserIpcService
     private const int LengthPrefixSize = 4;
     private static readonly TimeSpan SessionTimeout = TimeSpan.FromHours(1);
 
+    // Upper bound on concurrent ECDH sessions. A malicious same-user process could otherwise
+    // spam exchange-keys to grow the dictionary unbounded (sessions are only pruned hourly).
+    // When the cap is hit we evict the oldest session before accepting a new one.
+    private const int MaxSessions = 32;
+
+    // unlock-vault brute-force throttling. The KDF (Argon2id, 64 MiB) already makes guessing
+    // slow, but we add an explicit lockout so a same-user process cannot hammer the pipe.
+    private const int MaxUnlockFailures = 5;
+    private static readonly TimeSpan UnlockLockout = TimeSpan.FromSeconds(30);
+
     private readonly IVaultStateService _vaultState;
     private readonly ICryptoService _crypto;
     private readonly Dictionary<string, SessionInfo> _sessions = new();
     private readonly Lock _sessionsLock = new();
+
+    private readonly Lock _unlockLock = new();
+    private int _unlockFailedCount;
+    private DateTime _unlockLockoutUntil = DateTime.MinValue;
 
     private CancellationTokenSource? _cts;
     private Task? _serverTask;
@@ -123,9 +137,11 @@ internal sealed class BrowserIpcService : IBrowserIpcService
             {
                 break;
             }
-            catch
+            catch (Exception ex)
             {
-                // Individual connection errors should not kill the server
+                // Individual connection errors should not kill the server; surface to Debug
+                // so diagnostics aren't lost while keeping the loop resilient.
+                System.Diagnostics.Debug.WriteLine($"[BrowserIpcService] connection error: {ex.GetType().Name}: {ex.Message}");
             }
             finally
             {
@@ -238,8 +254,9 @@ internal sealed class BrowserIpcService : IBrowserIpcService
 
             return SerializeResponse(response);
         }
-        catch
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"[BrowserIpcService] handler '{request.Action}' failed: {ex.GetType().Name}: {ex.Message}");
             return SerializeResponse(new IpcResponse
             {
                 Action = request.Action,
@@ -313,6 +330,22 @@ internal sealed class BrowserIpcService : IBrowserIpcService
 
             lock (_sessionsLock)
             {
+                // Bound the session table: drop expired entries first, then if still at the
+                // cap evict the oldest session so a flood of exchange-keys can't exhaust memory.
+                if (_sessions.Count >= MaxSessions)
+                {
+                    PruneExpiredSessionsNoLock();
+                    if (_sessions.Count >= MaxSessions)
+                    {
+                        var oldest = _sessions.Values.MinBy(s => s.CreatedAt);
+                        if (oldest is not null)
+                        {
+                            CryptographicOperations.ZeroMemory(oldest.SessionKey);
+                            _sessions.Remove(oldest.SessionId);
+                        }
+                    }
+                }
+
                 _sessions[sessionId] = session;
             }
 
@@ -483,23 +516,32 @@ internal sealed class BrowserIpcService : IBrowserIpcService
             };
         }
 
-        // Validate session for password retrieval (requires exchange-keys first)
+        // Require a valid ECDH session BOUND to this request (by session ID). The password is
+        // always AES-GCM encrypted with that session's key — there is no plaintext fallback.
+        // A caller that hasn't completed exchange-keys (or whose session expired) is rejected,
+        // so the encrypted channel can never be bypassed by simply omitting the handshake.
         SessionInfo? session = null;
-        if (request.ClientId is not null)
+        if (!string.IsNullOrEmpty(payload.SessionId))
         {
             lock (_sessionsLock)
             {
-                // Find session by clientId or any valid session
-                // For MVP, we accept any valid session
-                foreach (var s in _sessions.Values)
+                if (_sessions.TryGetValue(payload.SessionId, out var s)
+                    && DateTime.UtcNow - s.CreatedAt < SessionTimeout)
                 {
-                    if (DateTime.UtcNow - s.CreatedAt < SessionTimeout)
-                    {
-                        session = s;
-                        break;
-                    }
+                    session = s;
                 }
             }
+        }
+
+        if (session is null)
+        {
+            return new IpcResponse
+            {
+                Action = request.Action,
+                RequestId = request.RequestId,
+                Success = false,
+                Error = "no-session"
+            };
         }
 
         var entry = _vaultState.GetCredentialById(payload.Id);
@@ -514,40 +556,22 @@ internal sealed class BrowserIpcService : IBrowserIpcService
             };
         }
 
-        // If we have a session key, encrypt the password
-        if (session is not null)
-        {
-            var passwordBytes = Encoding.UTF8.GetBytes(entry.Password);
-            var encryptedBlob = _crypto.Encrypt(passwordBytes, session.SessionKey);
-            CryptographicOperations.ZeroMemory(passwordBytes);
+        var passwordBytes = Encoding.UTF8.GetBytes(entry.Password);
+        var encryptedBlob = _crypto.Encrypt(passwordBytes, session.SessionKey);
+        CryptographicOperations.ZeroMemory(passwordBytes);
 
-            // Split blob into nonce + ciphertext+tag for the response
-            var nonce = Convert.ToBase64String(encryptedBlob.AsSpan(0, CryptoConstants.NonceSizeBytes));
-            var encryptedData = Convert.ToBase64String(encryptedBlob.AsSpan(CryptoConstants.NonceSizeBytes));
+        // Split blob into nonce + ciphertext+tag for the response
+        var nonce = Convert.ToBase64String(encryptedBlob.AsSpan(0, CryptoConstants.NonceSizeBytes));
+        var encryptedData = Convert.ToBase64String(encryptedBlob.AsSpan(CryptoConstants.NonceSizeBytes));
 
-            var responsePayload = new GetCredentialPasswordResponse(encryptedData, nonce);
-
-            return new IpcResponse
-            {
-                Action = request.Action,
-                RequestId = request.RequestId,
-                Success = true,
-                Payload = JsonSerializer.SerializeToElement(responsePayload, IpcJsonContext.Default.GetCredentialPasswordResponse)
-            };
-        }
-
-        // No session — send password in plaintext (less secure, but functional)
-        // Browser extension should always do exchange-keys first
-        var plaintextPayload = new GetCredentialPasswordResponse(
-            Convert.ToBase64String(Encoding.UTF8.GetBytes(entry.Password)),
-            string.Empty);
+        var responsePayload = new GetCredentialPasswordResponse(encryptedData, nonce);
 
         return new IpcResponse
         {
             Action = request.Action,
             RequestId = request.RequestId,
             Success = true,
-            Payload = JsonSerializer.SerializeToElement(plaintextPayload, IpcJsonContext.Default.GetCredentialPasswordResponse)
+            Payload = JsonSerializer.SerializeToElement(responsePayload, IpcJsonContext.Default.GetCredentialPasswordResponse)
         };
     }
 
@@ -577,11 +601,41 @@ internal sealed class BrowserIpcService : IBrowserIpcService
             };
         }
 
+        // Brute-force throttle: reject unlock attempts while a lockout window is active.
+        lock (_unlockLock)
+        {
+            if (DateTime.UtcNow < _unlockLockoutUntil)
+            {
+                return new IpcResponse
+                {
+                    Action = request.Action,
+                    RequestId = request.RequestId,
+                    Success = false,
+                    Error = "too-many-attempts"
+                };
+            }
+        }
+
         // Copy to char array so we can zero it after use
         var masterChars = payload.MasterPassword.ToCharArray();
         try
         {
             var ok = await _vaultState.UnlockAsync(masterChars.AsMemory());
+
+            lock (_unlockLock)
+            {
+                if (ok)
+                {
+                    _unlockFailedCount = 0;
+                    _unlockLockoutUntil = DateTime.MinValue;
+                }
+                else if (++_unlockFailedCount >= MaxUnlockFailures)
+                {
+                    _unlockLockoutUntil = DateTime.UtcNow + UnlockLockout;
+                    _unlockFailedCount = 0; // reset the counter; the lockout window now applies
+                }
+            }
+
             return new IpcResponse
             {
                 Action = request.Action,
@@ -732,18 +786,27 @@ internal sealed class BrowserIpcService : IBrowserIpcService
     {
         lock (_sessionsLock)
         {
-            var expiredKeys = _sessions
-                .Where(kv => DateTime.UtcNow - kv.Value.CreatedAt >= SessionTimeout)
-                .Select(kv => kv.Key)
-                .ToList();
+            PruneExpiredSessionsNoLock();
+        }
+    }
 
-            foreach (var key in expiredKeys)
+    /// <summary>
+    /// Removes and zeroes all expired sessions. The caller MUST already hold
+    /// <see cref="_sessionsLock"/>.
+    /// </summary>
+    private void PruneExpiredSessionsNoLock()
+    {
+        var expiredKeys = _sessions
+            .Where(kv => DateTime.UtcNow - kv.Value.CreatedAt >= SessionTimeout)
+            .Select(kv => kv.Key)
+            .ToList();
+
+        foreach (var key in expiredKeys)
+        {
+            if (_sessions.TryGetValue(key, out var session))
             {
-                if (_sessions.TryGetValue(key, out var session))
-                {
-                    CryptographicOperations.ZeroMemory(session.SessionKey);
-                    _sessions.Remove(key);
-                }
+                CryptographicOperations.ZeroMemory(session.SessionKey);
+                _sessions.Remove(key);
             }
         }
     }

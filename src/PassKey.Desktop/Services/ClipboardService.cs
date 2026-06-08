@@ -65,11 +65,18 @@ public sealed class ClipboardService : IClipboardService
             Clipboard.SetContent(dataPackage);
         }
 
-        // Flush() rende i dati persistenti dopo chiusura app.
-        // Può fallire con COMException 0x800401D0 in app self-contained.
-        // Non critico: SetContent() è sufficiente per l'uso normale.
-        try { Clipboard.Flush(); }
-        catch (System.Runtime.InteropServices.COMException) { /* clipboard still works without Flush */ }
+        // Flush() rende i dati persistenti sulla clipboard anche DOPO la chiusura dell'app.
+        // Per i contenuti sensibili (password, CVV) questo è indesiderato: se l'app viene
+        // chiusa entro i 30s il timer di auto-clear muore con il processo e il segreto
+        // resterebbe nella clipboard a tempo indeterminato. Quindi facciamo Flush SOLO per
+        // i contenuti non sensibili; per quelli sensibili lasciamo che il dato venga rimosso
+        // dalla OS alla chiusura dell'app (oltre all'auto-clear a 30s).
+        // Può fallire con COMException 0x800401D0 in app self-contained → non critico.
+        if (type != CopyType.Sensitive)
+        {
+            try { Clipboard.Flush(); }
+            catch (System.Runtime.InteropServices.COMException) { /* clipboard still works without Flush */ }
+        }
 
         // Store hash of copied content for verification before clearing
         _copiedHash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(content));

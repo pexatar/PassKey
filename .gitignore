@@ -1,6 +1,14 @@
 # ─── Sensitive — NEVER commit ───────────────────────────────────────────────
 *.pem
 passkey-extension-key.pem
+# Encrypted vault backups & exports (real user data — must never be published)
+*.pkbak
+*.autobak
+PassKey_Backup*.pkbak
+# Local SQLite vault database (should never live in the repo, but guard anyway)
+passkey.db
+*.db-wal
+*.db-shm
 
 # ─── Build output ────────────────────────────────────────────────────────────
 bin/
@@ -54,6 +62,12 @@ web-ext-artifacts/
 
 # ─── Publish output ──────────────────────────────────────────────────────────
 publish/
+publish_test*/
+
+# ─── Local build artefacts / scratch (never commit) ──────────────────────────
+PassKey-Portable-x64.zip
+Installer/*.exe
+demo-data/
 
 # ─── claude-code workspace artefacts (per-developer, never commit) ───────────
 .claude/

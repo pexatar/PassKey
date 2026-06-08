@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PassKey",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Giuseppe Imperato",
   "homepage_url": "https://github.com/pexatar/PassKey",
   "description": "Local password manager integration for PassKey desktop app. Autofill credentials, credit cards and identities stored securely on your PC — no cloud, no subscription.",
