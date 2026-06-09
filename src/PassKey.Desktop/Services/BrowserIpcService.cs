@@ -7,6 +7,9 @@ using System.Text;
 using System.Text.Json;
 using PassKey.Core.Constants;
 using PassKey.Core.Services;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Windows.ApplicationModel.Resources;
 
 namespace PassKey.Desktop.Services;
 
@@ -50,8 +53,15 @@ internal sealed class BrowserIpcService : IBrowserIpcService
 
     private readonly IVaultStateService _vaultState;
     private readonly ICryptoService _crypto;
+    private readonly IDialogQueueService _dialogQueue;
+    private static readonly ResourceLoader Res = new();
     private readonly Dictionary<string, SessionInfo> _sessions = new();
     private readonly Lock _sessionsLock = new();
+
+    // SEC-03 user-consent cache: clientIds for which the user chose "remember for this session".
+    // Cleared on vault lock (OnVaultLocked) so consent never outlives an unlock session.
+    private readonly HashSet<string> _consentRemembered = new(StringComparer.Ordinal);
+    private readonly Lock _consentLock = new();
 
     private readonly Lock _unlockLock = new();
     private int _unlockFailedCount;
@@ -70,10 +80,15 @@ internal sealed class BrowserIpcService : IBrowserIpcService
     /// </summary>
     /// <param name="vaultState">Vault state service for credential lookups and unlock operations.</param>
     /// <param name="crypto">Crypto service for AES-GCM encryption of password responses.</param>
-    public BrowserIpcService(IVaultStateService vaultState, ICryptoService crypto)
+    /// <param name="dialogQueue">Serial dialog pump used to show the SEC-03 user-consent prompt.</param>
+    public BrowserIpcService(IVaultStateService vaultState, ICryptoService crypto, IDialogQueueService dialogQueue)
     {
         _vaultState = vaultState;
         _crypto = crypto;
+        _dialogQueue = dialogQueue;
+
+        // SEC-03 + hardening: drop remembered consent AND all ECDH sessions when the vault locks.
+        _vaultState.VaultLocked += OnVaultLocked;
     }
 
     /// <summary>
@@ -227,30 +242,25 @@ internal sealed class BrowserIpcService : IBrowserIpcService
         {
             IpcResponse response;
 
-            if (request.Action == "unlock-vault")
+            // Actions that may await a UI consent prompt (SEC-03) or the KDF (unlock) run async.
+            response = request.Action switch
             {
-                response = await HandleUnlockVaultAsync(request);
-            }
-            else
-            {
-                response = request.Action switch
+                "unlock-vault"            => await HandleUnlockVaultAsync(request),
+                "get-credential-password" => await HandleGetCredentialPasswordAsync(request),
+                "get-all-credentials"     => HandleGetAllCredentials(request),
+                "exchange-keys"           => HandleExchangeKeys(request),
+                "test-session"            => HandleTestSession(request),
+                "get-status"              => HandleGetStatus(request),
+                "get-credentials"         => HandleGetCredentials(request),
+                "show-window"             => HandleShowWindow(request),
+                _ => new IpcResponse
                 {
-                    "exchange-keys"          => HandleExchangeKeys(request),
-                    "test-session"           => HandleTestSession(request),
-                    "get-status"             => HandleGetStatus(request),
-                    "get-credentials"        => HandleGetCredentials(request),
-                    "get-credential-password"=> HandleGetCredentialPassword(request),
-                    "get-all-credentials"    => HandleGetAllCredentials(request),
-                    "show-window"            => HandleShowWindow(request),
-                    _ => new IpcResponse
-                    {
-                        Action = request.Action,
-                        RequestId = request.RequestId,
-                        Success = false,
-                        Error = "unknown-action"
-                    }
-                };
-            }
+                    Action = request.Action,
+                    RequestId = request.RequestId,
+                    Success = false,
+                    Error = "unknown-action"
+                }
+            };
 
             return SerializeResponse(response);
         }
@@ -325,7 +335,8 @@ internal sealed class BrowserIpcService : IBrowserIpcService
             var session = new SessionInfo
             {
                 SessionId = sessionId,
-                SessionKey = sessionKey
+                SessionKey = sessionKey,
+                ClientId = request.ClientId
             };
 
             lock (_sessionsLock)
@@ -484,7 +495,7 @@ internal sealed class BrowserIpcService : IBrowserIpcService
     /// the password is returned Base64-encoded in plaintext (less secure fallback).
     /// Requires the vault to be unlocked.
     /// </summary>
-    private IpcResponse HandleGetCredentialPassword(IpcRequest request)
+    private async Task<IpcResponse> HandleGetCredentialPasswordAsync(IpcRequest request)
     {
         if (!_vaultState.IsUnlocked)
         {
@@ -516,17 +527,18 @@ internal sealed class BrowserIpcService : IBrowserIpcService
             };
         }
 
-        // Require a valid ECDH session BOUND to this request (by session ID). The password is
-        // always AES-GCM encrypted with that session's key — there is no plaintext fallback.
-        // A caller that hasn't completed exchange-keys (or whose session expired) is rejected,
-        // so the encrypted channel can never be bypassed by simply omitting the handshake.
+        // Require a valid ECDH session BOUND to this request — by session ID (SEC-01) AND by the
+        // exact ClientId that performed the handshake (SEC-02). The password is always AES-GCM
+        // encrypted with that session's key: there is no plaintext fallback, and a session
+        // established by one client cannot be reused by another even if its ID leaks.
         SessionInfo? session = null;
-        if (!string.IsNullOrEmpty(payload.SessionId))
+        if (!string.IsNullOrEmpty(payload.SessionId) && !string.IsNullOrEmpty(request.ClientId))
         {
             lock (_sessionsLock)
             {
                 if (_sessions.TryGetValue(payload.SessionId, out var s)
-                    && DateTime.UtcNow - s.CreatedAt < SessionTimeout)
+                    && DateTime.UtcNow - s.CreatedAt < SessionTimeout
+                    && string.Equals(s.ClientId, request.ClientId, StringComparison.Ordinal))
                 {
                     session = s;
                 }
@@ -540,7 +552,7 @@ internal sealed class BrowserIpcService : IBrowserIpcService
                 Action = request.Action,
                 RequestId = request.RequestId,
                 Success = false,
-                Error = "no-session"
+                Error = "ecdh-session-required"
             };
         }
 
@@ -553,6 +565,19 @@ internal sealed class BrowserIpcService : IBrowserIpcService
                 RequestId = request.RequestId,
                 Success = false,
                 Error = "credential-not-found"
+            };
+        }
+
+        // SEC-03: explicit user consent before releasing a password (unless remembered this session).
+        var consentBody = string.Format(Res.GetString("IpcConsentBodyPassword"), entry.Title);
+        if (!await EnsureConsentAsync(request.ClientId, consentBody))
+        {
+            return new IpcResponse
+            {
+                Action = request.Action,
+                RequestId = request.RequestId,
+                Success = false,
+                Error = "consent-denied"
             };
         }
 
@@ -651,9 +676,10 @@ internal sealed class BrowserIpcService : IBrowserIpcService
     }
 
     /// <summary>
-    /// Handles the <c>get-all-credentials</c> action: returns credential summaries for every
-    /// password entry in the vault, sorted alphabetically by title (case-insensitive).
-    /// Requires the vault to be unlocked.
+    /// Handles the <c>get-all-credentials</c> action: returns credential summaries (title +
+    /// username, NO passwords) for every entry, sorted alphabetically by title. Requires the vault
+    /// to be unlocked. No consent prompt here: this is metadata shown in the popup the user opened;
+    /// the SEC-03 consent gate applies only to <c>get-credential-password</c> (where a secret leaves).
     /// </summary>
     private IpcResponse HandleGetAllCredentials(IpcRequest request)
     {
@@ -811,13 +837,130 @@ internal sealed class BrowserIpcService : IBrowserIpcService
         }
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // SEC-03 — User consent
+    // ═══════════════════════════════════════════════════════════════
+
     /// <summary>
-    /// Cancels the server loop and zeros all active session keys before releasing resources.
+    /// Clears remembered consent and zeroes/removes every ECDH session when the vault locks,
+    /// so neither consent nor session keys outlive an unlock session.
+    /// </summary>
+    private void OnVaultLocked()
+    {
+        lock (_consentLock)
+        {
+            _consentRemembered.Clear();
+        }
+        lock (_sessionsLock)
+        {
+            foreach (var session in _sessions.Values)
+                CryptographicOperations.ZeroMemory(session.SessionKey);
+            _sessions.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Returns true if the caller may receive sensitive data: either the <paramref name="clientId"/>
+    /// was already granted "remember for this session", or the user approves the consent prompt now.
+    /// A null/empty clientId always prompts and is never remembered.
+    /// </summary>
+    private async Task<bool> EnsureConsentAsync(string? clientId, string body)
+    {
+        var key = clientId ?? string.Empty;
+        if (key.Length > 0)
+        {
+            lock (_consentLock)
+            {
+                if (_consentRemembered.Contains(key)) return true;
+            }
+        }
+
+        var (granted, remember) = await RequestConsentAsync(body);
+        if (granted && remember && key.Length > 0)
+        {
+            lock (_consentLock)
+            {
+                _consentRemembered.Add(key);
+            }
+        }
+        return granted;
+    }
+
+    /// <summary>
+    /// Shows the SEC-03 consent <see cref="ContentDialog"/> (with a "remember for this session"
+    /// checkbox) on the UI thread and awaits the user's choice. Fails secure (denies) when no UI
+    /// is available. The default button is "Deny".
+    /// </summary>
+    private async Task<(bool granted, bool remember)> RequestConsentAsync(string body)
+    {
+        var dispatcher = App.MainWindow?.DispatcherQueue;
+        if (dispatcher is null) return (false, false); // fail-secure: cannot ask the user
+
+        var tcs = new TaskCompletionSource<(bool granted, bool remember)>();
+
+        var enqueued = dispatcher.TryEnqueue(() =>
+        {
+            try
+            {
+                // Capture the checkbox state via its events (which fire on the UI thread) into a
+                // plain bool. CRITICAL: never read a UI element (rememberBox.IsChecked) from the
+                // ContinueWith below — that runs on a thread-pool thread and accessing a WinUI
+                // object off the UI thread throws RPC_E_WRONG_THREAD, which would leave `tcs`
+                // never completed and DEADLOCK the IPC server awaiting the consent result.
+                var remember = false;
+                var rememberBox = new CheckBox { Content = Res.GetString("IpcConsentRemember") };
+                rememberBox.Checked   += (_, _) => remember = true;
+                rememberBox.Unchecked += (_, _) => remember = false;
+
+                var panel = new StackPanel { Spacing = 12 };
+                panel.Children.Add(new TextBlock { Text = body, TextWrapping = TextWrapping.WrapWholeWords });
+                panel.Children.Add(rememberBox);
+
+                _ = _dialogQueue.EnqueueAndWait(() =>
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = Res.GetString("IpcConsentTitle"),
+                        Content = panel,
+                        PrimaryButtonText = Res.GetString("IpcConsentAllow"),
+                        CloseButtonText = Res.GetString("IpcConsentDeny"),
+                        DefaultButton = ContentDialogButton.Close, // default = Deny (fail-safe)
+                        XamlRoot = _dialogQueue.XamlRootAccessor?.Invoke(),
+                    };
+                    return dialog.ShowAsync().AsTask();
+                }).ContinueWith(t =>
+                {
+                    // Reads only plain values (dialog result enum + captured bool) → thread-safe.
+                    var granted = t.Status == TaskStatus.RanToCompletion && t.Result == ContentDialogResult.Primary;
+                    tcs.TrySetResult((granted, granted && remember));
+                }, TaskScheduler.Default);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[BrowserIpcService] consent dialog failed: {ex.Message}");
+                tcs.TrySetResult((false, false));
+            }
+        });
+
+        if (!enqueued) return (false, false); // fail-secure
+        return await tcs.Task;
+    }
+
+    /// <summary>
+    /// Cancels the server loop, unsubscribes from vault events, and zeros all active session keys
+    /// before releasing resources.
     /// </summary>
     public void Dispose()
     {
+        _vaultState.VaultLocked -= OnVaultLocked;
+
         _cts?.Cancel();
         _cts?.Dispose();
+
+        lock (_consentLock)
+        {
+            _consentRemembered.Clear();
+        }
 
         // Zero all session keys
         lock (_sessionsLock)

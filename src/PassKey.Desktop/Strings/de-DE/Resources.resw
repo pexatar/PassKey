@@ -2475,4 +2475,22 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="CardPinBox.PlaceholderText" xml:space="preserve">
     <value>PIN</value>
   </data>
+  <data name="IpcConsentTitle" xml:space="preserve">
+    <value>Browser-Anfrage</value>
+  </data>
+  <data name="IpcConsentBodyPassword" xml:space="preserve">
+    <value>Eine Browser-Erweiterung hat das Passwort für „{0}“ angefordert. Möchten Sie den Zugriff zulassen?</value>
+  </data>
+  <data name="IpcConsentBodyAll" xml:space="preserve">
+    <value>Eine Browser-Erweiterung hat die Liste aller Ihrer Zugangsdaten angefordert. Möchten Sie den Zugriff zulassen?</value>
+  </data>
+  <data name="IpcConsentRemember" xml:space="preserve">
+    <value>Für diese Sitzung merken (bis der Tresor gesperrt wird)</value>
+  </data>
+  <data name="IpcConsentAllow" xml:space="preserve">
+    <value>Zulassen</value>
+  </data>
+  <data name="IpcConsentDeny" xml:space="preserve">
+    <value>Ablehnen</value>
+  </data>
 </root>

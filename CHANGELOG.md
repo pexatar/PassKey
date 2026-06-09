@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- **Browser IPC hardening (SEC-01/02/03)** on the Named Pipe channel used by the browser
+  extension:
+  - **SEC-01** — removed the plaintext password fallback: an ECDH session is now mandatory and
+    the password is always AES-GCM encrypted; requests without a valid session are rejected with
+    `ecdh-session-required`.
+  - **SEC-02** — sessions are bound to the exact extension `clientId` that performed the ECDH
+    handshake, so a session cannot be reused by a different client even if its id leaks.
+  - **SEC-03** — sensitive password retrieval requires explicit user consent via a native dialog
+    ("Remember for this session", until the vault is locked). Consent and all ECDH sessions are
+    cleared on vault lock.
+  - Hardening: `unlock-vault` attempts over IPC are rate-limited (lockout after repeated
+    failures) and the number of concurrent ECDH sessions is capped.
+
+### Added
+- **Browser extension**: autofill success toast ("Credentials filled on {site}") and a visible
+  connection-status indicator ("Connected"/"Locked") in the popup header (6 languages).
+
+### Fixed
+- **Browser extension**: the popup no longer prompts for consent when it opens (consent applies
+  only to actual password retrieval); per-action request timeouts prevent spurious "PassKey is
+  not running" during slow operations such as consent or unlock.
+
 ## [2.0.0] - 2026-06-04
 
 ### Added

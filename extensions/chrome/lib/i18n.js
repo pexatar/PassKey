@@ -54,6 +54,7 @@ const STRINGS = {
     // Feedback
     copied:              'Copiato!',
     copyError:           'Errore',
+    filledIn:            (site) => `Credenziali inserite in ${site}`,
     // Footer
     openApp:             'Apri PassKey',
   },
@@ -86,6 +87,7 @@ const STRINGS = {
     hasPassword:         'Password saved',
     copied:              'Copied!',
     copyError:           'Error',
+    filledIn:            (site) => `Credentials filled on ${site}`,
     openApp:             'Open PassKey',
   },
   fr: {
@@ -117,6 +119,7 @@ const STRINGS = {
     hasPassword:         'Mot de passe enregistré',
     copied:              'Copié !',
     copyError:           'Erreur',
+    filledIn:            (site) => `Identifiants saisis sur ${site}`,
     openApp:             'Ouvrir PassKey',
   },
   de: {
@@ -148,6 +151,7 @@ const STRINGS = {
     hasPassword:         'Passwort gespeichert',
     copied:              'Kopiert!',
     copyError:           'Fehler',
+    filledIn:            (site) => `Anmeldedaten in ${site} eingetragen`,
     openApp:             'PassKey öffnen',
   },
   es: {
@@ -179,6 +183,7 @@ const STRINGS = {
     hasPassword:         'Contraseña guardada',
     copied:              '¡Copiado!',
     copyError:           'Error',
+    filledIn:            (site) => `Credenciales rellenadas en ${site}`,
     openApp:             'Abrir PassKey',
   },
   pt: {
@@ -210,6 +215,7 @@ const STRINGS = {
     hasPassword:         'Senha guardada',
     copied:              'Copiado!',
     copyError:           'Erro',
+    filledIn:            (site) => `Credenciais preenchidas em ${site}`,
     openApp:             'Abrir PassKey',
   },
 };

@@ -74,9 +74,11 @@ let isHttpUrl       = false;
 const $ = id => document.getElementById(id);
 
 const statusDot         = $('status-dot');
+const statusText        = $('status-text');
 const domainBadge       = $('domain-badge');
 const domainText        = $('domain-text');
 const copyFeedback      = $('copy-feedback');
+const pkToast           = $('pk-toast');
 const loadingText       = $('loading-text');
 const disconnectedTitle = $('disconnected-title');
 const disconnectedSub   = $('disconnected-sub');
@@ -147,7 +149,10 @@ function setState(state) {
  */
 function setStatus(type) {
   statusDot.className = `pk-status ${type}`;
-  statusDot.setAttribute('aria-label', window.t[`status${type.charAt(0).toUpperCase()+type.slice(1)}`] || type);
+  const cap = type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Connecting';
+  const label = window.t[`status${cap}`] || '';
+  statusDot.setAttribute('aria-label', label);
+  if (statusText) statusText.textContent = label;
 }
 
 // ─── Main init ────────────────────────────────────────────────────────────────
@@ -510,17 +515,49 @@ async function onFill(cred, btn) {
     setSvgIcon(iconTarget, SPIN_SVG);
     btn.disabled = true;
   }
+
+  let ok = false;
+  let site = '';
   try {
     const [activeTab] = await browser.tabs.query({ active: true, currentWindow: true });
     if (!activeTab?.id) { window.close(); return; }
-    await browser.runtime.sendMessage({
+    site = domainOf(activeTab.url);
+    const resp = await browser.runtime.sendMessage({
       type: 'fill-credential',
       id: cred.id,
       username: cred.username,
       tabId: activeTab.id
     });
+    ok = resp?.success === true;
   } catch { /* ignore */ }
-  window.close();
+
+  // T6.2: show a success toast briefly, then close. On failure close immediately.
+  if (ok) {
+    showToast(window.t.filledIn(site));
+    setTimeout(() => window.close(), 1200);
+  } else {
+    window.close();
+  }
+}
+
+/**
+ * Extracts the hostname from a URL (strips a leading "www."), or "" for non-URL inputs.
+ *
+ * @param {string|undefined} url - The URL to parse.
+ * @returns {string} The hostname without "www.", or an empty string.
+ */
+function domainOf(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; }
+}
+
+/**
+ * Shows the autofill success toast. The popup closes shortly after, so no auto-hide is needed.
+ *
+ * @param {string} msg - Localized message to display.
+ */
+function showToast(msg) {
+  pkToast.textContent = msg;
+  pkToast.hidden = false;
 }
 
 /**
