@@ -133,6 +133,13 @@ internal sealed class SessionInfo
     /// <summary>Gets the 256-bit AES-GCM session key derived via ECDH + HKDF-SHA256.</summary>
     public required byte[] SessionKey { get; init; }
 
+    /// <summary>
+    /// Gets the client identifier (<c>chrome.runtime.id</c>) that performed this handshake.
+    /// Sensitive requests must present a matching <c>ClientId</c> (SEC-02): a session established
+    /// by one client cannot be reused by another, even if the session ID leaks.
+    /// </summary>
+    public string? ClientId { get; init; }
+
     /// <summary>Gets the UTC timestamp when this session was established.</summary>
     public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 }

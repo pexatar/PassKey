@@ -110,6 +110,13 @@ body {
 .pk-status.locked       { background: var(--pk-warning); }
 .pk-status.disconnected { background: var(--pk-error); }
 
+/* Status text (T6.3) — visible connection status next to the dot */
+.pk-status-text {
+  font-size: 11px;
+  color: var(--pk-text-2);
+  white-space: nowrap;
+}
+
 /* Domain badge */
 .pk-domain {
   display: flex;
@@ -460,3 +467,21 @@ body {
   to   { transform: rotate(360deg); }
 }
 .pk-spin { animation: pk-spin 0.7s linear infinite; display: block; }
+
+/* ── Autofill success toast (T6.2) ──────────────────────────────────────── */
+.pk-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 52px;
+  transform: translateX(-50%);
+  max-width: 320px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: var(--pk-success);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  z-index: 10;
+}

@@ -2475,4 +2475,22 @@ Deseja ativar esta verificacao?</value>
   <data name="CardPinBox.PlaceholderText" xml:space="preserve">
     <value>PIN</value>
   </data>
+  <data name="IpcConsentTitle" xml:space="preserve">
+    <value>Pedido do navegador</value>
+  </data>
+  <data name="IpcConsentBodyPassword" xml:space="preserve">
+    <value>Uma extensão do navegador solicitou a palavra-passe de «{0}». Pretende permitir o acesso?</value>
+  </data>
+  <data name="IpcConsentBodyAll" xml:space="preserve">
+    <value>Uma extensão do navegador solicitou a lista de todas as suas credenciais. Pretende permitir o acesso?</value>
+  </data>
+  <data name="IpcConsentRemember" xml:space="preserve">
+    <value>Memorizar nesta sessão (até o cofre ser bloqueado)</value>
+  </data>
+  <data name="IpcConsentAllow" xml:space="preserve">
+    <value>Permitir</value>
+  </data>
+  <data name="IpcConsentDeny" xml:space="preserve">
+    <value>Recusar</value>
+  </data>
 </root>

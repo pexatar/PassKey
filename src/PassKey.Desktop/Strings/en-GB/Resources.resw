@@ -2465,4 +2465,22 @@ Do you want to enable this check?</value>
   <data name="CardPinBox.PlaceholderText" xml:space="preserve">
     <value>PIN</value>
   </data>
+  <data name="IpcConsentTitle" xml:space="preserve">
+    <value>Browser request</value>
+  </data>
+  <data name="IpcConsentBodyPassword" xml:space="preserve">
+    <value>A browser extension has requested the password for “{0}”. Do you want to allow access?</value>
+  </data>
+  <data name="IpcConsentBodyAll" xml:space="preserve">
+    <value>A browser extension has requested the list of all your credentials. Do you want to allow access?</value>
+  </data>
+  <data name="IpcConsentRemember" xml:space="preserve">
+    <value>Remember for this session (until the vault is locked)</value>
+  </data>
+  <data name="IpcConsentAllow" xml:space="preserve">
+    <value>Allow</value>
+  </data>
+  <data name="IpcConsentDeny" xml:space="preserve">
+    <value>Deny</value>
+  </data>
 </root>

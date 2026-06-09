@@ -16,6 +16,16 @@ importScripts('lib/messages.js', 'lib/crypto.js');
 const NATIVE_HOST = 'com.passkey.host';
 const REQUEST_TIMEOUT_MS = 5000;
 
+// Some actions wait on a human (SEC-03 consent dialog) or a slow KDF (unlock) on the Desktop
+// side, so they need a longer timeout than the default request.
+const TIMEOUT_OVERRIDES = {
+  'get-credential-password': 120000, // may wait for the user's consent dialog
+  'unlock-vault': 30000,             // Argon2id KDF on the Desktop
+};
+function timeoutForAction(action) {
+  return TIMEOUT_OVERRIDES[action] ?? REQUEST_TIMEOUT_MS;
+}
+
 // ─── State (lost on service worker restart — re-established automatically) ────
 
 let port = null;
@@ -90,7 +100,7 @@ function sendNativeMessage(message) {
     const timeoutId = setTimeout(() => {
       pendingRequests.delete(message.requestId);
       reject(new Error('timeout'));
-    }, REQUEST_TIMEOUT_MS);
+    }, timeoutForAction(message.action));
 
     pendingRequests.set(message.requestId, { resolve, reject, timeoutId });
 
@@ -278,7 +288,7 @@ async function handleCopyCredential(credentialId) {
     // Desktop always returns an AES-GCM encrypted password tied to the ECDH session.
     // A missing nonce means no valid session — never accept a plaintext fallback.
     if (!resp.payload?.nonce || resp.payload.nonce.length === 0) {
-      return { success: false, error: 'no-session' };
+      return { success: false, error: 'ecdh-session-required' };
     }
     const password = await decryptPassword(sessionKey, resp.payload.nonce, resp.payload.encryptedPassword);
     return { success: true, password };
@@ -380,7 +390,7 @@ async function handleFillCredential(credentialId, username, tabId) {
     // Desktop always returns an AES-GCM encrypted password tied to the ECDH session.
     // A missing nonce means no valid session — never accept a plaintext fallback.
     if (!resp.payload?.nonce || resp.payload.nonce.length === 0) {
-      return { success: false, error: 'no-session' };
+      return { success: false, error: 'ecdh-session-required' };
     }
     const password = await decryptPassword(
       sessionKey,

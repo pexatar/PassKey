@@ -2477,4 +2477,22 @@ Voulez-vous activer cette verification ?</value>
   <data name="CardPinBox.PlaceholderText" xml:space="preserve">
     <value>PIN</value>
   </data>
+  <data name="IpcConsentTitle" xml:space="preserve">
+    <value>Demande du navigateur</value>
+  </data>
+  <data name="IpcConsentBodyPassword" xml:space="preserve">
+    <value>Une extension de navigateur a demandé le mot de passe de « {0} ». Voulez-vous autoriser l'accès ?</value>
+  </data>
+  <data name="IpcConsentBodyAll" xml:space="preserve">
+    <value>Une extension de navigateur a demandé la liste de tous vos identifiants. Voulez-vous autoriser l'accès ?</value>
+  </data>
+  <data name="IpcConsentRemember" xml:space="preserve">
+    <value>Mémoriser pour cette session (jusqu'au verrouillage du coffre)</value>
+  </data>
+  <data name="IpcConsentAllow" xml:space="preserve">
+    <value>Autoriser</value>
+  </data>
+  <data name="IpcConsentDeny" xml:space="preserve">
+    <value>Refuser</value>
+  </data>
 </root>

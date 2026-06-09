@@ -2478,4 +2478,22 @@ Deseas activar esta verificacion?</value>
   <data name="CardPinBox.PlaceholderText" xml:space="preserve">
     <value>PIN</value>
   </data>
+  <data name="IpcConsentTitle" xml:space="preserve">
+    <value>Solicitud del navegador</value>
+  </data>
+  <data name="IpcConsentBodyPassword" xml:space="preserve">
+    <value>Una extensión del navegador ha solicitado la contraseña de «{0}». ¿Quieres permitir el acceso?</value>
+  </data>
+  <data name="IpcConsentBodyAll" xml:space="preserve">
+    <value>Una extensión del navegador ha solicitado la lista de todas tus credenciales. ¿Quieres permitir el acceso?</value>
+  </data>
+  <data name="IpcConsentRemember" xml:space="preserve">
+    <value>Recordar durante esta sesión (hasta que se bloquee el cofre)</value>
+  </data>
+  <data name="IpcConsentAllow" xml:space="preserve">
+    <value>Permitir</value>
+  </data>
+  <data name="IpcConsentDeny" xml:space="preserve">
+    <value>Denegar</value>
+  </data>
 </root>
