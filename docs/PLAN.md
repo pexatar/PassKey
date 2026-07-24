@@ -93,6 +93,11 @@ Prima di qualunque push/PR/merge:
 - **A valle (stesso branch o immediatamente successivo):** rimuovere il dialog SEC-03 + la chiave resw orfana `IpcConsentBodyAll` (presente in tutte e 6 le lingue — verificato) + aggiornare `scripts/ipc-security-test.ps1` di conseguenza.
 - **Nota architetturale:** il protocollo IPC vive in `src/PassKey.Desktop/Services/BrowserIpcService.cs`; il BrowserHost inoltra l'envelope **invariato** — ma SEC-05(a) tocca proprio il BrowserHost, quindi questo task coinvolge **entrambi** i processi.
 
+#### T6.5.7 — DEP-01 🟠 — vulnerabilità SQLite (CVE-2025-6965 / GHSA-2m69-gcr7-jv3q) [scoperta 2026-07-24]
+- **Problema:** `Microsoft.Data.Sqlite` 10.0.2 trascina `SQLitePCLRaw.lib.e_sqlite3` **2.1.11**, che imbarca un SQLite nativo < 3.50.2 con vulnerabilità di corruzione memoria di gravità ALTA (warning NU1903 in build). **Nessuna 2.1.x corretta esiste**; il fix è nella serie SQLitePCLRaw **3.0.x** (3.0.4 al 2026-07-24). Anche l'ultima Microsoft.Data.Sqlite trascina ancora la 2.1.11.
+- **Rischio pratico per PassKey: BASSO** — l'exploit richiede SQL controllato dall'attaccante; PassKey usa solo query parametrizzate su DB locale, nessun input SQL esterno. Non è un'emergenza, ma va chiuso.
+- **Fix candidato:** `PackageReference` diretto a `SQLitePCLRaw.bundle_e_sqlite3` 3.0.x in `PassKey.Desktop.csproj` (l'override diretto vince sul transitivo). ⚠️ Sostituisce il **motore SQLite nativo** → PR dedicata, verifica online di compatibilità con Microsoft.Data.Sqlite 10.x al momento dell'implementazione, gate con test reale su vault esistente (lettura/scrittura/backup/restore).
+
 #### T6.5.GATE — gate di cluster
 Build installer → test utente (avvio, unlock, CRUD nelle 4 sezioni con salvataggi, lock/unlock ripetuti, autofill Chrome+Firefox, harness IPC) → **VIA LIBERA** → PR.
 > Suddivisione PR consigliata: T6.5.1+T6.5.2 (robustezza, piccola) · T6.5.3+T6.5.4 (memoria, piccola) · T6.5.5 (refactoring, dedicata) · T6.5.6 (SEC-05, dedicata). Gate utente almeno su: robustezza+memoria (una build) e SEC-05 (una build). Decidere caso per caso con l'utente.
