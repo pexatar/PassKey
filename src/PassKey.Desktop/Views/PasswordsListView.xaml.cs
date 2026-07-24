@@ -37,7 +37,16 @@ public sealed partial class PasswordsListView : UserControl
         EmptyState.Subtitle = _resourceLoader.GetString("EmptyPasswordsSubtitle");
         vm.PropertyChanged += OnViewModelPropertyChanged;
 
-        await vm.LoadEntriesCommand.ExecuteAsync(null);
+        // async void: a load failure must not terminate the process. The list is
+        // in-memory so this is defensive; the UI falls back to the empty state.
+        try
+        {
+            await vm.LoadEntriesCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[PasswordsListView] Load failed: {ex}");
+        }
         UpdateList();
         UpdateEmptyState();
 

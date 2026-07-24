@@ -62,7 +62,16 @@ public sealed partial class DashboardView : UserControl
         LoadingProgress.Visibility = Visibility.Visible;
         StatCardsGrid.Visibility = Visibility.Collapsed;
 
-        await vm.LoadDashboardCommand.ExecuteAsync(null);
+        // async void: a load failure must not terminate the process; the code after
+        // the catch still hides the spinner so the UI never sticks on "loading".
+        try
+        {
+            await vm.LoadDashboardCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[DashboardView] Load failed: {ex}");
+        }
 
         // Hide loading state
         LoadingProgress.IsActive = false;

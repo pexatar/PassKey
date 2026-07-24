@@ -37,7 +37,16 @@ public sealed partial class IdentitiesListView : UserControl
         // Apply localized empty-state strings (guarantees correct language on every OS locale).
         EmptyState.Title = _resourceLoader.GetString("EmptyIdentitiesTitle");
         EmptyState.Subtitle = _resourceLoader.GetString("EmptyIdentitiesSubtitle");
-        await vm.LoadEntriesCommand.ExecuteAsync(null);
+        // async void: a load failure must not terminate the process. The list is
+        // in-memory so this is defensive; the UI falls back to the empty state.
+        try
+        {
+            await vm.LoadEntriesCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[IdentitiesListView] Load failed: {ex}");
+        }
         UpdateList();
         UpdateEmptyState();
 

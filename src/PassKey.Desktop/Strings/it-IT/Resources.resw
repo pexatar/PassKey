@@ -1527,6 +1527,9 @@ Vuoi attivare questa verifica?</value>
   <data name="ToastDeleted" xml:space="preserve">
     <value>Elemento eliminato</value>
   </data>
+  <data name="ToastSaveError" xml:space="preserve">
+    <value>Salvataggio non riuscito. Le modifiche non sono state scritte su disco: riprova.</value>
+  </data>
   <data name="ToastUsernameCopied" xml:space="preserve">
     <value>Nome utente copiato</value>
   </data>

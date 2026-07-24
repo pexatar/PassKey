@@ -1524,6 +1524,9 @@ Moechten Sie diese Pruefung aktivieren?</value>
   <data name="ToastDeleted" xml:space="preserve">
     <value>Element geloscht</value>
   </data>
+  <data name="ToastSaveError" xml:space="preserve">
+    <value>Speichern fehlgeschlagen. Die Änderungen wurden nicht auf den Datenträger geschrieben – bitte versuchen Sie es erneut.</value>
+  </data>
   <data name="ToastUsernameCopied" xml:space="preserve">
     <value>Benutzername kopiert</value>
   </data>

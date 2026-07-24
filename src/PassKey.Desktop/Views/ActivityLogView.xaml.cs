@@ -29,7 +29,16 @@ public sealed partial class ActivityLogView : UserControl
         DataContext = vm;
         EntriesList.ItemsSource = vm.Entries;
 
-        await vm.LoadAsync();
+        // async void: LoadAsync reads the activity log from the database — an I/O
+        // failure must not terminate the process; the UI falls back to the empty state.
+        try
+        {
+            await vm.LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[ActivityLogView] Load failed: {ex}");
+        }
         UpdateEmptyState();
     }
 

@@ -1514,6 +1514,9 @@ Do you want to enable this check?</value>
   <data name="ToastDeleted" xml:space="preserve">
     <value>Item deleted</value>
   </data>
+  <data name="ToastSaveError" xml:space="preserve">
+    <value>Save failed. Your changes were not written to disk — please try again.</value>
+  </data>
   <data name="ToastUsernameCopied" xml:space="preserve">
     <value>Username copied</value>
   </data>

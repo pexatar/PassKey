@@ -199,6 +199,83 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
             var vault = _vaultState.CurrentVault;
             var entryId = SelectedEntry.Id;
             vault?.SecureNotes.Remove(SelectedEntry);
+            // AsyncRelayCommand rethrows on the UI thread by default: a persistence
+            // failure here would terminate the process, so catch and surface it.
+            try
+            {
+                await _vaultState.SaveVaultAsync();
+                await _repository.LogActivityAsync(new ActivityLogEntry
+                {
+                    EntityType = "SecureNoteEntry",
+                    EntityId = entryId,
+                    Action = "Deleted",
+                    Timestamp = DateTime.UtcNow
+                });
+                await LoadEntriesCommand.ExecuteAsync(null);
+                CloseEditor();
+                _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
+            }
+            catch (Exception)
+            {
+                await LoadEntriesCommand.ExecuteAsync(null);
+                CloseEditor();
+                _toast.Show(ToastSeverity.Error, _resourceLoader.GetString("ToastSaveError"));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Called when pin is toggled instantly from the editor.
+    /// Saves vault and refreshes list immediately (no Save button needed).
+    /// </summary>
+    private async void OnPinToggled()
+    {
+        // async void: an unhandled exception here would terminate the process, so
+        // persistence failures (disk full, DB lock) must be caught and surfaced.
+        try
+        {
+            await _vaultState.SaveVaultAsync();
+            await LoadEntriesCommand.ExecuteAsync(null);
+        }
+        catch (Exception)
+        {
+            // The pin state is already in the in-memory vault and will persist with
+            // the next successful save.
+            _toast.Show(ToastSeverity.Error, _resourceLoader.GetString("ToastSaveError"));
+        }
+    }
+
+    private async void OnEntrySaved(bool isNew, Guid entryId)
+    {
+        // async void: an unhandled exception here would terminate the process, so
+        // persistence failures (disk full, DB lock) must be caught and surfaced.
+        try
+        {
+            await _vaultState.SaveVaultAsync();
+            await _repository.LogActivityAsync(new ActivityLogEntry
+            {
+                EntityType = "SecureNoteEntry",
+                EntityId = entryId,
+                Action = isNew ? "Created" : "Modified",
+                Timestamp = DateTime.UtcNow
+            });
+            await LoadEntriesCommand.ExecuteAsync(null);
+            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
+        }
+        catch (Exception)
+        {
+            // The change is already in the in-memory vault and will persist with the
+            // next successful save; keep the editor open so the user can retry Save.
+            _toast.Show(ToastSeverity.Error, _resourceLoader.GetString("ToastSaveError"));
+        }
+    }
+
+    private async void OnEntryDeleted(Guid entryId)
+    {
+        // async void: an unhandled exception here would terminate the process, so
+        // persistence failures (disk full, DB lock) must be caught and surfaced.
+        try
+        {
             await _vaultState.SaveVaultAsync();
             await _repository.LogActivityAsync(new ActivityLogEntry
             {
@@ -211,45 +288,14 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
             CloseEditor();
             _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
         }
-    }
-
-    /// <summary>
-    /// Called when pin is toggled instantly from the editor.
-    /// Saves vault and refreshes list immediately (no Save button needed).
-    /// </summary>
-    private async void OnPinToggled()
-    {
-        await _vaultState.SaveVaultAsync();
-        await LoadEntriesCommand.ExecuteAsync(null);
-    }
-
-    private async void OnEntrySaved(bool isNew, Guid entryId)
-    {
-        await _vaultState.SaveVaultAsync();
-        await _repository.LogActivityAsync(new ActivityLogEntry
+        catch (Exception)
         {
-            EntityType = "SecureNoteEntry",
-            EntityId = entryId,
-            Action = isNew ? "Created" : "Modified",
-            Timestamp = DateTime.UtcNow
-        });
-        await LoadEntriesCommand.ExecuteAsync(null);
-        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
-    }
-
-    private async void OnEntryDeleted(Guid entryId)
-    {
-        await _vaultState.SaveVaultAsync();
-        await _repository.LogActivityAsync(new ActivityLogEntry
-        {
-            EntityType = "SecureNoteEntry",
-            EntityId = entryId,
-            Action = "Deleted",
-            Timestamp = DateTime.UtcNow
-        });
-        await LoadEntriesCommand.ExecuteAsync(null);
-        CloseEditor();
-        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
+            // The entry is already removed from the in-memory vault: refresh the list
+            // so the UI stays consistent (removal persists with the next successful save).
+            await LoadEntriesCommand.ExecuteAsync(null);
+            CloseEditor();
+            _toast.Show(ToastSeverity.Error, _resourceLoader.GetString("ToastSaveError"));
+        }
     }
 
     // --- Static helpers ---

@@ -214,6 +214,63 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
             var vault = _vaultState.CurrentVault;
             var entryId = target.Id;
             vault?.CreditCards.Remove(target);
+            // AsyncRelayCommand rethrows on the UI thread by default: a persistence
+            // failure here would terminate the process, so catch and surface it.
+            try
+            {
+                await _vaultState.SaveVaultAsync();
+                await _repository.LogActivityAsync(new ActivityLogEntry
+                {
+                    EntityType = "CreditCardEntry",
+                    EntityId = entryId,
+                    Action = "Deleted",
+                    Timestamp = DateTime.UtcNow
+                });
+                await LoadEntriesCommand.ExecuteAsync(null);
+                CloseDetail();
+                _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
+            }
+            catch (Exception)
+            {
+                await LoadEntriesCommand.ExecuteAsync(null);
+                CloseDetail();
+                _toast.Show(ToastSeverity.Error, _resourceLoader.GetString("ToastSaveError"));
+            }
+        }
+    }
+
+    private async void OnEntrySaved(bool isNew, Guid entryId)
+    {
+        // async void: an unhandled exception here would terminate the process, so
+        // persistence failures (disk full, DB lock) must be caught and surfaced.
+        try
+        {
+            await _vaultState.SaveVaultAsync();
+            await _repository.LogActivityAsync(new ActivityLogEntry
+            {
+                EntityType = "CreditCardEntry",
+                EntityId = entryId,
+                Action = isNew ? "Created" : "Modified",
+                Timestamp = DateTime.UtcNow
+            });
+            await LoadEntriesCommand.ExecuteAsync(null);
+            CloseDetail();
+            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
+        }
+        catch (Exception)
+        {
+            // The change is already in the in-memory vault and will persist with the
+            // next successful save; keep the detail open so the user can retry Save.
+            _toast.Show(ToastSeverity.Error, _resourceLoader.GetString("ToastSaveError"));
+        }
+    }
+
+    private async void OnEntryDeleted(Guid entryId)
+    {
+        // async void: an unhandled exception here would terminate the process, so
+        // persistence failures (disk full, DB lock) must be caught and surfaced.
+        try
+        {
             await _vaultState.SaveVaultAsync();
             await _repository.LogActivityAsync(new ActivityLogEntry
             {
@@ -226,35 +283,13 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
             CloseDetail();
             _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
         }
-    }
-
-    private async void OnEntrySaved(bool isNew, Guid entryId)
-    {
-        await _vaultState.SaveVaultAsync();
-        await _repository.LogActivityAsync(new ActivityLogEntry
+        catch (Exception)
         {
-            EntityType = "CreditCardEntry",
-            EntityId = entryId,
-            Action = isNew ? "Created" : "Modified",
-            Timestamp = DateTime.UtcNow
-        });
-        await LoadEntriesCommand.ExecuteAsync(null);
-        CloseDetail();
-        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
-    }
-
-    private async void OnEntryDeleted(Guid entryId)
-    {
-        await _vaultState.SaveVaultAsync();
-        await _repository.LogActivityAsync(new ActivityLogEntry
-        {
-            EntityType = "CreditCardEntry",
-            EntityId = entryId,
-            Action = "Deleted",
-            Timestamp = DateTime.UtcNow
-        });
-        await LoadEntriesCommand.ExecuteAsync(null);
-        CloseDetail();
-        _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
+            // The entry is already removed from the in-memory vault: refresh the list
+            // so the UI stays consistent (removal persists with the next successful save).
+            await LoadEntriesCommand.ExecuteAsync(null);
+            CloseDetail();
+            _toast.Show(ToastSeverity.Error, _resourceLoader.GetString("ToastSaveError"));
+        }
     }
 }

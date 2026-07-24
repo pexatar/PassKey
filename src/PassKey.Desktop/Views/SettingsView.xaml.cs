@@ -472,6 +472,14 @@ public sealed partial class SettingsView : UserControl
                 ok ? _resourceLoader.GetString("ClearVaultSuccessTitle") : _resourceLoader.GetString("ClearVaultErrorTitle"),
                 ok ? _resourceLoader.GetString("ClearVaultSuccessMessage") : _resourceLoader.GetString("ClearVaultErrWrong"));
         }
+        catch (Exception)
+        {
+            // async void handler: a persistence failure (disk full, DB lock) would
+            // otherwise terminate the process — surface it instead.
+            await ShowInfoDialogAsync(
+                _resourceLoader.GetString("ClearVaultErrorTitle"),
+                _resourceLoader.GetString("OperationGenericError"));
+        }
         finally
         {
             ClearVaultButton.IsEnabled = true;

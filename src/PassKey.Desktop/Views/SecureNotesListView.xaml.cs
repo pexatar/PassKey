@@ -49,7 +49,16 @@ public sealed partial class SecureNotesListView : UserControl
         FilteredEmptyState.Title = _resourceLoader.GetString("EmptyFilteredTitle");
         FilteredEmptyState.Subtitle = _resourceLoader.GetString("EmptyFilteredSubtitle");
 
-        await vm.LoadEntriesCommand.ExecuteAsync(null);
+        // async void: a load failure must not terminate the process. The list is
+        // in-memory so this is defensive; the UI falls back to the empty state.
+        try
+        {
+            await vm.LoadEntriesCommand.ExecuteAsync(null);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[SecureNotesListView] Load failed: {ex}");
+        }
         UpdateList();
         UpdateEmptyState();
 
