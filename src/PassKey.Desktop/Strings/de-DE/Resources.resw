@@ -1381,6 +1381,36 @@
   <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
     <value>Neuigkeiten</value>
   </data>
+  <data name="SettingsDiagnosticsSection.Text" xml:space="preserve">
+    <value>Diagnose</value>
+  </data>
+  <data name="SettingsVerboseLogTitle.Text" xml:space="preserve">
+    <value>Ausführliche Diagnoseprotokolle</value>
+  </data>
+  <data name="SettingsVerboseLogDesc.Text" xml:space="preserve">
+    <value>Zeichnet detailliert auf, was die Anwendung tut, um Fehlerursachen zu finden. Die Protokolle enthalten KEINE Passwörter und keine Tresordaten.</value>
+  </data>
+  <data name="SettingsLogFolderTitle.Text" xml:space="preserve">
+    <value>Protokollordner</value>
+  </data>
+  <data name="SettingsLogFallbackNote.Text" xml:space="preserve">
+    <value>Windows erlaubt Programmen nicht, Dateien im Installationsordner von PassKey zu speichern; die Protokolle werden daher hier abgelegt.</value>
+  </data>
+  <data name="SettingsOpenLogFolderBtn.Content" xml:space="preserve">
+    <value>Ordner öffnen</value>
+  </data>
+  <data name="SettingsCopyLogPathBtn.Content" xml:space="preserve">
+    <value>Pfad kopieren</value>
+  </data>
+  <data name="SettingsDeleteLogsBtn.Content" xml:space="preserve">
+    <value>Protokolle löschen</value>
+  </data>
+  <data name="SettingsLogPathCopied" xml:space="preserve">
+    <value>Pfad in die Zwischenablage kopiert</value>
+  </data>
+  <data name="SettingsLogsDeleted" xml:space="preserve">
+    <value>{0} Protokolldateien gelöscht</value>
+  </data>
   <data name="SettingsUpdatesSection.Text" xml:space="preserve">
     <value>Updates</value>
   </data>

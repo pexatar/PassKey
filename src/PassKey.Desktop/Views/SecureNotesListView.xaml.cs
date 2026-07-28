@@ -75,6 +75,8 @@ public sealed partial class SecureNotesListView : UserControl
         {
             case nameof(SecureNotesListViewModel.IsEditorOpen):
                 UpdateEditorPanel();
+                if (_viewModel?.IsEditorOpen == false)
+                    RefreshListContainers();
                 break;
             case nameof(SecureNotesListViewModel.IsEmpty):
             case nameof(SecureNotesListViewModel.IsFilteredEmpty):
@@ -82,6 +84,9 @@ public sealed partial class SecureNotesListView : UserControl
                 break;
             case nameof(SecureNotesListViewModel.DetailViewModel):
                 UpdateEditorContent();
+                break;
+            case nameof(SecureNotesListViewModel.ListRevision):
+                RefreshListContainers();
                 break;
             case nameof(SecureNotesListViewModel.SelectedEntry):
                 NotesList.SelectedItem = _viewModel?.SelectedEntry;
@@ -98,6 +103,23 @@ public sealed partial class SecureNotesListView : UserControl
 
     private void UpdateList()
     {
+        NotesList.ItemsSource = _viewModel?.Entries;
+    }
+
+    /// <summary>
+    /// Forces every row to be rebuilt from its entry.
+    /// </summary>
+    /// <remarks>
+    /// The edited note is the same object instance the list already holds, so no collection
+    /// change is raised on save and the recycled container keeps rendering the previous title.
+    /// The user then sees the old text, concludes the save failed, and presses Save again —
+    /// which is how a working save looked like a broken one. Rebinding regenerates the
+    /// containers. (Identical remedy to IdentitiesListView; this is the structural gap that
+    /// disappears once rows bind to observable item objects.)
+    /// </remarks>
+    private void RefreshListContainers()
+    {
+        NotesList.ItemsSource = null;
         NotesList.ItemsSource = _viewModel?.Entries;
     }
 

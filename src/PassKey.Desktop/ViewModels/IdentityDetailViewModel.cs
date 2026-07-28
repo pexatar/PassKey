@@ -91,8 +91,9 @@ public partial class IdentityDetailViewModel : BaseDetailViewModel<IdentityEntry
 
     public IdentityDetailViewModel(
         IVaultStateService vaultState,
-        IDialogQueueService dialogQueue)
-        : base(vaultState, dialogQueue)
+        IDialogQueueService dialogQueue,
+        ILogService log)
+        : base(vaultState, dialogQueue, log)
     {
     }
 

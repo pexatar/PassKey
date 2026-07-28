@@ -76,7 +76,8 @@ public sealed partial class PasswordDetailView : UserControl
         else
             PasswordInput.Clear();
 
-        SaveButton.IsEnabled = vm.CanSave;
+        // Single source of truth for the Save button's enabled state.
+        SaveButton.Command = vm.SaveCommand;
 
         // Show delete button only in edit mode
         bool isEdit = !vm.IsNew;
@@ -106,7 +107,7 @@ public sealed partial class PasswordDetailView : UserControl
         switch (e.PropertyName)
         {
             case nameof(PasswordDetailViewModel.CanSave):
-                SaveButton.IsEnabled = _viewModel?.CanSave ?? false;
+                // CanSave now drives SaveCommand.CanExecute; the button follows automatically.
                 break;
             case nameof(PasswordDetailViewModel.IsSaving):
                 UpdateSavingState(_viewModel?.IsSaving ?? false);
@@ -600,6 +601,6 @@ public sealed partial class PasswordDetailView : UserControl
         SaveButtonText.Text = saving
             ? _resourceLoader.GetString("SaveInProgress")
             : _resourceLoader.GetString("ButtonSaveLabel/Text");
-        SaveButton.IsEnabled = !saving;
+        // IsEnabled deliberately untouched: it belongs to SaveCommand.CanExecute now.
     }
 }

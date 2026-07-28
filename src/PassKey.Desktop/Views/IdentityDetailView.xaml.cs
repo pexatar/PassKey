@@ -66,7 +66,8 @@ public sealed partial class IdentityDetailView : UserControl
         _updatingFromVm = false;
 
         // State
-        SaveButton.IsEnabled = vm.CanSave;
+        // Single source of truth for the Save button's enabled state.
+        SaveButton.Command = vm.SaveCommand;
 
         // Show delete button only in edit mode
         bool isEdit = !vm.IsNew;
@@ -95,7 +96,7 @@ public sealed partial class IdentityDetailView : UserControl
         switch (e.PropertyName)
         {
             case nameof(IdentityDetailViewModel.CanSave):
-                SaveButton.IsEnabled = _viewModel?.CanSave ?? false;
+                // CanSave now drives SaveCommand.CanExecute; the button follows automatically.
                 break;
             case nameof(IdentityDetailViewModel.IsSaving):
                 UpdateSavingState(_viewModel?.IsSaving ?? false);
@@ -264,7 +265,7 @@ public sealed partial class IdentityDetailView : UserControl
         SaveButtonText.Text = saving
             ? _resourceLoader.GetString("SaveInProgress")
             : _resourceLoader.GetString("ButtonSave/Text");
-        SaveButton.IsEnabled = !saving;
+        // IsEnabled deliberately untouched: it belongs to SaveCommand.CanExecute now.
     }
 
     // ── Formatters ────────────────────────────────────────────────────────────

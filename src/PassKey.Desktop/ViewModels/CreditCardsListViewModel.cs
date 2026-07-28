@@ -33,6 +33,18 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     public partial bool IsDetailOpen { get; set; }
 
+    /// <summary>
+    /// Incremented after a save or delete so the view can rebuild its rows/cards.
+    /// </summary>
+    /// <remarks>
+    /// An in-place edit changes the entry object the list already holds, which raises no
+    /// collection change: the recycled row keeps showing the previous values. Bumping this
+    /// counter gives the view an explicit, observable signal to regenerate the containers.
+    /// Temporary bridge until rows bind to observable item objects.
+    /// </remarks>
+    [ObservableProperty]
+    public partial int ListRevision { get; set; }
+
     [ObservableProperty]
     public partial string SearchQuery { get; set; } = string.Empty;
 
@@ -254,6 +266,7 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
                 Timestamp = DateTime.UtcNow
             });
             await LoadEntriesCommand.ExecuteAsync(null);
+            ListRevision++;
             CloseDetail();
             _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
         }
@@ -280,6 +293,7 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
                 Timestamp = DateTime.UtcNow
             });
             await LoadEntriesCommand.ExecuteAsync(null);
+            ListRevision++;
             CloseDetail();
             _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastDeleted"));
         }
@@ -288,6 +302,7 @@ public partial class CreditCardsListViewModel : ObservableObject, IDisposable
             // The entry is already removed from the in-memory vault: refresh the list
             // so the UI stays consistent (removal persists with the next successful save).
             await LoadEntriesCommand.ExecuteAsync(null);
+            ListRevision++;
             CloseDetail();
             _toast.Show(ToastSeverity.Error, _resourceLoader.GetString("ToastSaveError"));
         }

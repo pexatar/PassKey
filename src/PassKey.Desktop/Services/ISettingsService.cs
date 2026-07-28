@@ -61,6 +61,11 @@ public interface ISettingsService
     /// Used to anchor the 24-hour cache that prevents re-scanning every navigation.</summary>
     DateTime? LastHibpScanUtc { get; set; }
 
+    /// <summary>Gets or sets whether verbose (Debug-level) diagnostic logging is enabled.
+    /// Default is <c>false</c>: only errors and key lifecycle events are recorded, so the first
+    /// problem a user hits is never lost while normal sessions stay to a handful of lines.</summary>
+    bool VerboseLoggingEnabled { get; set; }
+
     /// <summary>Serialises all current settings to <c>settings.json</c> on disk.</summary>
     void Save();
 

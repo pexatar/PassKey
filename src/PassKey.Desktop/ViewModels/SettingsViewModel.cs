@@ -62,6 +62,10 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     public partial bool HibpEnabled { get; set; }
 
+    /// <summary>Verbose diagnostic logging (LOG-01). Persisted so it survives restarts.</summary>
+    [ObservableProperty]
+    public partial bool VerboseLoggingEnabled { get; set; }
+
     [ObservableProperty]
     public partial bool IsCheckingUpdate { get; set; }
 
@@ -147,6 +151,9 @@ public partial class SettingsViewModel : ObservableObject
         // HIBP / Watchtower opt-in
         HibpEnabled = _settings.HibpEnabled;
 
+        // Diagnostics (LOG-01)
+        VerboseLoggingEnabled = _settings.VerboseLoggingEnabled;
+
         _initializing = false;
     }
 
@@ -161,6 +168,13 @@ public partial class SettingsViewModel : ObservableObject
     {
         if (_initializing) return;
         _settings.AutoUpdateCheckEnabled = value;
+        _settings.Save();
+    }
+
+    partial void OnVerboseLoggingEnabledChanged(bool value)
+    {
+        if (_initializing) return;
+        _settings.VerboseLoggingEnabled = value;
         _settings.Save();
     }
 

@@ -36,6 +36,8 @@ public partial class App : Application
                 services.AddSingleton<IWatchtowerScanService, WatchtowerScanService>();
 
                 // Desktop services
+                // Registered first: every other service may log during construction.
+                services.AddSingleton<ILogService, LogService>();
                 services.AddSingleton<INavigationStack, NavigationStack>();
                 services.AddSingleton<ISettingsService, SettingsService>();
                 services.AddSingleton<IDialogQueueService, DialogQueueService>();
@@ -80,6 +82,11 @@ public partial class App : Application
                 services.AddTransient<ActivityLogViewModel>();
             })
             .Build();
+
+        // Start diagnostics before anything else runs: the first session lines must be able to
+        // record a failure that happens during start-up, not only after the window is up.
+        var log = Services.GetRequiredService<ILogService>();
+        log.Initialize(Services.GetRequiredService<ISettingsService>().VerboseLoggingEnabled);
     }
 
     protected override async void OnLaunched(LaunchActivatedEventArgs args)
@@ -111,7 +118,8 @@ public partial class App : Application
         catch (Exception ex)
         {
             // IPC service failure should not prevent app from starting; log for diagnostics.
-            System.Diagnostics.Debug.WriteLine($"[App] Browser IPC service failed to start: {ex}");
+            Services.GetRequiredService<ILogService>()
+                    .Error(LogArea.Ipc, "Browser IPC service failed to start", ex);
         }
 
         // Fire-and-forget: silent update check (max once per 24h, 10s timeout)
@@ -195,13 +203,33 @@ public partial class App : Application
 
     private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
     {
+        // Record it first: whatever happens to the UI afterwards, the failure must survive on disk.
+        string? logPath = null;
+        try
+        {
+            var log = Services.GetRequiredService<ILogService>();
+            log.Error(LogArea.App, "Unhandled exception", e.Exception);
+            logPath = log.CurrentLogFile;
+            _ = log.FlushAsync();
+        }
+        catch
+        {
+            // Diagnostics must never make a bad situation worse.
+        }
+
         try
         {
             if (MainWindow is { } mw)
             {
+                // The error screen is the moment a non-technical user most needs to know where
+                // the log is — and the only moment they will look for it.
+                var where = logPath is null
+                    ? string.Empty
+                    : $"\n\nDettagli salvati in:\n{logPath}";
+
                 mw.Content = new Microsoft.UI.Xaml.Controls.TextBlock
                 {
-                    Text = $"UNHANDLED EXCEPTION:\n{e.Exception}\n\nMessage: {e.Message}",
+                    Text = $"UNHANDLED EXCEPTION:\n{e.Exception}\n\nMessage: {e.Message}{where}",
                     IsTextSelectionEnabled = true,
                     TextWrapping = TextWrapping.Wrap,
                     Margin = new Thickness(20),

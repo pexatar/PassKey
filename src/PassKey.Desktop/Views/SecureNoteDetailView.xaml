@@ -168,12 +168,12 @@
                     TabIndex="48" />
 
             <!-- Salva -->
+            <!-- IsEnabled is intentionally absent: the button is wired to SaveCommand in
+                 SetViewModel, so WinUI derives its enabled state from CanExecute. -->
             <Button x:Name="SaveButton"
                     Grid.Column="4"
                     x:Uid="NoteSaveButton"
                     Style="{StaticResource AccentButtonStyle}"
-                    IsEnabled="False"
-                    Click="SaveButton_Click"
                     TabIndex="50">
                 <StackPanel Orientation="Horizontal" Spacing="6">
                     <ProgressRing x:Name="SaveProgress"

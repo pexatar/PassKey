@@ -1383,6 +1383,36 @@
   <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
     <value>Novedades</value>
   </data>
+  <data name="SettingsDiagnosticsSection.Text" xml:space="preserve">
+    <value>Diagnóstico</value>
+  </data>
+  <data name="SettingsVerboseLogTitle.Text" xml:space="preserve">
+    <value>Registros detallados para el diagnóstico</value>
+  </data>
+  <data name="SettingsVerboseLogDesc.Text" xml:space="preserve">
+    <value>Registra en detalle lo que hace la aplicación, para entender qué ha fallado. Los registros NO contienen tus contraseñas ni los datos de la caja fuerte.</value>
+  </data>
+  <data name="SettingsLogFolderTitle.Text" xml:space="preserve">
+    <value>Carpeta de registros</value>
+  </data>
+  <data name="SettingsLogFallbackNote.Text" xml:space="preserve">
+    <value>Windows no permite que los programas guarden archivos en la carpeta donde está instalado PassKey, por lo que los registros se guardan aquí.</value>
+  </data>
+  <data name="SettingsOpenLogFolderBtn.Content" xml:space="preserve">
+    <value>Abrir carpeta</value>
+  </data>
+  <data name="SettingsCopyLogPathBtn.Content" xml:space="preserve">
+    <value>Copiar ruta</value>
+  </data>
+  <data name="SettingsDeleteLogsBtn.Content" xml:space="preserve">
+    <value>Eliminar registros</value>
+  </data>
+  <data name="SettingsLogPathCopied" xml:space="preserve">
+    <value>Ruta copiada al portapapeles</value>
+  </data>
+  <data name="SettingsLogsDeleted" xml:space="preserve">
+    <value>{0} archivos de registro eliminados</value>
+  </data>
   <data name="SettingsUpdatesSection.Text" xml:space="preserve">
     <value>Actualizaciones</value>
   </data>

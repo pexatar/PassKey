@@ -48,6 +48,18 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
     [ObservableProperty]
     public partial bool IsEditorOpen { get; set; }
 
+    /// <summary>
+    /// Incremented after a save or delete so the view can rebuild its rows.
+    /// </summary>
+    /// <remarks>
+    /// An in-place edit changes the entry object the list already holds, which raises no
+    /// collection change: the recycled row keeps showing the previous values. Bumping this
+    /// counter gives the view an explicit, observable signal to regenerate the containers.
+    /// Temporary bridge until rows bind to observable item objects.
+    /// </remarks>
+    [ObservableProperty]
+    public partial int ListRevision { get; set; }
+
     [ObservableProperty]
     public partial SecureNoteDetailViewModel? DetailViewModel { get; set; }
 
@@ -260,6 +272,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
                 Timestamp = DateTime.UtcNow
             });
             await LoadEntriesCommand.ExecuteAsync(null);
+            ListRevision++;
             _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastSaved"));
         }
         catch (Exception)

@@ -47,6 +47,9 @@ public sealed partial class CreditCardDetailView : UserControl
         _viewModel = vm;
         DataContext = vm;
 
+        // Single source of truth for the Save button's enabled state.
+        SaveButton.Command = vm.SaveCommand;
+
         vm.PropertyChanged += OnViewModelPropertyChanged;
 
         // Populate UI from ViewModel
@@ -95,7 +98,7 @@ public sealed partial class CreditCardDetailView : UserControl
 
         // Update card type display
         UpdateCardTypeIndicator();
-        SaveButton.IsEnabled = vm.CanSave;
+        // (enabled state comes from SaveCommand.CanExecute — wired above)
 
         // Show delete button only in edit mode
         bool isEdit = !vm.IsNew;
@@ -120,9 +123,12 @@ public sealed partial class CreditCardDetailView : UserControl
         for (var m = 1; m <= 12; m++)
             MonthCombo.Items.Add(m.ToString("D2"));
 
-        // Years: current → current + 10
+        // Years: 20 back → 10 forward.
+        // The list must always contain the year of the card being edited, otherwise an expired
+        // card lands on an empty combo, the year reads as 0, and the entry silently becomes
+        // unsavable. Going back covers every card a user could plausibly still have on file.
         var currentYear = DateTime.Now.Year;
-        for (var y = currentYear; y <= currentYear + 10; y++)
+        for (var y = currentYear - 20; y <= currentYear + 10; y++)
             YearCombo.Items.Add(y.ToString());
     }
 
@@ -157,9 +163,7 @@ public sealed partial class CreditCardDetailView : UserControl
     {
         switch (e.PropertyName)
         {
-            case nameof(CreditCardDetailViewModel.CanSave):
-                SaveButton.IsEnabled = _viewModel?.CanSave ?? false;
-                break;
+            // CanSave is no longer mirrored by hand: SaveCommand.CanExecute drives the button.
             case nameof(CreditCardDetailViewModel.IsSaving):
                 UpdateSavingState(_viewModel?.IsSaving ?? false);
                 break;
@@ -179,16 +183,46 @@ public sealed partial class CreditCardDetailView : UserControl
             var rawDigits = new string(CardNumberBox.Text.Where(char.IsDigit).ToArray());
             _viewModel.CardNumber = rawDigits;
 
-            // Display formatted number
+            // Display formatted number.
             if (!string.IsNullOrEmpty(_viewModel.FormattedCardNumber))
             {
+                // The caret is tracked by DIGIT COUNT, not by character index. The formatter
+                // inserts spaces, so restoring the same numeric index left the caret one place
+                // to the left of the digit just typed — after which every further digit was
+                // inserted before it. Counting digits is also correct for edits in the middle,
+                // for paste and for deletion, which an index offset is not.
                 _updatingFromVm = true;
-                var cursorPos = CardNumberBox.SelectionStart;
-                CardNumberBox.Text = _viewModel.FormattedCardNumber;
-                CardNumberBox.SelectionStart = Math.Min(cursorPos, CardNumberBox.Text.Length);
+                var digitsBeforeCaret = CountDigits(CardNumberBox.Text, CardNumberBox.SelectionStart);
+                var formatted = _viewModel.FormattedCardNumber;
+                CardNumberBox.Text = formatted;
+                CardNumberBox.SelectionStart = OffsetAfterDigits(formatted, digitsBeforeCaret);
                 _updatingFromVm = false;
             }
         }
+    }
+
+    /// <summary>Counts the digits in <paramref name="text"/> that precede <paramref name="caret"/>.</summary>
+    private static int CountDigits(string text, int caret)
+    {
+        var limit = Math.Min(caret, text.Length);
+        var count = 0;
+        for (var i = 0; i < limit; i++)
+            if (char.IsDigit(text[i])) count++;
+        return count;
+    }
+
+    /// <summary>Returns the caret offset that sits immediately after the n-th digit of <paramref name="text"/>.</summary>
+    private static int OffsetAfterDigits(string text, int digitCount)
+    {
+        if (digitCount <= 0) return 0;
+
+        var seen = 0;
+        for (var i = 0; i < text.Length; i++)
+        {
+            if (char.IsDigit(text[i])) seen++;
+            if (seen == digitCount) return i + 1;
+        }
+        return text.Length;
     }
 
     private void CardholderBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -300,12 +334,6 @@ public sealed partial class CreditCardDetailView : UserControl
     }
 
     // Action buttons
-    private async void SaveButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (_viewModel is not null)
-            await _viewModel.SaveCommand.ExecuteAsync(null);
-    }
-
     private async void DeleteButton_Click(object sender, RoutedEventArgs e)
     {
         if (_viewModel is not null)
@@ -322,7 +350,8 @@ public sealed partial class CreditCardDetailView : UserControl
         SaveProgress.IsActive = saving;
         SaveProgress.Visibility = saving ? Visibility.Visible : Visibility.Collapsed;
         SaveButtonText.Text = saving ? _resourceLoader.GetString("SaveInProgress") : _resourceLoader.GetString("ButtonSaveLabel/Text");
-        SaveButton.IsEnabled = !saving;
+        // IsEnabled deliberately untouched: it belongs to SaveCommand.CanExecute now.
+        // Writing it here is what previously left a dead button looking clickable.
     }
 
     /// <summary>

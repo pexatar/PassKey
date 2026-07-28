@@ -81,7 +81,27 @@ public sealed partial class CreditCardsListView : UserControl
             case nameof(CreditCardsListViewModel.IsCardView):
                 UpdateViewToggle();
                 break;
+            case nameof(CreditCardsListViewModel.ListRevision):
+                RefreshListContainers();
+                break;
         }
+    }
+
+    /// <summary>
+    /// Forces every card and row to be rebuilt from its entry.
+    /// </summary>
+    /// <remarks>
+    /// Same structural gap as Notes and Identities: an in-place edit mutates the object the
+    /// list already holds, so no collection change is raised and the recycled container keeps
+    /// the previous values. Rebinding regenerates them. Disappears once rows bind to
+    /// observable item objects.
+    /// </remarks>
+    private void RefreshListContainers()
+    {
+        CardRepeater.ItemsSource = null;
+        CardRepeater.ItemsSource = _viewModel?.Entries;
+        ListViewControl.ItemsSource = null;
+        ListViewControl.ItemsSource = _viewModel?.Entries;
     }
 
     private void UpdateCardRepeater()

@@ -60,8 +60,9 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
 
     public SecureNoteDetailViewModel(
         IVaultStateService vaultState,
-        IDialogQueueService dialogQueue)
-        : base(vaultState, dialogQueue)
+        IDialogQueueService dialogQueue,
+        ILogService log)
+        : base(vaultState, dialogQueue, log)
     {
     }
 

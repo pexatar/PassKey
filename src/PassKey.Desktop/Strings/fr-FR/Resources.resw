@@ -1383,6 +1383,36 @@
   <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
     <value>Nouveautés</value>
   </data>
+  <data name="SettingsDiagnosticsSection.Text" xml:space="preserve">
+    <value>Diagnostic</value>
+  </data>
+  <data name="SettingsVerboseLogTitle.Text" xml:space="preserve">
+    <value>Journaux détaillés pour le diagnostic</value>
+  </data>
+  <data name="SettingsVerboseLogDesc.Text" xml:space="preserve">
+    <value>Enregistre en détail ce que fait l'application, afin de comprendre ce qui n'a pas fonctionné. Les journaux NE contiennent PAS vos mots de passe ni les données du coffre.</value>
+  </data>
+  <data name="SettingsLogFolderTitle.Text" xml:space="preserve">
+    <value>Dossier des journaux</value>
+  </data>
+  <data name="SettingsLogFallbackNote.Text" xml:space="preserve">
+    <value>Windows n'autorise pas les programmes à enregistrer des fichiers dans le dossier d'installation de PassKey : les journaux sont donc enregistrés ici.</value>
+  </data>
+  <data name="SettingsOpenLogFolderBtn.Content" xml:space="preserve">
+    <value>Ouvrir le dossier</value>
+  </data>
+  <data name="SettingsCopyLogPathBtn.Content" xml:space="preserve">
+    <value>Copier le chemin</value>
+  </data>
+  <data name="SettingsDeleteLogsBtn.Content" xml:space="preserve">
+    <value>Supprimer les journaux</value>
+  </data>
+  <data name="SettingsLogPathCopied" xml:space="preserve">
+    <value>Chemin copié dans le presse-papiers</value>
+  </data>
+  <data name="SettingsLogsDeleted" xml:space="preserve">
+    <value>{0} fichiers journaux supprimés</value>
+  </data>
   <data name="SettingsUpdatesSection.Text" xml:space="preserve">
     <value>Mises à jour</value>
   </data>

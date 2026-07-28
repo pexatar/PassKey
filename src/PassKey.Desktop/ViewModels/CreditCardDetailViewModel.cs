@@ -66,8 +66,9 @@ public partial class CreditCardDetailViewModel : BaseDetailViewModel<CreditCardE
 
     public CreditCardDetailViewModel(
         IVaultStateService vaultState,
-        IDialogQueueService dialogQueue)
-        : base(vaultState, dialogQueue)
+        IDialogQueueService dialogQueue,
+        ILogService log)
+        : base(vaultState, dialogQueue, log)
     {
     }
 
@@ -146,10 +147,14 @@ public partial class CreditCardDetailViewModel : BaseDetailViewModel<CreditCardE
 
     protected override void UpdateCanSave()
     {
+        // The expiry year is validated for plausibility, NOT for being in the future.
+        // Refusing to save an expired card blocked the single most common reason to open this
+        // panel — "the card expired, I renewed it, let me update the date" — and did so silently.
+        // An expired card is legitimate stored data; expiry is surfaced elsewhere as a warning.
         CanSave = !string.IsNullOrWhiteSpace(CardNumber) &&
                   !string.IsNullOrWhiteSpace(CardholderName) &&
                   ExpiryMonth >= 1 && ExpiryMonth <= 12 &&
-                  ExpiryYear >= DateTime.Now.Year &&
+                  ExpiryYear >= 1900 &&
                   !string.IsNullOrWhiteSpace(Cvv);
     }
 

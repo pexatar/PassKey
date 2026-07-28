@@ -58,7 +58,8 @@ public sealed partial class SecureNoteDetailView : UserControl
         UnsavedDot.Visibility = vm.HasUnsavedChanges ? Visibility.Visible : Visibility.Collapsed;
 
         // Pulsante salva e visibilita elimina
-        SaveButton.IsEnabled = vm.CanSave;
+        // Single source of truth for the Save button's enabled state.
+        SaveButton.Command = vm.SaveCommand;
         DeleteButton.Visibility = vm.IsEditMode ? Visibility.Visible : Visibility.Collapsed;
 
         // Inizializza in modalita Modifica
@@ -107,9 +108,7 @@ public sealed partial class SecureNoteDetailView : UserControl
     {
         switch (e.PropertyName)
         {
-            case nameof(SecureNoteDetailViewModel.CanSave):
-                SaveButton.IsEnabled = _viewModel?.CanSave ?? false;
-                break;
+            // CanSave is no longer mirrored by hand: SaveCommand.CanExecute drives the button.
             case nameof(SecureNoteDetailViewModel.IsSaving):
                 UpdateSavingState(_viewModel?.IsSaving ?? false);
                 break;
@@ -223,12 +222,6 @@ public sealed partial class SecureNoteDetailView : UserControl
 
     // --- Pulsanti footer ---
 
-    private async void SaveButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (_viewModel is not null)
-            await _viewModel.SaveCommand.ExecuteAsync(null);
-    }
-
     private async void DeleteButton_Click(object sender, RoutedEventArgs e)
     {
         if (_viewModel is not null)
@@ -251,7 +244,7 @@ public sealed partial class SecureNoteDetailView : UserControl
         SaveButtonText.Text = saving
             ? saveLoader.GetString("SaveInProgress")
             : saveLoader.GetString("ButtonSave/Text");
-        SaveButton.IsEnabled = !saving;
+        // IsEnabled deliberately untouched: it belongs to SaveCommand.CanExecute now.
         Announce(saving ? _resourceLoader.GetString("NoteSavingAnnounce") : _resourceLoader.GetString("NoteSavedAnnounce"));
     }
 

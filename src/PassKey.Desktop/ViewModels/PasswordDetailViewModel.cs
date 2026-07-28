@@ -88,8 +88,9 @@ public partial class PasswordDetailViewModel : BaseDetailViewModel<PasswordEntry
         IPasswordGenerator generator,
         IDialogQueueService dialogQueue,
         IPasswordStrengthAnalyzer strengthAnalyzer,
-        ITotpService totp)
-        : base(vaultState, dialogQueue)
+        ITotpService totp,
+        ILogService log)
+        : base(vaultState, dialogQueue, log)
     {
         _generator = generator;
         _strengthAnalyzer = strengthAnalyzer;

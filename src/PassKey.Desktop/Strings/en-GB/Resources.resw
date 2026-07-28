@@ -1371,6 +1371,36 @@
   <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
     <value>What's new</value>
   </data>
+  <data name="SettingsDiagnosticsSection.Text" xml:space="preserve">
+    <value>Diagnostics</value>
+  </data>
+  <data name="SettingsVerboseLogTitle.Text" xml:space="preserve">
+    <value>Detailed diagnostic logs</value>
+  </data>
+  <data name="SettingsVerboseLogDesc.Text" xml:space="preserve">
+    <value>Records in detail what the application does, to work out what went wrong. Logs do NOT contain your passwords or vault data.</value>
+  </data>
+  <data name="SettingsLogFolderTitle.Text" xml:space="preserve">
+    <value>Log folder</value>
+  </data>
+  <data name="SettingsLogFallbackNote.Text" xml:space="preserve">
+    <value>Windows does not allow programs to save files in the folder where PassKey is installed, so logs are saved here.</value>
+  </data>
+  <data name="SettingsOpenLogFolderBtn.Content" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="SettingsCopyLogPathBtn.Content" xml:space="preserve">
+    <value>Copy path</value>
+  </data>
+  <data name="SettingsDeleteLogsBtn.Content" xml:space="preserve">
+    <value>Delete logs</value>
+  </data>
+  <data name="SettingsLogPathCopied" xml:space="preserve">
+    <value>Path copied to clipboard</value>
+  </data>
+  <data name="SettingsLogsDeleted" xml:space="preserve">
+    <value>{0} log files deleted</value>
+  </data>
   <data name="SettingsUpdatesSection.Text" xml:space="preserve">
     <value>Updates</value>
   </data>

@@ -86,6 +86,8 @@ public sealed partial class SettingsView : UserControl
 
         _updatingFromVm = false;
 
+        InitializeDiagnosticsCard();
+
         // Subscribe VM -> View events. The SettingsViewModel is a persistent singleton in
         // ShellViewModel while this view is recreated on every navigation. If these handlers
         // were never detached, each return to the Settings page would stack another set on
@@ -492,6 +494,67 @@ public sealed partial class SettingsView : UserControl
     {
         if (_updatingFromVm || _viewModel is null) return;
         _viewModel.AutoUpdateCheckEnabled = AutoUpdateToggle.IsOn;
+    }
+
+    // ═══ DIAGNOSTICA (LOG-01) ═══
+
+    /// <summary>
+    /// Fills the diagnostics card with live state: the switch, the real folder in use and,
+    /// when the preferred location was not writable, the plain-language explanation.
+    /// </summary>
+    private void InitializeDiagnosticsCard()
+    {
+        var log = App.Services.GetRequiredService<ILogService>();
+
+        _updatingFromVm = true;
+        VerboseLogToggle.IsOn = log.IsVerboseEnabled;
+        _updatingFromVm = false;
+
+        LogPathText.Text = log.LogDirectory;
+        LogFallbackNote.Visibility = log.IsUsingFallbackLocation ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void VerboseLogToggle_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_updatingFromVm || _viewModel is null) return;
+
+        var enabled = VerboseLogToggle.IsOn;
+        App.Services.GetRequiredService<ILogService>().SetVerbose(enabled);
+        _viewModel.VerboseLoggingEnabled = enabled;
+    }
+
+    private async void OpenLogFolderButton_Click(object sender, RoutedEventArgs e)
+    {
+        var log = App.Services.GetRequiredService<ILogService>();
+        try
+        {
+            // Selecting the newest file means one click gets the user to the exact thing they
+            // need to attach — no navigating, no knowing what a folder path is.
+            var newest = log.CurrentLogFile;
+            if (newest is not null && System.IO.File.Exists(newest))
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe", $"/select,\"{newest}\"") { UseShellExecute = true });
+            else
+                await Windows.System.Launcher.LaunchFolderPathAsync(log.LogDirectory);
+        }
+        catch (Exception ex)
+        {
+            log.Error(LogArea.Settings, "Could not open the log folder", ex);
+            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("OperationGenericError"));
+        }
+    }
+
+    private void CopyLogPathButton_Click(object sender, RoutedEventArgs e)
+    {
+        var log = App.Services.GetRequiredService<ILogService>();
+        // Non-sensitive: a plain path, so the standard (non-clearing) copy path is correct.
+        App.Services.GetRequiredService<IClipboardService>().Copy(log.LogDirectory, CopyType.Standard);
+        _toast?.Show(ToastSeverity.Info, _resourceLoader.GetString("SettingsLogPathCopied"));
+    }
+
+    private void DeleteLogsButton_Click(object sender, RoutedEventArgs e)
+    {
+        var deleted = App.Services.GetRequiredService<ILogService>().DeleteAllLogs();
+        _toast?.Show(ToastSeverity.Info, string.Format(_resourceLoader.GetString("SettingsLogsDeleted"), deleted));
     }
 
     private async void HibpToggle_Toggled(object sender, RoutedEventArgs e)

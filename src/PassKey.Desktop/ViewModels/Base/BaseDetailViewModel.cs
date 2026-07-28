@@ -35,6 +35,9 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     /// <summary>Dialog queue used to serialize <see cref="Microsoft.UI.Xaml.Controls.ContentDialog"/> instances.</summary>
     protected readonly IDialogQueueService DialogQueue;
 
+    /// <summary>Diagnostic log. Records which entry is loaded and why a save was accepted or refused.</summary>
+    protected readonly ILogService Log;
+
     /// <summary>Localized string resources (delete dialog + subclass fallback display names).</summary>
     protected readonly ResourceLoader _res = new();
 
@@ -47,7 +50,14 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     public bool IsNew => _isNew;
 
     /// <summary>Whether the current field values satisfy the type-specific validation rules.</summary>
+    /// <remarks>
+    /// Drives <c>SaveCommand.CanExecute</c>. The generated command does not observe this property
+    /// on its own, so <see cref="NotifyCanExecuteChangedForAttribute"/> is what makes a bound
+    /// button enable and disable itself — replacing the hand-written <c>IsEnabled</c> juggling
+    /// that let a dead button look alive.
+    /// </remarks>
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public partial bool CanSave { get; set; }
 
     /// <summary>Indicates that a save operation is in progress (used to disable UI / show spinner).</summary>
@@ -64,11 +74,15 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
     public Action? Cancelled { get; set; }
 
     /// <summary>Initialises shared dependencies. Subclasses pass these through their own DI constructor.</summary>
-    protected BaseDetailViewModel(IVaultStateService vaultState, IDialogQueueService dialogQueue)
+    protected BaseDetailViewModel(IVaultStateService vaultState, IDialogQueueService dialogQueue, ILogService log)
     {
         VaultState = vaultState;
         DialogQueue = dialogQueue;
+        Log = log;
     }
+
+    /// <summary>Short type name used as the entity label in log lines (e.g. "CreditCardEntry").</summary>
+    private static string EntryTypeName => typeof(TEntry).Name;
 
     // ─── Template-method hooks (subclass implementations) ─────────────────────
 
@@ -110,6 +124,7 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
         _isNew = true;
         ResetFieldsForNew();
         UpdateCanSave();
+        Log.Debug(LogArea.Detail, "Panel opened for new entry", $"type={EntryTypeName} canSave={CanSave}");
     }
 
     /// <summary>Prepare the panel for editing the supplied existing entry.</summary>
@@ -119,16 +134,31 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
         _isNew = false;
         LoadFromEntry(entry);
         UpdateCanSave();
+        // Records WHICH entry the shared panel is now bound to: the line that distinguishes
+        // "the panel shows the right item" from "the panel is still holding the previous one".
+        Log.Debug(LogArea.Detail, "Panel opened for edit", $"type={EntryTypeName} entryId={entry.Id} canSave={CanSave}");
     }
 
     /// <summary>Persist the new or edited entry into the in-memory vault; the actual disk write is the caller's job.</summary>
-    [RelayCommand]
+    [RelayCommand(CanExecute = nameof(CanSave))]
     protected virtual Task SaveAsync()
     {
-        if (!CanSave) return Task.CompletedTask;
+        // Defence in depth: with the button bound to the command this branch should be
+        // unreachable. If it is ever hit, the reason is written down instead of the command
+        // failing silently — the exact blind spot that made "Save does nothing" undiagnosable.
+        if (!CanSave)
+        {
+            Log.Warn(LogArea.Command, "Save refused: validation not satisfied",
+                $"type={EntryTypeName} entryId={EditingEntry?.Id.ToString() ?? "(new)"}");
+            return Task.CompletedTask;
+        }
 
         var vault = VaultState.CurrentVault;
-        if (vault is null) return Task.CompletedTask;
+        if (vault is null)
+        {
+            Log.Warn(LogArea.Command, "Save refused: vault is locked", $"type={EntryTypeName}");
+            return Task.CompletedTask;
+        }
 
         IsSaving = true;
 

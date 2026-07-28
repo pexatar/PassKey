@@ -336,6 +336,64 @@
                 </StackPanel>
             </tk:SettingsCard>
 
+            <!-- ═══ DIAGNOSTICA ═══ -->
+            <StackPanel Style="{StaticResource SettingsSectionHeader}">
+                <FontIcon Glyph="&#xE9D9;" FontSize="16"
+                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                          VerticalAlignment="Center" />
+                <TextBlock x:Uid="SettingsDiagnosticsSection" Text="Diagnostica"
+                           Style="{StaticResource BodyStrongTextBlockStyle}"
+                           AutomationProperties.HeadingLevel="Level2" />
+            </StackPanel>
+
+            <tk:SettingsCard>
+                <tk:SettingsCard.Header>
+                    <TextBlock x:Uid="SettingsVerboseLogTitle" Text="Log dettagliati per la diagnostica" />
+                </tk:SettingsCard.Header>
+                <tk:SettingsCard.Description>
+                    <TextBlock x:Uid="SettingsVerboseLogDesc"
+                               Text="Registra in dettaglio cosa fa l'applicazione, per capire cosa è andato storto. I log NON contengono le tue password né i dati del caveau."
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               TextWrapping="Wrap" />
+                </tk:SettingsCard.Description>
+                <ToggleSwitch x:Name="VerboseLogToggle"
+                              Toggled="VerboseLogToggle_Toggled" TabIndex="93" />
+            </tk:SettingsCard>
+
+            <tk:SettingsCard>
+                <tk:SettingsCard.Header>
+                    <TextBlock x:Uid="SettingsLogFolderTitle" Text="Cartella dei log" />
+                </tk:SettingsCard.Header>
+                <tk:SettingsCard.Description>
+                    <StackPanel Spacing="4">
+                        <!-- Selectable so an expert can copy the path; the buttons cover the
+                             user who should never need to know what a path is. -->
+                        <TextBlock x:Name="LogPathText"
+                                   IsTextSelectionEnabled="True"
+                                   FontFamily="Consolas, Courier New"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   TextWrapping="Wrap" />
+                        <TextBlock x:Name="LogFallbackNote"
+                                   x:Uid="SettingsLogFallbackNote"
+                                   Text="Windows non permette ai programmi di salvare file nella cartella in cui PassKey è installato, quindi i log vengono salvati qui."
+                                   Visibility="Collapsed"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </tk:SettingsCard.Description>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="OpenLogFolderButton" x:Uid="SettingsOpenLogFolderBtn"
+                            Content="Apri cartella"
+                            Click="OpenLogFolderButton_Click" TabIndex="94" />
+                    <Button x:Name="CopyLogPathButton" x:Uid="SettingsCopyLogPathBtn"
+                            Content="Copia percorso"
+                            Click="CopyLogPathButton_Click" TabIndex="95" />
+                    <Button x:Name="DeleteLogsButton" x:Uid="SettingsDeleteLogsBtn"
+                            Content="Elimina log"
+                            Click="DeleteLogsButton_Click" TabIndex="96" />
+                </StackPanel>
+            </tk:SettingsCard>
+
             <!-- ═══ INFORMAZIONI ═══ -->
             <StackPanel Style="{StaticResource SettingsSectionHeader}">
                 <FontIcon Glyph="&#xE946;" FontSize="16"

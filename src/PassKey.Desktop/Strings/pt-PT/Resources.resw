@@ -1380,6 +1380,36 @@
   <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
     <value>Novidades</value>
   </data>
+  <data name="SettingsDiagnosticsSection.Text" xml:space="preserve">
+    <value>Diagnóstico</value>
+  </data>
+  <data name="SettingsVerboseLogTitle.Text" xml:space="preserve">
+    <value>Registos detalhados para diagnóstico</value>
+  </data>
+  <data name="SettingsVerboseLogDesc.Text" xml:space="preserve">
+    <value>Regista em detalhe o que a aplicação faz, para perceber o que correu mal. Os registos NÃO contêm as suas palavras-passe nem os dados do cofre.</value>
+  </data>
+  <data name="SettingsLogFolderTitle.Text" xml:space="preserve">
+    <value>Pasta dos registos</value>
+  </data>
+  <data name="SettingsLogFallbackNote.Text" xml:space="preserve">
+    <value>O Windows não permite que os programas guardem ficheiros na pasta onde o PassKey está instalado, pelo que os registos são guardados aqui.</value>
+  </data>
+  <data name="SettingsOpenLogFolderBtn.Content" xml:space="preserve">
+    <value>Abrir pasta</value>
+  </data>
+  <data name="SettingsCopyLogPathBtn.Content" xml:space="preserve">
+    <value>Copiar caminho</value>
+  </data>
+  <data name="SettingsDeleteLogsBtn.Content" xml:space="preserve">
+    <value>Eliminar registos</value>
+  </data>
+  <data name="SettingsLogPathCopied" xml:space="preserve">
+    <value>Caminho copiado para a área de transferência</value>
+  </data>
+  <data name="SettingsLogsDeleted" xml:space="preserve">
+    <value>{0} ficheiros de registo eliminados</value>
+  </data>
   <data name="SettingsUpdatesSection.Text" xml:space="preserve">
     <value>Atualizações</value>
   </data>

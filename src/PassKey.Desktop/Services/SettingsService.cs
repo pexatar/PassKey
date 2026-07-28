@@ -91,6 +91,9 @@ public sealed class SettingsService : ISettingsService
     /// <summary>Gets or sets the release tag the user chose to skip. Null means no version has been skipped.</summary>
     public string? SkippedUpdateVersion { get; set; }
 
+    /// <summary>Gets or sets whether verbose (Debug-level) diagnostic logging is enabled. Default false.</summary>
+    public bool VerboseLoggingEnabled { get; set; }
+
     /// <summary>
     /// Initializes a new instance of <see cref="SettingsService"/> and loads persisted settings
     /// from disk. If the settings file does not exist, all properties retain their default values.

@@ -38,10 +38,13 @@ public sealed class VaultStateService : IVaultStateService, IDisposable
     /// </summary>
     /// <param name="vaultService">Core vault service for encryption and KDF operations.</param>
     /// <param name="repository">Repository for persisting metadata and encrypted blobs.</param>
-    public VaultStateService(IVaultService vaultService, IVaultRepository repository)
+    private readonly ILogService _log;
+
+    public VaultStateService(IVaultService vaultService, IVaultRepository repository, ILogService log)
     {
         _vaultService = vaultService;
         _repository = repository;
+        _log = log;
     }
 
     /// <summary>
@@ -159,11 +162,31 @@ public sealed class VaultStateService : IVaultStateService, IDisposable
     public async Task SaveVaultAsync()
     {
         if (_dek is null || CurrentVault is null)
+        {
+            _log.Warn(LogArea.Persist, "Save requested while the vault is locked");
             throw new InvalidOperationException("Vault is not unlocked.");
+        }
 
-        CurrentVault.LastModified = DateTime.UtcNow;
-        var encrypted = _vaultService.EncryptVault(CurrentVault, _dek.ReadOnlySpan);
-        await _repository.SaveEncryptedVaultAsync(encrypted);
+        // Timed and recorded: turns "did my change actually reach the disk?" from a question
+        // for the user into a line in the log. Counts only — never contents.
+        var started = DateTime.UtcNow;
+        try
+        {
+            CurrentVault.LastModified = DateTime.UtcNow;
+            var encrypted = _vaultService.EncryptVault(CurrentVault, _dek.ReadOnlySpan);
+            await _repository.SaveEncryptedVaultAsync(encrypted);
+
+            _log.Info(LogArea.Persist, "Vault saved",
+                $"bytes={encrypted.Length} ms={(int)(DateTime.UtcNow - started).TotalMilliseconds} " +
+                $"pw={CurrentVault.Passwords.Count} cards={CurrentVault.CreditCards.Count} " +
+                $"ids={CurrentVault.Identities.Count} notes={CurrentVault.SecureNotes.Count}");
+        }
+        catch (Exception ex)
+        {
+            _log.Error(LogArea.Persist, "Vault save FAILED", ex,
+                $"ms={(int)(DateTime.UtcNow - started).TotalMilliseconds}");
+            throw;
+        }
     }
 
     /// <summary>

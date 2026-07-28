@@ -1383,6 +1383,36 @@
   <data name="UpdateReleaseNotesButton.Content" xml:space="preserve">
     <value>Novità</value>
   </data>
+  <data name="SettingsDiagnosticsSection.Text" xml:space="preserve">
+    <value>Diagnostica</value>
+  </data>
+  <data name="SettingsVerboseLogTitle.Text" xml:space="preserve">
+    <value>Log dettagliati per la diagnostica</value>
+  </data>
+  <data name="SettingsVerboseLogDesc.Text" xml:space="preserve">
+    <value>Registra in dettaglio cosa fa l'applicazione, per capire cosa è andato storto. I log NON contengono le tue password né i dati del caveau.</value>
+  </data>
+  <data name="SettingsLogFolderTitle.Text" xml:space="preserve">
+    <value>Cartella dei log</value>
+  </data>
+  <data name="SettingsLogFallbackNote.Text" xml:space="preserve">
+    <value>Windows non permette ai programmi di salvare file nella cartella in cui PassKey è installato, quindi i log vengono salvati qui.</value>
+  </data>
+  <data name="SettingsOpenLogFolderBtn.Content" xml:space="preserve">
+    <value>Apri cartella</value>
+  </data>
+  <data name="SettingsCopyLogPathBtn.Content" xml:space="preserve">
+    <value>Copia percorso</value>
+  </data>
+  <data name="SettingsDeleteLogsBtn.Content" xml:space="preserve">
+    <value>Elimina log</value>
+  </data>
+  <data name="SettingsLogPathCopied" xml:space="preserve">
+    <value>Percorso copiato negli appunti</value>
+  </data>
+  <data name="SettingsLogsDeleted" xml:space="preserve">
+    <value>{0} file di log eliminati</value>
+  </data>
   <data name="SettingsUpdatesSection.Text" xml:space="preserve">
     <value>Aggiornamenti</value>
   </data>
