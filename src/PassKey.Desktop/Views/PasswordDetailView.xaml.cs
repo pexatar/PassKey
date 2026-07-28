@@ -1,4 +1,5 @@
 using System.IO;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,6 +27,7 @@ public sealed partial class PasswordDetailView : UserControl
     private bool _updatingFromVm;
     private readonly ResourceLoader _resourceLoader = new();
     private readonly IToastService? _toast = App.Services.GetService(typeof(IToastService)) as IToastService;
+    private IDialogQueueService _dialogQueue = null!;
 
     /// <summary>Per-second timer that refreshes the live TOTP code while the view is loaded.</summary>
     private DispatcherQueueTimer? _totpTimer;
@@ -52,6 +54,7 @@ public sealed partial class PasswordDetailView : UserControl
     {
         _viewModel = vm;
         DataContext = vm;
+        _dialogQueue = App.Services.GetRequiredService<IDialogQueueService>();
 
         vm.PropertyChanged += OnViewModelPropertyChanged;
 
@@ -284,10 +287,22 @@ public sealed partial class PasswordDetailView : UserControl
             XamlRoot = XamlRoot,
         };
 
-        var res = await dialog.ShowAsync();
-        if (res != ContentDialogResult.Primary) return;
-        if (!_viewModel.ApplyManualSeed(input.Text))
-            _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipBase32Invalid"));
+        // Route through the dialog queue: WinUI allows a single ContentDialog at a time,
+        // so showing this directly can collide with a queued one (e.g. the browser-extension
+        // consent prompt) and throw "Only a single ContentDialog can be open at any time".
+        try
+        {
+            var res = await _dialogQueue.EnqueueAndWait(() => dialog.ShowAsync().AsTask());
+            if (res != ContentDialogResult.Primary) return;
+            if (!_viewModel.ApplyManualSeed(input.Text))
+                _toast?.Show(ToastSeverity.Warning, _resourceLoader.GetString("TotpTipBase32Invalid"));
+        }
+        catch (Exception ex)
+        {
+            // async void handler: an unhandled exception here would terminate the process.
+            System.Diagnostics.Debug.WriteLine($"[PasswordDetailView] TOTP seed dialog failed: {ex}");
+            _toast?.Show(ToastSeverity.Error, _resourceLoader.GetString("OperationGenericError"));
+        }
     }
 
     private void TotpCopyButton_Click(object sender, RoutedEventArgs e)

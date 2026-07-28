@@ -17,6 +17,7 @@ public sealed partial class LoginView : UserControl
 {
     private LoginViewModel? _viewModel;
     private readonly ResourceLoader _resourceLoader = new();
+    private IDialogQueueService _dialogQueue = null!;
 
     /// <summary>Localized default caption of the login button, captured after x:Uid is applied.</summary>
     private readonly string _loginButtonDefaultText;
@@ -42,6 +43,7 @@ public sealed partial class LoginView : UserControl
     {
         _viewModel = vm;
         DataContext = vm;
+        _dialogQueue = App.Services.GetRequiredService<IDialogQueueService>();
     }
 
     private void OnPasswordChanged(object? sender, string password)
@@ -129,12 +131,26 @@ public sealed partial class LoginView : UserControl
             XamlRoot = XamlRoot
         };
 
-        var result = await choice.ShowAsync();
+        // Route through the dialog queue: WinUI allows a single ContentDialog at a time,
+        // and this flow chains a second dialog straight after this one. Showing them
+        // directly would throw "Only a single ContentDialog can be open at any time"
+        // (also if a queued dialog — e.g. the update prompt — is already open).
+        try
+        {
+            var result = await _dialogQueue.EnqueueAndWait(() => choice.ShowAsync().AsTask());
 
-        if (result == ContentDialogResult.Primary)
-            await RestoreFromBackupAsync();
-        else if (result == ContentDialogResult.Secondary)
-            await CreateNewVaultAsync();
+            if (result == ContentDialogResult.Primary)
+                await RestoreFromBackupAsync();
+            else if (result == ContentDialogResult.Secondary)
+                await CreateNewVaultAsync();
+        }
+        catch (Exception ex)
+        {
+            // async void handler: an unhandled exception here would terminate the process.
+            System.Diagnostics.Debug.WriteLine($"[LoginView] Forgot-password flow failed: {ex}");
+            App.Services.GetService<IToastService>()?.Show(
+                ToastSeverity.Error, _resourceLoader.GetString("OperationGenericError"));
+        }
     }
 
     /// <summary>
@@ -165,7 +181,7 @@ public sealed partial class LoginView : UserControl
             DefaultButton = ContentDialogButton.Primary,
             XamlRoot = XamlRoot
         };
-        if (await pwDialog.ShowAsync() != ContentDialogResult.Primary) return;
+        if (await _dialogQueue.EnqueueAndWait(() => pwDialog.ShowAsync().AsTask()) != ContentDialogResult.Primary) return;
 
         var password = input.Password;
         if (string.IsNullOrEmpty(password)) return;
@@ -205,7 +221,7 @@ public sealed partial class LoginView : UserControl
             XamlRoot = XamlRoot
         };
 
-        if (await confirm.ShowAsync() == ContentDialogResult.Primary)
+        if (await _dialogQueue.EnqueueAndWait(() => confirm.ShowAsync().AsTask()) == ContentDialogResult.Primary)
             _viewModel.StartNewVault();
     }
 }
