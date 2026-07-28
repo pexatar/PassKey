@@ -17,18 +17,22 @@ Prima di qualunque push/PR/merge:
 
 > Eccezione ragionevole: modifiche **solo-documentazione** (come questo file) non richiedono l'installer, ma richiedono comunque la revisione e l'OK esplicito dell'utente prima della PR.
 
-### 0.2 Git
+### 0.2 Durante un collaudo: si annota, non si implementa
+Mentre l'utente sta collaudando una build, **qualunque osservazione, dubbio o idea che emerge va messa in una lista "DA DECIDERE"** — nessuna modifica al codice, nessuna ricompilazione, finché l'utente non dà un **"procedi"** esplicito su quel punto.
+**Perché:** modificare il codice a collaudo in corso invalida la build sotto test (l'utente finirebbe per dare il VIA LIBERA a una versione diversa da quella che si pubblica) e costringe a rifare le prove. Errore commesso il 2026-07-28: implementata e ricompilata UX-01 mentre l'utente stava testando, dopo una sua semplice osservazione sul colore di un toast.
+
+### 0.3 Git
 - **Linea viva = `main`** (protetto: solo PR + check `test` verde + **squash-merge**).
 - Branch di lavoro DA `main`: `fix/2.0/<short>` (o `feat/2.0/<short>` per nuove funzioni).
 - Titolo PR: `<type>(<scope>): <descrizione> [v2.0]`.
 - Il worktree `cool-wilson-213cae` (`feat/2.0/main`) è **OBSOLETO**: non usarlo (eliminazione = decisione utente, non urgente).
 
-### 0.3 Regola di verifica (estensione del principio "Dubitativo")
+### 0.4 Regola di verifica (estensione del principio "Dubitativo")
 - Memoria, informazioni e documentazione locali (questo file incluso) possono essere **errate o datate**: prima di agire, ri-verificare i presupposti su **codice e git**.
 - Quando la verifica locale non basta (API esterne, versioni, policy degli store, URL di download), fare **ricerche online** — sempre autorizzate — **multiple, in parallelo, multifattoriali e approfondite**, al **momento dell'implementazione** (non in anticipo: l'informazione decade).
 - Checkpoint online già previsti da questo piano: T6.5.6 (API `WinVerifyTrust`, attestazione processo padre, allowlist firmatari browser), T8.1 (URL/versione WindowsAppRuntime), T8.5 (policy correnti Chrome Web Store / Firefox AMO), backlog (stato release CommunityToolkit Labs).
 
-### 0.4 Comandi di riferimento
+### 0.5 Comandi di riferimento
 - Build: `dotnet build src/PassKey.Desktop/PassKey.Desktop.csproj -p:Platform=x64`
 - Test: `dotnet test src/PassKey.Tests/PassKey.Tests.csproj` — **baseline: 222 verdi**
 - Diagnosi errori XAML mascherati: MSBuild full-framework (vedi memoria di progetto / pitfall XamlCompiler net472).
@@ -101,6 +105,56 @@ Prima di qualunque push/PR/merge:
 #### T6.5.GATE — gate di cluster
 Build installer → test utente (avvio, unlock, CRUD nelle 4 sezioni con salvataggi, lock/unlock ripetuti, autofill Chrome+Firefox, harness IPC) → **VIA LIBERA** → PR.
 > Suddivisione PR consigliata: T6.5.1+T6.5.2 (robustezza, piccola) · T6.5.3+T6.5.4 (memoria, piccola) · T6.5.5 (refactoring, dedicata) · T6.5.6 (SEC-05, dedicata). Gate utente almeno su: robustezza+memoria (una build) e SEC-05 (una build). Decidere caso per caso con l'utente.
+
+### Blocco UX/Loc — notifiche e traduzioni (deciso con l'utente 2026-07-28)
+> Un solo branch, una sola build, **un solo collaudo** (i tre task toccano le stesse aree).
+> Collocazione proposta: **dopo il Cluster 6.5** (è rifinitura, non robustezza) — da confermare.
+
+#### UX-02 — Sistema di notifiche a due corsie ⭐ (il pezzo grosso)
+**Problema:** oggi i toast sono **incolonnati** su un'unica `InfoBar` condivisa e mostrati uno alla volta. Poiché il toast di errore non scade mai, **blocca tutti i successivi** finché l'utente non lo chiude. L'utente lo giudica inaccettabile: vuole gli avvisi persistenti sempre visibili E i messaggi informativi puntuali, senza accumulo confuso.
+
+**Specifica approvata dall'utente:**
+- **Pila di 5 slot**, ancorata in basso a destra. Due classi di messaggio:
+  - **Persistenti** (errori / richiedono interazione): restano finché l'utente non li chiude. Raggruppati **in basso**.
+  - **Transitori** (info / successo / avviso): scadono da soli. Galleggiano **sopra** il blocco dei persistenti.
+- **Regola d'inserimento UNIFORME: il nuovo messaggio entra sempre dal basso nella propria corsia; i più vecchi salgono.** L'ordine reciproco è preservato.
+  - Nuovo **persistente** → slot 1 (fondo assoluto); i persistenti più vecchi salgono; i transitori slittano su di conseguenza.
+  - Nuovo **transitorio** → prima posizione sopra il blocco persistenti; i transitori più vecchi salgono.
+- *Razionale della regola uniforme (scelta dell'utente):* una regola sola per entrambe le corsie, coerente col modello mentale delle notifiche di sistema (il nuovo compare dove l'occhio già guarda, i vecchi si allontanano).
+
+```
+   slot 5  │                      │
+   slot 4  │ ⓘ  msg2 (a tempo)    │  ← più vecchio, salito
+   slot 3  │ ⓘ  msg3 (a tempo)    │  ← transitorio più recente
+   slot 2  │ ✕  msg1 (bloccato)   │  ← persistente più vecchio, salito
+   slot 1  │ ✕  msg4 (bloccato)   │  ← persistente più recente: entra dal basso
+```
+
+**⏳ Regole di overflow — PROPOSTE DA ME, NON ANCORA CONFERMATE dall'utente:**
+- Slot esauriti + arriva un **persistente** → si accoda e compare appena se ne libera uno (**un errore non va mai perso**).
+- Slot esauriti + arriva un **transitorio** → chiude in anticipo il transitorio **più vecchio** (accodarlo tradirebbe il requisito "compaia al momento giusto").
+- **Riserva**: i persistenti occupano al massimo **4** slot; 1 slot resta **sempre** disponibile per la corsia transitoria (altrimenti 5 errori riprodurrebbero il blocco che questa modifica elimina).
+
+**Note d'implementazione:** sostituire l'`InfoBar` singola in `MainWindow.xaml` con un contenitore di N barre; `ToastService` perde la pompa seriale e gestisce timer per-messaggio. Attenzione a: annunci per screen reader su più live region, movimento verticale alla comparsa di un persistente, altezza totale della pila su finestre piccole.
+
+#### UX-03 — Allineare tutti i toast alla mappatura approvata
+Mappatura **approvata dall'utente 2026-07-28** (il colore descrive **l'esito**, non la natura dell'azione; il livello determina anche la durata):
+
+| Evento | Livello | Durata |
+|---|---|---|
+| Copia negli appunti | ⓘ Informativo | 3s |
+| Salvataggio riuscito | ✓ Successo | 5s |
+| **Eliminazione riuscita** | **ⓘ Informativo** | 3s |
+| Avvisi (auto-lock…) | ⚠ Avviso | 5s |
+| Salvataggio/eliminazione fallita | ✕ Errore | persistente |
+
+- **UX-01 (già fatto** nel branch `fix/2.0/asy01-save-errors`, commit `74fb1cc`): applica la mappatura ai soli toast di **eliminazione** (8 punti). **Resta da fare**: verificare TUTTI gli altri toast dell'app e allinearli.
+- *Decisioni collegate:* **"Annulla"/undo sul toast di eliminazione → SCARTATO** dall'utente. **Scollegare durata da livello → decaduto** (serviva solo per l'undo); da riaprire solo se in collaudo i 3s risultassero troppo brevi per leggere "Elemento eliminato".
+
+#### LOC-01 — Verifica completa delle traduzioni (scelta utente: **completa**, non minima)
+- **Refusi noti** nella chiave `ToastDeleted`: fr-FR `Element supprime` → `Élément supprimé`; de-DE `Element geloscht` → `Element gelöscht`.
+- **Scope deciso:** non correggere solo questi due, ma **passare in rassegna tutti e 6 i `.resw`** cercando altri casi di diacritici mancanti.
+- **Ipotesi sulla causa (da verificare):** gli script `add-resw-keys.ps1` / `add-login-resw-keys.ps1` (untracked, nella root) potrebbero aver inserito chiavi in blocco senza caratteri accentati → il difetto potrebbe ripetersi in altre chiavi e in lingue che l'utente non usa.
 
 ### Cluster 7 — Documentazione utente
 - **T7.1** — user-guide **TOTP** (setup, import QR/URI/manuale, uso dei codici). *Verificato: oggi la user-guide non menziona mai TOTP.*
