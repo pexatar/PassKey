@@ -1552,7 +1552,7 @@ Moechten Sie diese Pruefung aktivieren?</value>
     <value>Anderungen gespeichert</value>
   </data>
   <data name="ToastDeleted" xml:space="preserve">
-    <value>Element geloscht</value>
+    <value>Element gelöscht</value>
   </data>
   <data name="ToastSaveError" xml:space="preserve">
     <value>Speichern fehlgeschlagen. Die Änderungen wurden nicht auf den Datenträger geschrieben – bitte versuchen Sie es erneut.</value>

@@ -217,6 +217,24 @@ public partial class App : Application
             // Diagnostics must never make a bad situation worse.
         }
 
+        // Fail secure (SYS-01): an unhandled exception means the process is in an unknown state.
+        // Zero the decryption key immediately rather than leaving an unlocked vault sitting in
+        // memory behind an error screen — the app is no longer trustworthy enough to hold it.
+        try
+        {
+            var vaultState = Services.GetRequiredService<IVaultStateService>();
+            if (vaultState.IsUnlocked)
+            {
+                vaultState.Lock();
+                Services.GetRequiredService<ILogService>()
+                        .Warn(LogArea.Vault, "Vault locked after unhandled exception (fail-secure)");
+            }
+        }
+        catch
+        {
+            // Locking is best-effort: never mask the original failure.
+        }
+
         try
         {
             if (MainWindow is { } mw)

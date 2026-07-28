@@ -849,7 +849,7 @@
     <value>Sistema (Auto)</value>
   </data>
   <data name="BackupPwErrMismatch" xml:space="preserve">
-    <value>Las contrasenas no coinciden.</value>
+    <value>Las contraseñas no coinciden.</value>
   </data>
   <data name="ImportMergeTitle" xml:space="preserve">
     <value>Estrategia de duplicados</value>
@@ -870,19 +870,19 @@
     <value>Cancelar</value>
   </data>
   <data name="BackupPwPlaceholder" xml:space="preserve">
-    <value>Contrasena de respaldo</value>
+    <value>Contraseña de respaldo</value>
   </data>
   <data name="BackupPwDialogTitle" xml:space="preserve">
-    <value>Contrasena de respaldo</value>
+    <value>Contraseña de respaldo</value>
   </data>
   <data name="RestoreErrorWrongPw" xml:space="preserve">
-    <value>Contrasena incorrecta o archivo danado.</value>
+    <value>Contraseña incorrecta o archivo dañado.</value>
   </data>
   <data name="BackupPwErrShort" xml:space="preserve">
-    <value>La contrasena debe tener al menos 8 caracteres.</value>
+    <value>La contraseña debe tener al menos 8 caracteres.</value>
   </data>
   <data name="ImportKdbxPwTitle" xml:space="preserve">
-    <value>Contrasena KeePass</value>
+    <value>Contraseña KeePass</value>
   </data>
   <data name="BackupSuccessMessage" xml:space="preserve">
     <value>La copia de seguridad se ha guardado correctamente.</value>
@@ -891,7 +891,7 @@
     <value>Error de importacion</value>
   </data>
   <data name="BackupPwConfirmPlaceholder" xml:space="preserve">
-    <value>Confirmar contrasena</value>
+    <value>Confirmar contraseña</value>
   </data>
   <data name="BackupSuccessTitle" xml:space="preserve">
     <value>Copia completada</value>
@@ -903,34 +903,34 @@
     <value>Sobrescribir duplicados</value>
   </data>
   <data name="RestorePwDialogTitle" xml:space="preserve">
-    <value>Contrasena del respaldo</value>
+    <value>Contraseña del respaldo</value>
   </data>
   <data name="ImportFormatDialogTitle" xml:space="preserve">
     <value>Seleccionar formato</value>
   </data>
   <data name="BackupPwDialogDesc" xml:space="preserve">
-    <value>Elige una contrasena para proteger el respaldo.</value>
+    <value>Elige una contraseña para proteger el respaldo.</value>
   </data>
   <data name="RestoreSuccessTitle" xml:space="preserve">
     <value>Restauracion completada</value>
   </data>
   <data name="BackupPwErrEmpty" xml:space="preserve">
-    <value>Introduce una contrasena.</value>
+    <value>Introduce una contraseña.</value>
   </data>
   <data name="ImportKdbxPwPlaceholder" xml:space="preserve">
-    <value>Contrasena maestra KeePass</value>
+    <value>Contraseña maestra KeePass</value>
   </data>
   <data name="ImportFormatKdbx" xml:space="preserve">
     <value>KeePass 2.x (.kdbx)</value>
   </data>
   <data name="RestorePwPlaceholder" xml:space="preserve">
-    <value>Contrasena de respaldo</value>
+    <value>Contraseña de respaldo</value>
   </data>
   <data name="ImportSummaryTitle" xml:space="preserve">
     <value>Importacion completada</value>
   </data>
   <data name="ImportSummaryPasswords" xml:space="preserve">
-    <value>Contrasenas: {0}</value>
+    <value>Contraseñas: {0}</value>
   </data>
   <data name="ImportFormatOnePux" xml:space="preserve">
     <value>1Password (.1pux)</value>
@@ -1301,7 +1301,7 @@
     <value>Verificacion</value>
   </data>
   <data name="TabVerify.Header" xml:space="preserve">
-    <value>Contrasena</value>
+    <value>Contraseña</value>
   </data>
   <data name="TabAuditVault.Header" xml:space="preserve">
     <value>Vault</value>
@@ -1472,22 +1472,22 @@
     <value>Watchtower</value>
   </data>
   <data name="SettingsHibpDesc.Text" xml:space="preserve">
-    <value>Verificar las contrasenas contra Have I Been Pwned. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
+    <value>Verificar las contraseñas contra Have I Been Pwned. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
   </data>
   <data name="SettingsHibpTitle.Text" xml:space="preserve">
-    <value>Comprobar contrasenas comprometidas</value>
+    <value>Comprobar contraseñas comprometidas</value>
   </data>
   <data name="WatchtowerCompromisedHeader.Text" xml:space="preserve">
-    <value>Contrasenas comprometidas</value>
+    <value>Contraseñas comprometidas</value>
   </data>
   <data name="WatchtowerDuplicatesHeader.Text" xml:space="preserve">
-    <value>Contrasenas reutilizadas</value>
+    <value>Contraseñas reutilizadas</value>
   </data>
   <data name="WatchtowerHibpDisabledBanner.Message" xml:space="preserve">
-    <value>Para comprobar tus contrasenas contra Have I Been Pwned activa la opcion en Ajustes -&gt; Seguridad. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
+    <value>Para comprobar tus contraseñas contra Have I Been Pwned activa la opcion en Ajustes -&gt; Seguridad. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
   </data>
   <data name="WatchtowerHibpDisabledBanner.Title" xml:space="preserve">
-    <value>Comprobacion de contrasenas comprometidas desactivada</value>
+    <value>Comprobacion de contraseñas comprometidas desactivada</value>
   </data>
   <data name="WatchtowerScanButton.Text" xml:space="preserve">
     <value>Iniciar escaneo</value>
@@ -1505,31 +1505,31 @@
     <value>Debiles</value>
   </data>
   <data name="WatchtowerSubtitle.Text" xml:space="preserve">
-    <value>Auditoria del vault: contrasenas debiles, reutilizadas y comprometidas en filtraciones publicas.</value>
+    <value>Auditoria del vault: contraseñas debiles, reutilizadas y comprometidas en filtraciones publicas.</value>
   </data>
   <data name="WatchtowerTitle.Text" xml:space="preserve">
     <value>Watchtower</value>
   </data>
   <data name="WatchtowerWeakHeader.Text" xml:space="preserve">
-    <value>Contrasenas debiles</value>
+    <value>Contraseñas debiles</value>
   </data>
   <data name="VerifierHibpDisabledBanner.Message" xml:space="preserve">
-    <value>Para comprobar tus contrasenas contra Have I Been Pwned activa la opcion en Ajustes -&gt; Seguridad. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
+    <value>Para comprobar tus contraseñas contra Have I Been Pwned activa la opcion en Ajustes -&gt; Seguridad. Solo los primeros 5 caracteres del hash SHA-1 salen del dispositivo (k-anonymity).</value>
   </data>
   <data name="AuditCompromised.Text" xml:space="preserve">
     <value>Comprometidas</value>
   </data>
   <data name="VerifierCompromisedHeader.Text" xml:space="preserve">
-    <value>Contrasenas comprometidas</value>
+    <value>Contraseñas comprometidas</value>
   </data>
   <data name="VerifierHibpDisabledBanner.Title" xml:space="preserve">
-    <value>Comprobacion de contrasenas comprometidas desactivada</value>
+    <value>Comprobacion de contraseñas comprometidas desactivada</value>
   </data>
   <data name="HibpConsentClose" xml:space="preserve">
     <value>Cancelar</value>
   </data>
   <data name="HibpConsentMessage" xml:space="preserve">
-    <value>PassKey verificara tus contrasenas contra la base de datos publica de Have I Been Pwned. Solo los primeros 5 caracteres del hash SHA-1 de cada contrasena saldran del dispositivo (k-anonymity) - la contrasena en texto claro siempre se queda local.
+    <value>PassKey verificara tus contraseñas contra la base de datos publica de Have I Been Pwned. Solo los primeros 5 caracteres del hash SHA-1 de cada contraseña saldran del dispositivo (k-anonymity) - la contraseña en texto claro siempre se queda local.
 
 Deseas activar esta verificacion?</value>
   </data>
@@ -1537,13 +1537,13 @@ Deseas activar esta verificacion?</value>
     <value>Activar</value>
   </data>
   <data name="HibpConsentTitle" xml:space="preserve">
-    <value>Activar la comprobacion de contrasenas comprometidas?</value>
+    <value>Activar la comprobacion de contraseñas comprometidas?</value>
   </data>
   <data name="DashHealthCompromisedLabel.Text" xml:space="preserve">
     <value>Comprometidas</value>
   </data>
   <data name="DashHealthCompromisedSummary" xml:space="preserve">
-    <value>{0} contrasenas comprometidas</value>
+    <value>{0} contraseñas comprometidas</value>
   </data>
   <data name="DashHealthDuplicatesLabel.Text" xml:space="preserve">
     <value>Reutilizadas</value>
@@ -1564,16 +1564,16 @@ Deseas activar esta verificacion?</value>
     <value>Nombre de usuario copiado</value>
   </data>
   <data name="ToastPasswordCopied" xml:space="preserve">
-    <value>Contrasena copiada</value>
+    <value>Contraseña copiada</value>
   </data>
   <data name="ToastCopied" xml:space="preserve">
     <value>Copiado al portapapeles</value>
   </data>
   <data name="ForgotPwTitle" xml:space="preserve">
-    <value>Contrasena olvidada</value>
+    <value>Contraseña olvidada</value>
   </data>
   <data name="ForgotPwMessage" xml:space="preserve">
-    <value>PassKey nunca almacena la contrasena maestra. Por seguridad (modelo zero-knowledge) solo tu la conoces. Si la has olvidado, puedes restaurar una copia .pkbak o crear un vault nuevo.</value>
+    <value>PassKey nunca almacena la contraseña maestra. Por seguridad (modelo zero-knowledge) solo tu la conoces. Si la has olvidado, puedes restaurar una copia .pkbak o crear un vault nuevo.</value>
   </data>
   <data name="ForgotPwRestore" xml:space="preserve">
     <value>Restaurar copia</value>

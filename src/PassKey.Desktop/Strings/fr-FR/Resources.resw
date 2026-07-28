@@ -879,7 +879,7 @@
     <value>Mot de passe incorrect ou fichier corrompu.</value>
   </data>
   <data name="BackupPwErrShort" xml:space="preserve">
-    <value>Le mot de passe doit comporter au moins 8 caracteres.</value>
+    <value>Le mot de passe doit comporter au moins 8 caractères.</value>
   </data>
   <data name="ImportKdbxPwTitle" xml:space="preserve">
     <value>Mot de passe KeePass</value>
@@ -936,7 +936,7 @@
     <value>1Password (.1pux)</value>
   </data>
   <data name="RestoreWarningMessage" xml:space="preserve">
-    <value>Cela REMPLACERA votre coffre par la sauvegarde. Une copie de securite sera creee.</value>
+    <value>Cela REMPLACERA votre coffre par la sauvegarde. Une copie de sécurité sera créée.</value>
   </data>
   <data name="RestoreWarningConfirm" xml:space="preserve">
     <value>Restaurer</value>
@@ -1471,7 +1471,7 @@
     <value>Watchtower</value>
   </data>
   <data name="SettingsHibpDesc.Text" xml:space="preserve">
-    <value>Verifier les mots de passe contre Have I Been Pwned. Seuls les 5 premiers caracteres du hash SHA-1 quittent l&apos;appareil (k-anonymity).</value>
+    <value>Verifier les mots de passe contre Have I Been Pwned. Seuls les 5 premiers caractères du hash SHA-1 quittent l&apos;appareil (k-anonymity).</value>
   </data>
   <data name="SettingsHibpTitle.Text" xml:space="preserve">
     <value>Verifier les mots de passe compromis</value>
@@ -1483,7 +1483,7 @@
     <value>Mots de passe reutilises</value>
   </data>
   <data name="WatchtowerHibpDisabledBanner.Message" xml:space="preserve">
-    <value>Pour verifier vos mots de passe contre Have I Been Pwned activez l&apos;option dans Parametres -&gt; Securite. Seuls les 5 premiers caracteres du hash SHA-1 quittent l&apos;appareil (k-anonymity).</value>
+    <value>Pour vérifier vos mots de passe contre Have I Been Pwned activez l&apos;option dans Paramètres -&gt; Sécurité. Seuls les 5 premiers caractères du hash SHA-1 quittent l&apos;appareil (k-anonymity).</value>
   </data>
   <data name="WatchtowerHibpDisabledBanner.Title" xml:space="preserve">
     <value>Verification des mots de passe compromis desactivee</value>
@@ -1513,7 +1513,7 @@
     <value>Mots de passe faibles</value>
   </data>
   <data name="VerifierHibpDisabledBanner.Message" xml:space="preserve">
-    <value>Pour verifier vos mots de passe contre Have I Been Pwned activez l&apos;option dans Parametres -&gt; Securite. Seuls les 5 premiers caracteres du hash SHA-1 quittent l&apos;appareil (k-anonymity).</value>
+    <value>Pour vérifier vos mots de passe contre Have I Been Pwned activez l&apos;option dans Paramètres -&gt; Sécurité. Seuls les 5 premiers caractères du hash SHA-1 quittent l&apos;appareil (k-anonymity).</value>
   </data>
   <data name="AuditCompromised.Text" xml:space="preserve">
     <value>Compromis</value>
@@ -1528,7 +1528,7 @@
     <value>Annuler</value>
   </data>
   <data name="HibpConsentMessage" xml:space="preserve">
-    <value>PassKey verifiera vos mots de passe contre la base de donnees publique Have I Been Pwned. Seuls les 5 premiers caracteres du hash SHA-1 de chaque mot de passe quitteront votre appareil (k-anonymity) - le mot de passe en clair reste toujours local.
+    <value>PassKey verifiera vos mots de passe contre la base de données publique Have I Been Pwned. Seuls les 5 premiers caractères du hash SHA-1 de chaque mot de passe quitteront votre appareil (k-anonymity) - le mot de passe en clair reste toujours local.
 
 Voulez-vous activer cette verification ?</value>
   </data>
@@ -1554,7 +1554,7 @@ Voulez-vous activer cette verification ?</value>
     <value>Modifications enregistrees</value>
   </data>
   <data name="ToastDeleted" xml:space="preserve">
-    <value>Element supprime</value>
+    <value>Élément supprimé</value>
   </data>
   <data name="ToastSaveError" xml:space="preserve">
     <value>Échec de l'enregistrement. Les modifications n'ont pas été écrites sur le disque : réessayez.</value>
@@ -1569,10 +1569,10 @@ Voulez-vous activer cette verification ?</value>
     <value>Copie dans le presse-papiers</value>
   </data>
   <data name="ForgotPwTitle" xml:space="preserve">
-    <value>Mot de passe oublie</value>
+    <value>Mot de passe oublié</value>
   </data>
   <data name="ForgotPwMessage" xml:space="preserve">
-    <value>PassKey ne memorise jamais le mot de passe principal. Pour des raisons de securite (modele zero-knowledge), vous seul le connaissez. Si vous l'avez oublie, vous pouvez restaurer une sauvegarde .pkbak ou creer un nouveau coffre.</value>
+    <value>PassKey ne mémorise jamais le mot de passe principal. Pour des raisons de sécurité (modele zero-knowledge), vous seul le connaissez. Si vous l'avez oublié, vous pouvez restaurer une sauvegarde .pkbak ou créer un nouveau coffre.</value>
   </data>
   <data name="ForgotPwRestore" xml:space="preserve">
     <value>Restaurer une sauvegarde</value>
@@ -1584,7 +1584,7 @@ Voulez-vous activer cette verification ?</value>
     <value>Creer un nouveau coffre</value>
   </data>
   <data name="NewVaultWarnMessage" xml:space="preserve">
-    <value>Le coffre actuel et toutes ses donnees deviendront definitivement inaccessibles. Operation irreversible. Continuer ?</value>
+    <value>Le coffre actuel et toutes ses données deviendront définitivement inaccessibles. Opération irréversible. Continuer ?</value>
   </data>
   <data name="NewVaultWarnConfirm" xml:space="preserve">
     <value>Supprimer et continuer</value>

@@ -226,7 +226,7 @@ public sealed partial class CreditCardControl : UserControl
     /// </summary>
     /// <param name="color">The accent color to map.</param>
     /// <returns>A tuple of (startColor, endColor) for the card's linear gradient brush.</returns>
-    private static (Windows.UI.Color start, Windows.UI.Color end) GetGradientColors(CardColor color)
+    internal static (Windows.UI.Color start, Windows.UI.Color end) GetGradientColors(CardColor color)
     {
         return color switch
         {
@@ -318,7 +318,7 @@ public sealed partial class CreditCardControl : UserControl
         => CardRoot.BorderBrush = TransparentBorderBrush;
 
     /// <summary>Lightens an RGB colour by clamping each channel up by <paramref name="amount"/>.</summary>
-    private static Windows.UI.Color Lighten(Windows.UI.Color c, int amount)
+    internal static Windows.UI.Color Lighten(Windows.UI.Color c, int amount)
     {
         return Windows.UI.Color.FromArgb(
             c.A,
@@ -328,7 +328,7 @@ public sealed partial class CreditCardControl : UserControl
     }
 
     /// <summary>Darkens an RGB colour by clamping each channel down by <paramref name="amount"/>.</summary>
-    private static Windows.UI.Color Darken(Windows.UI.Color c, int amount)
+    internal static Windows.UI.Color Darken(Windows.UI.Color c, int amount)
     {
         return Windows.UI.Color.FromArgb(
             c.A,

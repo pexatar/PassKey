@@ -1451,10 +1451,10 @@
   </data>
 
   <data name="FieldTotp.Text" xml:space="preserve">
-    <value>Codigo 2FA (TOTP)</value>
+    <value>Código 2FA (TOTP)</value>
   </data>
   <data name="TotpCodeLabel.Text" xml:space="preserve">
-    <value>Codigo atual</value>
+    <value>Código atual</value>
   </data>
   <data name="TotpEnterSecretLabel.Text" xml:space="preserve">
     <value>Inserir seed</value>

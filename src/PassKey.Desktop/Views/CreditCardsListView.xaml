@@ -3,7 +3,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:PassKey.Desktop.Controls"
+    xmlns:conv="using:PassKey.Desktop.Converters"
     KeyDown="OnViewKeyDown">
+
+    <UserControl.Resources>
+        <conv:CardAccentBrushConverter x:Key="CardAccentBrush" />
+    </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -111,9 +116,10 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <!-- Card type icon circle -->
+                            <!-- Card type icon circle. Tinted with the card's own accent colour
+                                 so the list and the card view show the same identity. -->
                             <Grid Grid.Column="0" Width="36" Height="36" CornerRadius="18"
-                                  Background="{ThemeResource CardsIconBrush}">
+                                  Background="{Binding AccentColor, Converter={StaticResource CardAccentBrush}}">
                                 <FontIcon Glyph="&#xE8C7;" FontSize="16"
                                           Foreground="White"
                                           HorizontalAlignment="Center"
