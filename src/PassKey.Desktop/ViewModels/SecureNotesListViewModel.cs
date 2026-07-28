@@ -213,7 +213,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
                 });
                 await LoadEntriesCommand.ExecuteAsync(null);
                 CloseEditor();
-                _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
+                _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastDeleted"));
             }
             catch (Exception)
             {
@@ -286,7 +286,7 @@ public partial class SecureNotesListViewModel : ObservableObject, IDisposable
             });
             await LoadEntriesCommand.ExecuteAsync(null);
             CloseEditor();
-            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
+            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastDeleted"));
         }
         catch (Exception)
         {

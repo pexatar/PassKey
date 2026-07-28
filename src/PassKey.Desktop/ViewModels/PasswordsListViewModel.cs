@@ -227,7 +227,7 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
                 });
                 await LoadEntriesCommand.ExecuteAsync(null);
                 CloseDetail();
-                _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
+                _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastDeleted"));
             }
             catch (Exception)
             {
@@ -280,7 +280,7 @@ public partial class PasswordsListViewModel : ObservableObject, IDisposable
             });
             await LoadEntriesCommand.ExecuteAsync(null);
             CloseDetail();
-            _toast.Show(ToastSeverity.Success, _resourceLoader.GetString("ToastDeleted"));
+            _toast.Show(ToastSeverity.Info, _resourceLoader.GetString("ToastDeleted"));
         }
         catch (Exception)
         {
