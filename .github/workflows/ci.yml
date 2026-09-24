@@ -2,7 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    # refactor/2.0/ui-rifondazione is listed so the cloud session (Linux, cannot build
+    # WinUI) gets a real Windows compile + test run on every push, without opening a PR.
+    # TEMPORARY: remove this branch from the list before the branch is ever merged.
+    branches: [main, develop, refactor/2.0/ui-rifondazione]
   pull_request:
     branches: [main]
 
