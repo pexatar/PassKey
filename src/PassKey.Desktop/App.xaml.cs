@@ -80,6 +80,13 @@ public partial class App : Application
                 services.AddTransient<SettingsViewModel>();
                 services.AddTransient<HelpViewModel>();
                 services.AddTransient<ActivityLogViewModel>();
+
+                // Detail panel factories. A section list creates one detail ViewModel per
+                // editing session and disposes it on close (R4), so it needs to ask for a new
+                // instance rather than hold an injected one — a single shared instance is what
+                // forced the old "assign null, then reassign" trick to provoke a notification.
+                services.AddTransient<Func<SecureNoteDetailViewModel>>(
+                    sp => sp.GetRequiredService<SecureNoteDetailViewModel>);
             })
             .Build();
 

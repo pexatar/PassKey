@@ -1,275 +1,104 @@
-using Microsoft.UI;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.Windows.ApplicationModel.Resources;
-using PassKey.Core.Constants;
+using PassKey.Desktop.Controls;
 using PassKey.Desktop.ViewModels;
+using PassKey.Desktop.ViewModels.Items;
 
 namespace PassKey.Desktop.Views;
 
 /// <summary>
-/// Secure note editor view (right panel in master-detail layout).
-/// Layout: header orizzontale (Titolo + unsaved dot | Categoria + dot), toggle Modifica/Anteprima,
-/// area testo con ContentBox (edit) o MarkdownTextBlock (preview).
-/// Footer: Elimina | Pin toggle | Salva.
+/// Secure note editor panel: title and category, an edit/preview toggle over the body, and a
+/// footer with delete, pin, cancel and save.
 /// </summary>
-public sealed partial class SecureNoteDetailView : UserControl
+/// <remarks>
+/// <para>
+/// Every field is a two-way binding and every button is bound to a command, so this file no
+/// longer copies values between the controls and the ViewModel. The <c>_updatingFromVm</c>
+/// flag that guarded those copies — and made the caret jump — has no reason to exist.
+/// </para>
+/// <para>
+/// What is left is what a binding cannot express: where the keyboard goes when a session
+/// opens, and the screen-reader announcements. The subscriptions behind the announcements are
+/// registered through <see cref="BoundViewBase.TrackPropertyChanged"/>, which owns their
+/// removal.
+/// </para>
+/// </remarks>
+public sealed partial class SecureNoteDetailView : DetailPanelBase
 {
-    private SecureNoteDetailViewModel? _viewModel;
     private readonly ResourceLoader _resourceLoader = new();
-    private bool _updatingFromVm;
-    private bool _isPreviewMode;
+    private bool _initialized;
 
     public SecureNoteDetailView()
     {
         InitializeComponent();
-        InitializeCategoryCombo();
+        _initialized = true;
     }
 
-    public void SetViewModel(SecureNoteDetailViewModel vm)
+    /// <summary>The editing session's ViewModel, typed for the compiled bindings.</summary>
+    public SecureNoteDetailViewModel? Vm => ViewModel as SecureNoteDetailViewModel;
+
+    /// <summary>The categories offered by the picker.</summary>
+    public IReadOnlyList<NoteCategoryOption> CategoryOptions => NoteCategoryOption.All;
+
+    /// <inheritdoc/>
+    protected override void RefreshBindings()
     {
-        _viewModel = vm;
-        DataContext = vm;
-
-        vm.PropertyChanged += OnViewModelPropertyChanged;
-
-        // Popola UI dal ViewModel
-        _updatingFromVm = true;
-        TitleBox.Text = vm.Title;
-        ContentBox.Text = vm.Content;
-        CategoryCombo.SelectedIndex = (int)vm.Category;
-        _updatingFromVm = false;
-
-        // Accessibility: LabeledBy per form fields
-        Microsoft.UI.Xaml.Automation.AutomationProperties.SetLabeledBy(TitleBox, TitleLabel);
-        Microsoft.UI.Xaml.Automation.AutomationProperties.SetLabeledBy(CategoryCombo, CategoryLabel);
-
-        // Accessibility: announce word count on leaving content box
-        ContentBox.LostFocus += ContentBox_LostFocus;
-
-        // Contatori
-        UpdateCounterText();
-
-        // Pin visual
-        UpdatePinVisual();
-
-        // Unsaved indicator
-        UnsavedDot.Visibility = vm.HasUnsavedChanges ? Visibility.Visible : Visibility.Collapsed;
-
-        // Pulsante salva e visibilita elimina
-        // Single source of truth for the Save button's enabled state.
-        SaveButton.Command = vm.SaveCommand;
-        DeleteButton.Visibility = vm.IsEditMode ? Visibility.Visible : Visibility.Collapsed;
-
-        // Inizializza in modalita Modifica
-        _isPreviewMode = false;
-        UpdateViewMode();
-
-        // Focus: titolo per nuove note, contenuto per note esistenti
-        if (vm.IsEditMode)
-            ContentBox.Focus(FocusState.Programmatic);
-        else
-            TitleBox.Focus(FocusState.Programmatic);
+        if (_initialized) Bindings.Update();
     }
 
-    private void InitializeCategoryCombo()
+    /// <inheritdoc/>
+    protected override void StopBindingTracking()
     {
-        foreach (NoteCategory cat in Enum.GetValues<NoteCategory>())
+        if (_initialized) Bindings.StopTracking();
+    }
+
+    /// <inheritdoc/>
+    protected override void OnViewModelReplaced(ObservableObject? oldViewModel, ObservableObject? newViewModel)
+    {
+        if (newViewModel is not SecureNoteDetailViewModel vm) return;
+
+        TrackPropertyChanged(vm, OnSessionPropertyChanged);
+
+        // Focus lands on the body for an existing note and on the title for a new one.
+        // Deferred because the panel is still being wired when the session is handed over.
+        DispatcherQueue.TryEnqueue(() =>
         {
-            var itemPanel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
-
-            var dot = new Border
-            {
-                Width = 12,
-                Height = 12,
-                CornerRadius = new CornerRadius(6),
-                Background = new SolidColorBrush(ParseColor(SecureNotesListViewModel.GetCategoryColor(cat))),
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
-            var label = new TextBlock
-            {
-                Text = SecureNotesListViewModel.GetCategoryName(cat),
-                VerticalAlignment = VerticalAlignment.Center
-            };
-
-            itemPanel.Children.Add(dot);
-            itemPanel.Children.Add(label);
-
-            var comboItem = new ComboBoxItem { Content = itemPanel, Tag = cat };
-            Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(
-                comboItem, SecureNotesListViewModel.GetCategoryName(cat));
-            CategoryCombo.Items.Add(comboItem);
-        }
+            if (!ReferenceEquals(Vm, vm)) return;
+            if (vm.IsEditMode) ContentBox.Focus(FocusState.Programmatic);
+            else TitleBox.Focus(FocusState.Programmatic);
+        });
     }
 
-    private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void OnSessionPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {
-            // CanSave is no longer mirrored by hand: SaveCommand.CanExecute drives the button.
-            case nameof(SecureNoteDetailViewModel.IsSaving):
-                UpdateSavingState(_viewModel?.IsSaving ?? false);
-                break;
-            case nameof(SecureNoteDetailViewModel.CharacterCount):
-            case nameof(SecureNoteDetailViewModel.WordCount):
-                UpdateCounterText();
-                break;
-            case nameof(SecureNoteDetailViewModel.IsEditMode):
-                DeleteButton.Visibility = (_viewModel?.IsEditMode ?? false)
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-                break;
             case nameof(SecureNoteDetailViewModel.HasUnsavedChanges):
-                var hasChanges = _viewModel?.HasUnsavedChanges ?? false;
-                UnsavedDot.Visibility = hasChanges ? Visibility.Visible : Visibility.Collapsed;
-                if (hasChanges)
+                if (Vm?.HasUnsavedChanges == true)
                     Announce(_resourceLoader.GetString("NoteUnsavedChanges"));
                 break;
-            case nameof(SecureNoteDetailViewModel.IsPinned):
-                UpdatePinVisual();
+
+            case nameof(SecureNoteDetailViewModel.IsSaving):
+                Announce(Vm?.IsSaving == true
+                    ? _resourceLoader.GetString("NoteSavingAnnounce")
+                    : _resourceLoader.GetString("NoteSavedAnnounce"));
                 break;
         }
     }
-
-    // --- Counter ---
-
-    private void UpdateCounterText()
-    {
-        CharCountText.Text = string.Format(
-            _resourceLoader.GetString("NoteCharWordCount"),
-            _viewModel?.CharacterCount ?? 0, _viewModel?.WordCount ?? 0);
-    }
-
-    // --- Toggle Modifica / Anteprima ---
-
-    private void EditModeBtn_Click(object sender, RoutedEventArgs e)
-    {
-        _isPreviewMode = false;
-        UpdateViewMode();
-    }
-
-    private void PreviewModeBtn_Click(object sender, RoutedEventArgs e)
-    {
-        _isPreviewMode = true;
-        UpdateViewMode();
-    }
-
-    private void UpdateViewMode()
-    {
-        if (_isPreviewMode)
-        {
-            MarkdownPreview.Text = _viewModel?.Content ?? string.Empty;
-            ContentBox.Visibility = Visibility.Collapsed;
-            PreviewScroll.Visibility = Visibility.Visible;
-            EditModeBtn.Style = (Style)Application.Current.Resources["SubtleButtonStyle"];
-            PreviewModeBtn.Style = (Style)Application.Current.Resources["AccentButtonStyle"];
-            PreviewScroll.Focus(FocusState.Programmatic);
-        }
-        else
-        {
-            ContentBox.Visibility = Visibility.Visible;
-            PreviewScroll.Visibility = Visibility.Collapsed;
-            EditModeBtn.Style = (Style)Application.Current.Resources["AccentButtonStyle"];
-            PreviewModeBtn.Style = (Style)Application.Current.Resources["SubtleButtonStyle"];
-            ContentBox.Focus(FocusState.Programmatic);
-        }
-    }
-
-    // --- Pin toggle (istantaneo, senza passare da Salva) ---
-
-    private void PinToggle_Click(object sender, RoutedEventArgs e)
-    {
-        _viewModel?.TogglePinCommand.Execute(null);
-        // Il visual si aggiorna via OnIsPinnedChanged → PropertyChanged
-    }
-
-    private void UpdatePinVisual()
-    {
-        var pinned = _viewModel?.IsPinned ?? false;
-        PinToggle.IsChecked = pinned;
-        var loader = new ResourceLoader();
-        PinToggleText.Text = pinned ? loader.GetString("NotesPinnedButton") : loader.GetString("NotesPinButtonLabel");
-
-        // Accessibility: nome dinamico descrive l'azione futura (toggle pattern)
-        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(
-            PinToggle, pinned ? _resourceLoader.GetString("NoteUnpinName") : _resourceLoader.GetString("NotePinName"));
-    }
-
-    // --- TextBox → ViewModel sync ---
-
-    private void TitleBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!_updatingFromVm && _viewModel is not null)
-            _viewModel.Title = TitleBox.Text;
-    }
-
-    private void ContentBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        if (!_updatingFromVm && _viewModel is not null)
-            _viewModel.Content = ContentBox.Text;
-    }
-
-    private void CategoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (!_updatingFromVm && _viewModel is not null &&
-            CategoryCombo.SelectedItem is ComboBoxItem item && item.Tag is NoteCategory cat)
-        {
-            _viewModel.Category = cat;
-        }
-    }
-
-    // --- Pulsanti footer ---
-
-    private async void DeleteButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (_viewModel is not null)
-            await _viewModel.DeleteCommand.ExecuteAsync(null);
-    }
-
-    private void CancelButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Cancelled is wired to CloseEditor by SecureNotesListViewModel.
-        _viewModel?.Cancelled?.Invoke();
-    }
-
-    private void UpdateSavingState(bool saving)
-    {
-        SaveProgress.IsActive = saving;
-        SaveProgress.Visibility = saving ? Visibility.Visible : Visibility.Collapsed;
-        var saveLoader = new ResourceLoader();
-        // Slash notation: the .resw key is "ButtonSave.Text" (renamed by bug 9c).
-        // A bare "ButtonSave" lookup now throws COMException 0x80073B17.
-        SaveButtonText.Text = saving
-            ? saveLoader.GetString("SaveInProgress")
-            : saveLoader.GetString("ButtonSave/Text");
-        // IsEnabled deliberately untouched: it belongs to SaveCommand.CanExecute now.
-        Announce(saving ? _resourceLoader.GetString("NoteSavingAnnounce") : _resourceLoader.GetString("NoteSavedAnnounce"));
-    }
-
-    // --- Helpers ---
 
     private void ContentBox_LostFocus(object sender, RoutedEventArgs e)
     {
-        if (_viewModel is not null)
-            Announce(string.Format(
-                _resourceLoader.GetString("NoteCharWordAnnounce"),
-                _viewModel.CharacterCount, _viewModel.WordCount));
+        if (Vm is null) return;
+
+        Announce(string.Format(
+            _resourceLoader.GetString("NoteCharWordAnnounce"),
+            Vm.CharacterCount, Vm.WordCount));
     }
 
     private void Announce(string message)
     {
         A11yAnnouncer.Text = "";
         A11yAnnouncer.Text = message;
-    }
-
-    private static Windows.UI.Color ParseColor(string hex)
-    {
-        hex = hex.TrimStart('#');
-        return ColorHelper.FromArgb(255,
-            byte.Parse(hex[..2], System.Globalization.NumberStyles.HexNumber),
-            byte.Parse(hex[2..4], System.Globalization.NumberStyles.HexNumber),
-            byte.Parse(hex[4..6], System.Globalization.NumberStyles.HexNumber));
     }
 }

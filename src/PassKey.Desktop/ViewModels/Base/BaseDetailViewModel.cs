@@ -26,7 +26,7 @@ namespace PassKey.Desktop.ViewModels.Base;
 /// <see cref="OnSavedEdit(TEntry)"/> to perform extra work after a successful save
 /// (e.g., <c>SecureNoteDetailViewModel</c> transitions to edit mode in-place after creation).</para>
 /// </remarks>
-public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
+public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject, IDisposable
     where TEntry : class, IVaultEntry
 {
     /// <summary>Vault state service for accessing the in-memory unlocked vault.</summary>
@@ -62,7 +62,17 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
 
     /// <summary>Indicates that a save operation is in progress (used to disable UI / show spinner).</summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SaveButtonText))]
     public partial bool IsSaving { get; set; }
+
+    /// <summary>Caption of the Save button, which becomes a progress caption while saving.</summary>
+    /// <remarks>
+    /// The .resw key is <c>ButtonSave.Text</c>, which must be looked up through the slash
+    /// form; a bare "ButtonSave" lookup throws COMException 0x80073B17.
+    /// </remarks>
+    public string SaveButtonText => IsSaving
+        ? _res.GetString("SaveInProgress")
+        : _res.GetString("ButtonSave/Text");
 
     /// <summary>Raised after a successful save. Parameters: <c>wasNew</c> and the entry's <see cref="IVaultEntry.Id"/>.</summary>
     public Action<bool, Guid>? Saved { get; set; }
@@ -221,8 +231,36 @@ public abstract partial class BaseDetailViewModel<TEntry> : ObservableObject
         }
     }
 
+    /// <summary>Abandons the editing session without saving.</summary>
+    /// <remarks>
+    /// Exposed as a command so the Cancel button binds to it like every other button in the
+    /// panel (R2), instead of a click handler reaching into the ViewModel's callback.
+    /// </remarks>
+    [RelayCommand]
+    protected virtual void Cancel()
+    {
+        Log.Debug(LogArea.Detail, "Editing session cancelled",
+            $"type={EntryTypeName} entryId={EditingEntry?.Id.ToString() ?? "(new)"}");
+        Cancelled?.Invoke();
+    }
+
     // ─── Helpers for subclass state transitions (used by SecureNote) ──────────
 
     /// <summary>Subclass-accessible mutator for the "is new" flag (used by special-case state transitions).</summary>
     protected void SetIsNew(bool value) => _isNew = value;
+
+    /// <summary>
+    /// Ends the editing session: the callbacks wiring this ViewModel to its list are dropped.
+    /// </summary>
+    /// <remarks>
+    /// One ViewModel per editing session (R4) is only true if the finished one lets go. While
+    /// a single instance was shared across every entry of a section, its callbacks were
+    /// reassigned on each open and the object outlived every session it served.
+    /// </remarks>
+    public virtual void Dispose()
+    {
+        Saved = null;
+        Deleted = null;
+        Cancelled = null;
+    }
 }

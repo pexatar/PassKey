@@ -4,6 +4,7 @@ using PassKey.Core.Constants;
 using PassKey.Core.Models;
 using PassKey.Desktop.Services;
 using PassKey.Desktop.ViewModels.Base;
+using PassKey.Desktop.ViewModels.Items;
 
 namespace PassKey.Desktop.ViewModels;
 
@@ -36,16 +37,66 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
     public partial string Content { get; set; } = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CounterText))]
     public partial int CharacterCount { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CounterText))]
     public partial int WordCount { get; set; }
+
+    /// <summary>The "N car · M parole" caption under the editor.</summary>
+    public string CounterText => string.Format(_res.GetString("NoteCharWordCount"), CharacterCount, WordCount);
 
     [ObservableProperty]
     public partial bool IsEditMode { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PinButtonText))]
+    [NotifyPropertyChangedFor(nameof(PinAccessibleName))]
     public partial bool IsPinned { get; set; }
+
+    /// <summary>Caption of the pin toggle, describing the current state.</summary>
+    public string PinButtonText => IsPinned
+        ? _res.GetString("NotesPinnedButton")
+        : _res.GetString("NotesPinButtonLabel");
+
+    /// <summary>Accessible name of the pin toggle, describing the action it would perform.</summary>
+    public string PinAccessibleName => IsPinned
+        ? _res.GetString("NoteUnpinName")
+        : _res.GetString("NotePinName");
+
+    /// <summary>True while the body is shown rendered as Markdown instead of editable text.</summary>
+    /// <remarks>
+    /// Editor-versus-preview is state of the editing session, so it lives with the session
+    /// rather than in a field of a view that is replaced on every navigation.
+    /// </remarks>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsEditorVisible))]
+    [NotifyPropertyChangedFor(nameof(PreviewMarkdown))]
+    public partial bool IsPreviewMode { get; set; }
+
+    /// <summary>Inverse of <see cref="IsPreviewMode"/>; drives the text box's visibility.</summary>
+    public bool IsEditorVisible => !IsPreviewMode;
+
+    /// <summary>
+    /// The text handed to the Markdown renderer: the body while previewing, nothing otherwise.
+    /// </summary>
+    /// <remarks>
+    /// Empty outside preview so the renderer does not re-parse the whole note on every
+    /// keystroke into a control the user cannot see. The body cannot change while previewing,
+    /// because the text box is hidden.
+    /// </remarks>
+    public string PreviewMarkdown => IsPreviewMode ? Content : string.Empty;
+
+    /// <summary>The picker's selected option, matched by reference against the shared list.</summary>
+    public NoteCategoryOption? SelectedCategoryOption
+    {
+        get => NoteCategoryOption.For(Category);
+        set
+        {
+            if (value is not null) Category = value.Category;
+        }
+    }
 
     [ObservableProperty]
     public partial bool HasUnsavedChanges { get; set; }
@@ -83,6 +134,7 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
         IsPinned = false;
         HasUnsavedChanges = false;
         IsEditMode = false;
+        IsPreviewMode = false;
 
         _originalTitle = string.Empty;
         _originalContent = string.Empty;
@@ -101,6 +153,7 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
         IsPinned = entry.IsPinned;
         HasUnsavedChanges = false;
         IsEditMode = true;
+        IsPreviewMode = false;
 
         _originalTitle = entry.Title;
         _originalContent = entry.Content;
@@ -162,7 +215,11 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
         UpdateHasUnsavedChanges();
     }
 
-    partial void OnCategoryChanged(NoteCategory value) => UpdateHasUnsavedChanges();
+    partial void OnCategoryChanged(NoteCategory value)
+    {
+        OnPropertyChanged(nameof(SelectedCategoryOption));
+        UpdateHasUnsavedChanges();
+    }
     partial void OnIsPinnedChanged(bool value) => UpdateHasUnsavedChanges();
 
     private void UpdateHasUnsavedChanges()
@@ -201,6 +258,21 @@ public partial class SecureNoteDetailViewModel : BaseDetailViewModel<SecureNoteE
 
         // Caller saves the vault to disk and refreshes the list.
         PinToggled?.Invoke();
+    }
+
+    /// <summary>Switches the body area back to the editable text box.</summary>
+    [RelayCommand]
+    private void ShowEditor() => IsPreviewMode = false;
+
+    /// <summary>Switches the body area to the rendered Markdown preview.</summary>
+    [RelayCommand]
+    private void ShowPreview() => IsPreviewMode = true;
+
+    /// <summary>Also releases the notes-only pin callback when the session ends.</summary>
+    public override void Dispose()
+    {
+        PinToggled = null;
+        base.Dispose();
     }
 
     private static int CountWords(string text)
