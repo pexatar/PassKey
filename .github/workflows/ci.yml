@@ -39,3 +39,42 @@ jobs:
       - name: Build Desktop
         if: always()
         run: dotnet build src/PassKey.Desktop/PassKey.Desktop.csproj -p:Platform=x64 -c Release
+
+  # TEMPORARY — companion to the push-trigger note above. Produces a build of the
+  # refactoring branch so the pilot section can actually be tested: the cloud session runs
+  # on Linux and cannot build WinUI, and tagging a release before the user's testing gate is
+  # forbidden, so the packages are attached to the CI run instead of published.
+  #
+  # The Download-Runtime step is the missing piece release.yml also needs (T8.1): the Windows
+  # App Runtime installer is gitignored, so without it Inno Setup has nothing to bundle.
+  #
+  # Remove together with the branch entry in the push trigger and the if: always() above.
+  build-artifacts:
+    if: github.ref == 'refs/heads/refactor/2.0/ui-rifondazione'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+
+      - name: Install Inno Setup 6
+        run: choco install innosetup --yes --no-progress
+
+      - name: Download Windows App Runtime
+        run: .\Installer\Download-Runtime.ps1
+        shell: pwsh
+
+      - name: Build installer and portable ZIP
+        run: .\scripts\build-installer.ps1
+        shell: pwsh
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: PassKey-rifondazione-note-sicure
+          path: |
+            Installer/Output/PassKey-Portable-x64.zip
+            Installer/Output/PassKey-Setup-x64.exe
+          if-no-files-found: error
