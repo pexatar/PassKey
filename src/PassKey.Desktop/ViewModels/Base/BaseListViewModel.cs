@@ -209,8 +209,14 @@ public abstract partial class BaseListViewModel<TEntry, TItem> : ObservableObjec
     protected void AddNew()
     {
         SelectedItem = null;
-        var detail = OpenDetailSession();
+
+        var detail = CreateDetailSession();
         detail.StartNew();
+
+        // Published only once initialised: the panel reads the session's state the moment it
+        // receives it — to decide where the keyboard goes, among other things — so handing it
+        // over half-built would have it act on the values of an entry not yet loaded.
+        DetailViewModel = detail;
         IsDetailOpen = true;
     }
 
@@ -221,8 +227,11 @@ public abstract partial class BaseListViewModel<TEntry, TItem> : ObservableObjec
         if (item is null) return;
 
         SelectedItem = item;
-        var detail = OpenDetailSession();
+
+        var detail = CreateDetailSession();
         detail.StartEdit(item.Model);
+
+        DetailViewModel = detail;
         IsDetailOpen = true;
     }
 
@@ -235,12 +244,14 @@ public abstract partial class BaseListViewModel<TEntry, TItem> : ObservableObjec
         Log.Debug(LogArea.Detail, "Detail session closed", $"type={EntityTypeName}");
     }
 
-    /// <summary>Creates and wires a detail ViewModel for one editing session.</summary>
-    private BaseDetailViewModel<TEntry> OpenDetailSession()
+    /// <summary>
+    /// Releases the previous editing session and creates and wires the next one. The caller
+    /// loads it and only then publishes it through <see cref="DetailViewModel"/>.
+    /// </summary>
+    private BaseDetailViewModel<TEntry> CreateDetailSession()
     {
-        // Releasing the previous session first is what guarantees exactly one live editing
-        // ViewModel: opening a second entry without closing the first used to leave the
-        // earlier one wired to this list.
+        // Releasing first is what guarantees exactly one live editing ViewModel: opening a
+        // second entry without closing the first used to leave the earlier one wired here.
         CloseDetailSession();
 
         var detail = _detailFactory();
@@ -249,7 +260,6 @@ public abstract partial class BaseListViewModel<TEntry, TItem> : ObservableObjec
         detail.Cancelled = CloseDetail;
         OnDetailSessionCreated(detail);
 
-        DetailViewModel = detail;
         return detail;
     }
 
