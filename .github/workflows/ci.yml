@@ -31,5 +31,11 @@ jobs:
       - name: Test
         run: dotnet test src/PassKey.Tests/PassKey.Tests.csproj --verbosity normal
 
+      # if: always() so the Desktop compile still runs when an earlier step fails.
+      # The cloud session needs the XAML/compiler result on every push, and a flaky
+      # timing test (PerformanceTests.UrlMatching_500Entries_Under50ms, 50ms threshold
+      # on a shared runner) would otherwise hide it. The job still reports failure.
+      # TEMPORARY: remove together with the branch entry in the push trigger.
       - name: Build Desktop
+        if: always()
         run: dotnet build src/PassKey.Desktop/PassKey.Desktop.csproj -p:Platform=x64 -c Release
